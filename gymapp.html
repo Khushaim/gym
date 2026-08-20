@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fitness Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+--bg-color: #0f172a;
+--card-bg: #1e293b;
+--accent: #3b82f6;
+--accent-hover: #2563eb;
+--text: #f8fafc;
+--text-dim: #94a3b8;
+--green: #22c55e;
+--red: #ef4444;
+--yellow: #eab308;
+--radius: 16px;
+--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+--input-bg: rgba(0, 0, 0, 0.25);
+--border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+--bg-color: #f1f5f9;
+--card-bg: #ffffff;
+--accent: #2563eb;
+--accent-hover: #1d4ed8;
+--text: #0f172a;
+--text-dim: #64748b;
+--green: #16a34a;
+--red: #dc2626;
+--yellow: #ca8a04;
+--input-bg: #f8fafc;
+--border-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: 'Tajawal', sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+
+body {
+background-color: var(--bg-color);
+color: var(--text);
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+overflow-x: hidden;
+direction: rtl;
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app-container {
+width: 100%;
+max-width: 480px;
+min-height: 100vh;
+background-color: var(--bg-color);
+padding: 20px;
+display: flex;
+flex-direction: column;
+position: relative;
+overflow-y: auto;
+}
+
+.theme-toggle-btn {
+position: absolute;
+top: 15px;
+left: 15px;
+background: rgba(255, 255, 255, 0.1);
+border: 1px solid var(--border-color);
+border-radius: 50%;
+width: 42px;
+height: 42px;
+display: flex;
+justify-content: center;
+align-items: center;
+cursor: pointer;
+font-size: 1.2rem;
+z-index: 100;
+color: var(--text);
+transition: var(--transition);
+}
+
+.card {
+background: var(--card-bg);
+border-radius: var(--radius);
+padding: 24px;
+margin-bottom: 20px;
+border: 1px solid var(--border-color);
+box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+animation: fadeIn 0.4s ease-out forwards;
+touch-action: pan-y;
+transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.dragging {
+opacity: 0.8;
+transform: scale(1.02);
+box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+border-color: var(--accent);
+z-index: 10;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(15px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.btn {
+width: 100%;
+padding: 16px;
+border: none;
+border-radius: var(--radius);
+font-size: 1.1rem;
+font-weight: 700;
+cursor: pointer;
+transition: var(--transition);
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 10px;
+}
+
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:active { transform: scale(0.98); background: var(--accent-hover); }
+.btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid var(--red); }
+.btn-warning { background: rgba(234, 179, 8, 0.15); color: var(--yellow); border: 1px solid var(--yellow); }
+.btn-secondary { background: rgba(255, 255, 255, 0.08); color: var(--text); border: 1px solid var(--border-color); }
+.btn-outline { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
+
+input, select {
+width: 100%;
+padding: 14px;
+background: var(--input-bg);
+border: 1px solid var(--border-color);
+border-radius: var(--radius);
+color: var(--text);
+font-size: 1rem;
+margin-top: 8px;
+margin-bottom: 16px;
+outline: none;
+text-align: center;
+}
+
+input:focus { border-color: var(--accent); }
+
+.header-title {
+text-align: center;
+font-size: 1.5rem;
+font-weight: 900;
+margin-bottom: 24px;
+color: var(--accent);
+letter-spacing: -0.5px;
+}
+
+.screen { display: none; flex-direction: column; height: 100%; }
+.screen.active { display: flex; animation: fadeIn 0.3s ease-in-out; }
+
+.set-row {
+display: grid;
+grid-template-columns: 0.8fr 1.2fr 1.2fr;
+gap: 10px;
+align-items: center;
+margin-bottom: 12px;
+}
+
+.set-label { font-size: 0.9rem; color: var(--text-dim); text-align: center; }
+.prev-data { font-size: 0.75rem; color: var(--text-dim); text-align: center; display: block; font-weight: 600; }
+.prev-data.status-green { color: var(--green); }
+.prev-data.status-red { color: var(--red); }
+.prev-data.status-yellow { color: var(--yellow); }
+
+.nav-buttons {
+display: flex;
+gap: 12px;
+margin-top: auto;
+padding-top: 20px;
+}
+
+.modal {
+position: fixed;
+top:0; left:0; right:0; bottom:0;
+background: rgba(0,0,0,0.8);
+display: none;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+padding: 20px;
+}
+.modal.active { display: flex; }
+
+.toggle-tech {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin: 10px 0;
+padding: 10px;
+background: rgba(255,255,255,0.03);
+border-radius: var(--radius);
+font-size: 0.85rem;
+}
+
+.mode-select-box {
+margin-bottom: 12px;
+background: rgba(255, 255, 255, 0.03);
+padding: 10px 14px;
+border-radius: var(--radius);
+border: 1px solid var(--border-color);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.mode-select-box select {
+width: auto;
+margin: 0;
+padding: 6px 12px;
+font-size: 0.85rem;
+border-radius: 10px;
+}
+
+.rest-timer-box {
+background: rgba(59, 130, 246, 0.1);
+border: 1px solid var(--accent);
+color: var(--accent);
+border-radius: var(--radius);
+padding: 12px;
+margin-bottom: 15px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 8px;
+cursor: pointer;
+user-select: none;
+transition: background 0.2s ease;
+}
+
+.rest-timer-box.timer-running {
+background: rgba(34, 197, 94, 0.15);
+border-color: var(--green);
+color: var(--green);
+}
+
+.rest-timer-box:active {
+background: rgba(59, 130, 246, 0.25);
+}
+
+.timer-controls {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 15px;
+}
+
+.btn-timer-adj {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+border: 1px solid currentColor;
+background: var(--card-bg);
+color: inherit;
+font-size: 1.2rem;
+font-weight: bold;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.btn-timer-adj:active {
+transform: scale(0.9);
+}
+
+.show-sets-badge {
+background: rgba(255,255,255,0.05);
+border-radius: 12px;
+padding: 10px;
+margin-top: 10px;
+border: 1px dashed var(--border-color);
+}
+
+.show-set-item {
+display: flex;
+justify-content: space-between;
+font-size: 0.82rem;
+color: var(--text-dim);
+padding: 4px 0;
+border-bottom: 1px dotted rgba(255,255,255,0.05);
+}
+.show-set-item:last-child {
+border-bottom: none;
+}
+
+.btn-delete-ex {
+background: rgba(239, 68, 68, 0.15);
+color: var(--red);
+border: 1px solid var(--red);
+border-radius: 10px;
+padding: 6px 12px;
+font-size: 0.8rem;
+font-weight: bold;
+cursor: pointer;
+}
+
+.drag-handle {
+background: rgba(255, 255, 255, 0.08);
+color: var(--text-dim);
+border: 1px solid var(--border-color);
+border-radius: 8px;
+padding: 4px 8px;
+font-size: 1.1rem;
+cursor: grab;
+user-select: none;
+display: flex;
+align-items: center;
+justify-content: center;
+touch-action: none;
+}
+
+.drag-handle:active {
+cursor: grabbing;
+background: var(--accent);
+color: white;
+}
+
+.workout-header-bar {
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-bottom: 15px;
+min-height: 42px;
+}
+
+.workout-header-bar .btn-exit {
+position: absolute;
+right: 0;
+top: 0;
+width: auto;
+padding: 8px 16px;
+font-size: 0.85rem;
+}
+
+.workout-header-bar .indicator {
+font-weight: bold;
+color: var(--accent);
+font-size: 1rem;
+text-align: center;
+}
+
+.day-switcher {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+margin: 10px 0;
+}
+
+.btn-switch-day {
+background: rgba(255, 255, 255, 0.08);
+border: 1px solid var(--border-color);
+color: var(--text);
+width: 36px;
+height: 36px;
+border-radius: 50%;
+font-size: 1.1rem;
+font-weight: bold;
+cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+transition: var(--transition);
+}
+
+.btn-switch-day:active {
+transform: scale(0.9);
+background: var(--accent);
+color: white;
+}
+
+.tight-btn-stack {
+display: flex;
+flex-direction: column;
+gap: 6px;
+margin-top: 30px;
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+<button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+
+<!-- ================= STATE 1: NO PROGRAM ================= -->
+<div id="screen-no-program" class="screen active">
+<div style="margin: auto 0; text-align: center;">
+<h1 class="header-title">أهلاً بك 👋</h1>
+<div class="card" style="margin-bottom: 20px;">
+<label class="set-label">ما هو اسمك؟</label>
+<input type="text" id="input-user-name" placeholder="أدخل اسمك هنا..." style="margin-bottom: 10px;">
+</div>
+<p style="color: var(--text-dim); margin-bottom: 30px;">لا يوجد برنامج تدريبي مسجل حالياً على هذا الجهاز.</p>
+<button class="btn btn-primary" onclick="startSetup()">Start Your Program</button>
+</div>
+</div>
+
+<!-- SETUP WIZARD SCREENS -->
+<div id="screen-setup-days" class="screen">
+<div class="card" style="margin: auto 0;">
+<h2 style="text-align: center; margin-bottom: 15px;">How many days?</h2>
+<p style="color: var(--text-dim); text-align: center; font-size: 0.9rem; margin-bottom: 15px;">كم يوماً يتكون منه جدولك التدريبي؟</p>
+<input type="number" id="input-days-count" min="1" max="14" value="4">
+<button class="btn btn-primary" onclick="submitDaysCount()">التالي</button>
+</div>
+</div>
+
+<div id="screen-setup-exercises" class="screen">
+<div class="card" style="margin: auto 0;">
+<h2 id="setup-day-title" style="text-align: center; margin-bottom: 15px;">Day 1</h2>
+<p style="color: var(--text-dim); text-align: center; font-size: 0.9rem; margin-bottom: 15px;">How many exercises?</p>
+<input type="number" id="input-ex-count" min="1" max="20" value="5">
+<button class="btn btn-primary" onclick="submitExCount()">إدخال التمارين</button>
+</div>
+</div>
+
+<div id="screen-setup-detail" class="screen">
+<div class="card" style="margin: auto 0;">
+<h3 id="setup-detail-header" style="text-align: center; color: var(--accent); margin-bottom: 10px;">Day 1 - Exercise 1</h3>
+<label class="set-label">اسم التمرين</label>
+<input type="text" id="input-ex-name" placeholder="مثال: Chest Press">
+
+<label class="set-label">عدد الجولات (Sets)</label>
+<input type="number" id="input-ex-sets" min="1" max="10" value="3">
+
+<button class="btn btn-primary" onclick="submitExDetail()">التالي</button>
+</div>
+</div>
+
+<!-- ================= STATE 2: MAIN DASHBOARD ================= -->
+<div id="screen-dashboard" class="screen">
+<div class="header-title" id="dash-greeting-title">أهلاً بك</div>
+
+<div class="card" style="text-align: center; margin-bottom: 12px;">
+<p style="color: var(--text-dim); font-size: 0.9rem;">التمرين القادم</p>
+
+<div class="day-switcher">
+<button class="btn-switch-day" onclick="switchSelectedDay(1)">‹</button>
+<h2 id="dash-next-day" style="font-size: 2rem; color: var(--text); min-width: 120px;">Day 1</h2>
+<button class="btn-switch-day" onclick="switchSelectedDay(-1)">›</button>
+</div>
+
+<button class="btn btn-primary" style="margin-top: 15px; background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);" onclick="startWorkout()">START</button>
+</div>
+
+<button class="btn btn-outline" style="margin-bottom: 10px;" onclick="openShowProgram()">Show Program</button>
+
+<div class="tight-btn-stack">
+<button class="btn btn-warning" onclick="confirmResetHistory()">Reset History</button>
+<button class="btn btn-danger" onclick="confirmDeleteProgram()">Delete Program</button>
+</div>
+
+<button class="btn btn-secondary" style="margin-top: 35px; margin-bottom: 10px; padding: 12px; font-size: 0.95rem;" onclick="openChangeNameModal()">✏️ تغيير الاسم</button>
+</div>
+
+<!-- ================= WORKOUT MODE ================= -->
+<div id="screen-workout" class="screen">
+<div class="workout-header-bar">
+<button class="btn btn-danger btn-exit" onclick="exitWorkout()">Exit</button>
+<span id="workout-day-indicator" class="indicator">Day 1 (1/5)</span>
+</div>
+
+<div class="card" style="flex: 1; display: flex; flex-direction: column;">
+<input type="text" id="work-ex-name" style="font-weight: bold; font-size: 1.2rem; text-align: right; border-color: transparent;" placeholder="اسم التمرين">
+
+<div class="mode-select-box">
+<span style="font-size: 0.85rem; color: var(--text-dim);">طريقة التخزين:</span>
+<select id="work-tracking-mode" onchange="changeWorkoutMode(this.value)">
+<option value="all_sets">كل الجولات</option>
+<option value="first_set">الجولة الأولى فقط</option>
+</select>
+</div>
+
+<div class="toggle-tech">
+<span>Technique Changed?</span>
+<input type="checkbox" id="work-tech-changed" style="width: auto; margin:0;" onclick="vibrateDevice(); playClick()">
+</div>
+
+<div class="rest-timer-box" id="rest-timer-display" onclick="toggleRestTimerClick(event)">
+<div style="font-size: 0.85rem; font-weight: bold;" id="timer-box-label">مؤقت الراحة (اضغط للبدء)</div>
+<div class="timer-controls">
+<button class="btn-timer-adj" onclick="event.stopPropagation(); adjustRestTimer(-30)">-</button>
+<span id="timer-seconds" style="font-size: 1.4rem; font-weight: 900; min-width: 60px; text-align: center;">120s</span>
+<button class="btn-timer-adj" onclick="event.stopPropagation(); adjustRestTimer(30)">+</button>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr; gap: 10px; margin-bottom: 8px; text-align: center; font-size: 0.8rem; color: var(--text-dim);">
+<div>الجولة</div>
+<div>الوزن (KG)</div>
+<div>العدات</div>
+</div>
+
+<div id="sets-container" style="flex: 1; overflow-y: auto;">
+</div>
+</div>
+
+<div class="nav-buttons">
+<button class="btn btn-primary" id="btn-next-ex" onclick="handleNextButtonClick()">Next</button>
+<button class="btn btn-secondary" id="btn-prev-ex" onclick="prevExercise()">Previous</button>
+</div>
+</div>
+
+<!-- ================= SHOW PROGRAM MODE (Centered Title & Elements) ================= -->
+<div id="screen-show-program" class="screen">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+<button class="btn btn-secondary" style="width: auto; padding: 8px 16px;" onclick="exitShowProgram()">Exit</button>
+<h3 id="show-day-title" style="color: var(--accent); text-align: center; flex: 1;">Day 1</h3>
+<div style="width: 60px;"></div> <!-- Spacer to keep title centered perfectly -->
+</div>
+
+<p style="font-size: 0.8rem; color: var(--text-dim); text-align: center; margin-bottom: 10px;">💡 اضغط مع الاستمرار على ☰ أو كرت التمرين ثم اسحبه لأعلى أو لأسفل لإعادة الترتيب</p>
+
+<div id="show-program-content" style="flex: 1; overflow-y: auto; padding-bottom: 10px;">
+</div>
+
+<button class="btn btn-outline" style="margin-top: 10px; margin-bottom: 10px;" onclick="openAddExerciseModal()">+ إضافة تمرين جديد</button>
+
+<div class="nav-buttons">
+<button class="btn btn-secondary" id="btn-show-next" onclick="navShowProgram(1)">Next</button>
+<button class="btn btn-secondary" id="btn-show-prev" onclick="navShowProgram(-1)">Previous</button>
+</div>
+</div>
+
+</div>
+
+<!-- Modal for Delete Program Confirmation -->
+<div id="confirm-modal" class="modal">
+<div class="card" style="width: 100%; max-width: 320px; text-align: center;">
+<h3 style="margin-bottom: 15px; color: var(--red);">Are you sure?</h3>
+<p style="color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem;">سيتم حذف جدولك التدريبي وكل سجلات الأوزان بشكل كامل.</p>
+<div style="display: flex; gap: 10px;">
+<button class="btn btn-danger" onclick="deleteProgram()">نعم، احذف</button>
+<button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+</div>
+</div>
+</div>
+
+<!-- Modal for Reset History Confirmation -->
+<div id="confirm-reset-modal" class="modal">
+<div class="card" style="width: 100%; max-width: 320px; text-align: center;">
+<h3 style="margin-bottom: 15px; color: var(--yellow);">Reset History?</h3>
+<p style="color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem;">سيتم مسح جميع سجلات الأوزان والعدات السابقة مع الاحتفاظ بالبرنامج التدريبي والتمارين والجولات كما هي.</p>
+<div style="display: flex; gap: 10px;">
+<button class="btn btn-warning" onclick="resetHistory()">نعم، امسح السجلات</button>
+<button class="btn btn-secondary" onclick="closeResetModal()">إلغاء</button>
+</div>
+</div>
+</div>
+
+<!-- Modal for Adding Exercise in Show Program -->
+<div id="add-ex-modal" class="modal">
+<div class="card" style="width: 100%; max-width: 340px; text-align: center;">
+<h3 style="margin-bottom: 15px; color: var(--accent);">إضافة تمرين جديد</h3>
+
+<label class="set-label">اسم التمرين</label>
+<input type="text" id="new-ex-name" placeholder="مثال: Romanian Deadlift">
+
+<label class="set-label">عدد الجولات (Sets)</label>
+<input type="number" id="new-ex-sets" min="1" max="10" value="3">
+
+<div style="display: flex; gap: 10px; margin-top: 10px;">
+<button class="btn btn-primary" onclick="confirmAddExercise()">إضافة</button>
+<button class="btn btn-secondary" onclick="closeAddExModal()">إلغاء</button>
+</div>
+</div>
+</div>
+
+<!-- Modal for Changing User Name -->
+<div id="change-name-modal" class="modal">
+<div class="card" style="width: 100%; max-width: 320px; text-align: center;">
+<h3 style="margin-bottom: 15px; color: var(--accent);">تغيير الاسم</h3>
+<input type="text" id="edit-user-name" placeholder="أدخل اسمك الجديد..." style="margin-bottom: 15px;">
+<div style="display: flex; gap: 10px;">
+<button class="btn btn-primary" onclick="confirmChangeName()">حفظ</button>
+<button class="btn btn-secondary" onclick="closeChangeNameModal()">إلغاء</button>
+</div>
+</div>
+</div>
+
+<script>
+let appData = {
+userName: '',
+program: null,
+history: {},
+currentDayIndex: 0,
+theme: 'dark'
+};
+
+let setupTemp = { daysCount: 0, currentDay: 0, exCount: 0, currentEx: 0, days: [] };
+let activeWorkout = { dayIndex: 0, exIndex: 0, currentLogs: {}, trackingMode: 'all_sets', isCustomSelectedDay: false };
+let selectedDashboardDayIndex = 0;
+let showProgDayIdx = 0;
+
+let timerInterval = null;
+let defaultRestDuration = 120;
+let remainingRestSeconds = 120;
+let isTimerRunning = false;
+
+let draggedCard = null;
+let draggedIndex = -1;
+let touchStartY = 0;
+
+// Vibration Feedback Helper
+function vibrateDevice() {
+if (navigator.vibrate) {
+navigator.vibrate(40); // 40ms light haptic feedback vibration
+}
+}
+
+// Safe Audio Context for Mobile Browsers
+let audioCtx = null;
+function getAudioContext() {
+if (!audioCtx) {
+const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+if (AudioContextClass) audioCtx = new AudioContextClass();
+}
+if (audioCtx && audioCtx.state === 'suspended') {
+audioCtx.resume();
+}
+return audioCtx;
+}
+
+function playClick() {
+vibrateDevice();
+try {
+const ctx = getAudioContext();
+if (!ctx) return;
+const now = ctx.currentTime;
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = 'sine';
+osc.frequency.setValueAtTime(600, now);
+osc.frequency.exponentialRampToValueAtTime(850, now + 0.08);
+gain.gain.setValueAtTime(0.3, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(now);
+osc.stop(now + 0.1);
+} catch(e) {}
+}
+
+function playThemeSound() {
+vibrateDevice();
+try {
+const ctx = getAudioContext();
+if (!ctx) return;
+const now = ctx.currentTime;
+const isDark = appData.theme === 'dark';
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = 'sine';
+const startFreq = isDark ? 300 : 700;
+const endFreq = isDark ? 650 : 250;
+osc.frequency.setValueAtTime(startFreq, now);
+osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.12);
+gain.gain.setValueAtTime(0.25, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(now);
+osc.stop(now + 0.12);
+} catch(e) {}
+}
+
+function playWarningSound() {
+vibrateDevice();
+try {
+const ctx = getAudioContext();
+if (!ctx) return;
+const now = ctx.currentTime;
+[0, 0.09].forEach(delay => {
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = 'triangle';
+osc.frequency.setValueAtTime(280, now + delay);
+osc.frequency.exponentialRampToValueAtTime(200, now + delay + 0.07);
+gain.gain.setValueAtTime(0.25, now + delay);
+gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.07);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(now + delay);
+osc.stop(now + delay + 0.07);
+});
+} catch(e) {}
+}
+
+function playStartSound() {
+vibrateDevice();
+try {
+const ctx = getAudioContext();
+if (!ctx) return;
+const now = ctx.currentTime;
+const notes = [440, 554.37, 659.25, 880];
+notes.forEach((freq, idx) => {
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = 'triangle';
+osc.frequency.setValueAtTime(freq, now + (idx * 0.06));
+gain.gain.setValueAtTime(0.3, now + (idx * 0.06));
+gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.06) + 0.25);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(now + (idx * 0.06));
+osc.stop(now + (idx * 0.06) + 0.25);
+});
+} catch(e) {}
+}
+
+function playFinishSound() {
+vibrateDevice();
+try {
+const ctx = getAudioContext();
+if (!ctx) return;
+const now = ctx.currentTime;
+const chords = [523.25, 659.25, 783.99, 1046.50];
+chords.forEach((freq) => {
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = 'sine';
+osc.frequency.setValueAtTime(freq, now);
+gain.gain.setValueAtTime(0.25, now);
+gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start(now);
+osc.stop(now + 0.6);
+});
+} catch(e) {}
+}
+
+window.onload = function() {
+loadStoredData();
+applyTheme(appData.theme || 'dark');
+cleanOldHistory();
+renderMainScreen();
+};
+
+function toggleTheme() {
+playThemeSound();
+const newTheme = appData.theme === 'dark' ? 'light' : 'dark';
+appData.theme = newTheme;
+applyTheme(newTheme);
+saveData();
+}
+
+function applyTheme(theme) {
+if (theme === 'light') {
+document.body.setAttribute('data-theme', 'light');
+document.getElementById('theme-btn').innerText = '☀️';
+} else {
+document.body.removeAttribute('data-theme');
+document.getElementById('theme-btn').innerText = '🌙';
+}
+}
+
+function loadStoredData() {
+const u = localStorage.getItem('ak_gym_user_name');
+const p = localStorage.getItem('ak_gym_program');
+const h = localStorage.getItem('ak_gym_history');
+const c = localStorage.getItem('ak_gym_curr_day');
+const t = localStorage.getItem('ak_gym_theme');
+const m = localStorage.getItem('ak_gym_tracking_mode');
+const r = localStorage.getItem('ak_gym_rest_duration');
+
+if (u) appData.userName = u;
+if (p) appData.program = JSON.parse(p);
+if (h) appData.history = JSON.parse(h);
+if (c) appData.currentDayIndex = parseInt(c) || 0;
+if (t) appData.theme = t;
+if (m) activeWorkout.trackingMode = m;
+if (r) {
+defaultRestDuration = Math.max(30, parseInt(r) || 120);
+} else {
+defaultRestDuration = 120;
+}
+remainingRestSeconds = defaultRestDuration;
+
+selectedDashboardDayIndex = appData.currentDayIndex;
+}
+
+function saveData() {
+localStorage.setItem('ak_gym_user_name', appData.userName);
+localStorage.setItem('ak_gym_program', JSON.stringify(appData.program));
+localStorage.setItem('ak_gym_history', JSON.stringify(appData.history));
+localStorage.setItem('ak_gym_curr_day', appData.currentDayIndex);
+localStorage.setItem('ak_gym_theme', appData.theme);
+localStorage.setItem('ak_gym_tracking_mode', activeWorkout.trackingMode);
+localStorage.setItem('ak_gym_rest_duration', defaultRestDuration);
+}
+
+function cleanOldHistory() {
+if (!appData.history) return;
+const fourWeeksAgo = Date.now() - (28 * 24 * 60 * 60 * 1000);
+for (let key in appData.history) {
+appData.history[key] = appData.history[key].filter(entry => new Date(entry.date).getTime() > fourWeeksAgo);
+}
+saveData();
+}
+
+function switchScreen(screenId) {
+document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+document.getElementById(screenId).classList.add('active');
+}
+
+function renderMainScreen() {
+if (!appData.program) {
+document.getElementById('input-user-name').value = appData.userName || '';
+switchScreen('screen-no-program');
+} else {
+selectedDashboardDayIndex = appData.currentDayIndex;
+const greeting = appData.userName ? أهلاً ${appData.userName}` : 'أهلاً بك';
+document.getElementById('dash-greeting-title').innerText = greeting;
+updateDashboardDayDisplay();
+switchScreen('screen-dashboard');
+}
+}
+
+function updateDashboardDayDisplay() {
+document.getElementById('dash-next-day').innerText = Day${selectedDashboardDayIndex + 1}`;
+}
+
+function switchSelectedDay(dir) {
+playClick();
+if (!appData.program) return;
+const totalDays = appData.program.daysCount;
+selectedDashboardDayIndex = (selectedDashboardDayIndex + dir + totalDays) % totalDays;
+updateDashboardDayDisplay();
+}
+
+function startSetup() {
+playStartSound();
+const enteredName = document.getElementById('input-user-name').value.trim();
+if (enteredName) {
+appData.userName = enteredName;
+}
+setupTemp = { daysCount: 0, currentDay: 0, exCount: 0, currentEx: 0, days: [] };
+switchScreen('screen-setup-days');
+}
+
+function submitDaysCount() {
+playClick();
+const count = parseInt(document.getElementById('input-days-count').value);
+if (!count || count < 1) return;
+setupTemp.daysCount = count;
+setupTemp.currentDay = 0;
+promptNextDaySetup();
+}
+
+function promptNextDaySetup() {
+if (setupTemp.currentDay < setupTemp.daysCount) {
+document.getElementById('setup-day-title').innerText = Day ${setupTemp.currentDay + 1}`;
+document.getElementById('input-ex-count').value = 4;
+switchScreen('screen-setup-exercises');
+} else {
+appData.program = { daysCount: setupTemp.daysCount, days: setupTemp.days };
+appData.currentDayIndex = 0;
+saveData();
+renderMainScreen();
+}
+}
+
+function submitExCount() {
+playClick();
+const count = parseInt(document.getElementById('input-ex-count').value);
+if (!count || count < 1) return;
+setupTemp.exCount = count;
+setupTemp.currentEx = 0;
+setupTemp.currentDayExercises = [];
+promptNextExSetup();
+}
+
+function promptNextExSetup() {
+if (setupTemp.currentEx < setupTemp.exCount) {
+document.getElementById('setup-detail-header').innerText = Day${setupTemp.currentDay + 1} - Exercise ${setupTemp.currentEx + 1};
+document.getElementById('input-ex-name').value = '';
+document.getElementById('input-ex-sets').value = 3;
+switchScreen('screen-setup-detail');
+} else {
+setupTemp.days.push({ exercises: setupTemp.currentDayExercises });
+setupTemp.currentDay++;
+promptNextDaySetup();
+}
+}
+
+function submitExDetail() {
+playClick();
+const name = document.getElementById('input-ex-name').value.trim() || Exercise${setupTemp.currentEx + 1}`;
+const sets = parseInt(document.getElementById('input-ex-sets').value) || 3;
+setupTemp.currentDayExercises.push({ name, sets });
+setupTemp.currentEx++;
+promptNextExSetup();
+}
+
+function startWorkout() {
+playStartSound();
+activeWorkout.dayIndex = selectedDashboardDayIndex;
+activeWorkout.isCustomSelectedDay = (selectedDashboardDayIndex !== appData.currentDayIndex);
+activeWorkout.exIndex = 0;
+activeWorkout.currentLogs = {};
+document.getElementById('work-tracking-mode').value = activeWorkout.trackingMode || 'all_sets';
+renderWorkoutExercise();
+switchScreen('screen-workout');
+}
+
+function changeWorkoutMode(newMode) {
+playClick();
+activeWorkout.trackingMode = newMode;
+saveData();
+renderWorkoutExercise();
+}
+
+function renderWorkoutExercise() {
+const day = appData.program.days[activeWorkout.dayIndex];
+const ex = day.exercises[activeWorkout.exIndex];
+const exKey = ${activeWorkout.dayIndex}-${activeWorkout.exIndex};
+const mode = activeWorkout.trackingMode || 'all_sets';
+
+document.getElementById('workout-day-indicator').innerText = Day ${activeWorkout.dayIndex + 1} (${activeWorkout.exIndex + 1}/${day.exercises.length})`;
+document.getElementById('work-ex-name').value = ex.name;
+document.getElementById('work-tech-changed').checked = false;
+
+stopRestTimerAndReset();
+
+const historyList = appData.history[exKey] || [];
+const lastSession = historyList.length > 0 ? historyList[historyList.length - 1] : null;
+
+const container = document.getElementById('sets-container');
+container.innerHTML = '';
+
+const renderSetsCount = mode === 'first_set' ? 1 : ex.sets;
+
+for (let i = 0; i < renderSetsCount; i++) {
+let prevText = 'الماضي: --';
+
+if (lastSession && lastSession.sets[i]) {
+const pWeight = lastSession.sets[i].weight;
+const pReps = lastSession.sets[i].reps;
+prevText = الماضي:${pWeight}kg × ${pReps};
+}
+
+const row = document.createElement('div');
+row.className = 'set-row';
+row.innerHTML = &lt;div&gt; &lt;span class="set-label"&gt;${mode === 'first_set' ? 'الجولة 1' : 'جولة ' + (i + 1)}</span>
+<span class="prev-data" id="prev-lbl-{prevText}</span>
+</div>
+<input type="number" step="0.5" id="weight-{i})">
+<input type="number" id="reps-{i})">
+`;
+container.appendChild(row);
+}
+
+const isFirst = activeWorkout.exIndex === 0;
+const isLast = activeWorkout.exIndex === day.exercises.length - 1;
+
+document.getElementById('btn-prev-ex').style.visibility = isFirst ? 'hidden' : 'visible';
+const nextBtn = document.getElementById('btn-next-ex');
+if (isLast) {
+nextBtn.innerText = 'Finish Workout';
+nextBtn.className = 'btn btn-primary';
+nextBtn.style.background = 'var(--green)';
+} else {
+nextBtn.innerText = 'Next';
+nextBtn.className = 'btn btn-primary';
+nextBtn.style.background = 'var(--accent)';
+}
+}
+
+function handleNextButtonClick() {
+const day = appData.program.days[activeWorkout.dayIndex];
+const isLast = activeWorkout.exIndex === day.exercises.length - 1;
+if (isLast) {
+playFinishSound();
+} else {
+playClick();
+}
+nextExercise();
+}
+
+function evaluateProgress(setIdx) {
+const exKey = ${activeWorkout.dayIndex}-${activeWorkout.exIndex};
+const historyList = appData.history[exKey] || [];
+const lastSession = historyList.length > 0 ? historyList[historyList.length - 1] : null;
+const techChanged = document.getElementById('work-tech-changed').checked;
+
+if (!lastSession || !lastSession.sets[setIdx] || techChanged) return;
+
+const currW = parseFloat(document.getElementById(weight-${setIdx}).value) || 0; const currR = parseInt(document.getElementById(reps-${setIdx}).value) || 0;
+const prevW = parseFloat(lastSession.sets[setIdx].weight) || 0;
+const prevR = parseInt(lastSession.sets[setIdx].reps) || 0;
+
+const lbl = document.getElementById(prev-lbl-${setIdx}`);
+lbl.className = 'prev-data';
+
+if (currW === 0 && currR === 0) return;
+
+if (currW > prevW || (currW === prevW && currR > prevR)) {
+lbl.classList.add('status-green');
+} else if (currW === prevW && currR === prevR) {
+lbl.classList.add('status-yellow');
+} else if (currW < prevW || (currW === prevW && currR < prevR)) {
+lbl.classList.add('status-red');
+}
+}
+
+function toggleRestTimerClick(event) {
+playClick();
+if (isTimerRunning) {
+stopRestTimerAndReset();
+} else {
+startRestTimerCountdown();
+}
+}
+
+function startRestTimerCountdown() {
+clearInterval(timerInterval);
+isTimerRunning = true;
+remainingRestSeconds = defaultRestDuration;
+
+const timerBox = document.getElementById('rest-timer-display');
+const timerLabel = document.getElementById('timer-box-label');
+timerBox.classList.add('timer-running');
+timerLabel.innerText = 'مؤقت الراحة (اضغط للإيقاف وإعادة الضبط)';
+
+updateTimerDisplay();
+
+timerInterval = setInterval(() => {
+remainingRestSeconds--;
+updateTimerDisplay();
+if (remainingRestSeconds <= 0) {
+clearInterval(timerInterval);
+playFinishSound();
+stopRestTimerAndReset();
+}
+}, 1000);
+}
+
+function stopRestTimerAndReset() {
+clearInterval(timerInterval);
+isTimerRunning = false;
+remainingRestSeconds = defaultRestDuration;
+
+const timerBox = document.getElementById('rest-timer-display');
+const timerLabel = document.getElementById('timer-box-label');
+if (timerBox) timerBox.classList.remove('timer-running');
+if (timerLabel) timerLabel.innerText = 'مؤقت الراحة (اضغط للبدء)';
+
+updateTimerDisplay();
+}
+
+function adjustRestTimer(seconds) {
+playClick();
+defaultRestDuration += seconds;
+if (defaultRestDuration < 30) defaultRestDuration = 30;
+saveData();
+stopRestTimerAndReset();
+}
+
+function updateTimerDisplay() {
+const el = document.getElementById('timer-seconds');
+if (el) el.innerText = remainingRestSeconds + 's';
+}
+
+function saveCurrentExerciseState() {
+const day = appData.program.days[activeWorkout.dayIndex];
+const exKey = ``${activeWorkout.dayIndex}-${activeWorkout.exIndex};
+const mode = activeWorkout.trackingMode || 'all_sets';
+
+const newName = document.getElementById('work-ex-name').value.trim();
+if (newName) day.exercises[activeWorkout.exIndex].name = newName;
+
+const setsData = [];
+const count = mode === 'first_set' ? 1 : day.exercises[activeWorkout.exIndex].sets;
+
+for (let i = 0; i < count; i++) {
+const weight = document.getElementById(weight-${i}).value || 0; const reps = document.getElementById(reps-${i}).value || 0;
+setsData.push({ weight, reps });
+}
+
+if (!appData.history[exKey]) appData.history[exKey] = [];
+
+appData.history[exKey].push({
+date: new Date().toISOString(),
+techChanged: document.getElementById('work-tech-changed').checked,
+sets: setsData
+});
+
+saveData();
+}
+
+function nextExercise() {
+saveCurrentExerciseState();
+const day = appData.program.days[activeWorkout.dayIndex];
+if (activeWorkout.exIndex < day.exercises.length - 1) {
+activeWorkout.exIndex++;
+renderWorkoutExercise();
+} else {
+appData.currentDayIndex = (activeWorkout.dayIndex + 1) % appData.program.daysCount;
+selectedDashboardDayIndex = appData.currentDayIndex;
+
+saveData();
+stopRestTimerAndReset();
+renderMainScreen();
+}
+}
+
+function prevExercise() {
+playClick();
+saveCurrentExerciseState();
+if (activeWorkout.exIndex > 0) {
+activeWorkout.exIndex--;
+renderWorkoutExercise();
+}
+}
+
+function exitWorkout() {
+playWarningSound();
+saveCurrentExerciseState();
+stopRestTimerAndReset();
+renderMainScreen();
+}
+
+function openShowProgram() {
+playClick();
+showProgDayIdx = selectedDashboardDayIndex;
+renderShowProgramDay();
+switchScreen('screen-show-program');
+}
+
+function renderShowProgramDay() {
+document.getElementById('show-day-title').innerText = Day${showProgDayIdx + 1}`;
+const day = appData.program.days[showProgDayIdx];
+const container = document.getElementById('show-program-content');
+container.innerHTML = '';
+
+if (day.exercises.length === 0) {
+container.innerHTML = <p style="text-align:center; color: var(--text-dim); padding: 20px;"&gt;لا توجد تمارين مضافة لليوم ${showProgDayIdx + 1}</p>; } else { day.exercises.forEach((ex, exIdx) =&gt; { const exKey = ``${showProgDayIdx}-${exIdx}`;
+const historyList = appData.history[exKey] || [];
+const lastSession = historyList.length > 0 ? historyList[historyList.length - 1] : null;
+
+let historyHtml = '';
+if (lastSession && lastSession.sets && lastSession.sets.length > 0) {
+let setsRows = '';
+lastSession.sets.forEach((s, sIdx) => {
+setsRows += &lt;div class="show-set-item"&gt; &lt;span&gt;جولة${sIdx + 1}:</span>
+<span style="color: var(--accent); font-weight: bold;">{s.reps} عدات</span>
+</div>
+; }); historyHtml =
+<div class="show-sets-badge">
+<div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; text-align: center;">آخر الأوزان والعدات المسجلة:</div>
+${setsRows} &lt;/div&gt;;
+} else {
+historyHtml = &lt;div class="show-sets-badge" style="text-align: center; color: var(--text-dim); font-size: 0.8rem;"&gt; لا توجد سجلات سابقة لهذا التمرين &lt;/div&gt;;
+}
+
+const exCard = document.createElement('div');
+exCard.className = 'card';
+exCard.style.padding = '16px';
+exCard.setAttribute('data-index', exIdx);
+exCard.setAttribute('draggable', 'true');
+
+exCard.innerHTML = &lt;div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;"&gt; &lt;div style="display: flex; align-items: center; gap: 8px;"&gt; &lt;span class="drag-handle"&gt;☰&lt;/span&gt; &lt;span class="set-label" style="text-align:center; font-weight: bold; flex: 1;"&gt;تمرين${exIdx + 1}</span>
+</div>
+<button class="btn-delete-ex" onclick="playWarningSound(); removeExerciseFromShowProgram({ex.name}" style="text-align: center;" onchange="updateProgramExName({exIdx}, this.value)">
+<div style="display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 10px;">
+<span style="font-size: 0.9rem; color: var(--text-dim);">الجولات:</span>
+<input type="number" value="{showProgDayIdx}, {historyHtml}
+`;
+
+attachCardDragEvents(exCard, exIdx);
+
+container.appendChild(exCard);
+});
+}
+
+document.getElementById('btn-show-prev').style.visibility = showProgDayIdx === 0 ? 'hidden' : 'visible';
+document.getElementById('btn-show-next').style.visibility = showProgDayIdx === appData.program.daysCount - 1 ? 'hidden' : 'visible';
+}
+
+function attachCardDragEvents(card, index) {
+card.addEventListener('dragstart', (e) => {
+draggedIndex = index;
+e.dataTransfer.effectAllowed = 'move';
+card.classList.add('dragging');
+});
+
+card.addEventListener('dragend', () => {
+card.classList.remove('dragging');
+draggedIndex = -1;
+});
+
+card.addEventListener('dragover', (e) => {
+e.preventDefault();
+e.dataTransfer.dropEffect = 'move';
+});
+
+card.addEventListener('drop', (e) => {
+e.preventDefault();
+const targetIndex = parseInt(card.getAttribute('data-index'));
+if (draggedIndex !== -1 && draggedIndex !== targetIndex) {
+reorderExercises(draggedIndex, targetIndex);
+}
+});
+
+const handle = card.querySelector('.drag-handle');
+
+handle.addEventListener('touchstart', (e) => {
+draggedCard = card;
+draggedIndex = index;
+touchStartY = e.touches[0].clientY;
+card.classList.add('dragging');
+playClick();
+}, { passive: true });
+
+handle.addEventListener('touchmove', (e) => {
+if (!draggedCard) return;
+const currentY = e.touches[0].clientY;
+const container = document.getElementById('show-program-content');
+
+const elementUnder = document.elementFromPoint(e.touches[0].clientX, currentY);
+if (elementUnder) {
+const targetCard = elementUnder.closest('.card');
+if (targetCard && targetCard !== draggedCard) {
+const targetIndex = parseInt(targetCard.getAttribute('data-index'));
+if (targetIndex !== draggedIndex && targetIndex >= 0) {
+reorderExercises(draggedIndex, targetIndex);
+draggedIndex = targetIndex;
+}
+}
+}
+}, { passive: true });
+
+handle.addEventListener('touchend', () => {
+if (draggedCard) {
+draggedCard.classList.remove('dragging');
+draggedCard = null;
+draggedIndex = -1;
+}
+});
+}
+
+function reorderExercises(fromIndex, toIndex) {
+const exercises = appData.program.days[showProgDayIdx].exercises;
+const movedItem = exercises.splice(fromIndex, 1)[0];
+exercises.splice(toIndex, 0, movedItem);
+
+const currentKey = ${showProgDayIdx}-${fromIndex};
+const targetKey = ${showProgDayIdx}-${toIndex};
+const tempHistory = appData.history[currentKey];
+appData.history[currentKey] = appData.history[targetKey];
+appData.history[targetKey] = tempHistory;
+
+saveData();
+renderShowProgramDay();
+}
+
+function openAddExerciseModal() {
+playClick();
+document.getElementById('new-ex-name').value = '';
+document.getElementById('new-ex-sets').value = 3;
+document.getElementById('add-ex-modal').classList.add('active');
+}
+
+function closeAddExModal() {
+playClick();
+document.getElementById('add-ex-modal').classList.remove('active');
+}
+
+function confirmAddExercise() {
+playClick();
+const name = document.getElementById('new-ex-name').value.trim() || 'تمرين جديد';
+const sets = parseInt(document.getElementById('new-ex-sets').value) || 3;
+
+appData.program.days[showProgDayIdx].exercises.push({ name, sets });
+saveData();
+closeAddExModal();
+renderShowProgramDay();
+}
+
+function removeExerciseFromShowProgram(exIdx) {
+appData.program.days[showProgDayIdx].exercises.splice(exIdx, 1);
+saveData();
+renderShowProgramDay();
+}
+
+function updateProgramExName(dIdx, eIdx, val) {
+if (val.trim()) {
+appData.program.days[dIdx].exercises[eIdx].name = val.trim();
+saveData();
+}
+}
+
+function updateProgramExSets(dIdx, eIdx, val) {
+const s = parseInt(val);
+if (s && s > 0) {
+appData.program.days[dIdx].exercises[eIdx].sets = s;
+saveData();
+}
+}
+
+function navShowProgram(dir) {
+playClick();
+showProgDayIdx += dir;
+renderShowProgramDay();
+}
+
+function exitShowProgram() {
+playClick();
+renderMainScreen();
+}
+
+function confirmDeleteProgram() {
+playWarningSound();
+document.getElementById('confirm-modal').classList.add('active');
+}
+
+function closeModal() {
+playClick();
+document.getElementById('confirm-modal').classList.remove('active');
+}
+
+function deleteProgram() {
+playWarningSound();
+appData = { userName: appData.userName, program: null, history: {}, currentDayIndex: 0, theme: appData.theme };
+localStorage.removeItem('ak_gym_program');
+localStorage.removeItem('ak_gym_history');
+localStorage.removeItem('ak_gym_curr_day');
+localStorage.removeItem('ak_gym_tracking_mode');
+localStorage.removeItem('ak_gym_rest_duration');
+closeModal();
+renderMainScreen();
+}
+
+function confirmResetHistory() {
+playWarningSound();
+document.getElementById('confirm-reset-modal').classList.add('active');
+}
+
+function closeResetModal() {
+playClick();
+document.getElementById('confirm-reset-modal').classList.remove('active');
+}
+
+function resetHistory() {
+playWarningSound();
+appData.history = {};
+localStorage.removeItem('ak_gym_history');
+saveData();
+closeResetModal();
+renderMainScreen();
+}
+
+function openChangeNameModal() {
+playClick();
+document.getElementById('edit-user-name').value = appData.userName || '';
+document.getElementById('change-name-modal').classList.add('active');
+}
+
+function closeChangeNameModal() {
+playClick();
+document.getElementById('change-name-modal').classList.remove('active');
+}
+
+function confirmChangeName() {
+playClick();
+const newName = document.getElementById('edit-user-name').value.trim();
+appData.userName = newName;
+saveData();
+closeChangeNameModal();
+renderMainScreen();
+}
+</script>
+</body>
+</html>
