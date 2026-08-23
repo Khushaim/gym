@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gym Tracker Pro</title>
+    <!-- استدعاء خط احترافي حديث -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border: rgba(0, 0, 0, 0.08);
+            --primary: #10b981;
+            --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --secondary: #3b82f6;
+            --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --danger: #ef4444;
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --warning: #f59e0b;
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --green-text: #059669;
+            --red-text: #dc2626;
+            --yellow-text: #d97706;
+            --timer-color: var(--primary);
+        }
+
+        /* الوضع الليلي - كحلي غامق مع تأثير زجاجي هادئ */
+        [data-theme="dark"] {
+            --bg-color: #0b1120; 
+            --bg-gradient: linear-gradient(135deg, #0b1120 0%, #111827 100%);
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.55);
+            --border: rgba(255, 255, 255, 0.08);
+            --green-text: #34d399;
+            --red-text: #f87171;
+            --yellow-text: #fbbf24;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Inter', system-ui, sans-serif; 
+            transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s; 
+            touch-action: manipulation; 
+        }
+        
+        /* نسبة الرؤية 75% مع تضييق الهوامش الجانبية لزيادة التماسك الأفقي */
+        html { zoom: 75%; }
+
+        body { 
+            background: var(--bg-color); 
+            background: var(--bg-gradient, var(--bg-color));
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 10px 22px; /* زيادة الهامش الجانبي للملمة الأفقية */
+            text-align: center; 
+            overscroll-behavior-y: none; 
+            min-height: 100vh;
+        }
+        
+        .screen { display: none; max-width: 520px; margin: 0 auto; animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .screen.active { display: block; }
+        
+        @keyframes slideUpFade { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        h1, h2, h3, h4 { margin-top: 0; letter-spacing: -0.5px; }
+        
+        input[type="text"], input[type="number"] { 
+            width: 100%; padding: 12px 14px; margin: 6px 0; 
+            border: 1px solid var(--border); border-radius: 12px; 
+            background: rgba(0, 0, 0, 0.05); color: var(--text-color); 
+            font-size: 15px; font-weight: 600;
+        }
+        [data-theme="dark"] input[type="text"], [data-theme="dark"] input[type="number"] { background: rgba(15, 23, 42, 0.6); }
+        input:focus { outline: none; border-color: var(--secondary); }
+        
+        button { 
+            border: none; padding: 12px 20px; margin: 6px 4px; 
+            border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 800; 
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        button:active { transform: scale(0.96); }
+        
+        .btn-primary { background: var(--primary-gradient); color: #fff; }
+        .btn-secondary { background: var(--secondary-gradient); color: #fff; }
+        .btn-danger { background: var(--danger-gradient); color: #fff; }
+        .btn-warning { background: var(--warning-gradient); color: #fff; }
+        .btn-small { padding: 8px 12px; font-size: 13px; margin: 3px 2px; border-radius: 8px; }
+
+        .card { 
+            background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 15px 16px; border-radius: 18px; margin-bottom: 15px; 
+            border: 1px solid var(--border); text-align: left; position: relative; 
+        }
+        
+        .drag-card { transition: transform 0.2s, box-shadow 0.2s; }
+        .drag-card.is-dragging { opacity: 0.95; transform: scale(1.03); z-index: 1000; border: 2px solid var(--secondary); }
+        .drag-handle { font-size: 18px; cursor: grab; padding: 8px; color: var(--secondary); display: flex; align-items: center; justify-content: center; user-select: none; touch-action: none; opacity: 0.7; }
+        .drag-handle:active { cursor: grabbing; opacity: 1; }
+        
+        .flex-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .flex-row input { flex: 1; }
+        
+        .set-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; background: rgba(0,0,0,0.03); padding: 10px; border-radius: 12px; border: 1px solid var(--border); }
+        [data-theme="dark"] .set-row { background: rgba(255,255,255,0.02); }
+        .set-row > div { flex: 1; }
+        .prev-stats { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; font-weight: 600;}
+        
+        .timer-box { font-family: monospace; font-size: 40px; font-weight: 800; margin: 5px 0; color: var(--timer-color); display: inline-block; letter-spacing: 2px; transition: color 0.5s; }
+        .timer-box.pulse { animation: pulseGlow 1s infinite alternate; }
+        @keyframes pulseGlow { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.08); opacity: 0.7; } }
+        
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+        
+        .green { color: var(--green-text) !important; border-color: var(--green-text) !important; }
+        .red { color: var(--red-text) !important; border-color: var(--red-text) !important; }
+        .yellow { color: var(--yellow-text) !important; border-color: var(--yellow-text) !important; }
+        
+        .tech-check { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-top: 12px; font-weight: 600; color: var(--text-muted);}
+        .view-options { display: flex; gap: 12px; margin-bottom: 15px; font-size: 13px; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 10px; border: 1px solid var(--border); font-weight: 600;}
+        [data-theme="dark"] .view-options { background: rgba(255,255,255,0.05); }
+        .view-options label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+        .helper-text { font-size: 11px; color: var(--text-muted); display: block; margin-top: 3px; line-height: 1.3; }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center; padding: 10px; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease-in-out; }
+        
+        .chip-group { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; justify-content: center; }
+        .chip { background: rgba(0,0,0,0.05); border: 1px solid var(--border); padding: 6px 12px; border-radius: 16px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        [data-theme="dark"] .chip { background: rgba(255,255,255,0.05); }
+
+        /* شريط التقدم للتمرين */
+        .progress-container { width: 100%; height: 5px; background: rgba(0,0,0,0.1); border-radius: 3px; margin-bottom: 12px; overflow: hidden; }
+        [data-theme="dark"] .progress-container { background: rgba(255,255,255,0.1); }
+        .progress-bar { height: 100%; background: var(--secondary-gradient); transition: width 0.4s ease; border-radius: 3px; }
+
+        /* شريط التقدم الخطي للراحة (جديد - نحيف) */
+        .rest-progress-wrapper { width: 80%; max-width: 250px; height: 5px; background: rgba(0,0,0,0.1); border-radius: 3px; margin: 0 auto 15px; overflow: hidden; }
+        [data-theme="dark"] .rest-progress-wrapper { background: rgba(255,255,255,0.1); }
+        .rest-progress-fill { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear, background-color 0.5s; border-radius: 3px; }
+
+        /* شرائط التقدم للكارديو */
+        .linear-progress-wrapper { width: 100%; background: rgba(0,0,0,0.1); border-radius: 8px; height: 16px; margin: 10px 0; overflow: hidden; border: 1px solid var(--border); position: relative; }
+        [data-theme="dark"] .linear-progress-wrapper { background: rgba(255,255,255,0.05); }
+        .linear-progress-fill { height: 100%; background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%); width: 100%; transition: width 1s linear, background 0.3s; border-radius: 6px; }
+        .linear-progress-fill.active-rest { background: linear-gradient(90deg, #facc15 0%, #eab308 100%); }
+        
+        /* شريط الراحة المدمج (للكارديو) */
+        .merged-timer-wrapper {
+            width: 100%; height: 60px; background: rgba(0,0,0,0.1); 
+            border-radius: 14px; overflow: hidden; position: relative;
+            border: 1px solid var(--border); margin: 15px 0;
+        }
+        [data-theme="dark"] .merged-timer-wrapper { background: rgba(255,255,255,0.05); }
+        .merged-timer-fill { height: 100%; width: 100%; transition: width 1s linear, background 0.3s; }
+        .merged-timer-text { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-family: monospace; font-size: 38px; font-weight: 800; 
+            color: #fff; text-shadow: 0px 2px 5px rgba(0,0,0,0.5); letter-spacing: 2px;
+            z-index: 2; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر العلوي -->
+    <div class="header-controls">
+        <span id="headerName" style="font-weight: 800; font-size: 17px; color: var(--secondary);"></span>
+        <button onclick="toggleTheme(); playSound('click')" class="btn-secondary btn-small" style="margin: 0; font-size: 12px; padding: 6px 12px;">🌓 Theme</button>
+    </div>
+
+    <!-- Modals -->
+    <div id="exitModal" class="modal-overlay">
+        <div class="card" style="width: 90%; max-width: 380px; text-align: center;">
+            <h3 style="color: var(--warning);">Exit Workout</h3>
+            <p style="margin-bottom: 20px; color: var(--text-color); font-weight: 600; font-size: 14px;">Save your progress for completed sets?</p>
+            <button class="btn-primary" style="width:100%; margin-bottom: 10px;" onclick="confirmExit(true)">Yes, Save & Exit</button>
+            <button class="btn-danger" style="width:100%; margin-bottom: 10px;" onclick="confirmExit(false)">No, Exit Without Saving</button>
+            <button class="btn-secondary" style="width:100%; background: #475569; box-shadow: none;" onclick="closeExitModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal-overlay">
+        <div class="card" style="width: 95%; max-width: 480px; max-height: 80vh; overflow-y: auto; position: relative;">
+            <h3 style="color: var(--secondary); border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 18px;">Full Exercise History</h3>
+            <div id="historyModalContent"></div>
+            <button class="btn-secondary" style="width:100%; margin-top: 15px;" onclick="closeHistoryModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="programsModal" class="modal-overlay">
+        <div class="card" style="width: 90%; max-width: 420px;">
+            <h3 style="color: var(--secondary); font-size: 18px;">Programs Manager</h3>
+            <div id="programsListContainer" style="margin-bottom: 12px; max-height: 35vh; overflow-y: auto;"></div>
+            <input type="text" id="newProgramNameInput" placeholder="New Program Name">
+            <button class="btn-primary" style="width:100%; margin-top: 8px;" onclick="createNewProgram()">+ Create New Program</button>
+            <button class="btn-secondary" style="width:100%; margin-top: 12px; background: #475569; box-shadow: none;" onclick="closeProgramsModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- SCREENS -->
+    <div id="screen-name" class="screen">
+        <div class="card">
+            <h2 style="color: var(--primary); font-size: 24px;">Gym Tracker Pro</h2>
+            <p style="font-weight: 600; color: var(--text-muted); font-size: 14px;">What is your name?</p>
+            <input type="text" id="userNameInput" placeholder="Enter your name">
+            <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="playSound('pop'); saveName()">Continue</button>
+        </div>
+    </div>
+
+    <div id="screen-no-program" class="screen">
+        <h2 id="welcomeMsg1" style="font-size: 24px; margin-bottom: 20px;"></h2>
+        <button class="btn-primary" style="width: 100%; margin-bottom: 12px; font-size: 16px; padding: 15px;" onclick="startSetup()">START YOUR PROGRAM</button>
+        <button class="btn-secondary" style="width: 100%; margin-bottom: 12px;" onclick="playSound('click'); openProgramsModal()">Manage Programs</button>
+        <button class="btn-secondary" style="width: 100%; background: #475569; box-shadow: none;" onclick="playSound('click'); changeName()">Change Name</button>
+    </div>
+
+    <div id="screen-setup-days" class="screen">
+        <div class="card">
+            <h2 style="color: var(--secondary); font-size: 22px;">Program Setup</h2>
+            <p style="font-weight: 600; font-size: 14px;">How many days in your training cycle?</p>
+            <input type="number" id="daysCountInput" min="1" max="14" value="3" style="text-align: center; font-size: 22px;">
+            <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="playSound('click'); setupInitDays()">Next Step</button>
+        </div>
+    </div>
+
+    <div id="screen-setup-ex-count" class="screen">
+        <div class="card">
+            <h2 id="setupDayTitle" style="color: var(--primary); font-size: 22px;"></h2>
+            <p style="font-weight: 600; font-size: 14px;">How many exercises for this day?</p>
+            <input type="number" id="exCountInput" min="1" max="20" value="5" style="text-align: center; font-size: 22px;">
+            <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="playSound('click'); startDayExercises()">Next Step</button>
+        </div>
+    </div>
+
+    <div id="screen-setup-ex-details" class="screen">
+        <div class="card">
+            <h2 id="setupExTitle" style="color: var(--warning); font-size: 20px;"></h2>
+            <input type="text" id="exNameInput" placeholder="Exercise Name (e.g. Bench Press)">
+            <input type="number" id="exSetsInput" placeholder="Number of Sets (e.g. 3)" min="1" value="3">
+            <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="playSound('pop'); nextExerciseDetail()">Save & Next</button>
+        </div>
+    </div>
+
+    <!-- MAIN MENU -->
+    <div id="screen-main-menu" class="screen">
+        <h2 id="welcomeMsg2" style="font-size: 22px; margin-bottom: 18px;"></h2>
+        <div class="card" style="border: 2px solid var(--secondary);">
+            <h3 style="color: var(--secondary); margin-bottom: 10px; font-size: 16px;">Upcoming Workout</h3>
+            <div class="flex-row" style="justify-content: center; gap: 15px;">
+                <button class="btn-secondary btn-small" style="padding: 10px 16px;" onclick="playSound('click'); changeCurrentDay(-1)">◀</button>
+                <h2 id="currentDayDisplay" style="margin:0; font-size: 28px; color: var(--text-color);">Day 1</h2>
+                <button class="btn-secondary btn-small" style="padding: 10px 16px;" onclick="playSound('click'); changeCurrentDay(1)">▶</button>
+            </div>
+        </div>
+        
+        <button class="btn-primary" style="width: 100%; font-size: 20px; padding: 18px; margin-bottom: 12px; border-radius: 14px;" onclick="startWorkout()">START WORKOUT</button>
+        
+        <button class="btn-primary" style="width: 100%; font-size: 16px; padding: 14px; margin-bottom: 15px; border-radius: 14px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);" onclick="startCardioSetup()">🔥 START CARDIO SESSION</button>
+
+        <div class="flex-row" style="gap: 10px; margin-bottom: 12px;">
+            <button class="btn-secondary" style="flex: 1; margin:0;" onclick="playSound('click'); showProgramView()">Edit Program</button>
+            <button class="btn-secondary" style="flex: 1; margin:0;" onclick="playSound('click'); openProgramsModal()">Manage</button>
+        </div>
+        
+        <button class="btn-secondary" style="width: 100%; margin-bottom: 12px; border: 1px solid var(--primary);" onclick="playSound('click'); showScreen('screen-tools')">🧮 1RM Calculator</button>
+        
+        <div class="card" style="padding: 12px;">
+            <button class="btn-warning" style="width:100%; margin-bottom: 6px;" onclick="resetStats()">Reset Stats</button>
+            <span class="helper-text" style="margin-bottom: 10px;">Clears weight/rep history while keeping your program structure intact.</span>
+            
+            <button class="btn-danger" style="width:100%; margin-bottom: 6px;" onclick="deleteProgram()">Delete Program</button>
+            <span class="helper-text">Permanently deletes the current active program.</span>
+        </div>
+
+        <button class="btn-secondary" style="background: #475569; box-shadow: none; width: 100%;" onclick="playSound('click'); changeName()">Change Name</button>
+    </div>
+
+    <!-- NEW SCREEN: TOOLS & CALCULATORS -->
+    <div id="screen-tools" class="screen">
+        <h2 style="color: var(--primary); font-size: 22px;">1RM Calculator</h2>
+        
+        <div class="card">
+            <p style="font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center;">Estimate your One-Rep Max</p>
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 12px; font-weight: bold; color: var(--text-muted); display: block; text-align: center;">Weight (KG)</label>
+                    <input type="number" id="calcWeight" value="100" style="text-align: center;" oninput="calculate1RM()">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 12px; font-weight: bold; color: var(--text-muted); display: block; text-align: center;">Reps</label>
+                    <input type="number" id="calcReps" value="5" style="text-align: center;" oninput="calculate1RM()">
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: center; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 12px;">
+                <span style="font-size: 14px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 5px;">Estimated 1RM</span>
+                <span id="calcResult" style="font-size: 36px; font-weight: 800; color: var(--primary);">116.6</span> 
+                <span style="font-weight: bold;">kg</span>
+            </div>
+        </div>
+
+        <button class="btn-secondary" style="width: 100%; margin-top: 12px; background: #475569;" onclick="playSound('click'); showScreen('screen-main-menu')">Back to Menu</button>
+    </div>
+
+    <!-- SCREEN: CARDIO SETUP -->
+    <div id="screen-cardio-setup" class="screen">
+        <h2 style="color: #0ea5e9; font-size: 22px;">Cardio Session Setup</h2>
+        <div class="card">
+            <label style="font-size: 14px; font-weight: bold; color: var(--secondary);">Cardio Duration (Minutes):</label>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0;">
+                <button class="btn-secondary btn-small" style="padding: 10px 14px;" onclick="adjustCardioVal('cardioDur', -5)">-5</button>
+                <input type="number" id="cardioDurInput" value="30" min="1" style="text-align:center; width: 80px; font-size: 20px; margin:0;">
+                <button class="btn-secondary btn-small" style="padding: 10px 14px;" onclick="adjustCardioVal('cardioDur', 5)">+5</button>
+            </div>
+            <div class="chip-group">
+                <div class="chip" onclick="setCardioDur(15)">15 min</div>
+                <div class="chip" onclick="setCardioDur(30)">30 min</div>
+                <div class="chip" onclick="setCardioDur(45)">45 min</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <label style="font-size: 14px; font-weight: bold; color: var(--secondary);">Do you want water rests?</label>
+            <div style="margin: 10px 0; text-align: center; font-size: 15px; font-weight: bold;">
+                <label style="margin-right: 20px; cursor: pointer;"><input type="radio" name="waterRests" value="yes" checked onchange="toggleWaterConfig(true)" style="width:auto; margin-right:4px;"> Yes</label>
+                <label style="cursor: pointer;"><input type="radio" name="waterRests" value="no" onchange="toggleWaterConfig(false)" style="width:auto; margin-right:4px;"> No</label>
+            </div>
+            
+            <div id="waterConfigSection" style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: 8px;">
+                <label style="display:block; font-weight: bold; font-size: 13px; color: var(--text-color);">How many rests?</label>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px 0;">
+                    <button class="btn-secondary btn-small" style="padding: 10px 14px;" onclick="adjustCardioVal('waterCount', -1)">-1</button>
+                    <input type="number" id="waterCountInput" value="2" min="1" style="text-align:center; width: 80px; font-size: 18px; margin:0;">
+                    <button class="btn-secondary btn-small" style="padding: 10px 14px;" onclick="adjustCardioVal('waterCount', 1)">+1</button>
+                </div>
+                <div class="chip-group">
+                    <div class="chip" onclick="setWaterCount(2)">2 Rests</div>
+                    <div class="chip" onclick="setWaterCount(3)">3 Rests</div>
+                    <div class="chip" onclick="setWaterCount(4)">4 Rests</div>
+                </div>
+
+                <label style="margin-top:15px; display:block; font-weight: bold; font-size: 13px; color: var(--text-color);">Rest Duration (Seconds):</label>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px 0;">
+                    <button class="btn-secondary btn-small" style="padding: 10px 14px;" onclick="adjustCardioVal('waterDur', -15)">-15s</button>
+                    <input type="number" id="waterDurInput" value="60" min="10" style="text-align:center; width: 80px; font-size: 18px; margin:0;">
+                    <button class="btn-secondary btn-small" style="padding: 10px 14px;" onclick="adjustCardioVal('waterDur', 15)">+15s</button>
+                </div>
+                <div class="chip-group">
+                    <div class="chip" onclick="setWaterDur(30)">30s</div>
+                    <div class="chip" onclick="setWaterDur(60)">1 Min</div>
+                    <div class="chip" onclick="setWaterDur(120)">2 Min</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-primary" style="width:100%; font-size:18px; padding:15px; background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);" onclick="startCardioSession()">START CARDIO</button>
+        <button class="btn-secondary" style="width:100%; margin-top:12px; background: #475569; box-shadow: none;" onclick="route()">Cancel</button>
+    </div>
+
+    <!-- SCREEN: CARDIO ACTIVE -->
+    <div id="screen-cardio-active" class="screen">
+        <h2 id="cardioTitle" style="color: #0ea5e9; font-size: 24px;">Cardio Session</h2>
+        
+        <div class="card" style="text-align: center; padding: 25px 15px;">
+            <h3 style="color: var(--text-muted); font-size: 14px; margin-bottom: 5px;">Total Time Remaining</h3>
+            <div class="timer-box" id="cardioMainDisplay" style="font-size: 52px; color: #0ea5e9; margin: 5px 0;">30:00</div>
+            
+            <div class="linear-progress-wrapper" style="height: 10px; margin: 15px 0;">
+                <div class="linear-progress-fill" id="cardioTotalBarFill" style="background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%); width: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="card" id="cardioRestContainer" style="text-align: center; padding: 20px 15px; border: 2px solid var(--secondary); transition: all 0.3s;">
+            <h3 id="cardioProgressTitle" style="font-size: 16px; margin-bottom: 15px; color: var(--secondary);">Time Until Next Rest</h3>
+            
+            <div class="merged-timer-wrapper">
+                <div class="merged-timer-fill" id="cardioStepBarFill" style="background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%); width: 100%;"></div>
+                <div class="merged-timer-text" id="cardioMergedTimeDisplay">00:00</div>
+            </div>
+        </div>
+
+        <button class="btn-danger" style="width:100%; margin-top: 20px; font-size: 18px; padding: 15px;" onclick="endCardioSession()">End Cardio Session</button>
+    </div>
+
+    <!-- SCREEN: WORKOUT -->
+    <div id="screen-workout" class="screen">
+        <div class="progress-container">
+            <div class="progress-bar" id="workoutProgressBar" style="width: 0%;"></div>
+        </div>
+
+        <h2 id="workoutExTitle" style="font-size: 18px; text-align: center; margin-bottom: 10px; color: var(--primary);"></h2>
+        <div class="card">
+            <div class="flex-row">
+                <input type="text" id="activeExName" onchange="updateActiveExName()" style="font-size: 18px; font-weight: 800; text-align: center; color: var(--secondary); background: rgba(0,0,0,0.3); border: 1px solid var(--secondary);">
+                <button class="btn-secondary btn-small" id="eachBtn" onclick="toggleEachFlag()" style="background: #475569; min-width: 85px;">Each: OFF</button>
+            </div>
+            
+            <div class="flex-row" style="margin-top: 12px; justify-content: center; gap: 10px;">
+                <button class="btn-secondary btn-small" style="padding: 8px 16px; background: rgba(16, 185, 129, 0.2); color: var(--primary); border: 1px solid var(--primary); box-shadow: none;" onclick="promptAddSet()">+ Add Set</button>
+                <button class="btn-danger btn-small" style="padding: 8px 16px; background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); box-shadow: none;" onclick="promptRemoveSet()">- Remove Set</button>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="btn-secondary btn-small" style="width: 100%; padding: 10px; font-size: 14px;" onclick="openHistoryModalForCurrent()">📊 View Full History</button>
+            </div>
+
+            <div class="view-options" style="margin-top: 15px; justify-content: center;">
+                <label><input type="radio" name="setView" value="1" onchange="playSound('click'); toggleSetsView()"> Top Set Only</label>
+                <label><input type="radio" name="setView" value="all" onchange="playSound('click'); toggleSetsView()"> All Sets</label>
+            </div>
+
+            <div id="setsContainer"></div>
+            
+            <label class="tech-check">
+                <input type="checkbox" id="techChangedCheck" style="width: auto; margin-right: 5px;"> Technique Changed (Skip Stats)
+            </label>
+        </div>
+        
+        <div class="card" style="text-align: center; padding: 20px 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 5px;">
+                <h3 style="margin: 0; color: var(--text-color); font-size: 15px;">Rest Timer</h3>
+                <button class="btn-warning btn-small" onclick="playSound('click'); resetTimer()" style="margin:0; padding: 4px 10px; font-size: 12px; background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); box-shadow: none;">↺ Reset</button>
+            </div>
+            
+            <div class="timer-box" id="timerDisplay">01:30</div>
+            
+            <!-- شريط تقدم الراحة الخطي -->
+            <div class="rest-progress-wrapper">
+                <div class="rest-progress-fill" id="timerProgressBar"></div>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+                <button class="btn-secondary btn-small" style="padding: 12px 16px; font-size: 15px;" onclick="playSound('click'); adjustTimer(-30)">- 30s</button>
+                <button class="btn-primary" onclick="toggleTimer()" id="timerBtn" style="min-width: 100px; font-size: 18px; padding: 12px; margin: 0;">START</button>
+                <button class="btn-secondary btn-small" style="padding: 12px 16px; font-size: 15px;" onclick="playSound('click'); adjustTimer(30)">+ 30s</button>
+            </div>
+        </div>
+
+        <div class="flex-row" style="gap: 8px;">
+            <button class="btn-secondary" id="btnPrevEx" style="flex: 1;" onclick="navigateWorkout(-1)">Prev</button>
+            <button class="btn-danger" style="flex: 1;" onclick="exitWorkout()">Exit</button>
+            <button class="btn-primary" id="btnNextEx" style="flex: 2;" onclick="navigateWorkout(1)">Next Ex</button>
+            <button class="btn-primary" id="btnFinishWorkout" style="display:none; flex: 2; background: linear-gradient(135deg, #10b981 0%, #047857 100%);" onclick="finishWorkout()">Finish</button>
+        </div>
+    </div>
+
+    <!-- SCREEN: SHOW PROGRAM -->
+    <div id="screen-show-program" class="screen">
+        <div class="card" style="padding: 12px; margin-bottom: 15px;">
+            <div class="flex-row" style="justify-content: center; gap: 12px;">
+                <button class="btn-secondary btn-small" style="padding: 8px 12px;" onclick="playSound('click'); navShowProgram(-1)">◀</button>
+                <h2 id="showProgDayTitle" style="margin:0; color: var(--secondary); font-size: 22px;"></h2>
+                <button class="btn-secondary btn-small" style="padding: 8px 12px;" onclick="playSound('click'); navShowProgram(1)">▶</button>
+            </div>
+        </div>
+        
+        <div id="programDetailsList" style="margin-top:10px; padding-bottom: 15px;"></div>
+        
+        <button class="btn-primary" onclick="playSound('pop'); addExerciseToProgram()" style="width: 100%; margin-bottom: 12px; padding: 14px; font-size: 16px;">+ Add New Exercise</button>
+        <button class="btn-secondary" style="width:100%; background: #475569; box-shadow: none;" onclick="playSound('click'); route()">Done & Exit</button>
+    </div>
+
+    <script>
+        let appData = {
+            userName: '',
+            darkMode: true,
+            activeProgramId: 'prog_1',
+            programs: [{ id: 'prog_1', name: 'Default Program', program: [] }],
+            currentDayIndex: 0,
+            defaultTimer: 90
+        };
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        // تفعيل النظام الصوتي بمجرد اللمس لتجاوز حظر المتصفحات
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+        document.body.addEventListener('touchstart', initAudio, { once: true });
+        document.body.addEventListener('click', initAudio, { once: true });
+
+        function playSound(type) {
+            initAudio();
+            
+            const canVibrate = "vibrate" in navigator;
+
+            switch(type) {
+                case 'click':
+                    if(canVibrate) navigator.vibrate(30);
+                    break;
+                case 'pop':
+                    if(canVibrate) navigator.vibrate(40);
+                    break;
+                case 'start':
+                    if(canVibrate) navigator.vibrate([40, 50, 40]);
+                    break;
+                case 'success':
+                    if(canVibrate) navigator.vibrate([50, 50, 50, 50, 100]);
+                    break;
+                case 'warning':
+                    if(canVibrate) navigator.vibrate([120, 80, 120]);
+                    break;
+                case 'threeQuarter':
+                    if(canVibrate) navigator.vibrate([80, 40, 80, 40]);
+                    break;
+                case 'alarm':
+                    if(canVibrate) navigator.vibrate([300, 150, 300, 150, 400]);
+                    break;
+            }
+
+            if (!audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if(type === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.start(now); osc.stop(now + 0.15);
+                } else if(type === 'pop') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+                    gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.start(now); osc.stop(now + 0.2);
+                } else if(type === 'start') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(300, now); osc.frequency.setValueAtTime(400, now + 0.15); osc.frequency.setValueAtTime(600, now + 0.3);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if(type === 'success') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(500, now + 0.15); osc.frequency.setValueAtTime(800, now + 0.3);
+                    gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.7);
+                    osc.start(now); osc.stop(now + 0.7);
+                } else if(type === 'warning') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now); osc.frequency.linearRampToValueAtTime(150, now + 0.4);
+                    gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.4);
+                    osc.start(now); osc.stop(now + 0.4);
+                } else if(type === 'threeQuarter') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(500, now); osc.frequency.setValueAtTime(650, now + 0.15);
+                    gain.gain.setValueAtTime(0.35, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now); osc.stop(now + 0.35);
+                } else if(type === 'alarm') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(0, now + 0.15); osc.frequency.setValueAtTime(880, now + 0.3); osc.frequency.setValueAtTime(0, now + 0.45); osc.frequency.setValueAtTime(880, now + 0.6);
+                    gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.8);
+                    osc.start(now); osc.stop(now + 0.8);
+                }
+            } catch(e) {}
+        }
+
+        function getCurrentProgram() {
+            let p = appData.programs.find(x => x.id === appData.activeProgramId);
+            if (!p) { p = appData.programs[0]; appData.activeProgramId = p.id; }
+            return p.program;
+        }
+
+        function saveData() { 
+            localStorage.setItem('gymTrackerData', JSON.stringify(appData)); 
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('gymTrackerData');
+            if (saved) {
+                appData = JSON.parse(saved);
+                if (!appData.programs) {
+                    appData.programs = [{ id: 'prog_1', name: 'Default Program', program: appData.program || [] }];
+                    appData.activeProgramId = 'prog_1';
+                }
+                if (appData.defaultTimer === undefined) appData.defaultTimer = 90;
+                cleanOldHistory();
+                applyTheme();
+                route();
+            } else { applyTheme(); route(); }
+            timerTime = appData.defaultTimer;
+            timerTotal = appData.defaultTimer;
+            updateTimerDisplay();
+        }
+
+        function cleanOldHistory() {
+            appData.programs.forEach(p => {
+                p.program.forEach(day => {
+                    day.exercises.forEach(ex => {
+                        if (ex.history && ex.history.length > 10) {
+                            ex.history = ex.history.slice(-10);
+                        }
+                    });
+                });
+            });
+            saveData();
+        }
+
+        function applyTheme() {
+            if (appData.darkMode) document.documentElement.setAttribute('data-theme', 'dark');
+            else document.documentElement.removeAttribute('data-theme');
+        }
+        function toggleTheme() {
+            appData.darkMode = !appData.darkMode;
+            applyTheme(); saveData();
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function route() {
+            const prog = getCurrentProgram();
+            if (!appData.userName) { showScreen('screen-name'); }
+            else if (!prog || prog.length === 0) {
+                document.getElementById('welcomeMsg1').innerText = `Hi, ${appData.userName}`;
+                showScreen('screen-no-program');
+            } else {
+                document.getElementById('welcomeMsg2').innerText = `Hi, ${appData.userName} \n(${getProgramName()})`;
+                document.getElementById('headerName').innerText = appData.userName;
+                updateMainMenuDay();
+                showScreen('screen-main-menu');
+            }
+        }
+
+        function getProgramName() {
+            const p = appData.programs.find(x => x.id === appData.activeProgramId);
+            return p ? p.name : '';
+        }
+
+        function saveName() {
+            const n = document.getElementById('userNameInput').value.trim();
+            if (n) { appData.userName = n; saveData(); route(); }
+        }
+        function changeName() { showScreen('screen-name'); document.getElementById('userNameInput').value = appData.userName; }
+
+        let setupData = { totalDays: 0, currentDay: 1, currentDayExCount: 0, currentEx: 1 };
+        
+        function startSetup() { playSound('start'); showScreen('screen-setup-days'); }
+        
+        function setupInitDays() {
+            setupData.totalDays = parseInt(document.getElementById('daysCountInput').value);
+            setupData.currentDay = 1;
+            const prog = getCurrentProgram();
+            prog.length = 0; 
+            askExCountForCurrentDay();
+        }
+
+        function askExCountForCurrentDay() {
+            document.getElementById('setupDayTitle').innerText = `Day ${setupData.currentDay}`;
+            document.getElementById('exCountInput').value = 5;
+            showScreen('screen-setup-ex-count');
+        }
+
+        function startDayExercises() {
+            setupData.currentDayExCount = parseInt(document.getElementById('exCountInput').value);
+            setupData.currentEx = 1;
+            
+            const prog = getCurrentProgram();
+            if (!prog[setupData.currentDay - 1]) {
+                prog[setupData.currentDay - 1] = { day: setupData.currentDay, exercises: [] };
+            }
+            askExDetail();
+        }
+
+        function askExDetail() {
+            document.getElementById('setupExTitle').innerText = `Day ${setupData.currentDay} - Exercise ${setupData.currentEx}`;
+            document.getElementById('exNameInput').value = '';
+            document.getElementById('exSetsInput').value = 3;
+            showScreen('screen-setup-ex-details');
+        }
+
+        function nextExerciseDetail() {
+            const name = document.getElementById('exNameInput').value || `Exercise ${setupData.currentEx}`;
+            const sets = parseInt(document.getElementById('exSetsInput').value);
+            const prog = getCurrentProgram();
+            
+            prog[setupData.currentDay - 1].exercises.push({ name, sets, history: [], viewMode: '1', isEach: false });
+
+            if (setupData.currentEx < setupData.currentDayExCount) {
+                setupData.currentEx++; 
+                askExDetail();
+            } else if (setupData.currentDay < setupData.totalDays) {
+                setupData.currentDay++; 
+                askExCountForCurrentDay();
+            } else {
+                appData.currentDayIndex = 0; saveData(); route();
+            }
+        }
+
+        function updateMainMenuDay() {
+            const prog = getCurrentProgram();
+            if(prog.length === 0) return;
+            if(appData.currentDayIndex >= prog.length) appData.currentDayIndex = 0;
+            const dayNum = prog[appData.currentDayIndex].day;
+            document.getElementById('currentDayDisplay').innerText = `Day ${dayNum}`;
+        }
+        
+        function changeCurrentDay(dir) {
+            const prog = getCurrentProgram();
+            if(prog.length === 0) return;
+            appData.currentDayIndex += dir;
+            if (appData.currentDayIndex < 0) appData.currentDayIndex = prog.length - 1;
+            if (appData.currentDayIndex >= prog.length) appData.currentDayIndex = 0;
+            saveData(); updateMainMenuDay();
+        }
+
+        function deleteProgram() {
+            playSound('warning');
+            if (confirm("Are you sure you want to delete your entire active program?")) {
+                const prog = getCurrentProgram();
+                prog.length = 0; 
+                saveData(); route();
+            }
+        }
+        
+        function resetStats() {
+            playSound('warning');
+            if (confirm("Are you sure you want to reset all weights and reps history?")) {
+                const prog = getCurrentProgram();
+                prog.forEach(d => d.exercises.forEach(e => e.history = []));
+                saveData();
+            }
+        }
+
+        function openProgramsModal() {
+            playSound('click');
+            renderProgramsList();
+            document.getElementById('programsModal').classList.add('active');
+        }
+        function closeProgramsModal() {
+            playSound('click');
+            document.getElementById('programsModal').classList.remove('active');
+            route();
+        }
+        function renderProgramsList() {
+            const container = document.getElementById('programsListContainer');
+            container.innerHTML = '';
+            appData.programs.forEach(p => {
+                const isCurrent = p.id === appData.activeProgramId;
+                const div = document.createElement('div');
+                div.className = 'flex-row card';
+                div.style.margin = '4px 0';
+                div.style.padding = '8px 12px';
+                div.style.borderRadius = '10px';
+                div.style.border = isCurrent ? '2px solid var(--primary)' : '1px solid var(--border)';
+                div.innerHTML = `
+                    <span style="font-weight:bold; font-size: 14px; ${isCurrent ? 'color:var(--primary);' : ''}">${p.name} ${isCurrent ? '✓' : ''}</span>
+                    <div style="display:flex; gap:4px;">
+                        ${!isCurrent ? `<button class="btn-secondary btn-small" onclick="switchProgram('${p.id}')" style="padding:4px 8px;">Switch</button>` : ''}
+                        ${appData.programs.length > 1 ? `<button class="btn-danger btn-small" onclick="removeProgram('${p.id}')" style="padding:4px 8px;">Del</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function switchProgram(id) {
+            playSound('pop');
+            appData.activeProgramId = id;
+            appData.currentDayIndex = 0;
+            saveData();
+            renderProgramsList();
+        }
+        function removeProgram(id) {
+            playSound('warning');
+            if(confirm("Delete this program?")) {
+                appData.programs = appData.programs.filter(x => x.id !== id);
+                if(appData.activeProgramId === id) appData.activeProgramId = appData.programs[0].id;
+                saveData();
+                renderProgramsList();
+            }
+        }
+        function createNewProgram() {
+            const nameInput = document.getElementById('newProgramNameInput');
+            const name = nameInput.value.trim();
+            if(!name) return;
+            playSound('success');
+            const newId = 'prog_' + Date.now();
+            appData.programs.push({ id: newId, name: name, program: [] });
+            appData.activeProgramId = newId;
+            appData.currentDayIndex = 0;
+            nameInput.value = '';
+            saveData();
+            renderProgramsList();
+        }
+
+        // --- Tools 1RM Calculator ---
+        function calculate1RM() {
+            const w = parseFloat(document.getElementById('calcWeight').value) || 0;
+            const r = parseFloat(document.getElementById('calcReps').value) || 0;
+            let rm = 0;
+            if(r === 1) rm = w;
+            else if(r > 1) rm = w * (1 + (r/30));
+            document.getElementById('calcResult').innerText = rm > 0 ? rm.toFixed(1) : '0.0';
+        }
+
+        function getHistoryColorClass(historyList) {
+            if (!historyList || historyList.length < 2) return ''; 
+            const last = historyList[historyList.length - 1];
+            const prev = historyList[historyList.length - 2];
+            
+            if (last.techniqueChanged) return '';
+
+            let firstValidIdx = -1;
+            for(let i=0; i<last.reps.length; i++) {
+                if(last.reps[i] > 0) { firstValidIdx = i; break; }
+            }
+            if (firstValidIdx === -1) return '';
+
+            const lW = last.weights[firstValidIdx];
+            const lR = last.reps[firstValidIdx];
+            
+            const pW = prev.weights[firstValidIdx] !== undefined ? prev.weights[firstValidIdx] : 0;
+            const pR = prev.reps[firstValidIdx] || 0;
+
+            if (pR === 0) return '';
+
+            if (lW > pW) return 'green';
+            if (lW < pW) return 'red';
+            if (lR > pR) return 'green';
+            if (lR < pR) return 'red';
+            return 'yellow';
+        }
+
+        function getSingleHistoryColorClass(historyList, index) {
+            if (index <= 0 || !historyList || index >= historyList.length) return '';
+            const curr = historyList[index];
+            const prev = historyList[index - 1];
+            
+            if (curr.techniqueChanged) return '';
+
+            let firstValidIdx = -1;
+            for(let i=0; i<curr.reps.length; i++) {
+                if(curr.reps[i] > 0) { firstValidIdx = i; break; }
+            }
+            if (firstValidIdx === -1) return '';
+
+            const cW = curr.weights[firstValidIdx];
+            const cR = curr.reps[firstValidIdx];
+            
+            const pW = prev.weights[firstValidIdx] !== undefined ? prev.weights[firstValidIdx] : 0;
+            const pR = prev.reps[firstValidIdx] || 0;
+
+            if (pR === 0) return '';
+
+            if (cW > pW) return 'green';
+            if (cW < pW) return 'red';
+            if (cR > pR) return 'green';
+            if (cR < pR) return 'red';
+            return 'yellow';
+        }
+
+        let viewingExerciseHistory = null;
+        function openHistoryModalForCurrent() {
+            playSound('click');
+            const ex = activeSessionData[activeExIndex];
+            viewingExerciseHistory = ex.history;
+            renderHistoryModalContent(ex.name);
+            document.getElementById('historyModal').classList.add('active');
+        }
+        function openHistoryModalForProg(dayIdx, exIdx) {
+            playSound('click');
+            const prog = getCurrentProgram();
+            const ex = prog[dayIdx].exercises[exIdx];
+            viewingExerciseHistory = ex.history;
+            renderHistoryModalContent(ex.name);
+            document.getElementById('historyModal').classList.add('active');
+        }
+        function closeHistoryModal() {
+            playSound('click');
+            document.getElementById('historyModal').classList.remove('active');
+        }
+        
+        function renderHistoryModalContent(exName) {
+            const container = document.getElementById('historyModalContent');
+            container.innerHTML = `<h4 style="margin-bottom:12px; color: var(--secondary); font-size: 18px;">${exName}</h4>`;
+            if (!viewingExerciseHistory || viewingExerciseHistory.length === 0) {
+                container.innerHTML += `<p style="color:var(--text-muted); font-weight:600; font-size: 13px;">No recorded history yet.</p>`;
+                return;
+            }
+            
+            const sorted = [...viewingExerciseHistory].sort((a,b) => a.date - b.date);
+            
+            for (let i = sorted.length - 1; i >= 0; i--) {
+                const h = sorted[i];
+                const dateStr = new Date(h.date).toLocaleDateString();
+                const actualWeights = h.weights.filter((w, idx) => h.reps[idx] > 0);
+                const actualReps = h.reps.filter(r => r > 0);
+                
+                const colorClass = getSingleHistoryColorClass(sorted, i);
+
+                const div = document.createElement('div');
+                div.className = `card ${colorClass}`;
+                div.style.margin = '8px 0';
+                div.style.padding = '12px';
+                div.style.textAlign = "left";
+                div.innerHTML = `
+                    <div style="font-weight:800; font-size: 14px; margin-bottom: 6px; opacity: 0.9;">
+                        ${dateStr} ${h.techniqueChanged ? '<span style="font-size:11px; font-weight:normal; color:var(--warning);">(Tech Changed)</span>' : ''}
+                    </div>
+                    <div style="font-size: 14px; font-weight: 600; margin-top: 2px;">Weights: <span style="font-weight:normal;">${actualWeights.join(', ')} kg</span></div>
+                    <div style="font-size: 14px; font-weight: 600;">Reps: <span style="font-weight:normal;">${actualReps.join(', ')}</span></div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        let activeExIndex = 0;
+        let activeSessionData = [];
+
+        function startWorkout() {
+            playSound('start');
+            activeExIndex = 0;
+            const prog = getCurrentProgram();
+            activeSessionData = JSON.parse(JSON.stringify(prog[appData.currentDayIndex].exercises));
+            
+            resetTimer(); 
+            renderWorkoutScreen();
+            showScreen('screen-workout');
+        }
+
+        function renderWorkoutScreen() {
+            const ex = activeSessionData[activeExIndex];
+            
+            const savedMode = ex.viewMode || '1';
+            document.querySelector(`input[name="setView"][value="${savedMode}"]`).checked = true;
+
+            document.getElementById('workoutExTitle').innerText = `Exercise ${activeExIndex + 1} of ${activeSessionData.length}`;
+            
+            // تحديث شريط التقدم
+            const progRatio = ((activeExIndex + 1) / activeSessionData.length) * 100;
+            document.getElementById('workoutProgressBar').style.width = `${progRatio}%`;
+
+            document.getElementById('activeExName').value = ex.name;
+            
+            const eachBtn = document.getElementById('eachBtn');
+            if (ex.isEach) {
+                eachBtn.innerText = "Each: ON";
+                eachBtn.style.background = "var(--primary)";
+            } else {
+                eachBtn.innerText = "Each: OFF";
+                eachBtn.style.background = "rgba(0,0,0,0.3)";
+            }
+
+            document.getElementById('techChangedCheck').checked = ex.currentEntry ? ex.currentEntry.techniqueChanged : false;
+
+            const container = document.getElementById('setsContainer');
+            container.innerHTML = '';
+
+            const lastHistory = ex.history.length > 0 ? ex.history[ex.history.length - 1] : null;
+            const lastStatsColorClass = getHistoryColorClass(ex.history);
+
+            for (let i = 0; i < ex.sets; i++) {
+                const prevWeight = lastHistory && lastHistory.reps[i] > 0 ? lastHistory.weights[i] : '-';
+                const prevReps = lastHistory && lastHistory.reps[i] > 0 ? lastHistory.reps[i] : '-';
+                
+                let valW = prevWeight !== '-' ? prevWeight : '';
+                let valR = prevReps !== '-' ? prevReps : '';
+
+                if (ex.currentEntry) {
+                    if (ex.currentEntry.weights && ex.currentEntry.weights.length > i) {
+                        let w = ex.currentEntry.weights[i];
+                        valW = (w !== null && w !== undefined && w !== '') ? w : '';
+                    }
+                    if (ex.currentEntry.reps && ex.currentEntry.reps.length > i && ex.currentEntry.reps[i] > 0) {
+                        valR = ex.currentEntry.reps[i];
+                    } else if (ex.currentEntry.reps && ex.currentEntry.reps.length > i) {
+                        valR = '';
+                    }
+                }
+
+                const div = document.createElement('div');
+                div.className = 'set-row';
+                div.innerHTML = `
+                    <div style="flex: 0.5; text-align: left;">
+                        <small style="font-weight: bold; font-size: 13px; opacity:0.8;">Set ${i+1}</small>
+                        <div class="prev-stats ${lastStatsColorClass}">L: ${prevWeight}x${prevReps}</div>
+                    </div>
+                    <div style="flex: 1.2;">
+                        <input type="number" step="any" placeholder="KG" id="w_${i}" oninput="evaluateColor(${i}, '${prevWeight}', '${prevReps}')" value="${valW}" style="margin:0; text-align:center; padding: 10px;">
+                    </div>
+                    <div style="flex: 1.5; display: flex; align-items: center; gap: 4px;">
+                        <button type="button" class="btn-secondary" style="padding: 10px 8px; margin: 0; font-size: 14px;" onclick="adjustReps(${i}, -1, '${prevWeight}', '${prevReps}')">-</button>
+                        <input type="number" step="any" placeholder="Reps" id="r_${i}" oninput="evaluateColor(${i}, '${prevWeight}', '${prevReps}')" value="${valR}" style="margin:0; text-align: center; padding: 10px 2px;">
+                        <button type="button" class="btn-secondary" style="padding: 10px 8px; margin: 0; font-size: 14px;" onclick="adjustReps(${i}, 1, '${prevWeight}', '${prevReps}')">+</button>
+                    </div>
+                `;
+                container.appendChild(div);
+                evaluateColor(i, prevWeight, prevReps);
+            }
+
+            toggleSetsView(false); 
+
+            document.getElementById('btnPrevEx').style.display = activeExIndex === 0 ? 'none' : 'inline-block';
+            if (activeExIndex === activeSessionData.length - 1) {
+                document.getElementById('btnNextEx').style.display = 'none';
+                document.getElementById('btnFinishWorkout').style.display = 'inline-block';
+            } else {
+                document.getElementById('btnNextEx').style.display = 'inline-block';
+                document.getElementById('btnFinishWorkout').style.display = 'none';
+            }
+        }
+
+        function toggleEachFlag() {
+            playSound('click');
+            const ex = activeSessionData[activeExIndex];
+            ex.isEach = !ex.isEach;
+            renderWorkoutScreen();
+        }
+
+        function adjustReps(index, delta, prevW, prevR) {
+            playSound('click');
+            const input = document.getElementById(`r_${index}`);
+            let val = parseFloat(input.value) || 0;
+            
+            if (delta > 0) {
+                val = Math.floor(val) + 1;
+            } else {
+                val = Math.ceil(val) - 1;
+            }
+            
+            val = Math.max(0, val);
+            input.value = val;
+            evaluateColor(index, prevW, prevR);
+        }
+
+        function toggleSetsView(shouldSave = true) {
+            const mode = document.querySelector('input[name="setView"]:checked').value;
+            
+            if (shouldSave) {
+                const prog = getCurrentProgram();
+                prog.forEach(day => {
+                    day.exercises.forEach(e => e.viewMode = mode);
+                });
+                activeSessionData.forEach(e => e.viewMode = mode);
+                saveData();
+            }
+
+            const rows = document.querySelectorAll('.set-row');
+            rows.forEach((row, index) => {
+                if (mode === '1' && index > 0) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = 'flex';
+                }
+            });
+        }
+
+        function evaluateColor(setIndex, prevW, prevR) {
+            const wInput = document.getElementById(`w_${setIndex}`);
+            const rInput = document.getElementById(`r_${setIndex}`);
+            const techCheck = document.getElementById('techChangedCheck').checked;
+            
+            wInput.className = ''; rInput.className = '';
+            
+            if (techCheck || prevW === '-' || prevR === '-' || !wInput.value || !rInput.value) return;
+
+            const currW = wInput.value === '' ? 0 : parseFloat(wInput.value);
+            const currR = rInput.value === '' ? 0 : parseFloat(rInput.value);
+            const pW = prevW === '-' ? 0 : parseFloat(prevW);
+            const pR = prevR === '-' ? 0 : parseFloat(prevR);
+
+            let wClass = ''; let rClass = '';
+
+            if (currW > pW) { wClass = 'green'; rClass = 'green'; }
+            else if (currW < pW) { wClass = 'red'; rClass = 'red'; }
+            else {
+                if (currR > pR) { wClass = 'green'; rClass = 'green'; }
+                else if (currR < pR) { wClass = 'red'; rClass = 'red'; }
+                else { wClass = 'yellow'; rClass = 'yellow'; }
+            }
+
+            wInput.classList.add(wClass);
+            rInput.classList.add(rClass);
+        }
+
+        document.getElementById('techChangedCheck').addEventListener('change', () => {
+            playSound('click');
+            const ex = activeSessionData[activeExIndex];
+            const lastHistory = ex.history.length > 0 ? ex.history[ex.history.length - 1] : null;
+            for (let i = 0; i < ex.sets; i++) {
+                const prevW = lastHistory && lastHistory.reps[i] > 0 ? lastHistory.weights[i] : '-';
+                const prevR = lastHistory && lastHistory.reps[i] > 0 ? lastHistory.reps[i] : '-';
+                evaluateColor(i, prevW, prevR);
+            }
+        });
+
+        function saveCurrentExData() {
+            const ex = activeSessionData[activeExIndex];
+            ex.name = document.getElementById('activeExName').value;
+            const mode = document.querySelector('input[name="setView"]:checked').value;
+            ex.viewMode = mode; 
+            
+            const weights = []; const reps = [];
+            
+            for (let i = 0; i < ex.sets; i++) {
+                if (mode === '1' && i > 0) {
+                    weights.push(0); reps.push(0);
+                } else {
+                    let wInput = document.getElementById(`w_${i}`).value;
+                    let rInput = document.getElementById(`r_${i}`).value;
+                    weights.push(wInput === '' ? 0 : parseFloat(wInput));
+                    reps.push(rInput === '' ? 0 : parseFloat(rInput));
+                }
+            }
+            
+            ex.currentEntry = {
+                date: Date.now(),
+                weights: weights,
+                reps: reps,
+                techniqueChanged: document.getElementById('techChangedCheck').checked
+            };
+        }
+
+        function updateActiveExName() { activeSessionData[activeExIndex].name = document.getElementById('activeExName').value; }
+
+        function navigateWorkout(dir) {
+            playSound('pop');
+            saveCurrentExData();
+            activeExIndex += dir;
+            resetTimer(); 
+            renderWorkoutScreen();
+        }
+
+        function promptAddSet() {
+            playSound('warning');
+            if (confirm("Are you sure you want to add a set to this exercise?")) {
+                const ex = activeSessionData[activeExIndex];
+                saveCurrentExData();
+                ex.sets++;
+                renderWorkoutScreen();
+            }
+        }
+        function promptRemoveSet() {
+            playSound('warning');
+            const ex = activeSessionData[activeExIndex];
+            if (ex.sets <= 1) {
+                alert("Cannot have less than 1 set.");
+                return;
+            }
+            if (confirm("Are you sure you want to remove the last set?")) {
+                saveCurrentExData();
+                ex.sets--;
+                renderWorkoutScreen();
+            }
+        }
+
+        function exitWorkout() {
+            playSound('warning');
+            document.getElementById('exitModal').classList.add('active');
+        }
+
+        function closeExitModal() {
+            playSound('click');
+            document.getElementById('exitModal').classList.remove('active');
+        }
+
+        function finalizeSessionData() {
+            activeSessionData.forEach(ex => {
+                if (ex.currentEntry) {
+                    ex.history.push({
+                        date: ex.currentEntry.date,
+                        weights: ex.currentEntry.weights,
+                        reps: ex.currentEntry.reps,
+                        techniqueChanged: ex.currentEntry.techniqueChanged
+                    });
+                    if (ex.history.length > 10) ex.history = ex.history.slice(-10);
+                    delete ex.currentEntry;
+                }
+            });
+        }
+
+        function confirmExit(shouldSave) {
+            playSound('pop');
+            document.getElementById('exitModal').classList.remove('active');
+            
+            if (shouldSave) {
+                saveCurrentExData();
+                finalizeSessionData(); 
+                const prog = getCurrentProgram();
+                prog[appData.currentDayIndex].exercises = activeSessionData;
+                saveData();
+            }
+            
+            resetTimer();
+            route();
+        }
+
+        function finishWorkout() {
+            playSound('success');
+            saveCurrentExData();
+            finalizeSessionData(); 
+            const prog = getCurrentProgram();
+            prog[appData.currentDayIndex].exercises = activeSessionData;
+            
+            appData.currentDayIndex++;
+            if (appData.currentDayIndex >= prog.length) appData.currentDayIndex = 0;
+            
+            saveData();
+            resetTimer();
+            route();
+        }
+
+        // Workout Timer Logic
+        let timerTime = 90; 
+        let timerTotal = 90; 
+        let timerInterval = null;
+        let postTimerSeconds = 0;
+        let postTimerInterval = null;
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerTime / 60).toString().padStart(2, '0');
+            const s = (timerTime % 60).toString().padStart(2, '0');
+            const display = document.getElementById('timerDisplay');
+            const progBar = document.getElementById('timerProgressBar');
+            display.innerText = `${m}:${s}`;
+
+            if (timerTotal > 0 && timerTime > 0) {
+                const ratio = timerTime / timerTotal;
+                display.classList.remove('pulse');
+                progBar.style.width = `${ratio * 100}%`;
+                if (ratio > 0.5) {
+                    display.style.color = 'var(--primary)';
+                    progBar.style.background = 'var(--primary)';
+                } else if (ratio > 0.25) {
+                    display.style.color = 'var(--warning)';
+                    progBar.style.background = 'var(--warning)';
+                } else {
+                    display.style.color = 'var(--danger)';
+                    progBar.style.background = 'var(--danger)';
+                    display.classList.add('pulse');
+                }
+            } else {
+                display.style.color = 'var(--primary)';
+                display.classList.remove('pulse');
+                progBar.style.width = `100%`;
+                progBar.style.background = 'var(--primary)';
+            }
+        }
+
+        function adjustTimer(secs) {
+            timerTime += secs;
+            if(timerTime < 0) timerTime = 0;
+            
+            if (!timerInterval) {
+                appData.defaultTimer = timerTime;
+                timerTotal = timerTime;
+                saveData();
+            } else {
+                timerTotal = Math.max(timerTotal, timerTime);
+            }
+            updateTimerDisplay();
+        }
+
+        function resetTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                document.getElementById('timerBtn').innerText = "Start";
+            }
+            if (postTimerInterval) {
+                clearInterval(postTimerInterval);
+                postTimerInterval = null;
+            }
+            timerTime = appData.defaultTimer;
+            timerTotal = appData.defaultTimer;
+            postTimerSeconds = 0;
+            updateTimerDisplay();
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timerBtn');
+            const canVibrate = "vibrate" in navigator;
+
+            if (timerInterval) {
+                playSound('click');
+                clearInterval(timerInterval); timerInterval = null; btn.innerText = "Start";
+            } else {
+                if(timerTime === 0) return;
+                playSound('start');
+                btn.innerText = "Stop";
+                timerTotal = timerTime; 
+                
+                if (postTimerInterval) {
+                    clearInterval(postTimerInterval);
+                    postTimerInterval = null;
+                }
+                
+                updateTimerDisplay();
+                
+                timerInterval = setInterval(() => {
+                    timerTime--;
+                    
+                    if (timerTime > 0) {
+                        const ratio = timerTime / timerTotal;
+                        if (Math.abs(ratio - 0.25) < 0.01) {
+                            playSound('threeQuarter');
+                        } else if (timerTime <= 5) {
+                            if (canVibrate) navigator.vibrate(50); 
+                        } else {
+                            if (canVibrate) navigator.vibrate(15); 
+                        }
+                    }
+
+                    if(timerTime <= 0) { 
+                        clearInterval(timerInterval); 
+                        timerInterval = null; 
+                        playSound('alarm'); 
+                        
+                        timerTime = appData.defaultTimer;
+                        timerTotal = appData.defaultTimer;
+                        btn.innerText = "Start";
+                        
+                        postTimerSeconds = 0;
+                        postTimerInterval = setInterval(() => {
+                            postTimerSeconds++;
+                            if (postTimerSeconds === 60) {
+                                if (canVibrate) navigator.vibrate([50, 100, 50]);
+                                playSound('threeQuarter');
+                                clearInterval(postTimerInterval);
+                                postTimerInterval = null;
+                            }
+                        }, 1000);
+                    }
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        // Cardio Feature
+        let cardioDurationSec = 30 * 60;
+        let cardioTotalSec = 30 * 60;
+        let cardioInterval = null;
+        let cardioRestDurationSec = 60;
+        let cardioWaterCount = 2;
+        let cardioInitialWaterCount = 2;
+        let cardioRestActive = false;
+        let cardioRestTimeLeft = 0;
+        let cardioNextRestAtSec = 0;
+
+        function startCardioSetup() {
+            playSound('click');
+            showScreen('screen-cardio-setup');
+        }
+
+        function adjustCardioVal(type, delta) {
+            playSound('click');
+            if (type === 'cardioDur') {
+                let v = parseInt(document.getElementById('cardioDurInput').value) || 30;
+                v = Math.max(1, v + delta);
+                document.getElementById('cardioDurInput').value = v;
+            } else if (type === 'waterCount') {
+                let v = parseInt(document.getElementById('waterCountInput').value) || 2;
+                v = Math.max(1, v + delta);
+                document.getElementById('waterCountInput').value = v;
+            } else if (type === 'waterDur') {
+                let v = parseInt(document.getElementById('waterDurInput').value) || 60;
+                v = Math.max(10, v + delta);
+                document.getElementById('waterDurInput').value = v;
+            }
+        }
+
+        function setCardioDur(mins) { playSound('click'); document.getElementById('cardioDurInput').value = mins; }
+        function setWaterCount(cnt) { playSound('click'); document.getElementById('waterCountInput').value = cnt; }
+        function setWaterDur(secs) { playSound('click'); document.getElementById('waterDurInput').value = secs; }
+
+        function toggleWaterConfig(show) {
+            document.getElementById('waterConfigSection').style.display = show ? 'block' : 'none';
+        }
+
+        function startCardioSession() {
+            playSound('start');
+            const mins = parseInt(document.getElementById('cardioDurInput').value) || 30;
+            cardioDurationSec = mins * 60;
+            cardioTotalSec = cardioDurationSec;
+
+            const wantsWater = document.querySelector('input[name="waterRests"]:checked').value === 'yes';
+            if (wantsWater) {
+                cardioWaterCount = parseInt(document.getElementById('waterCountInput').value) || 2;
+                cardioInitialWaterCount = cardioWaterCount;
+                cardioRestDurationSec = parseInt(document.getElementById('waterDurInput').value) || 60;
+                const intervalSec = cardioTotalSec / (cardioWaterCount + 1);
+                cardioNextRestAtSec = cardioTotalSec - intervalSec;
+            } else {
+                cardioWaterCount = 0;
+                cardioInitialWaterCount = 0;
+                cardioNextRestAtSec = -1;
+            }
+
+            cardioRestActive = false;
+            
+            document.getElementById('cardioRestContainer').style.borderColor = "var(--secondary)";
+            document.getElementById('cardioRestContainer').style.background = "var(--card-bg)";
+            document.getElementById('cardioProgressTitle').style.color = "var(--secondary)";
+            document.getElementById('cardioMergedTimeDisplay').classList.remove('pulse');
+
+            showScreen('screen-cardio-active');
+            updateCardioDisplay();
+
+            cardioInterval = setInterval(() => {
+                cardioDurationSec--;
+                
+                if (cardioDurationSec <= 0) {
+                    clearInterval(cardioInterval);
+                    playSound('success');
+                    alert("Cardio Session Completed!");
+                    route();
+                    return;
+                }
+
+                if (!cardioRestActive) {
+                    if (cardioWaterCount > 0) {
+                        const nextIn = cardioDurationSec - Math.round(cardioNextRestAtSec);
+                        
+                        if (nextIn === 10) {
+                            playSound('pop');
+                            if ("vibrate" in navigator) navigator.vibrate([100, 100, 100]);
+                        }
+
+                        if (nextIn <= 0) {
+                            cardioRestActive = true;
+                            cardioRestTimeLeft = cardioRestDurationSec;
+                            playSound('alarm');
+                            if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+                            
+                            const intervalSec = cardioTotalSec / (cardioInitialWaterCount + 1);
+                            cardioNextRestAtSec -= intervalSec;
+                            cardioWaterCount--;
+                        }
+                    }
+                } else {
+                    cardioRestTimeLeft--;
+                    if (cardioRestTimeLeft <= 0) {
+                        cardioRestActive = false;
+                        playSound('start'); 
+                        if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
+                    }
+                }
+                updateCardioDisplay();
+            }, 1000);
+        }
+
+        function updateCardioDisplay() {
+            const m = Math.floor(cardioDurationSec / 60).toString().padStart(2, '0');
+            const s = (cardioDurationSec % 60).toString().padStart(2, '0');
+            document.getElementById('cardioMainDisplay').innerText = `${m}:${s}`;
+
+            const totalProgressPercent = cardioTotalSec > 0 ? (cardioDurationSec / cardioTotalSec) * 100 : 0;
+            document.getElementById('cardioTotalBarFill').style.width = `${totalProgressPercent}%`;
+
+            const restContainer = document.getElementById('cardioRestContainer');
+            const progressTitle = document.getElementById('cardioProgressTitle');
+            const stepBarFill = document.getElementById('cardioStepBarFill');
+            const mergedDisplay = document.getElementById('cardioMergedTimeDisplay');
+
+            if (cardioRestActive) {
+                restContainer.style.borderColor = "var(--warning)";
+                restContainer.style.background = "rgba(245, 158, 11, 0.1)"; 
+                progressTitle.innerText = "💧 WATER REST TIME!";
+                progressTitle.style.color = "var(--warning)";
+                stepBarFill.style.background = "linear-gradient(90deg, #facc15 0%, #eab308 100%)";
+                mergedDisplay.classList.add('pulse');
+                
+                const restPercent = cardioRestDurationSec > 0 ? (cardioRestTimeLeft / cardioRestDurationSec) * 100 : 0;
+                stepBarFill.style.width = `${restPercent}%`;
+
+                const rm = Math.floor(cardioRestTimeLeft / 60).toString().padStart(2, '0');
+                const rs = (cardioRestTimeLeft % 60).toString().padStart(2, '0');
+                mergedDisplay.innerText = `${rm}:${rs}`;
+
+            } else if (cardioWaterCount > 0) {
+                restContainer.style.borderColor = "var(--secondary)";
+                restContainer.style.background = "var(--card-bg)";
+                progressTitle.innerText = "Time Until Next Rest";
+                progressTitle.style.color = "var(--secondary)";
+                stepBarFill.style.background = "linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%)";
+                mergedDisplay.classList.remove('pulse');
+
+                const nextIn = cardioDurationSec - Math.round(cardioNextRestAtSec);
+                const intervalSec = cardioTotalSec / (cardioInitialWaterCount + 1);
+                const preRestPercent = intervalSec > 0 ? (nextIn / intervalSec) * 100 : 0;
+                stepBarFill.style.width = `${Math.min(100, Math.max(0, preRestPercent))}%`;
+
+                if (nextIn > 0) {
+                    const nm = Math.floor(nextIn / 60).toString().padStart(2, '0');
+                    const ns = (nextIn % 60).toString().padStart(2, '0');
+                    mergedDisplay.innerText = `${nm}:${ns}`;
+                } else {
+                    mergedDisplay.innerText = "00:00";
+                }
+            } else {
+                restContainer.style.borderColor = "var(--border)";
+                restContainer.style.background = "var(--card-bg)";
+                progressTitle.innerText = "All Rests Completed";
+                progressTitle.style.color = "var(--text-muted)";
+                stepBarFill.style.width = `0%`;
+                mergedDisplay.classList.remove('pulse');
+                mergedDisplay.innerText = "--:--";
+            }
+        }
+
+        function endCardioSession() {
+            playSound('warning');
+            if (confirm("End cardio session?")) {
+                if (cardioInterval) clearInterval(cardioInterval);
+                route();
+            }
+        }
+
+        // Show Program View UI
+        let showProgDayIndex = 0;
+        function showProgramView() {
+            const prog = getCurrentProgram();
+            if(prog.length === 0) {
+                alert("No program found. Please create one first.");
+                return;
+            }
+            showProgDayIndex = appData.currentDayIndex;
+            renderShowProgram();
+            showScreen('screen-show-program');
+        }
+
+        function navShowProgram(dir) {
+            const prog = getCurrentProgram();
+            showProgDayIndex += dir;
+            if (showProgDayIndex < 0) showProgDayIndex = prog.length - 1;
+            if (showProgDayIndex >= prog.length) showProgDayIndex = 0;
+            renderShowProgram();
+        }
+
+        function renderShowProgram() {
+            const prog = getCurrentProgram();
+            const dayData = prog[showProgDayIndex];
+            document.getElementById('showProgDayTitle').innerText = `Day ${dayData.day}`;
+            const list = document.getElementById('programDetailsList');
+            list.innerHTML = '';
+
+            dayData.exercises.forEach((ex, index) => {
+                const lastHistory = ex.history.length > 0 ? ex.history[ex.history.length - 1] : null;
+                const lastStatsColorClass = getHistoryColorClass(ex.history);
+                let statsStr = '';
+                
+                if (lastHistory) {
+                    const actualWeights = lastHistory.weights.filter((w, i) => lastHistory.reps[i] > 0);
+                    const actualReps = lastHistory.reps.filter(r => r > 0);
+                    const dateStr = new Date(lastHistory.date).toLocaleDateString();
+                    if(actualReps.length > 0) {
+                        statsStr = `<div style="font-size:0.85em; margin-top:8px; padding-left:10px; border-left:3px solid var(--secondary);" class="${lastStatsColorClass}">Last (${dateStr}): ${actualWeights.join(', ')} kg | Reps: ${actualReps.join(', ')}</div>`;
+                    }
+                }
+
+                const div = document.createElement('div');
+                div.className = 'card drag-card';
+                div.dataset.index = index;
+                div.style.padding = "12px 14px";
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <div class="drag-handle" onpointerdown="initDrag(event, ${index})" style="padding: 4px; background: rgba(255,255,255,0.05); border-radius: 6px;">☰</div>
+                        <input type="text" value="${ex.name}" onchange="editProgExName(${index}, this.value)" style="flex:1; font-weight:800; font-size: 16px; margin: 0; padding: 10px; background: rgba(0,0,0,0.1);" placeholder="Exercise Name">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; background: rgba(0,0,0,0.1); border-radius: 8px; padding: 2px 8px;">
+                            <label style="font-size: 13px; font-weight: bold; color: var(--text-muted);">Sets:</label>
+                            <input type="number" value="${ex.sets}" onchange="editProgExSets(${index}, this.value)" style="width:45px; text-align:center; border:none; background:transparent; margin:0; padding: 6px;" min="1" title="Number of Sets">
+                        </div>
+                        <button class="btn-secondary btn-small" onclick="openHistoryModalForProg(${showProgDayIndex}, ${index})" style="flex: 1; padding: 8px 4px; margin:0;"><span style="font-size:12px; font-weight: bold;">📊 History</span></button>
+                        <button class="btn-danger btn-small" style="padding:8px 12px; margin:0; border-radius: 8px;" onclick="playSound('warning'); deleteProgEx(${index})" title="Delete Exercise">🗑️</button>
+                    </div>
+                    ${statsStr}
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Pointer Events Drag & Drop
+        let activeDragCard = null;
+        let dragStartIndex = -1;
+        let startY = 0;
+        let currentY = 0;
+        let cardHeight = 0;
+
+        function initDrag(e, index) {
+            const card = e.target.closest('.drag-card');
+            if (!card) return;
+
+            activeDragCard = card;
+            dragStartIndex = index;
+            startY = e.clientY;
+            cardHeight = card.offsetHeight + 15; 
+
+            card.classList.add('is-dragging');
+            card.setPointerCapture(e.pointerId);
+
+            playSound('click');
+
+            card.onpointermove = onPointerMove;
+            card.onpointerup = onPointerUp;
+        }
+
+        function onPointerMove(e) {
+            if (!activeDragCard) return;
+            currentY = e.clientY - startY;
+            activeDragCard.style.transform = `translateY(${currentY}px) scale(1.03)`;
+
+            const shiftCount = Math.round(currentY / cardHeight);
+            const prog = getCurrentProgram();
+            const targetIndex = Math.max(0, Math.min(prog[showProgDayIndex].exercises.length - 1, dragStartIndex + shiftCount));
+
+            if (targetIndex !== dragStartIndex) {
+                const exercises = prog[showProgDayIndex].exercises;
+                const item = exercises.splice(dragStartIndex, 1)[0];
+                exercises.splice(targetIndex, 0, item);
+                dragStartIndex = targetIndex;
+                startY = e.clientY - (currentY % cardHeight); 
+                renderShowProgramPreserveState(targetIndex);
+            }
+        }
+
+        function onPointerUp(e) {
+            if (!activeDragCard) return;
+            activeDragCard.releasePointerCapture(e.pointerId);
+            activeDragCard.classList.remove('is-dragging');
+            activeDragCard.style.transform = '';
+            activeDragCard.onpointermove = null;
+            activeDragCard.onpointerup = null;
+            
+            activeDragCard = null;
+            playSound('pop');
+            saveData();
+            renderShowProgram();
+        }
+
+        function renderShowProgramPreserveState(newIndex) {
+            renderShowProgram();
+            const cards = document.querySelectorAll('.drag-card');
+            if (cards[newIndex]) {
+                activeDragCard = cards[newIndex];
+                activeDragCard.classList.add('is-dragging');
+                dragStartIndex = newIndex;
+            }
+        }
+
+        function editProgExName(idx, val) { 
+            const prog = getCurrentProgram();
+            prog[showProgDayIndex].exercises[idx].name = val; 
+            saveData(); 
+        }
+        
+        function editProgExSets(idx, val) { 
+            const newSets = parseInt(val);
+            const prog = getCurrentProgram();
+            prog[showProgDayIndex].exercises[idx].sets = newSets; 
+            if(!prog[showProgDayIndex].exercises[idx].viewMode) {
+                prog[showProgDayIndex].exercises[idx].viewMode = '1';
+            }
+            saveData(); 
+        }
+
+        function deleteProgEx(idx) {
+            if(confirm("Are you sure you want to delete this exercise?")) {
+                const prog = getCurrentProgram();
+                prog[showProgDayIndex].exercises.splice(idx, 1);
+                saveData(); renderShowProgram();
+            }
+        }
+
+        function addExerciseToProgram() {
+            const prog = getCurrentProgram();
+            if(prog.length === 0) {
+                prog.push({ day: 1, exercises: [] });
+            }
+            prog[showProgDayIndex].exercises.push({ name: "New Exercise", sets: 3, history: [], viewMode: '1', isEach: false });
+            saveData(); renderShowProgram();
+        }
+
+        window.onload = loadData;
+
+    </script>
+</body>
+</html>
