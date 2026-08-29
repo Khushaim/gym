@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#030712">
+    
+    <title>Gym Tracker Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #030712;
+            --bg-surface: #0b1324;
+            --bg-subtle: #111e38;
+            --bg-card: #0f172a;
+            --border-ui: #1e293b;
+            --border-focus: #38bdf8;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            
+            --accent-emerald: #10b981;
+            --accent-sky: #0ea5e9;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --accent-purple: #a855f7;
+            
+            --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: var(--font-main);
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+        }
+
+        input, select, textarea {
+            user-select: auto;
+            font-family: var(--font-main);
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        .app-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+            max-height: 100dvh;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: calc(6px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom));
+        }
+
+        /* TOP APP HEADER */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 42px;
+            min-height: 42px;
+            padding: 0 4px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid var(--border-ui);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--accent-sky);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-ui);
+            color: var(--text-muted);
+            border-radius: 8px;
+            padding: 5px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+        .icon-btn:active { transform: scale(0.94); color: var(--text-main); border-color: var(--text-muted); }
+
+        .workout-badge-timer {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--accent-emerald);
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: none;
+        }
+
+        /* SCREENS ENGINE */
+        .screen-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            animation: fadeInScreen 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .screen.active { display: flex; }
+
+        @keyframes fadeInScreen {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* UI COMPONENTS */
+        .ui-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-ui);
+            border-radius: var(--radius-lg);
+            padding: 10px;
+            position: relative;
+        }
+
+        .ui-btn {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.12s ease;
+        }
+        .ui-btn:active { transform: scale(0.97); opacity: 0.9; }
+
+        .btn-emerald { background: var(--accent-emerald); color: #000; border-color: var(--accent-emerald); }
+        .btn-sky { background: var(--accent-sky); color: #000; border-color: var(--accent-sky); }
+        .btn-rose { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.35); }
+        .btn-amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.35); }
+
+        .ui-input {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+        .ui-input:focus { border-color: var(--border-focus); }
+
+        /* SCROLLABLE IN-SET BOX (No Screen Overflow) */
+        .scrollable-content {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 2px;
+        }
+        .scrollable-content::-webkit-scrollbar { width: 3px; }
+        .scrollable-content::-webkit-scrollbar-thumb { background: var(--border-ui); border-radius: 4px; }
+
+        /* WORKOUT VIEW SPECIFIC COMPACT GRID */
+        .set-list-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .compact-set-row {
+            display: grid;
+            grid-template-columns: 58px 1fr 1.15fr 40px;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-ui);
+            padding: 4px 6px;
+            border-radius: var(--radius-md);
+        }
+
+        .compact-set-row.warm-row { border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); }
+        .compact-set-row.drop-row { border-color: rgba(244, 63, 94, 0.35); background: rgba(244, 63, 94, 0.08); }
+        .compact-set-row.super-row { border-color: rgba(168, 85, 247, 0.35); background: rgba(168, 85, 247, 0.08); }
+
+        .set-meta-tag {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: var(--accent-sky);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        .set-meta-tag .prev-stat { font-size: 8px; color: var(--text-dim); font-weight: 600; }
+
+        .stepper-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-ui);
+            border-radius: 6px;
+            overflow: hidden;
+            height: 28px;
+        }
+        .stepper-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 22px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .stepper-btn:active { background: var(--bg-subtle); color: var(--text-main); }
+        .stepper-val {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            padding: 0;
+        }
+
+        .rest-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8.5px;
+            font-weight: 700;
+            color: var(--text-dim);
+            gap: 6px;
+            margin: 2px 0;
+        }
+        .rest-line::before, .rest-line::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border-ui);
+        }
+
+        /* FIXED WORKOUT FOOTER & REST TICKER */
+        .bottom-action-dock {
+            flex-shrink: 0;
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .rest-ticker-strip {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-ui);
+            border-radius: var(--radius-md);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .rest-ticker-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(14, 165, 233, 0.15);
+            width: 100%;
+            pointer-events: none;
+            transition: width 0.5s linear;
+        }
+        .rest-timer-digits {
+            font-family: var(--font-mono);
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--accent-sky);
+            z-index: 1;
+        }
+
+        /* MODALS */
+        .modal-wrap {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+        .modal-wrap.active { display: flex; }
+        .modal-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-ui);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 360px;
+            padding: 14px;
+            max-height: 85dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* PROGRESS / TREND COLOR UTILS */
+        .val-up { color: var(--accent-emerald) !important; }
+        .val-down { color: var(--accent-rose) !important; }
+        .val-same { color: var(--accent-amber) !important; }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+        
+        <!-- COMPACT HEADER -->
+        <header class="app-header">
+            <div class="header-title">
+                <span style="font-size: 16px;">⚡</span>
+                <span id="topUserDisplay">Pro Tracker</span>
+            </div>
+            
+            <div class="header-controls">
+                <div id="activeStopwatchBadge" class="workout-badge-timer">00:00</div>
+                <button class="icon-btn" onclick="toggleProgramsModal()">📁 Programs</button>
+            </div>
+        </header>
+
+        <!-- SCREEN CONTAINER -->
+        <div class="screen-container">
+
+            <!-- 1. NAME SETUP SCREEN -->
+            <div id="screen-name" class="screen">
+                <div class="ui-card" style="margin: auto 0; text-align: center; padding: 20px 14px;">
+                    <h2 style="font-size: 19px; font-weight: 800; margin-bottom: 4px; color: var(--accent-sky);">Welcome to Gym Tracker</h2>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Enter your name to personalize your workouts</p>
+                    <input type="text" id="nameInputBox" class="ui-input" placeholder="Your Name" style="text-align: center; width: 100%; margin-bottom: 12px; font-size: 15px; padding: 10px;">
+                    <button class="ui-btn btn-sky" style="width: 100%; padding: 12px;" onclick="saveInitialName()">Get Started 🚀</button>
+                </div>
+            </div>
+
+            <!-- 2. MAIN DASHBOARD SCREEN -->
+            <div id="screen-dashboard" class="screen">
+                <div class="ui-card" style="margin-bottom: 8px; padding: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Current Session</span>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="icon-btn" style="padding: 2px 7px;" onclick="changeDayCycle(-1)">◀</button>
+                            <button class="icon-btn" style="padding: 2px 7px;" onclick="changeDayCycle(1)">▶</button>
+                        </div>
+                    </div>
+                    <h1 id="dashDayTitle" style="font-size: 24px; font-weight: 900; margin-top: 2px; color: var(--accent-emerald);">Day 1</h1>
+                    <span id="dashDayExercisesCount" style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">0 exercises scheduled</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+                    <button class="ui-btn btn-emerald" style="padding: 14px 10px; font-size: 13.5px;" onclick="startMainWorkout()">
+                        💪 Start Workout
+                    </button>
+                    <button class="ui-btn" style="padding: 14px 10px; font-size: 13.5px; background: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.35); color: var(--accent-sky);" onclick="showScreen('screen-cardio-setup')">
+                        🔥 Cardio Hub
+                    </button>
+                </div>
+
+                <div class="scrollable-content">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <button class="ui-btn" style="width: 100%; justify-content: space-between;" onclick="openAnalyticsHub()">
+                            <span>📈 Analytics & PR History</span>
+                            <span style="color: var(--text-dim);">➔</span>
+                        </button>
+                        <button class="ui-btn" style="width: 100%; justify-content: space-between;" onclick="openProgramEditor()">
+                            <span>✏️ Edit Exercises & Split</span>
+                            <span style="color: var(--text-dim);">➔</span>
+                        </button>
+                        <button class="ui-btn" style="width: 100%; justify-content: space-between;" onclick="showScreen('screen-tools')">
+                            <span>🧮 1RM Calculator</span>
+                            <span style="color: var(--text-dim);">➔</span>
+                        </button>
+                        
+                        <div class="ui-card" style="margin-top: 4px; padding: 10px;">
+                            <span style="font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 6px;">Quick Maintenance</span>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="ui-btn btn-amber" style="flex: 1; padding: 6px 4px; font-size: 11px;" onclick="resetStatsHistory()">Reset Stats</button>
+                                <button class="ui-btn btn-rose" style="flex: 1; padding: 6px 4px; font-size: 11px;" onclick="deleteActiveSplit()">Delete Split</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. LIVE WORKOUT SCREEN (100% Fit, Zero-Scroll Architecture) -->
+            <div id="screen-workout" class="screen">
+                
+                <!-- Active Exercise Header -->
+                <div class="ui-card" style="padding: 8px 10px; margin-bottom: 5px; flex-shrink: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span id="workoutExCounter" style="font-size: 10px; font-weight: 800; color: var(--accent-sky); text-transform: uppercase;">Exercise 1 of 5</span>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="icon-btn" style="padding: 2px 6px; font-size: 9.5px;" onclick="quickAddSet()">+ Set</button>
+                            <button class="icon-btn" style="padding: 2px 6px; font-size: 9.5px;" onclick="quickAddWarmup()">+ Warm</button>
+                            <button class="icon-btn" style="padding: 2px 6px; font-size: 9.5px;" onclick="openHistoryForActiveEx()">📊 Log</button>
+                        </div>
+                    </div>
+                    <input type="text" id="activeExTitleInput" class="ui-input" style="width: 100%; font-weight: 800; font-size: 14px; padding: 5px 8px;" onchange="updateActiveExTitle()">
+                    <input type="text" id="activeExCueInput" class="ui-input" placeholder="📌 Cue (Seat 4, bench 30°...)" style="width: 100%; font-size: 10.5px; padding: 3px 6px; margin-top: 3px; border-style: dashed;" onchange="saveActiveExCue()">
+                </div>
+
+                <!-- Scrollable Sets Grid (Inner scroll only if sets exceed 5) -->
+                <div class="scrollable-content" id="workoutSetsContainer"></div>
+
+                <!-- Bottom Dock: Integrated Rest Timer + Action Buttons -->
+                <div class="bottom-action-dock">
+                    
+                    <div class="rest-ticker-strip">
+                        <div class="rest-ticker-progress" id="restTickerProgressFill"></div>
+                        <div style="display: flex; align-items: center; gap: 6px; z-index: 1;">
+                            <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Rest</span>
+                            <span id="restTimerDisplay" class="rest-timer-digits">01:30</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 4px; z-index: 1;">
+                            <button class="icon-btn" style="padding: 4px 7px;" onclick="adjustTimerSecs(-15)">-15</button>
+                            <button class="ui-btn btn-sky" id="restPlayBtn" style="padding: 4px 10px; font-size: 11px; border-radius: 6px;" onclick="toggleRestTimer()">START</button>
+                            <button class="icon-btn" style="padding: 4px 7px;" onclick="adjustTimerSecs(15)">+15</button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 5px;">
+                        <button class="ui-btn btn-rose" style="width: 60px; padding: 10px 4px; font-size: 11px;" onclick="promptExitWorkout()">Exit</button>
+                        <button class="ui-btn" id="workoutPrevBtn" style="flex: 1; padding: 10px;" onclick="navigateActiveExercise(-1)">Prev</button>
+                        <button class="ui-btn btn-emerald" id="workoutNextBtn" style="flex: 1.4; padding: 10px;" onclick="navigateActiveExercise(1)">Next Ex ➔</button>
+                        <button class="ui-btn btn-emerald" id="workoutFinishBtn" style="display:none; flex: 1.4; padding: 10px;" onclick="completeActiveWorkout()">Finish 🏆</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. CARDIO HUB SETUP & RUN SCREEN -->
+            <div id="screen-cardio-setup" class="screen">
+                <div class="ui-card" style="margin-bottom: 6px;">
+                    <h2 style="font-size: 15px; font-weight: 800; color: var(--accent-sky); margin-bottom: 6px;">⚡ Cardio Setup</h2>
+                    <select id="cardioTypeSelect" class="ui-input" style="width: 100%; margin-bottom: 6px;">
+                        <option value="treadmill">Incline Treadmill (سير كهربائي)</option>
+                        <option value="bike">Stationary Bike (دراجة)</option>
+                        <option value="stairs">Stair Climber (درج)</option>
+                        <option value="other">Other Cardio</option>
+                    </select>
+                    
+                    <div style="display: flex; gap: 6px;">
+                        <input type="number" id="cSpeedInput" class="ui-input" placeholder="Speed (e.g. 5.5)" style="flex: 1;">
+                        <input type="number" id="cInclineInput" class="ui-input" placeholder="Incline % (e.g. 12.5)" style="flex: 1;">
+                    </div>
+                </div>
+
+                <div class="ui-card" style="margin-bottom: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 700;">Duration</span>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <input type="number" id="cDurationInput" class="ui-input" value="30" style="width: 55px; text-align: center; font-size: 15px; font-weight: 800;">
+                            <span style="font-size: 12px; color: var(--text-muted);">mins</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui-card" style="margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 700;">Water Rests</span>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="number" id="cWaterRestsCount" class="ui-input" value="2" style="width: 45px; text-align: center;" placeholder="Count">
+                            <input type="number" id="cWaterRestDuration" class="ui-input" value="60" style="width: 55px; text-align: center;" placeholder="Secs">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px;">
+                    <button class="ui-btn btn-sky" style="padding: 14px; font-size: 14px;" onclick="startCardioSession()">Start Cardio Session 🏃‍♂️</button>
+                    <button class="ui-btn" style="padding: 10px;" onclick="showScreen('screen-dashboard')">Cancel</button>
+                </div>
+            </div>
+
+            <!-- 5. ACTIVE CARDIO DASHBOARD -->
+            <div id="screen-cardio-active" class="screen">
+                <div class="ui-card" style="text-align: center; padding: 18px 10px; margin-bottom: 8px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Total Time Remaining</span>
+                    <div id="cardioMainTimer" style="font-family: var(--font-mono); font-size: 42px; font-weight: 900; color: var(--accent-sky); margin: 4px 0;">30:00</div>
+                    
+                    <div style="height: 6px; background: var(--bg-card); border-radius: 4px; overflow: hidden; margin-top: 6px;">
+                        <div id="cardioTotalProgress" style="height: 100%; width: 100%; background: var(--accent-sky); transition: width 0.5s linear;"></div>
+                    </div>
+                </div>
+
+                <div class="ui-card" id="cardioIntervalCard" style="text-align: center; padding: 14px 10px; margin-bottom: auto;">
+                    <span id="cardioIntervalLabel" style="font-size: 12px; font-weight: 800; color: var(--accent-emerald);">Time to Next Rest</span>
+                    <div id="cardioIntervalTimer" style="font-family: var(--font-mono); font-size: 28px; font-weight: 800; margin: 4px 0;">00:00</div>
+                </div>
+
+                <button class="ui-btn btn-rose" style="width: 100%; padding: 12px; margin-top: 6px;" onclick="endCardioPrematurely()">End Cardio Session</button>
+            </div>
+
+            <!-- 6. PROGRAM BUILDER / EDITOR -->
+            <div id="screen-program-editor" class="screen">
+                <div class="ui-card" style="padding: 8px 10px; margin-bottom: 6px; flex-shrink: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 4px;">
+                            <button class="icon-btn" onclick="navProgEditorDay(-1)">◀</button>
+                            <span id="progEditorDayTitle" style="font-weight: 800; font-size: 14px; color: var(--accent-sky);">Day 1</span>
+                            <button class="icon-btn" onclick="navProgEditorDay(1)">▶</button>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="icon-btn" onclick="addDayToProgram()">+ Day</button>
+                            <button class="icon-btn" style="color: var(--accent-rose);" onclick="deleteDayFromProgram()">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scrollable-content" id="progEditorListContainer"></div>
+
+                <div style="display: flex; gap: 5px; margin-top: 6px; flex-shrink: 0;">
+                    <button class="ui-btn btn-sky" style="flex: 1; padding: 10px;" onclick="addExerciseToActiveProgram()">+ Add Exercise</button>
+                    <button class="ui-btn" style="width: 80px; padding: 10px;" onclick="showScreen('screen-dashboard')">Done</button>
+                </div>
+            </div>
+
+            <!-- 7. TOOLS / 1RM CALCULATOR -->
+            <div id="screen-tools" class="screen">
+                <div class="ui-card" style="margin-bottom: auto; padding: 14px;">
+                    <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 10px; color: var(--accent-sky);">One-Rep Max (1RM) Estimator</h3>
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <div style="flex: 1;">
+                            <label style="font-size: 10.5px; font-weight: 700; color: var(--text-dim); display: block; margin-bottom: 2px;">Weight (kg)</label>
+                            <input type="number" id="rmCalcWeight" class="ui-input" value="100" style="width: 100%; text-align: center; font-size: 16px; font-weight: 800;" oninput="compute1RM()">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 10.5px; font-weight: 700; color: var(--text-dim); display: block; margin-bottom: 2px;">Reps</label>
+                            <input type="number" id="rmCalcReps" class="ui-input" value="5" style="width: 100%; text-align: center; font-size: 16px; font-weight: 800;" oninput="compute1RM()">
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; padding: 14px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-ui);">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); display: block;">Estimated 1RM</span>
+                        <div id="rmCalcResult" style="font-family: var(--font-mono); font-size: 32px; font-weight: 900; color: var(--accent-emerald);">116.6 kg</div>
+                    </div>
+                </div>
+
+                <button class="ui-btn" style="width: 100%; padding: 11px;" onclick="showScreen('screen-dashboard')">Back to Menu</button>
+            </div>
+
+            <!-- 8. ANALYTICS & PR SCREEN -->
+            <div id="screen-analytics" class="screen">
+                <div class="ui-card" style="padding: 8px 10px; margin-bottom: 6px; flex-shrink: 0;">
+                    <select id="analyticsExSelect" class="ui-input" style="width: 100%;" onchange="renderAnalyticsGraph()"></select>
+                </div>
+
+                <div class="ui-card" style="flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 10px; margin-bottom: 6px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 6px;">
+                        <span id="chartStartVal" style="color: var(--text-dim);">Start: -</span>
+                        <span id="chartPeakVal" style="color: var(--accent-emerald);">Peak: -</span>
+                    </div>
+                    <div style="flex: 1; width: 100%; min-height: 120px;">
+                        <svg id="analyticsSvg" width="100%" height="100%" viewBox="0 0 400 160" preserveAspectRatio="none"></svg>
+                    </div>
+                </div>
+
+                <button class="ui-btn" style="width: 100%; padding: 10px;" onclick="showScreen('screen-dashboard')">Back</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL: PROGRAMS & BACKUP -->
+    <div id="programsModal" class="modal-wrap">
+        <div class="modal-box">
+            <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 8px; color: var(--accent-sky);">Programs & Backup</h3>
+            <div id="programsModalList" class="scrollable-content" style="max-height: 180px; margin-bottom: 8px;"></div>
+            
+            <div style="display: flex; gap: 4px; margin-bottom: 10px;">
+                <input type="text" id="newProgramNameInput" class="ui-input" placeholder="New Program Name" style="flex: 1;">
+                <button class="ui-btn btn-sky" style="padding: 0 10px;" onclick="addNewProgramRoutine()">+ Add</button>
+            </div>
+
+            <div style="display: flex; gap: 6px; border-top: 1px solid var(--border-ui); padding-top: 8px;">
+                <button class="ui-btn" style="flex: 1; padding: 8px; font-size: 11px;" onclick="exportAppStateBackup()">💾 Export</button>
+                <button class="ui-btn" style="flex: 1; padding: 8px; font-size: 11px;" onclick="document.getElementById('importBackupFile').click()">📂 Import</button>
+                <input type="file" id="importBackupFile" style="display: none;" accept=".json" onchange="importAppStateBackup(event)">
+            </div>
+            <button class="ui-btn btn-rose" style="width: 100%; margin-top: 8px; padding: 8px;" onclick="toggleProgramsModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- MODAL: EXERCISE LOG HISTORY -->
+    <div id="historyModal" class="modal-wrap">
+        <div class="modal-box">
+            <h3 id="historyModalTitle" style="font-size: 14px; font-weight: 800; margin-bottom: 8px; color: var(--accent-sky);">Exercise Log</h3>
+            <div id="historyModalContent" class="scrollable-content" style="max-height: 260px; margin-bottom: 8px;"></div>
+            <button class="ui-btn" style="width: 100%; padding: 8px;" onclick="toggleHistoryModal(false)">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Core Application State ---
+        let appData = {
+            userName: '',
+            activeProgramId: 'prog_default',
+            programs: [
+                {
+                    id: 'prog_default',
+                    name: 'Hypertrophy Split',
+                    program: [
+                        { day: 1, exercises: [{ name: 'Incline Dumbbell Press', sets: 3, warmupSets: 1, note: '', history: [] }] }
+                    ]
+                }
+            ],
+            currentDayIndex: 0,
+            cardioHistory: [],
+            defaultRestSec: 90
+        };
+
+        // --- Audio & Vibration Feedbacks ---
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioContext = null;
+
+        function initAudioEngine() {
+            if (!audioContext) audioContext = new AudioCtx();
+            if (audioContext.state === 'suspended') audioContext.resume();
+        }
+        document.addEventListener('touchstart', initAudioEngine, { once: true, passive: true });
+        document.addEventListener('click', initAudioEngine, { once: true });
+
+        function triggerHaptic(type) {
+            if ("vibrate" in navigator) {
+                if (type === 'tick') navigator.vibrate(25);
+                if (type === 'success') navigator.vibrate([40, 60, 80]);
+                if (type === 'alarm') navigator.vibrate([200, 100, 200, 100, 300]);
+            }
+        }
+
+        function playTone(type) {
+            initAudioEngine();
+            if (!audioContext) return;
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                const t = audioContext.currentTime;
+
+                if (type === 'tick') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(600, t);
+                    gain.gain.setValueAtTime(0.2, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.08);
+                    osc.start(t); osc.stop(t + 0.08);
+                } else if (type === 'alarm') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(800, t);
+                    gain.gain.setValueAtTime(0.3, t); gain.gain.linearRampToValueAtTime(0.01, t + 0.4);
+                    osc.start(t); osc.stop(t + 0.4);
+                }
+            } catch (e) {}
+        }
+
+        // --- Storage Management ---
+        function getActiveSplit() {
+            let p = appData.programs.find(x => x.id === appData.activeProgramId);
+            if (!p) { p = appData.programs[0]; appData.activeProgramId = p.id; }
+            return p.program;
+        }
+
+        function persistAppState() {
+            localStorage.setItem('gymTrackerState_v2', JSON.stringify(appData));
+        }
+
+        function loadAppState() {
+            const saved = localStorage.getItem('gymTrackerState_v2');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {}
+            }
+            if (!appData.userName) {
+                showScreen('screen-name');
+            } else {
+                document.getElementById('topUserDisplay').innerText = appData.userName;
+                refreshDashboardDay();
+                showScreen('screen-dashboard');
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+        }
+
+        function saveInitialName() {
+            const n = document.getElementById('nameInputBox').value.trim();
+            if (n) {
+                appData.userName = n;
+                persistAppState();
+                document.getElementById('topUserDisplay').innerText = n;
+                refreshDashboardDay();
+                showScreen('screen-dashboard');
+            }
+        }
+
+        // --- Dashboard Day Navigation ---
+        function refreshDashboardDay() {
+            const prog = getActiveSplit();
+            if (!prog || prog.length === 0) {
+                document.getElementById('dashDayTitle').innerText = "No Routine";
+                document.getElementById('dashDayExercisesCount').innerText = "Tap 'Edit Split' to add days";
+                return;
+            }
+            if (appData.currentDayIndex >= prog.length) appData.currentDayIndex = 0;
+            const currentDay = prog[appData.currentDayIndex];
+            document.getElementById('dashDayTitle').innerText = `Day ${currentDay.day}`;
+            document.getElementById('dashDayExercisesCount').innerText = `${currentDay.exercises.length} exercises scheduled`;
+        }
+
+        function changeDayCycle(dir) {
+            playTone('tick'); triggerHaptic('tick');
+            const prog = getActiveSplit();
+            if (prog.length === 0) return;
+            appData.currentDayIndex += dir;
+            if (appData.currentDayIndex < 0) appData.currentDayIndex = prog.length - 1;
+            if (appData.currentDayIndex >= prog.length) appData.currentDayIndex = 0;
+            persistAppState();
+            refreshDashboardDay();
+        }
+
+        // --- Live Workout Engine (Zero Scroll Compact UI) ---
+        let activeExIndex = 0;
+        let activeSessionExercises = [];
+        let sessionTimerSec = 0;
+        let sessionInterval = null;
+
+        function startMainWorkout() {
+            playTone('tick'); triggerHaptic('success');
+            const prog = getActiveSplit();
+            if (!prog || prog.length === 0 || prog[appData.currentDayIndex].exercises.length === 0) {
+                alert("Please add exercises to this day first.");
+                return;
+            }
+
+            activeExIndex = 0;
+            activeSessionExercises = JSON.parse(JSON.stringify(prog[appData.currentDayIndex].exercises));
+            
+            // Initialize working weights
+            activeSessionExercises.forEach(ex => {
+                const last = ex.history && ex.history.length > 0 ? ex.history[ex.history.length - 1] : null;
+                ex.liveSets = [];
+                
+                // Warmups
+                for (let w = 0; w < (ex.warmupSets || 0); w++) {
+                    let pw = last && last.warmupWeights ? (last.warmupWeights[w] || 0) : 0;
+                    let pr = last && last.warmupReps ? (last.warmupReps[w] || 0) : 0;
+                    ex.liveSets.push({ type: 'warm', weight: pw, reps: pr, prevW: pw, prevR: pr });
+                }
+                // Mains
+                for (let m = 0; m < ex.sets; m++) {
+                    let pw = last && last.weights ? (last.weights[m] || 0) : 0;
+                    let pr = last && last.reps ? (last.reps[m] || 0) : 0;
+                    ex.liveSets.push({ type: 'main', weight: pw, reps: pr, prevW: pw, prevR: pr });
+                }
+            });
+
+            startWorkoutWatch();
+            renderActiveWorkoutExercise();
+            showScreen('screen-workout');
+        }
+
+        function startWorkoutWatch() {
+            sessionTimerSec = 0;
+            const badge = document.getElementById('activeStopwatchBadge');
+            badge.style.display = 'inline-block';
+            if (sessionInterval) clearInterval(sessionInterval);
+            sessionInterval = setInterval(() => {
+                sessionTimerSec++;
+                const min = Math.floor(sessionTimerSec / 60).toString().padStart(2, '0');
+                const sec = (sessionTimerSec % 60).toString().padStart(2, '0');
+                badge.innerText = `${min}:${sec}`;
+            }, 1000);
+        }
+
+        function renderActiveWorkoutExercise() {
+            const ex = activeSessionExercises[activeExIndex];
+            document.getElementById('workoutExCounter').innerText = `EXERCISE ${activeExIndex + 1} OF ${activeSessionExercises.length}`;
+            document.getElementById('activeExTitleInput').value = ex.name;
+            document.getElementById('activeExCueInput').value = ex.note || '';
+
+            const container = document.getElementById('workoutSetsContainer');
+            container.innerHTML = '';
+
+            let setCounter = 1;
+            let warmCounter = 1;
+
+            ex.liveSets.forEach((s, idx) => {
+                let tagTitle = s.type === 'warm' ? `W${warmCounter++}` : `S${setCounter++}`;
+                let prevLabel = (s.prevW > 0 || s.prevR > 0) ? `${s.prevW}×${s.prevR}` : '—';
+                
+                let trendClass = '';
+                if (s.weight > s.prevW) trendClass = 'val-up';
+                else if (s.weight < s.prevW && s.weight > 0) trendClass = 'val-down';
+
+                const rowDiv = document.createElement('div');
+                rowDiv.className = `compact-set-row ${s.type === 'warm' ? 'warm-row' : ''}`;
+                rowDiv.innerHTML = `
+                    <div class="set-meta-tag">
+                        <span>${tagTitle}</span>
+                        <span class="prev-stat">${prevLabel}</span>
+                    </div>
+                    <div class="stepper-box">
+                        <button class="stepper-btn" onclick="stepWeight(${idx}, -2.5)">-</button>
+                        <input type="number" step="any" class="stepper-val ${trendClass}" value="${s.weight || ''}" placeholder="KG" onchange="onSetValChange(${idx}, 'weight', this.value)">
+                        <button class="stepper-btn" onclick="stepWeight(${idx}, 2.5)">+</button>
+                    </div>
+                    <div class="stepper-box">
+                        <button class="stepper-btn" onclick="stepReps(${idx}, -1)">-</button>
+                        <input type="number" class="stepper-val" value="${s.reps || ''}" placeholder="Reps" onchange="onSetValChange(${idx}, 'reps', this.value)">
+                        <button class="stepper-btn" onclick="stepReps(${idx}, 1)">+</button>
+                    </div>
+                    <button class="icon-btn" style="padding: 4px; color: var(--accent-rose);" onclick="removeSpecificSet(${idx})">✕</button>
+                `;
+                container.appendChild(rowDiv);
+
+                if (idx < ex.liveSets.length - 1) {
+                    const restDiv = document.createElement('div');
+                    restDiv.className = 'rest-line';
+                    restDiv.innerText = `Rest: 90s`;
+                    container.appendChild(restDiv);
+                }
+            });
+
+            // Toggle Footer Controls
+            const prevBtn = document.getElementById('workoutPrevBtn');
+            const nextBtn = document.getElementById('workoutNextBtn');
+            const finBtn = document.getElementById('workoutFinishBtn');
+
+            prevBtn.style.display = activeExIndex === 0 ? 'none' : 'inline-flex';
+            if (activeExIndex === activeSessionExercises.length - 1) {
+                nextBtn.style.display = 'none';
+                finBtn.style.display = 'inline-flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                finBtn.style.display = 'none';
+            }
+        }
+
+        function stepWeight(idx, delta) {
+            playTone('tick');
+            const s = activeSessionExercises[activeExIndex].liveSets[idx];
+            s.weight = Math.max(0, (parseFloat(s.weight) || 0) + delta);
+            renderActiveWorkoutExercise();
+        }
+
+        function stepReps(idx, delta) {
+            playTone('tick');
+            const s = activeSessionExercises[activeExIndex].liveSets[idx];
+            s.reps = Math.max(0, (parseInt(s.reps) || 0) + delta);
+            renderActiveWorkoutExercise();
+            if (!restTimerInterval && delta > 0) startRestCountdown();
+        }
+
+        function onSetValChange(idx, field, val) {
+            const s = activeSessionExercises[activeExIndex].liveSets[idx];
+            s[field] = parseFloat(val) || 0;
+            renderActiveWorkoutExercise();
+        }
+
+        function quickAddSet() {
+            playTone('tick');
+            activeSessionExercises[activeExIndex].liveSets.push({ type: 'main', weight: 0, reps: 0, prevW: 0, prevR: 0 });
+            renderActiveWorkoutExercise();
+        }
+
+        function quickAddWarmup() {
+            playTone('tick');
+            activeSessionExercises[activeExIndex].liveSets.unshift({ type: 'warm', weight: 0, reps: 0, prevW: 0, prevR: 0 });
+            renderActiveWorkoutExercise();
+        }
+
+        function removeSpecificSet(idx) {
+            playTone('tick');
+            activeSessionExercises[activeExIndex].liveSets.splice(idx, 1);
+            renderActiveWorkoutExercise();
+        }
+
+        function navigateActiveExercise(dir) {
+            playTone('tick'); triggerHaptic('tick');
+            activeExIndex += dir;
+            renderActiveWorkoutExercise();
+        }
+
+        function updateActiveExTitle() {
+            activeSessionExercises[activeExIndex].name = document.getElementById('activeExTitleInput').value;
+        }
+
+        function saveActiveExCue() {
+            activeSessionExercises[activeExIndex].note = document.getElementById('activeExCueInput').value;
+        }
+
+        function promptExitWorkout() {
+            if (confirm("Exit session? Progress for finished exercises will be saved.")) {
+                finishSessionStorage();
+                showScreen('screen-dashboard');
+            }
+        }
+
+        function completeActiveWorkout() {
+            playTone('alarm'); triggerHaptic('success');
+            finishSessionStorage();
+            alert("Workout Complete! Excellent effort! 🏆");
+            showScreen('screen-dashboard');
+        }
+
+        function finishSessionStorage() {
+            if (sessionInterval) { clearInterval(sessionInterval); sessionInterval = null; }
+            document.getElementById('activeStopwatchBadge').style.display = 'none';
+            stopRestCountdown();
+
+            const prog = getActiveSplit();
+            activeSessionExercises.forEach(ex => {
+                const warmW = ex.liveSets.filter(s => s.type === 'warm').map(s => s.weight);
+                const warmR = ex.liveSets.filter(s => s.type === 'warm').map(s => s.reps);
+                const mainW = ex.liveSets.filter(s => s.type === 'main').map(s => s.weight);
+                const mainR = ex.liveSets.filter(s => s.type === 'main').map(s => s.reps);
+
+                if (mainW.length > 0) {
+                    if (!ex.history) ex.history = [];
+                    ex.history.push({
+                        date: Date.now(),
+                        warmupWeights: warmW,
+                        warmupReps: warmR,
+                        weights: mainW,
+                        reps: mainR
+                    });
+                    if (ex.history.length > 12) ex.history = ex.history.slice(-12);
+                }
+            });
+
+            prog[appData.currentDayIndex].exercises = activeSessionExercises;
+            persistAppState();
+        }
+
+        // --- Rest Timer Floating Dock Engine ---
+        let restTimerSec = 90;
+        let restTimerTotal = 90;
+        let restTimerInterval = null;
+
+        function updateRestTimerUI() {
+            const m = Math.floor(restTimerSec / 60).toString().padStart(2, '0');
+            const s = (restTimerSec % 60).toString().padStart(2, '0');
+            document.getElementById('restTimerDisplay').innerText = `${m}:${s}`;
+            
+            const fill = document.getElementById('restTickerProgressFill');
+            const pct = restTimerTotal > 0 ? (restTimerSec / restTimerTotal) * 100 : 0;
+            fill.style.width = `${pct}%`;
+
+            const btn = document.getElementById('restPlayBtn');
+            btn.innerText = restTimerInterval ? "STOP" : "START";
+            btn.className = restTimerInterval ? "ui-btn btn-rose" : "ui-btn btn-sky";
+        }
+
+        function toggleRestTimer() {
+            if (restTimerInterval) stopRestCountdown();
+            else startRestCountdown();
+        }
+
+        function startRestCountdown() {
+            playTone('tick');
+            stopRestCountdown();
+            restTimerSec = appData.defaultRestSec;
+            restTimerTotal = appData.defaultRestSec;
+            updateRestTimerUI();
+
+            restTimerInterval = setInterval(() => {
+                restTimerSec--;
+                if (restTimerSec <= 0) {
+                    stopRestCountdown();
+                    playTone('alarm');
+                    triggerHaptic('alarm');
+                }
+                updateRestTimerUI();
+            }, 1000);
+        }
+
+        function stopRestCountdown() {
+            if (restTimerInterval) { clearInterval(restTimerInterval); restTimerInterval = null; }
+            restTimerSec = appData.defaultRestSec;
+            updateRestTimerUI();
+        }
+
+        function adjustTimerSecs(delta) {
+            playTone('tick');
+            appData.defaultRestSec = Math.max(15, appData.defaultRestSec + delta);
+            restTimerSec = appData.defaultRestSec;
+            restTimerTotal = appData.defaultRestSec;
+            persistAppState();
+            updateRestTimerUI();
+        }
+
+        // --- Cardio Engine ---
+        let cardioTimerInterval = null;
+        let cardioTotalSec = 1800;
+        let cardioRemainingSec = 1800;
+
+        function startCardioSession() {
+            playTone('tick'); triggerHaptic('success');
+            const mins = parseInt(document.getElementById('cDurationInput').value) || 30;
+            cardioTotalSec = mins * 60;
+            cardioRemainingSec = cardioTotalSec;
+
+            showScreen('screen-cardio-active');
+            if (cardioTimerInterval) clearInterval(cardioTimerInterval);
+
+            cardioTimerInterval = setInterval(() => {
+                cardioRemainingSec--;
+                const m = Math.floor(cardioRemainingSec / 60).toString().padStart(2, '0');
+                const s = (cardioRemainingSec % 60).toString().padStart(2, '0');
+                document.getElementById('cardioMainTimer').innerText = `${m}:${s}`;
+                
+                const pct = (cardioRemainingSec / cardioTotalSec) * 100;
+                document.getElementById('cardioTotalProgress').style.width = `${pct}%`;
+
+                if (cardioRemainingSec <= 0) {
+                    clearInterval(cardioTimerInterval);
+                    playTone('alarm'); triggerHaptic('alarm');
+                    alert("Cardio Session Completed! Great stamina!");
+                    showScreen('screen-dashboard');
+                }
+            }, 1000);
+        }
+
+        function endCardioPrematurely() {
+            if (confirm("End cardio session?")) {
+                if (cardioTimerInterval) clearInterval(cardioTimerInterval);
+                showScreen('screen-dashboard');
+            }
+        }
+
+        // --- Program Editor Screen ---
+        let editorDayIdx = 0;
+        function openProgramEditor() {
+            editorDayIdx = appData.currentDayIndex || 0;
+            renderProgramEditor();
+            showScreen('screen-program-editor');
+        }
+
+        function renderProgramEditor() {
+            const prog = getActiveSplit();
+            if (!prog[editorDayIdx]) editorDayIdx = 0;
+            const currentDay = prog[editorDayIdx];
+
+            document.getElementById('progEditorDayTitle').innerText = `Day ${currentDay ? currentDay.day : 1}`;
+            const list = document.getElementById('progEditorListContainer');
+            list.innerHTML = '';
+
+            if (currentDay && currentDay.exercises) {
+                currentDay.exercises.forEach((ex, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'ui-card';
+                    card.style.marginBottom = '6px';
+                    card.style.padding = '8px';
+                    card.innerHTML = `
+                        <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+                            <input type="text" class="ui-input" value="${ex.name}" style="flex: 1; font-weight: 700;" onchange="updateProgExName(${idx}, this.value)">
+                            <button class="icon-btn" style="color: var(--accent-rose);" onclick="removeProgEx(${idx})">✕</button>
+                        </div>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <span style="font-size: 10.5px; color: var(--text-dim); font-weight: 700;">Sets:</span>
+                            <input type="number" class="ui-input" value="${ex.sets}" style="width: 45px; text-align: center; padding: 3px;" onchange="updateProgExSets(${idx}, this.value)">
+                            <span style="font-size: 10.5px; color: var(--accent-amber); font-weight: 700;">Warm:</span>
+                            <input type="number" class="ui-input" value="${ex.warmupSets || 0}" style="width: 45px; text-align: center; padding: 3px;" onchange="updateProgExWarm(${idx}, this.value)">
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            }
+        }
+
+        function navProgEditorDay(dir) {
+            const prog = getActiveSplit();
+            editorDayIdx += dir;
+            if (editorDayIdx < 0) editorDayIdx = prog.length - 1;
+            if (editorDayIdx >= prog.length) editorDayIdx = 0;
+            renderProgramEditor();
+        }
+
+        function addDayToProgram() {
+            const prog = getActiveSplit();
+            prog.push({ day: prog.length + 1, exercises: [] });
+            editorDayIdx = prog.length - 1;
+            persistAppState();
+            renderProgramEditor();
+            refreshDashboardDay();
+        }
+
+        function deleteDayFromProgram() {
+            const prog = getActiveSplit();
+            if (prog.length <= 1) return alert("Must keep at least 1 day.");
+            prog.splice(editorDayIdx, 1);
+            prog.forEach((d, i) => d.day = i + 1);
+            editorDayIdx = Math.max(0, editorDayIdx - 1);
+            persistAppState();
+            renderProgramEditor();
+            refreshDashboardDay();
+        }
+
+        function addExerciseToActiveProgram() {
+            const prog = getActiveSplit();
+            prog[editorDayIdx].exercises.push({ name: 'New Exercise', sets: 3, warmupSets: 0, note: '', history: [] });
+            persistAppState();
+            renderProgramEditor();
+            refreshDashboardDay();
+        }
+
+        function updateProgExName(idx, val) { getActiveSplit()[editorDayIdx].exercises[idx].name = val; persistAppState(); }
+        function updateProgExSets(idx, val) { getActiveSplit()[editorDayIdx].exercises[idx].sets = parseInt(val) || 1; persistAppState(); }
+        function updateProgExWarm(idx, val) { getActiveSplit()[editorDayIdx].exercises[idx].warmupSets = parseInt(val) || 0; persistAppState(); }
+        function removeProgEx(idx) { getActiveSplit()[editorDayIdx].exercises.splice(idx, 1); persistAppState(); renderProgramEditor(); refreshDashboardDay(); }
+
+        // --- 1RM Tool ---
+        function compute1RM() {
+            const w = parseFloat(document.getElementById('rmCalcWeight').value) || 0;
+            const r = parseFloat(document.getElementById('rmCalcReps').value) || 0;
+            let rm = 0;
+            if (r === 1) rm = w;
+            else if (r > 1) rm = w * (1 + (r / 30));
+            document.getElementById('rmCalcResult').innerText = `${rm.toFixed(1)} kg`;
+        }
+
+        // --- Analytics / PR Graph ---
+        function openAnalyticsHub() {
+            const select = document.getElementById('analyticsExSelect');
+            select.innerHTML = '';
+            const prog = getActiveSplit();
+            
+            let allExercises = [];
+            prog.forEach(d => d.exercises.forEach(e => allExercises.push(e)));
+
+            if (allExercises.length === 0) return alert("No exercises recorded yet.");
+
+            allExercises.forEach(e => {
+                const opt = document.createElement('option');
+                opt.value = e.name;
+                opt.innerText = e.name;
+                select.appendChild(opt);
+            });
+
+            renderAnalyticsGraph();
+            showScreen('screen-analytics');
+        }
+
+        function renderAnalyticsGraph() {
+            const name = document.getElementById('analyticsExSelect').value;
+            const prog = getActiveSplit();
+            let targetEx = null;
+            prog.forEach(d => d.exercises.forEach(e => { if (e.name === name) targetEx = e; }));
+
+            const svg = document.getElementById('analyticsSvg');
+            svg.innerHTML = '';
+
+            if (!targetEx || !targetEx.history || targetEx.history.length === 0) {
+                document.getElementById('chartStartVal').innerText = "Start: -";
+                document.getElementById('chartPeakVal').innerText = "Peak: -";
+                svg.innerHTML = `<text x="200" y="80" text-anchor="middle" fill="#64748b" font-size="12">No workout history logged yet</text>`;
+                return;
+            }
+
+            const points = targetEx.history.map(h => Math.max(...(h.weights || [0])));
+            const startW = points[0];
+            const peakW = Math.max(...points);
+
+            document.getElementById('chartStartVal').innerText = `Start: ${startW}kg`;
+            document.getElementById('chartPeakVal').innerText = `Peak: ${peakW}kg`;
+
+            const minW = Math.min(...points) * 0.85;
+            const maxW = peakW * 1.15;
+            const range = (maxW - minW) || 1;
+
+            let pathD = '';
+            points.forEach((p, i) => {
+                const x = 30 + (i / Math.max(1, points.length - 1)) * 340;
+                const y = 140 - ((p - minW) / range) * 120;
+                if (i === 0) pathD += `M ${x} ${y}`;
+                else pathD += ` L ${x} ${y}`;
+                svg.innerHTML += `<circle cx="${x}" cy="${y}" r="4" fill="#0ea5e9" /><text x="${x}" y="${y-8}" text-anchor="middle" fill="#f8fafc" font-size="10" font-weight="700">${p}k</text>`;
+            });
+
+            svg.innerHTML = `<path d="${pathD}" fill="none" stroke="#0ea5e9" stroke-width="2.5" />` + svg.innerHTML;
+        }
+
+        // --- Modals & Programs Hub ---
+        function toggleProgramsModal() {
+            const m = document.getElementById('programsModal');
+            m.classList.toggle('active');
+            if (m.classList.contains('active')) renderProgramsModalList();
+        }
+
+        function renderProgramsModalList() {
+            const list = document.getElementById('programsModalList');
+            list.innerHTML = '';
+            appData.programs.forEach(p => {
+                const isCur = p.id === appData.activeProgramId;
+                const div = document.createElement('div');
+                div.className = 'ui-card';
+                div.style.marginBottom = '4px';
+                div.style.padding = '6px 8px';
+                div.style.display = 'flex';
+                div.style.justifyContent = 'space-between';
+                div.style.alignItems = 'center';
+                div.innerHTML = `
+                    <span style="font-size: 12px; font-weight: 700; ${isCur ? 'color: var(--accent-emerald);' : ''}">${p.name} ${isCur ? '✓' : ''}</span>
+                    <button class="icon-btn" style="padding: 3px 6px;" onclick="switchActiveRoutine('${p.id}')">Select</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function switchActiveRoutine(id) {
+            appData.activeProgramId = id;
+            appData.currentDayIndex = 0;
+            persistAppState();
+            renderProgramsModalList();
+            refreshDashboardDay();
+        }
+
+        function addNewProgramRoutine() {
+            const input = document.getElementById('newProgramNameInput');
+            const val = input.value.trim();
+            if (!val) return;
+            const newId = 'prog_' + Date.now();
+            appData.programs.push({ id: newId, name: val, program: [{ day: 1, exercises: [] }] });
+            appData.activeProgramId = newId;
+            input.value = '';
+            persistAppState();
+            renderProgramsModalList();
+            refreshDashboardDay();
+        }
+
+        function exportAppStateBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", `gym_pro_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function importAppStateBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.userName || parsed.programs) {
+                        appData = parsed;
+                        persistAppState();
+                        location.reload();
+                    }
+                } catch(err) { alert("Invalid backup JSON."); }
+            };
+            reader.readAsText(file);
+        }
+
+        function openHistoryForActiveEx() {
+            const ex = activeSessionExercises[activeExIndex];
+            document.getElementById('historyModalTitle').innerText = ex.name;
+            const box = document.getElementById('historyModalContent');
+            box.innerHTML = '';
+            if (!ex.history || ex.history.length === 0) {
+                box.innerHTML = `<p style="font-size: 11px; color: var(--text-dim);">No previous logs found.</p>`;
+            } else {
+                [...ex.history].reverse().forEach(h => {
+                    const dStr = new Date(h.date).toLocaleDateString();
+                    const setsStr = (h.weights || []).map((w, i) => `${w}kg×${h.reps[i]}`).join(', ');
+                    box.innerHTML += `
+                        <div class="ui-card" style="margin-bottom: 4px; padding: 6px 8px;">
+                            <span style="font-size: 10px; color: var(--accent-sky); font-weight: 800;">${dStr}</span>
+                            <div style="font-size: 11.5px; font-weight: 600; margin-top: 2px;">${setsStr}</div>
+                        </div>
+                    `;
+                });
+            }
+            toggleHistoryModal(true);
+        }
+
+        function toggleHistoryModal(show) {
+            document.getElementById('historyModal').classList.toggle('active', show);
+        }
+
+        function resetStatsHistory() {
+            if (confirm("Reset historical records for this routine?")) {
+                getActiveSplit().forEach(d => d.exercises.forEach(e => e.history = []));
+                persistAppState();
+                alert("History reset successfully.");
+            }
+        }
+
+        function deleteActiveSplit() {
+            if (confirm("Delete current routine split?")) {
+                getActiveSplit().length = 0;
+                persistAppState();
+                refreshDashboardDay();
+            }
+        }
+
+        window.onload = loadAppState;
+    </script>
+</body>
+</html>
