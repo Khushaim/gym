@@ -910,6 +910,33 @@
             color: var(--secondary-text);
         }
 
+        /* Move Exercise Control */
+        .move-exercise-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px dashed var(--glass-border);
+        }
+        .move-exercise-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .move-exercise-select {
+            flex: 1;
+            min-width: 0;
+            padding: 5px 7px !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+            border-radius: 8px !important;
+            color: var(--secondary-text) !important;
+            background: var(--secondary-glass) !important;
+            border-color: var(--secondary-border) !important;
+        }
+
         /* Dynamic Indicator Colors */
         .green { color: var(--primary-text) !important; border-color: var(--primary-border) !important; background: var(--primary-glass) !important; }
         .red { color: var(--danger-text) !important; border-color: var(--danger-border) !important; background: var(--danger-glass) !important; }
@@ -3505,10 +3532,44 @@
                     <input type="number" value="${ex.warmupSets || 0}" onchange="editProgExWarmupSets(${index}, this.value)" style="width: 44px; text-align: center; padding: 2px;" min="0">
                     <button class="btn-subtle" style="flex: 1; padding: 4px; font-size: 10px;" onclick="openHistoryModalForProg(${showProgDayIndex}, ${index})">📊 History</button>
                 </div>
+                <div class="move-exercise-row">
+                    <span class="move-exercise-label">↗ Move to Day</span>
+                    <select class="move-exercise-select" onchange="moveProgExToDay(${index}, this.value)">
+                        <option value="" selected>Choose a day…</option>
+                        ${prog.map((d, dayIndex) => dayIndex !== showProgDayIndex ? `<option value="${dayIndex}">Day ${d.day}</option>` : '').join('')}
+                    </select>
+                </div>
                 ${supersetSection}
             `;
             list.appendChild(div);
         });
+    }
+
+    function moveProgExToDay(exIndex, destinationDayIndex) {
+        const prog = getCurrentProgram();
+        const fromDayIndex = showProgDayIndex;
+        const toDayIndex = parseInt(destinationDayIndex);
+
+        if (!Number.isInteger(toDayIndex) || toDayIndex < 0 || toDayIndex >= prog.length || toDayIndex === fromDayIndex) {
+            return;
+        }
+
+        const sourceDay = prog[fromDayIndex];
+        const destinationDay = prog[toDayIndex];
+        if (!sourceDay || !destinationDay || !sourceDay.exercises || !destinationDay.exercises) return;
+        if (exIndex < 0 || exIndex >= sourceDay.exercises.length) return;
+
+        // Move the exact exercise object. This intentionally preserves EVERYTHING:
+        // history/date logs, currentEntry, notes, sets, warmups, superset data,
+        // view mode, Each flag, and any future properties added to the exercise.
+        const [movedExercise] = sourceDay.exercises.splice(exIndex, 1);
+        destinationDay.exercises.push(movedExercise);
+
+        playSound('pop');
+        saveData();
+
+        // Keep the Edit Split view on the source day after the move.
+        renderShowProgram();
     }
 
     function editProgExName(idx, val) { const prog = getCurrentProgram(); prog[showProgDayIndex].exercises[idx].name = val; saveData(); }
