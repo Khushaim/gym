@@ -684,7 +684,7 @@
             100% { transform: scale(1.04); filter: brightness(1.2); }
         }
 
-        /* ================= NEW COMPACT ULTRA-SLEEK IN-APP NUMPAD ================= */
+        /* ================= COMPACT ULTRA-SLEEK IN-APP NUMPAD ================= */
         .integrated-numpad-wrap {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -803,7 +803,7 @@
             box-shadow: inset 0 0 0 1px var(--secondary-border);
         }
 
-        /* Full-height side rest timer: visual only, never blocks interaction. */
+        /* Full-height side rest timer */
         .workout-timer-overlay {
             position: fixed;
             inset: 0;
@@ -870,8 +870,17 @@
             margin-bottom: 6px;
         }
 
-        /* Robust Smooth Touch & Mouse Drag & Drop Styles */
+        /* 120Hz Smooth Scrolling & Layout Isolation for Edit Split */
+        #programDetailsList {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            will-change: scroll-position;
+            transform: translateZ(0);
+        }
+
         .draggable-ex-card {
+            contain: content;
+            transform: translateZ(0);
             transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.15s ease, opacity 0.15s ease;
             position: relative;
             user-select: none;
@@ -910,31 +919,47 @@
             color: var(--secondary-text);
         }
 
-        /* Move Exercise Control */
-        .move-exercise-row {
+        /* Move Exercise Inline Controls (Integrated in same row as SS) */
+        .ss-move-combined-row {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 6px;
-            margin-top: 6px;
-            padding-top: 6px;
+            margin-top: 5px;
+            padding-top: 5px;
             border-top: 1px dashed var(--glass-border);
+            width: 100%;
         }
-        .move-exercise-label {
-            font-size: 9.5px;
+        .move-inline-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+        .move-inline-label {
+            font-size: 9px;
             font-weight: 800;
             color: var(--text-muted);
             white-space: nowrap;
         }
-        .move-exercise-select {
+        .move-inline-select {
             flex: 1;
             min-width: 0;
-            padding: 5px 7px !important;
-            font-size: 10px !important;
+            padding: 4px 6px !important;
+            font-size: 9.5px !important;
             font-weight: 800 !important;
             border-radius: 8px !important;
             color: var(--secondary-text) !important;
             background: var(--secondary-glass) !important;
             border-color: var(--secondary-border) !important;
+            height: 26px;
+        }
+        .ss-buttons-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         /* Dynamic Indicator Colors */
@@ -999,8 +1024,6 @@
             transform: scale(1.15);
         }
 
-        /* High-refresh-rate polish: target 120fps where the device/display supports it.
-           CSS cannot force a 120Hz panel, but these hints keep animated layers GPU-friendly. */
         @media (min-resolution: 110dpi) {
             .screen, button, .pill-btn, .chip, .glass-card, .numpad-key, .compact-timer-card {
                 will-change: transform, opacity;
@@ -1281,7 +1304,7 @@
                 <!-- Live Sets View -->
                 <div id="setsContainer" class="set-list-wrap"></div>
 
-                <!-- NEW: Compact Ultra-Sleek In-App Numpad -->
+                <!-- Integrated Compact Numpad -->
                 <div class="integrated-numpad-wrap">
                     <button class="numpad-key" onclick="numpadPress('1')">1</button>
                     <button class="numpad-key" onclick="numpadPress('2')">2</button>
@@ -1321,7 +1344,7 @@
                     </div>
                 </div>
 
-                <!-- Navigation Bottom Bar (Red Exit Button) -->
+                <!-- Navigation Bottom Bar -->
                 <div style="display: flex; gap: 6px;">
                     <button id="btnPrevEx" class="btn-subtle" style="flex: 1; padding: 8px;" onclick="navigateWorkout(-1)">◀ Prev</button>
                     <button class="btn-danger" style="padding: 8px 12px; font-weight: 800;" onclick="exitWorkout()">Exit</button>
@@ -1528,7 +1551,7 @@
             </div>
         </div>
 
-        <!-- SCREEN: SHOW / EDIT PROGRAM -->
+        <!-- SCREEN: SHOW / EDIT PROGRAM (120Hz Fast Scroll View) -->
         <div id="screen-show-program" class="screen">
             <div class="fit-content">
                 <div class="glass-card" style="padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
@@ -1906,21 +1929,20 @@
             wakeLockObj = null;
         }
     }
+
+    // Background Energy Management
     document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'visible') {
             if (timerInterval !== null || cardioInterval !== null) {
                 await requestWakeLock();
             }
-        }
-    });
-
-    // Background-aware timer fallback: no hidden audio keep-alive loop.
-    // Foreground uses WebAudio; background relies on timestamp accuracy + notification/vibration.
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
             if (timerInterval) updateTimerDisplay();
+            startUpdateCheck();
             return;
+        } else {
+            stopUpdateCheck();
         }
+
         if (timerInterval) {
             const remaining = Math.max(0, Math.round((timerTargetTimestamp - Date.now()) / 1000));
             if (remaining <= 0) {
@@ -2943,7 +2965,7 @@
         saveData(); clearWorkoutDraft(); resetTimer(); document.getElementById('summaryModal').classList.remove('active'); route();
     }
 
-    // Rest Timer Logic
+    // Rest Timer Logic with Transition States
     let timerTime = 90; let timerTotal = 90; let timerInterval = null; let timerTargetTimestamp = 0;
     let restQuarterNotified = false;
 
@@ -2993,8 +3015,6 @@
         if (display) display.className = `timer-numeric ${toneClass}`;
         if (linearFill) linearFill.className = `linear-timer-bar-fill ${toneClass}`;
 
-        // Full-height side bars appear only while the rest timer is actively running during a workout.
-        // They are purely visual and never block taps because the overlay uses pointer-events:none.
         const workoutIsActive = !!document.getElementById('screen-workout')?.classList.contains('active');
         if (timerOverlay) {
             timerOverlay.classList.toggle('active', !!timerInterval && workoutIsActive);
@@ -3050,7 +3070,6 @@
                     timerTime = appData.defaultTimer; timerTotal = appData.defaultTimer;
                     releaseWakeLock();
                 }
-                // Paint every display frame (up to the device's refresh rate, including 120Hz).
                 updateTimerDisplay();
                 if (timerInterval) requestAnimationFrame(tickTimer);
             };
@@ -3222,7 +3241,6 @@
                 progressTitle.innerText = "💧 WATER BREAK TIME!"; progressTitle.style.color = "var(--warning-text)";
                 const restRemainingSec = Math.max(0, activeRest.endSec - elapsedSec);
                 const restPercent = (restRemainingSec / cardioRestDurationSec) * 100;
-                // The linear rest bar is intentionally dormant until the break actually begins.
                 stepBarFill.style.width = `${Math.min(100, Math.max(0, restPercent))}%`;
                 const rm = Math.floor(restRemainingSec / 60).toString().padStart(2, '0');
                 const rs = (restRemainingSec % 60).toString().padStart(2, '0');
@@ -3231,16 +3249,10 @@
                 progressTitle.innerText = "Time Until Next Rest"; progressTitle.style.color = "var(--secondary-text)";
                 const timeUntilRest = Math.max(0, nextUpcomingRest.startSec - elapsedSec);
 
-                // During work, the linear bar now represents the countdown TO the next rest.
-                // It starts full immediately after the previous rest (or session start)
-                // and decreases smoothly to 0% as the next rest approaches.
                 const previousEndSec = cardioSchedule
                     .filter(r => r.endSec <= elapsedSec)
                     .reduce((maxEnd, r) => Math.max(maxEnd, r.endSec), 0);
-                const workWindowSec = Math.max(
-                    1,
-                    nextUpcomingRest.startSec - previousEndSec
-                );
+                const workWindowSec = Math.max(1, nextUpcomingRest.startSec - previousEndSec);
                 const workProgressPercent = (timeUntilRest / workWindowSec) * 100;
                 stepBarFill.style.width = `${Math.min(100, Math.max(0, workProgressPercent))}%`;
 
@@ -3322,7 +3334,7 @@
     }
     function closeCardioHistory() { playSound('click'); document.getElementById('cardioHistoryModal').classList.remove('active'); }
 
-    // --- Dual Engine (Touch + Mouse) Drag & Drop Reordering for Edit View ---
+    // --- Dual Engine Drag & Drop Reordering for Edit View ---
     let showProgDayIndex = 0;
     let dragSourceIdx = null;
 
@@ -3485,13 +3497,26 @@
             const isLast = index === dayData.exercises.length - 1;
             const hasSuperSet = !!ex.supersetName;
 
-            let supersetSection = '';
+            const moveSelectHTML = `
+                <div class="move-inline-wrapper">
+                    <span class="move-inline-label">↗ Move:</span>
+                    <select class="move-inline-select" onchange="moveProgExToDay(${index}, this.value)">
+                        <option value="" selected>Day…</option>
+                        ${prog.map((d, dayIndex) => dayIndex !== showProgDayIndex ? `<option value="${dayIndex}">Day ${d.day}</option>` : '').join('')}
+                    </select>
+                </div>
+            `;
+
+            let ssRowContent = '';
             if (hasSuperSet) {
-                supersetSection = `
+                ssRowContent = `
                     <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--accent-border);">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
                             <span style="font-size: 10px; font-weight: 800; color: var(--accent);">⚡ LINKED SUPER SET:</span>
-                            <button class="btn-subtle" style="padding: 2px 6px; font-size: 9.5px; color: var(--danger-text);" onclick="unlinkSuperSet(${index})">⛓️ Unlink</button>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                ${moveSelectHTML}
+                                <button class="btn-subtle" style="padding: 2px 6px; font-size: 9.5px; color: var(--danger-text);" onclick="unlinkSuperSet(${index})">⛓️ Unlink</button>
+                            </div>
                         </div>
                         <div style="display: flex; gap: 4px; align-items: center; margin-bottom: 4px;">
                             <input type="text" value="${ex.supersetName}" onchange="editProgExSupersetName(${index}, this.value)" style="flex:1; font-weight:700; font-size: 12px; padding: 4px 6px;">
@@ -3504,10 +3529,13 @@
                     </div>
                 `;
             } else {
-                supersetSection = `
-                    <div style="margin-top: 5px; display: flex; gap: 4px; justify-content: flex-end;">
-                        <button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--accent); border-color: var(--accent-border);" onclick="attachNewSuperSet(${index})">+ Attach New SS</button>
-                        ${!isLast ? `<button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--secondary-text); border-color: var(--secondary-border);" onclick="linkSuperSetWithNext(${index})">🔗 Link with Next</button>` : ''}
+                ssRowContent = `
+                    <div class="ss-move-combined-row">
+                        ${moveSelectHTML}
+                        <div class="ss-buttons-group">
+                            <button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--accent); border-color: var(--accent-border);" onclick="attachNewSuperSet(${index})">+ Attach SS</button>
+                            ${!isLast ? `<button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--secondary-text); border-color: var(--secondary-border);" onclick="linkSuperSetWithNext(${index})">🔗 Link Next</button>` : ''}
+                        </div>
                     </div>
                 `;
             }
@@ -3532,14 +3560,7 @@
                     <input type="number" value="${ex.warmupSets || 0}" onchange="editProgExWarmupSets(${index}, this.value)" style="width: 44px; text-align: center; padding: 2px;" min="0">
                     <button class="btn-subtle" style="flex: 1; padding: 4px; font-size: 10px;" onclick="openHistoryModalForProg(${showProgDayIndex}, ${index})">📊 History</button>
                 </div>
-                <div class="move-exercise-row">
-                    <span class="move-exercise-label">↗ Move to Day</span>
-                    <select class="move-exercise-select" onchange="moveProgExToDay(${index}, this.value)">
-                        <option value="" selected>Choose a day…</option>
-                        ${prog.map((d, dayIndex) => dayIndex !== showProgDayIndex ? `<option value="${dayIndex}">Day ${d.day}</option>` : '').join('')}
-                    </select>
-                </div>
-                ${supersetSection}
+                ${ssRowContent}
             `;
             list.appendChild(div);
         });
@@ -3559,16 +3580,11 @@
         if (!sourceDay || !destinationDay || !sourceDay.exercises || !destinationDay.exercises) return;
         if (exIndex < 0 || exIndex >= sourceDay.exercises.length) return;
 
-        // Move the exact exercise object. This intentionally preserves EVERYTHING:
-        // history/date logs, currentEntry, notes, sets, warmups, superset data,
-        // view mode, Each flag, and any future properties added to the exercise.
         const [movedExercise] = sourceDay.exercises.splice(exIndex, 1);
         destinationDay.exercises.push(movedExercise);
 
         playSound('pop');
         saveData();
-
-        // Keep the Edit Split view on the source day after the move.
         renderShowProgram();
     }
 
@@ -3584,10 +3600,15 @@
         saveData(); renderShowProgram();
     }
 
-    // Auto-Reload from GitHub Repo
-    const GITHUB_USERNAME = 'Khushaim'; const GITHUB_REPO = 'gym'; const CHECK_INTERVAL_MS = 15000;
+    // High-Efficiency Auto-Reload Polling (Every 10 minutes)
+    const GITHUB_USERNAME = 'Khushaim'; 
+    const GITHUB_REPO = 'gym'; 
+    const CHECK_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
     let currentCommitSha = null;
+    let updatePollingInterval = null;
+
     async function checkForUpdates() {
+        if (document.hidden) return;
         try {
             const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits?per_page=1&t=${Date.now()}`;
             const res = await fetch(url, { cache: 'no-store' });
@@ -3604,8 +3625,21 @@
             }
         } catch (err) {}
     }
-    checkForUpdates(); setInterval(checkForUpdates, CHECK_INTERVAL_MS);
 
+    function startUpdateCheck() {
+        if (updatePollingInterval) clearInterval(updatePollingInterval);
+        checkForUpdates();
+        updatePollingInterval = setInterval(checkForUpdates, CHECK_INTERVAL_MS);
+    }
+
+    function stopUpdateCheck() {
+        if (updatePollingInterval) {
+            clearInterval(updatePollingInterval);
+            updatePollingInterval = null;
+        }
+    }
+
+    startUpdateCheck();
     window.onload = loadData;
 </script>
 </body>
