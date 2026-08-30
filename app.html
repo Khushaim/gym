@@ -803,101 +803,63 @@
             box-shadow: inset 0 0 0 1px var(--secondary-border);
         }
 
-        /* Center workout rest-timer overlay: visual only, never blocks interaction. */
+        /* Full-height side rest timer: visual only, never blocks interaction. */
         .workout-timer-overlay {
             position: fixed;
-            left: 50%;
-            top: 50%;
-            width: 154px;
-            height: 154px;
-            transform: translate(-50%, -50%);
+            inset: 0;
             z-index: 10;
             pointer-events: none;
             opacity: 0;
             visibility: hidden;
             transition: opacity .22s ease, visibility .22s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .workout-timer-overlay.active {
             opacity: 1;
             visibility: visible;
         }
-        .workout-timer-glass {
+        .workout-timer-side {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            overflow: hidden;
+            background: color-mix(in srgb, var(--glass-border-subtle) 14%, transparent);
+            border-left: 1px solid color-mix(in srgb, var(--glass-border) 10%, transparent);
+            border-right: 1px solid color-mix(in srgb, var(--glass-border) 10%, transparent);
+            box-shadow: inset 0 0 8px rgba(255,255,255,.025);
+            opacity: .96;
+        }
+        .workout-timer-side.left { left: 0; }
+        .workout-timer-side.right { right: 0; }
+        .workout-timer-side-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: top center;
+            transform: scaleY(1);
+            background: var(--primary-text);
+            opacity: .94;
+            border-radius: 999px;
+            transition: transform .18s linear, background-color .35s ease, opacity .25s ease;
+        }
+        .workout-timer-side-fill::after {
+            content: '';
             position: absolute;
             inset: 0;
-            border-radius: 50%;
-            background: color-mix(in srgb, var(--glass-card-bg) 8%, transparent);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
-            border: 1px solid color-mix(in srgb, var(--glass-border) 12%, transparent);
+            background: linear-gradient(90deg, rgba(255,255,255,.12), transparent 45%, rgba(255,255,255,.08));
+            opacity: .28;
         }
-        .workout-timer-ring {
-            position: absolute;
-            inset: 8px;
-            width: 138px;
-            height: 138px;
-            transform: rotate(-90deg);
-            overflow: visible;
+        .workout-timer-overlay.state-half .workout-timer-side-fill { background: var(--warning-text); opacity: .64; }
+        .workout-timer-overlay.state-quarter .workout-timer-side-fill { background: var(--danger-text); opacity: .70; }
+        [data-theme="dark"] .workout-timer-side {
+            background: rgba(255,255,255,.055);
+            border-color: rgba(255,255,255,.045);
         }
-        .workout-timer-ring-track, .workout-timer-ring-progress {
-            fill: none;
-            stroke-width: 5;
-        }
-        .workout-timer-ring-track {
-            stroke: var(--glass-border-subtle);
-            opacity: 0.22;
-        }
-        .workout-timer-ring-progress {
-            stroke: var(--primary-text);
-            stroke-linecap: round;
-            opacity: 0.48;
-            stroke-dasharray: 408.4;
-            stroke-dashoffset: 0;
-            transition: stroke .35s ease, stroke-dashoffset .25s linear, filter .35s ease;
-        }
-        .workout-timer-overlay.state-half .workout-timer-ring-progress {
-            stroke: var(--warning-text);
-            filter: drop-shadow(0 0 5px rgba(251,191,36,.25));
-        }
-        .workout-timer-overlay.state-quarter .workout-timer-ring-progress {
-            stroke: var(--danger-text);
-            filter: drop-shadow(0 0 6px rgba(244,63,94,.3));
-        }
-        .workout-timer-center {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            font-family: var(--font-mono);
-        }
-        .workout-timer-label {
-            font-family: var(--font-main);
-            font-size: 9px;
-            font-weight: 900;
-            letter-spacing: 1.4px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            opacity: 0.48;
-            margin-bottom: 2px;
-        }
-        .workout-timer-time {
-            font-family: var(--font-mono);
-            font-size: 25px;
-            line-height: 1;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--primary-text);
-            opacity: 0.55;
-            transition: color .35s ease, filter .35s ease;
-        }
-        .workout-timer-overlay.state-half .workout-timer-time { color: var(--warning-text); }
-        .workout-timer-overlay.state-quarter .workout-timer-time { color: var(--danger-text); animation: pulseGlow .8s infinite alternate; }
-
-        [data-theme="dark"] .workout-timer-glass { background: rgba(2,8,23,.045); border-color: rgba(255,255,255,.035); }
-        /* ECO should reduce decorative effects, but NEVER hide the active rest timer. */
-        [data-powersave="true"] .workout-timer-overlay { display: flex !important; }
-        [data-powersave="true"] .workout-timer-glass { backdrop-filter: none; -webkit-backdrop-filter: none; }
+        [data-theme="dark"] .workout-timer-side-fill { opacity: .92; }
+        [data-powersave="true"] .workout-timer-overlay { display: block !important; }
+        [data-powersave="true"] .workout-timer-side-fill { box-shadow: none; }
 
         /* Super Set Combo Box In Edit View */
         .superset-linked-container {
@@ -1072,15 +1034,8 @@
 <div class="unified-glow-sphere uglow-2"></div>
 
 <div id="workoutTimerOverlay" class="workout-timer-overlay" aria-hidden="true">
-    <div class="workout-timer-glass"></div>
-    <svg class="workout-timer-ring" viewBox="0 0 138 138" aria-hidden="true">
-        <circle class="workout-timer-ring-track" cx="69" cy="69" r="65"></circle>
-        <circle id="workoutTimerRingProgress" class="workout-timer-ring-progress" cx="69" cy="69" r="65"></circle>
-    </svg>
-    <div class="workout-timer-center">
-        <div class="workout-timer-label">Rest Timer</div>
-        <div id="workoutTimerOverlayTime" class="workout-timer-time">01:30</div>
-    </div>
+    <div class="workout-timer-side left"><div id="workoutTimerSideLeftFill" class="workout-timer-side-fill"></div></div>
+    <div class="workout-timer-side right"><div id="workoutTimerSideRightFill" class="workout-timer-side-fill"></div></div>
 </div>
 
 <div id="appViewport">
@@ -1932,7 +1887,7 @@
         }
     });
 
-    // Background-aware timer fallback: no silent/inaudible audio keep-alive loop.
+    // Background-aware timer fallback: no hidden audio keep-alive loop.
     // Foreground uses WebAudio; background relies on timestamp accuracy + notification/vibration.
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
@@ -1957,6 +1912,8 @@
     // Audio & Vibration System
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx;
+    let audioSuspendTimeout = null;
+    let activeSoundNodes = new Set();
     function initAudio() {
         if (!audioCtx) audioCtx = new AudioContext();
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1990,15 +1947,32 @@
         if (!audioCtx) return;
         try {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination); const now = audioCtx.currentTime;
-            if(type === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.12); gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12); osc.start(now); osc.stop(now + 0.12); }
-            else if(type === 'pop') { osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.15); gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15); osc.start(now); osc.stop(now + 0.15); }
-            else if(type === 'start') { osc.type = 'square'; osc.frequency.setValueAtTime(300, now); osc.frequency.setValueAtTime(450, now + 0.12); osc.frequency.setValueAtTime(600, now + 0.24); gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.4); osc.start(now); osc.stop(now + 0.4); }
-            else if(type === 'success') { osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(500, now + 0.12); osc.frequency.setValueAtTime(800, now + 0.24); gain.gain.setValueAtTime(0.35, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.6); osc.start(now); osc.stop(now + 0.6); }
-            else if(type === 'warning') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now); osc.frequency.linearRampToValueAtTime(150, now + 0.3); gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.3); osc.start(now); osc.stop(now + 0.3); }
-            else if(type === 'threeQuarter') { osc.type = 'triangle'; osc.frequency.setValueAtTime(500, now); osc.frequency.setValueAtTime(650, now + 0.12); gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.3); osc.start(now); osc.stop(now + 0.3); }
-            else if(type === 'alarm') { osc.type = 'square'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(0, now + 0.12); osc.frequency.setValueAtTime(880, now + 0.24); osc.frequency.setValueAtTime(0, now + 0.36); osc.frequency.setValueAtTime(880, now + 0.48); gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.7); osc.start(now); osc.stop(now + 0.7); }
+            if (audioSuspendTimeout) { clearTimeout(audioSuspendTimeout); audioSuspendTimeout = null; }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            let duration = 0.12;
+            if(type === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.12); gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12); duration = 0.12; }
+            else if(type === 'pop') { osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.15); gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15); duration = 0.15; }
+            else if(type === 'start') { osc.type = 'square'; osc.frequency.setValueAtTime(300, now); osc.frequency.setValueAtTime(450, now + 0.12); osc.frequency.setValueAtTime(600, now + 0.24); gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.4); duration = 0.4; }
+            else if(type === 'success') { osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(500, now + 0.12); osc.frequency.setValueAtTime(800, now + 0.24); gain.gain.setValueAtTime(0.35, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.6); duration = 0.6; }
+            else if(type === 'warning') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now); osc.frequency.linearRampToValueAtTime(150, now + 0.3); gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.3); duration = 0.3; }
+            else if(type === 'threeQuarter') { osc.type = 'triangle'; osc.frequency.setValueAtTime(500, now); osc.frequency.setValueAtTime(650, now + 0.12); gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.3); duration = 0.3; }
+            else if(type === 'alarm') { osc.type = 'square'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(0, now + 0.12); osc.frequency.setValueAtTime(880, now + 0.24); osc.frequency.setValueAtTime(0, now + 0.36); osc.frequency.setValueAtTime(880, now + 0.48); gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.7); duration = 0.7; }
+            activeSoundNodes.add(osc);
+            const cleanup = () => {
+                activeSoundNodes.delete(osc);
+                try { osc.disconnect(); gain.disconnect(); } catch(e) {}
+                if (activeSoundNodes.size === 0) {
+                    if (audioSuspendTimeout) clearTimeout(audioSuspendTimeout);
+                    audioSuspendTimeout = setTimeout(() => {
+                        if (audioCtx && audioCtx.state === 'running' && activeSoundNodes.size === 0) audioCtx.suspend().catch(()=>{});
+                    }, 40);
+                }
+            };
+            osc.addEventListener('ended', cleanup, { once: true });
+            osc.start(now); osc.stop(now + duration);
         } catch(e) {}
     }
 
@@ -2965,9 +2939,9 @@
         const timerBtn = document.getElementById('timerBtn');
         const linearFill = document.getElementById('linearTimerFill');
         const timerOverlay = document.getElementById('workoutTimerOverlay');
-        const overlayTime = document.getElementById('workoutTimerOverlayTime');
-        const overlayRing = document.getElementById('workoutTimerRingProgress');
-
+        const overlaySideLeft = document.getElementById('workoutTimerSideLeftFill');
+        const overlaySideRight = document.getElementById('workoutTimerSideRightFill');
+        
         if (display) display.innerText = `${m}:${s}`;
         if (promptDisplay) promptDisplay.innerText = `${m}:${s}`;
         if (timerBtn) {
@@ -2992,20 +2966,17 @@
         if (display) display.className = `timer-numeric ${toneClass}`;
         if (linearFill) linearFill.className = `linear-timer-bar-fill ${toneClass}`;
 
-        // Center overlay appears only while the rest timer is actively running during a workout.
+        // Full-height side bars appear only while the rest timer is actively running during a workout.
+        // They are purely visual and never block taps because the overlay uses pointer-events:none.
         const workoutIsActive = !!document.getElementById('screen-workout')?.classList.contains('active');
         if (timerOverlay) {
             timerOverlay.classList.toggle('active', !!timerInterval && workoutIsActive);
             timerOverlay.classList.remove('state-normal', 'state-half', 'state-quarter');
             if (timerInterval && workoutIsActive) timerOverlay.classList.add(toneClass);
         }
-        if (overlayTime) overlayTime.innerText = `${m}:${s}`;
-        if (overlayRing) {
-            const circumference = 2 * Math.PI * 65;
-            const safeRatio = Math.min(1, Math.max(0, ratio));
-            overlayRing.style.strokeDasharray = `${circumference}`;
-            overlayRing.style.strokeDashoffset = `${circumference * (1 - safeRatio)}`;
-        }
+        const safeRatio = Math.min(1, Math.max(0, ratio));
+        if (overlaySideLeft) overlaySideLeft.style.transform = `scaleY(${safeRatio})`;
+        if (overlaySideRight) overlaySideRight.style.transform = `scaleY(${safeRatio})`;
 
         if (timerInterval) document.title = `⏱️ (${m}:${s}) Pro Gym`;
     }
@@ -3224,13 +3195,28 @@
                 progressTitle.innerText = "💧 WATER BREAK TIME!"; progressTitle.style.color = "var(--warning-text)";
                 const restRemainingSec = Math.max(0, activeRest.endSec - elapsedSec);
                 const restPercent = (restRemainingSec / cardioRestDurationSec) * 100;
-                stepBarFill.style.width = `${restPercent}%`;
+                // The linear rest bar is intentionally dormant until the break actually begins.
+                stepBarFill.style.width = `${Math.min(100, Math.max(0, restPercent))}%`;
                 const rm = Math.floor(restRemainingSec / 60).toString().padStart(2, '0');
                 const rs = (restRemainingSec % 60).toString().padStart(2, '0');
                 mergedDisplay.innerText = `${rm}:${rs}`;
             } else if (nextUpcomingRest) {
                 progressTitle.innerText = "Time Until Next Rest"; progressTitle.style.color = "var(--secondary-text)";
                 const timeUntilRest = Math.max(0, nextUpcomingRest.startSec - elapsedSec);
+
+                // During work, the linear bar now represents the countdown TO the next rest.
+                // It starts full immediately after the previous rest (or session start)
+                // and decreases smoothly to 0% as the next rest approaches.
+                const previousEndSec = cardioSchedule
+                    .filter(r => r.endSec <= elapsedSec)
+                    .reduce((maxEnd, r) => Math.max(maxEnd, r.endSec), 0);
+                const workWindowSec = Math.max(
+                    1,
+                    nextUpcomingRest.startSec - previousEndSec
+                );
+                const workProgressPercent = (timeUntilRest / workWindowSec) * 100;
+                stepBarFill.style.width = `${Math.min(100, Math.max(0, workProgressPercent))}%`;
+
                 const nm = Math.floor(timeUntilRest / 60).toString().padStart(2, '0');
                 const ns = (timeUntilRest % 60).toString().padStart(2, '0');
                 mergedDisplay.innerText = `${nm}:${ns}`;
