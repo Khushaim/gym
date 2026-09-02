@@ -124,8 +124,6 @@
             z-index: 0;
             display: block;
             mix-blend-mode: multiply;
-            will-change: transform;
-            transform: translateZ(0);
         }
         [data-theme="dark"] .marble-texture-layer {
             opacity: 0.44;
@@ -666,7 +664,7 @@
             width: 100%;
             background-color: var(--primary-text);
             border-radius: 2px;
-            transition: width 0.4s linear, background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.95s linear, background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Dynamic Timer Tone Transitions */
@@ -684,7 +682,7 @@
             100% { transform: scale(1.04); filter: brightness(1.2); }
         }
 
-        /* ================= COMPACT ULTRA-SLEEK IN-APP NUMPAD ================= */
+        /* ================= NEW COMPACT ULTRA-SLEEK IN-APP NUMPAD ================= */
         .integrated-numpad-wrap {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -803,7 +801,7 @@
             box-shadow: inset 0 0 0 1px var(--secondary-border);
         }
 
-        /* Full-height side rest timer */
+        /* Full-height side rest timer: visual only, never blocks interaction. */
         .workout-timer-overlay {
             position: fixed;
             inset: 0;
@@ -842,7 +840,7 @@
             background: var(--primary-text);
             opacity: .94;
             border-radius: 999px;
-            transition: transform .18s linear, background-color .35s ease, opacity .25s ease;
+            transition: transform .95s linear, background-color .35s ease, opacity .25s ease;
         }
         .workout-timer-side-fill::after {
             content: '';
@@ -870,17 +868,8 @@
             margin-bottom: 6px;
         }
 
-        /* 120Hz Smooth Scrolling & Layout Isolation for Edit Split */
-        #programDetailsList {
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            will-change: scroll-position;
-            transform: translateZ(0);
-        }
-
+        /* Robust Smooth Touch & Mouse Drag & Drop Styles */
         .draggable-ex-card {
-            contain: content;
-            transform: translateZ(0);
             transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.15s ease, opacity 0.15s ease;
             position: relative;
             user-select: none;
@@ -917,49 +906,6 @@
             cursor: grabbing;
             background: var(--secondary-glass);
             color: var(--secondary-text);
-        }
-
-        /* Move Exercise Inline Controls (Integrated in same row as SS) */
-        .ss-move-combined-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 6px;
-            margin-top: 5px;
-            padding-top: 5px;
-            border-top: 1px dashed var(--glass-border);
-            width: 100%;
-        }
-        .move-inline-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex: 1;
-            min-width: 0;
-        }
-        .move-inline-label {
-            font-size: 9px;
-            font-weight: 800;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-        .move-inline-select {
-            flex: 1;
-            min-width: 0;
-            padding: 4px 6px !important;
-            font-size: 9.5px !important;
-            font-weight: 800 !important;
-            border-radius: 8px !important;
-            color: var(--secondary-text) !important;
-            background: var(--secondary-glass) !important;
-            border-color: var(--secondary-border) !important;
-            height: 26px;
-        }
-        .ss-buttons-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-shrink: 0;
         }
 
         /* Dynamic Indicator Colors */
@@ -1024,16 +970,43 @@
             transform: scale(1.15);
         }
 
+        /* High-refresh-rate polish: target 120fps where the device/display supports it.
+           CSS cannot force a 120Hz panel, but these hints keep animated layers GPU-friendly. */
+        /* 120Hz scroll fix:
+           Do NOT promote every card/button to its own GPU layer.
+           That creates many composited layers and can make long Edit Split
+           lists scroll like ~40fps on mobile. Keep the normal page in the
+           browser's native compositor and promote only active animations. */
         @media (min-resolution: 110dpi) {
-            .screen, button, .pill-btn, .chip, .glass-card, .numpad-key, .compact-timer-card {
-                will-change: transform, opacity;
-                transform: translateZ(0);
+            .screen {
+                transform: none;
+                will-change: auto;
+            }
+            button, .pill-btn, .chip, .glass-card, .numpad-key, .compact-timer-card {
+                will-change: auto;
+                transform: none;
             }
         }
+
         @media (prefers-reduced-motion: no-preference) {
-            .screen, .numpad-key, button, .pill-btn, .chip {
+            button, .pill-btn, .chip, .numpad-key {
                 backface-visibility: hidden;
             }
+        }
+
+        /* Keep scrolling on the compositor without forcing every child into
+           a separate GPU layer. */
+        #screen-show-program {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+
+        #programDetailsList {
+            contain: layout;
+        }
+
+        #programDetailsList > .glass-card {
+            contain: layout paint;
         }
 
         .svg-chart-box {
@@ -1046,7 +1019,41 @@
             backdrop-filter: var(--glass-blur);
             box-shadow: var(--glass-specular);
         }
-    </style>
+    
+        /* Performance-only containment: keeps repaints localized without changing the UI. */
+        .glass-card, .exercise-card, .timer-card, .progress-card {
+            contain: layout paint style;
+        }
+        .move-exercise-row {
+            contain: layout paint;
+        }
+
+
+        /* Scrolling performance: pause decorative motion only while the user
+           is actively scrolling. The UI/features remain unchanged. */
+        body.is-scrolling .glow-orb,
+        body.is-scrolling .marble-texture-layer {
+            animation-play-state: paused !important;
+        }
+
+
+        /* Adaptive 1–120Hz friendly rendering:
+           Never force a fixed refresh rate. On fast-update displays the browser
+           may use the device's adaptive refresh rate; on slower devices it can
+           settle lower automatically. Timer math is wall-clock based, so visual
+           update frequency never changes time accuracy. */
+        @media (update: fast) {
+            html, body { scroll-behavior: auto; }
+        }
+
+        /* During an active workout/cardio session, decorative glow is static
+           rather than continuously animating. The same visual remains on screen,
+           but the CPU/GPU no longer spends power animating it behind the timer. */
+        body.performance-session .unified-glow-sphere {
+            animation-play-state: paused !important;
+        }
+
+</style>
 </head>
 <body>
 
@@ -1304,7 +1311,7 @@
                 <!-- Live Sets View -->
                 <div id="setsContainer" class="set-list-wrap"></div>
 
-                <!-- Integrated Compact Numpad -->
+                <!-- NEW: Compact Ultra-Sleek In-App Numpad -->
                 <div class="integrated-numpad-wrap">
                     <button class="numpad-key" onclick="numpadPress('1')">1</button>
                     <button class="numpad-key" onclick="numpadPress('2')">2</button>
@@ -1344,7 +1351,7 @@
                     </div>
                 </div>
 
-                <!-- Navigation Bottom Bar -->
+                <!-- Navigation Bottom Bar (Red Exit Button) -->
                 <div style="display: flex; gap: 6px;">
                     <button id="btnPrevEx" class="btn-subtle" style="flex: 1; padding: 8px;" onclick="navigateWorkout(-1)">◀ Prev</button>
                     <button class="btn-danger" style="padding: 8px 12px; font-weight: 800;" onclick="exitWorkout()">Exit</button>
@@ -1551,7 +1558,7 @@
             </div>
         </div>
 
-        <!-- SCREEN: SHOW / EDIT PROGRAM (120Hz Fast Scroll View) -->
+        <!-- SCREEN: SHOW / EDIT PROGRAM -->
         <div id="screen-show-program" class="screen">
             <div class="fit-content">
                 <div class="glass-card" style="padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
@@ -1929,20 +1936,23 @@
             wakeLockObj = null;
         }
     }
-
-    // Background Energy Management
     document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState === 'visible') {
             if (timerInterval !== null || cardioInterval !== null) {
                 await requestWakeLock();
             }
-            if (timerInterval) updateTimerDisplay();
-            startUpdateCheck();
-            return;
-        } else {
-            stopUpdateCheck();
         }
+    });
 
+    // Background-aware timer fallback: no hidden audio keep-alive loop.
+    // Foreground uses WebAudio; background relies on timestamp accuracy + notification/vibration.
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            if (timerInterval) {
+                runTimerTick();
+            }
+            return;
+        }
         if (timerInterval) {
             const remaining = Math.max(0, Math.round((timerTargetTimestamp - Date.now()) / 1000));
             if (remaining <= 0) {
@@ -2133,7 +2143,7 @@
             let s = (workoutSeconds % 60).toString().padStart(2, '0');
             if (sw) sw.innerText = `⏱ ${m}:${s}`;
             saveWorkoutDraft();
-        }, 500);
+        }, 1000);
     }
     function stopWorkoutStopwatch() {
         if (workoutInterval) { clearInterval(workoutInterval); workoutInterval = null; }
@@ -2965,8 +2975,11 @@
         saveData(); clearWorkoutDraft(); resetTimer(); document.getElementById('summaryModal').classList.remove('active'); route();
     }
 
-    // Rest Timer Logic with Transition States
-    let timerTime = 90; let timerTotal = 90; let timerInterval = null; let timerTargetTimestamp = 0;
+    // Rest Timer Logic — wall-clock accurate, low-power.
+    // The browser/device remains free to use its adaptive refresh rate (up to 120Hz),
+    // while JavaScript only wakes when the displayed second actually changes.
+    let timerTime = 90; let timerTotal = 90; let timerInterval = null;
+    let timerTargetTimestamp = 0; let timerTickTimeout = null;
     let restQuarterNotified = false;
 
     function recordRestForActiveSet(durationSec) {
@@ -2990,26 +3003,21 @@
         const timerOverlay = document.getElementById('workoutTimerOverlay');
         const overlaySideLeft = document.getElementById('workoutTimerSideLeftFill');
         const overlaySideRight = document.getElementById('workoutTimerSideRightFill');
-        
+
         if (display) display.innerText = `${m}:${s}`;
         if (promptDisplay) promptDisplay.innerText = `${m}:${s}`;
         if (timerBtn) {
             timerBtn.innerText = timerInterval ? "STOP" : "START";
-            if (timerInterval) { timerBtn.className = 'btn-danger'; } else { timerBtn.className = 'btn-brand'; }
+            timerBtn.className = timerInterval ? 'btn-danger' : 'btn-brand';
         }
 
         const ratio = timerTotal > 0 ? (timerTime / timerTotal) : 0;
-        if (linearFill) {
-            linearFill.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
-        }
+        if (linearFill) linearFill.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
 
         let toneClass = 'state-normal';
         if (timerInterval && timerTime > 0) {
-            if (ratio <= 0.25) {
-                toneClass = 'state-quarter';
-            } else if (ratio <= 0.50) {
-                toneClass = 'state-half';
-            }
+            if (ratio <= 0.25) toneClass = 'state-quarter';
+            else if (ratio <= 0.50) toneClass = 'state-half';
         }
 
         if (display) display.className = `timer-numeric ${toneClass}`;
@@ -3021,6 +3029,7 @@
             timerOverlay.classList.remove('state-normal', 'state-half', 'state-quarter');
             if (timerInterval && workoutIsActive) timerOverlay.classList.add(toneClass);
         }
+
         const safeRatio = Math.min(1, Math.max(0, ratio));
         if (overlaySideLeft) overlaySideLeft.style.transform = `scaleY(${safeRatio})`;
         if (overlaySideRight) overlaySideRight.style.transform = `scaleY(${safeRatio})`;
@@ -3028,56 +3037,96 @@
         if (timerInterval) document.title = `⏱️ (${m}:${s}) Pro Gym`;
     }
 
+    function clearTimerTick() {
+        if (timerTickTimeout !== null) {
+            clearTimeout(timerTickTimeout);
+            timerTickTimeout = null;
+        }
+    }
+
+    function scheduleTimerTick() {
+        clearTimerTick();
+        if (!timerInterval) return;
+        // Wake just after the next whole displayed second. The actual value always
+        // comes from Date.now(), so throttling/jitter cannot accumulate timer drift.
+        const remainingMs = Math.max(0, timerTargetTimestamp - Date.now());
+        const delay = Math.min(1000, Math.max(60, (remainingMs % 1000) + 30));
+        timerTickTimeout = setTimeout(runTimerTick, delay);
+    }
+
+    function runTimerTick() {
+        timerTickTimeout = null;
+        if (!timerInterval) return;
+
+        const remainingMs = Math.max(0, timerTargetTimestamp - Date.now());
+        const remaining = Math.ceil(remainingMs / 1000);
+        timerTime = Math.max(0, remaining);
+
+        if (timerTime > 0) {
+            const ratio = timerTime / timerTotal;
+            if (ratio <= 0.25 && !restQuarterNotified) {
+                restQuarterNotified = true;
+                playSound('threeQuarter');
+                triggerAlarmNotification('⏳ 25% Rest Remaining!', `Get ready for your next set.`);
+            }
+        }
+
+        if (timerTime <= 0) {
+            timerInterval = null;
+            clearTimerTick();
+            playSound('alarm');
+            triggerAlarmNotification('🔔 Rest Finished!', 'Time for your next set.');
+            timerTime = appData.defaultTimer;
+            timerTotal = appData.defaultTimer;
+            releaseWakeLock();
+        }
+
+        updateTimerDisplay();
+        if (timerInterval) scheduleTimerTick();
+    }
+
     function adjustTimer(secs) {
-        timerTime += secs; if (timerTime < 0) timerTime = 0;
-        if (!timerInterval) { appData.defaultTimer = timerTime; timerTotal = timerTime; saveData(); }
-        else { timerTotal = Math.max(timerTotal, timerTime); timerTargetTimestamp = Date.now() + (timerTime * 1000); recordRestForActiveSet(timerTotal); }
+        timerTime += secs;
+        if (timerTime < 0) timerTime = 0;
+        if (!timerInterval) {
+            appData.defaultTimer = timerTime; timerTotal = timerTime; saveData();
+        } else {
+            timerTotal = Math.max(timerTotal, timerTime);
+            timerTargetTimestamp = Date.now() + (timerTime * 1000);
+            recordRestForActiveSet(timerTotal);
+            scheduleTimerTick();
+        }
         updateTimerDisplay();
     }
 
     function resetTimer() {
-        if (timerInterval) { timerInterval = null; }
-        timerTime = appData.defaultTimer; timerTotal = appData.defaultTimer; restQuarterNotified = false;
+        if (timerInterval) timerInterval = null;
+        clearTimerTick();
+        timerTime = appData.defaultTimer; timerTotal = appData.defaultTimer;
+        restQuarterNotified = false;
         releaseWakeLock(); document.title = "Gym Tracker Pro"; updateTimerDisplay();
     }
 
     function toggleTimer() {
-        let canVibrate = ("vibrate" in navigator) && !appData.powerSaveMode;
         if (timerInterval) {
-            playSound('click'); timerInterval = null;
+            playSound('click');
+            timerInterval = null;
+            clearTimerTick();
             releaseWakeLock(); document.title = "Gym Tracker Pro"; updateTimerDisplay();
         } else {
             if (timerTime === 0) return;
             requestWakeLock(); playSound('start');
-            timerTotal = timerTime; timerTargetTimestamp = Date.now() + (timerTime * 1000);
-            restQuarterNotified = false; recordRestForActiveSet(timerTotal); updateTimerDisplay();
-
+            timerTotal = timerTime;
+            timerTargetTimestamp = Date.now() + (timerTime * 1000);
+            restQuarterNotified = false;
+            recordRestForActiveSet(timerTotal);
             timerInterval = true;
-            const tickTimer = (now) => {
-                if (!timerInterval) return;
-                const remaining = Math.round((timerTargetTimestamp - Date.now()) / 1000);
-                timerTime = Math.max(0, remaining);
-                if (timerTime > 0) {
-                    const ratio = timerTime / timerTotal;
-                    if (ratio <= 0.25 && !restQuarterNotified) {
-                        restQuarterNotified = true; playSound('threeQuarter');
-                        triggerAlarmNotification('⏳ 25% Rest Remaining!', `Get ready for your next set.`);
-                    }
-                }
-                if (timerTime <= 0) {
-                    timerInterval = null; playSound('alarm');
-                    triggerAlarmNotification('🔔 Rest Finished!', 'Time for your next set.');
-                    timerTime = appData.defaultTimer; timerTotal = appData.defaultTimer;
-                    releaseWakeLock();
-                }
-                updateTimerDisplay();
-                if (timerInterval) requestAnimationFrame(tickTimer);
-            };
-            requestAnimationFrame(tickTimer);
+            updateTimerDisplay();
+            scheduleTimerTick();
         }
     }
 
-    // High Precision Cardio Engine
+    // High Precision, Low-Power Cardio Engine
     let cardioTotalPlannedSec = 30 * 60; let cardioStartTimestamp = 0; let cardioInterval = null;
     let cardioRestDurationSec = 60; let cardioInitialWaterCount = 2; let cardioEcoTurnedOnHere = false;
     let cardioActiveType = 'none'; let cardioActiveIntensity = null; let cardioSchedule = [];
@@ -3241,6 +3290,7 @@
                 progressTitle.innerText = "💧 WATER BREAK TIME!"; progressTitle.style.color = "var(--warning-text)";
                 const restRemainingSec = Math.max(0, activeRest.endSec - elapsedSec);
                 const restPercent = (restRemainingSec / cardioRestDurationSec) * 100;
+                // The linear rest bar is intentionally dormant until the break actually begins.
                 stepBarFill.style.width = `${Math.min(100, Math.max(0, restPercent))}%`;
                 const rm = Math.floor(restRemainingSec / 60).toString().padStart(2, '0');
                 const rs = (restRemainingSec % 60).toString().padStart(2, '0');
@@ -3249,10 +3299,16 @@
                 progressTitle.innerText = "Time Until Next Rest"; progressTitle.style.color = "var(--secondary-text)";
                 const timeUntilRest = Math.max(0, nextUpcomingRest.startSec - elapsedSec);
 
+                // During work, the linear bar now represents the countdown TO the next rest.
+                // It starts full immediately after the previous rest (or session start)
+                // and decreases smoothly to 0% as the next rest approaches.
                 const previousEndSec = cardioSchedule
                     .filter(r => r.endSec <= elapsedSec)
                     .reduce((maxEnd, r) => Math.max(maxEnd, r.endSec), 0);
-                const workWindowSec = Math.max(1, nextUpcomingRest.startSec - previousEndSec);
+                const workWindowSec = Math.max(
+                    1,
+                    nextUpcomingRest.startSec - previousEndSec
+                );
                 const workProgressPercent = (timeUntilRest / workWindowSec) * 100;
                 stepBarFill.style.width = `${Math.min(100, Math.max(0, workProgressPercent))}%`;
 
@@ -3264,7 +3320,7 @@
             }
             saveCardioDraft();
         };
-        tick(); cardioInterval = setInterval(tick, 500);
+        tick(); cardioInterval = setInterval(tick, 1000);
     }
 
     let cardioSelectedRating = null;
@@ -3334,7 +3390,7 @@
     }
     function closeCardioHistory() { playSound('click'); document.getElementById('cardioHistoryModal').classList.remove('active'); }
 
-    // --- Dual Engine Drag & Drop Reordering for Edit View ---
+    // --- Dual Engine (Touch + Mouse) Drag & Drop Reordering for Edit View ---
     let showProgDayIndex = 0;
     let dragSourceIdx = null;
 
@@ -3497,26 +3553,13 @@
             const isLast = index === dayData.exercises.length - 1;
             const hasSuperSet = !!ex.supersetName;
 
-            const moveSelectHTML = `
-                <div class="move-inline-wrapper">
-                    <span class="move-inline-label">↗ Move:</span>
-                    <select class="move-inline-select" onchange="moveProgExToDay(${index}, this.value)">
-                        <option value="" selected>Day…</option>
-                        ${prog.map((d, dayIndex) => dayIndex !== showProgDayIndex ? `<option value="${dayIndex}">Day ${d.day}</option>` : '').join('')}
-                    </select>
-                </div>
-            `;
-
-            let ssRowContent = '';
+            let supersetSection = '';
             if (hasSuperSet) {
-                ssRowContent = `
+                supersetSection = `
                     <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--accent-border);">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
                             <span style="font-size: 10px; font-weight: 800; color: var(--accent);">⚡ LINKED SUPER SET:</span>
-                            <div style="display:flex; align-items:center; gap:6px;">
-                                ${moveSelectHTML}
-                                <button class="btn-subtle" style="padding: 2px 6px; font-size: 9.5px; color: var(--danger-text);" onclick="unlinkSuperSet(${index})">⛓️ Unlink</button>
-                            </div>
+                            <button class="btn-subtle" style="padding: 2px 6px; font-size: 9.5px; color: var(--danger-text);" onclick="unlinkSuperSet(${index})">⛓️ Unlink</button>
                         </div>
                         <div style="display: flex; gap: 4px; align-items: center; margin-bottom: 4px;">
                             <input type="text" value="${ex.supersetName}" onchange="editProgExSupersetName(${index}, this.value)" style="flex:1; font-weight:700; font-size: 12px; padding: 4px 6px;">
@@ -3529,13 +3572,10 @@
                     </div>
                 `;
             } else {
-                ssRowContent = `
-                    <div class="ss-move-combined-row">
-                        ${moveSelectHTML}
-                        <div class="ss-buttons-group">
-                            <button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--accent); border-color: var(--accent-border);" onclick="attachNewSuperSet(${index})">+ Attach SS</button>
-                            ${!isLast ? `<button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--secondary-text); border-color: var(--secondary-border);" onclick="linkSuperSetWithNext(${index})">🔗 Link Next</button>` : ''}
-                        </div>
+                supersetSection = `
+                    <div style="margin-top: 5px; display: flex; gap: 4px; justify-content: flex-end;">
+                        <button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--accent); border-color: var(--accent-border);" onclick="attachNewSuperSet(${index})">+ Attach New SS</button>
+                        ${!isLast ? `<button class="btn-subtle" style="padding: 3px 6px; font-size: 9px; color: var(--secondary-text); border-color: var(--secondary-border);" onclick="linkSuperSetWithNext(${index})">🔗 Link with Next</button>` : ''}
                     </div>
                 `;
             }
@@ -3560,30 +3600,35 @@
                     <input type="number" value="${ex.warmupSets || 0}" onchange="editProgExWarmupSets(${index}, this.value)" style="width: 44px; text-align: center; padding: 2px;" min="0">
                     <button class="btn-subtle" style="flex: 1; padding: 4px; font-size: 10px;" onclick="openHistoryModalForProg(${showProgDayIndex}, ${index})">📊 History</button>
                 </div>
-                ${ssRowContent}
+                <div class="move-exercise-row" style="display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-top:6px; padding-top:5px; border-top:1px solid var(--glass-border);">
+                    <span style="font-size:9.5px; font-weight:800; color:var(--text-muted);">Move to Day</span>
+                    ${prog.map((d, dIdx) => dIdx !== showProgDayIndex
+                        ? `<button class="btn-subtle" style="padding:3px 8px; font-size:9px;" onclick="moveExerciseToDay(${index}, ${dIdx})">Day ${d.day}</button>`
+                        : ''
+                    ).join('')}
+                </div>
+                ${supersetSection}
             `;
             list.appendChild(div);
         });
     }
 
-    function moveProgExToDay(exIndex, destinationDayIndex) {
+    function moveExerciseToDay(exerciseIdx, targetDayIdx) {
         const prog = getCurrentProgram();
-        const fromDayIndex = showProgDayIndex;
-        const toDayIndex = parseInt(destinationDayIndex);
+        if (!prog || !prog[showProgDayIndex] || !prog[targetDayIdx]) return;
+        if (targetDayIdx === showProgDayIndex) return;
 
-        if (!Number.isInteger(toDayIndex) || toDayIndex < 0 || toDayIndex >= prog.length || toDayIndex === fromDayIndex) {
-            return;
-        }
+        const source = prog[showProgDayIndex];
+        const target = prog[targetDayIdx];
+        if (!Array.isArray(source.exercises) || !source.exercises[exerciseIdx]) return;
 
-        const sourceDay = prog[fromDayIndex];
-        const destinationDay = prog[toDayIndex];
-        if (!sourceDay || !destinationDay || !sourceDay.exercises || !destinationDay.exercises) return;
-        if (exIndex < 0 || exIndex >= sourceDay.exercises.length) return;
+        const exercise = source.exercises.splice(exerciseIdx, 1)[0];
 
-        const [movedExercise] = sourceDay.exercises.splice(exIndex, 1);
-        destinationDay.exercises.push(movedExercise);
+        // Keep the complete exercise object intact. Nothing is rebuilt or reset,
+        // so all stored properties travel with it exactly as they are.
+        target.exercises = Array.isArray(target.exercises) ? target.exercises : [];
+        target.exercises.push(exercise);
 
-        playSound('pop');
         saveData();
         renderShowProgram();
     }
@@ -3600,15 +3645,10 @@
         saveData(); renderShowProgram();
     }
 
-    // High-Efficiency Auto-Reload Polling (Every 10 minutes)
-    const GITHUB_USERNAME = 'Khushaim'; 
-    const GITHUB_REPO = 'gym'; 
-    const CHECK_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+    // Auto-Reload from GitHub Repo
+    const GITHUB_USERNAME = 'Khushaim'; const GITHUB_REPO = 'gym'; const CHECK_INTERVAL_MS = 120000;
     let currentCommitSha = null;
-    let updatePollingInterval = null;
-
     async function checkForUpdates() {
-        if (document.hidden) return;
         try {
             const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits?per_page=1&t=${Date.now()}`;
             const res = await fetch(url, { cache: 'no-store' });
@@ -3625,22 +3665,50 @@
             }
         } catch (err) {}
     }
-
-    function startUpdateCheck() {
-        if (updatePollingInterval) clearInterval(updatePollingInterval);
-        checkForUpdates();
-        updatePollingInterval = setInterval(checkForUpdates, CHECK_INTERVAL_MS);
-    }
-
-    function stopUpdateCheck() {
-        if (updatePollingInterval) {
-            clearInterval(updatePollingInterval);
-            updatePollingInterval = null;
+    checkForUpdates();
+    let updatePollTimer = setInterval(() => {
+        if (!document.hidden) checkForUpdates();
+    }, CHECK_INTERVAL_MS);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(updatePollTimer);
+            updatePollTimer = null;
+        } else {
+            checkForUpdates();
+            if (!updatePollTimer) updatePollTimer = setInterval(() => {
+                if (!document.hidden) checkForUpdates();
+            }, CHECK_INTERVAL_MS);
         }
-    }
+    });
 
-    startUpdateCheck();
     window.onload = loadData;
 </script>
+
+<script>
+(() => {
+    let scrollStopTimer = null;
+    window.addEventListener('scroll', () => {
+        document.body.classList.add('is-scrolling');
+        clearTimeout(scrollStopTimer);
+        scrollStopTimer = setTimeout(() => {
+            document.body.classList.remove('is-scrolling');
+        }, 120);
+    }, { passive: true });
+})();
+</script>
+
+
+<script>
+(() => {
+    const syncSessionPerformanceClass = () => {
+        const active = document.querySelector('#screen-workout.active, #screen-cardio-active.active');
+        document.body.classList.toggle('performance-session', !!active);
+    };
+    const observer = new MutationObserver(syncSessionPerformanceClass);
+    observer.observe(document.body, {subtree:true, attributes:true, attributeFilter:['class']});
+    syncSessionPerformanceClass();
+})();
+</script>
+
 </body>
 </html>
