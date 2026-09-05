@@ -171,32 +171,8 @@
             --btn-shadow: none !important;
             --glass-blur: none !important;
         }
-        [data-powersave="true"] .unified-glow-sphere { display: none !important; }
-        /* ECO: true black AMOLED background, but KEEP the marble veins visible.
-           The veins are inverted only in ECO because the source SVG is black. */
-        [data-powersave="true"] .marble-texture-layer {
-            display: block !important;
-            opacity: 0.30 !important;
-            mix-blend-mode: screen !important;
-            filter: invert(1) brightness(0.82) contrast(0.90) !important;
-        }
-        [data-powersave="true"] .marble-texture-layer * {
-            filter: none !important;
-        }
-        /* ECO: remove GPU-expensive visual effects while keeping layout/functionality. */
-        [data-powersave="true"] * {
-            box-shadow: none !important;
-            text-shadow: none !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            animation: none !important;
-            transition: none !important;
-        }
-        /* Keep the timer progress visually instant in ECO; its time remains wall-clock accurate. */
-        [data-powersave="true"] .linear-timer-bar-fill,
-        [data-powersave="true"] .workout-timer-side-fill {
-            transition: none !important;
-        }
+        [data-powersave="true"] .unified-glow-sphere,
+        [data-powersave="true"] .marble-texture-layer { display: none !important; }
 
         * {
             box-sizing: border-box;
@@ -752,40 +728,6 @@
             font-size: 11px;
         }
 
-        /* ================= GLOBAL NUMPAD FOR ALL NUMERIC FORMS ================= */
-        .global-numpad {
-            position: fixed;
-            left: 50%;
-            bottom: calc(env(safe-area-inset-bottom, 8px) + 10px);
-            transform: translate(-50%, 18px);
-            width: min(330px, calc(100vw - 28px));
-            display: none;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            padding: 7px;
-            border: 1px solid var(--glass-border);
-            border-radius: 13px;
-            background: rgba(8, 8, 8, 0.94);
-            box-shadow: 0 8px 28px rgba(0,0,0,.28);
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .14s ease, transform .14s ease;
-        }
-        .global-numpad.visible {
-            display: grid;
-            opacity: 1;
-            transform: translate(-50%, 0);
-            pointer-events: auto;
-        }
-        .global-numpad .numpad-key { height: 34px; min-height: 34px; }
-        [data-powersave="true"] .global-numpad {
-            background: #050505;
-            box-shadow: none;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-        }
-
         /* Timer adjustment buttons: enough width for -30s / +30s */
         .timer-adjust-btn {
             width: 56px !important;
@@ -1160,24 +1102,6 @@
 <div id="workoutTimerOverlay" class="workout-timer-overlay" aria-hidden="true">
     <div class="workout-timer-side left"><div id="workoutTimerSideLeftFill" class="workout-timer-side-fill"></div></div>
     <div class="workout-timer-side right"><div id="workoutTimerSideRightFill" class="workout-timer-side-fill"></div></div>
-</div>
-
-<div id="globalNumpad" class="global-numpad" aria-label="Numeric keypad">
-    <button class="numpad-key" onclick="numpadPress('1')">1</button>
-    <button class="numpad-key" onclick="numpadPress('2')">2</button>
-    <button class="numpad-key" onclick="numpadPress('3')">3</button>
-    <button class="numpad-key action-key" onclick="numpadPress('C')">C</button>
-    <button class="numpad-key" onclick="numpadPress('4')">4</button>
-    <button class="numpad-key" onclick="numpadPress('5')">5</button>
-    <button class="numpad-key" onclick="numpadPress('6')">6</button>
-    <button class="numpad-key action-key" onclick="numpadPress('BACK')">⌫</button>
-    <button class="numpad-key" onclick="numpadPress('7')">7</button>
-    <button class="numpad-key" onclick="numpadPress('8')">8</button>
-    <button class="numpad-key" onclick="numpadPress('9')">9</button>
-    <button class="numpad-key" onclick="numpadPress('-')">-</button>
-    <button class="numpad-key" onclick="numpadPress('.')">.</button>
-    <button class="numpad-key" onclick="numpadPress('0')" style="grid-column: span 2;">0</button>
-    <button class="numpad-key" style="background: var(--primary-glass); color: var(--primary-text); border-color: var(--primary-border);" onclick="numpadNextField()">➔</button>
 </div>
 
 <div id="appViewport">
@@ -1960,9 +1884,6 @@
         if (activeNumInput) {
             activeNumInput.classList.add('active-num-target');
             playSound('click');
-            const globalPad = document.getElementById('globalNumpad');
-            const insideExistingPad = !!activeNumInput.closest('.integrated-numpad-wrap');
-            if (globalPad) globalPad.classList.toggle('visible', !insideExistingPad);
         }
     }
 
@@ -1990,18 +1911,13 @@
             val += key;
         }
 
-        // Respect native min/max limits when this is a real numeric field.
-        const min = activeNumInput.min !== '' ? parseFloat(activeNumInput.min) : null;
-        const max = activeNumInput.max !== '' ? parseFloat(activeNumInput.max) : null;
-        const numeric = parseFloat(val);
-        if (Number.isFinite(numeric) && min !== null && numeric < min) val = String(min);
-        if (Number.isFinite(numeric) && max !== null && numeric > max) val = String(max);
-
         activeNumInput.value = val;
-        activeNumInput.dispatchEvent(new Event('input', { bubbles: true }));
-        activeNumInput.dispatchEvent(new Event('change', { bubbles: true }));
-        if (typeof activeNumInput.oninput === 'function') activeNumInput.oninput();
-        if (activeNumInput.id === 'calcWeight' || activeNumInput.id === 'calcReps') calculate1RM();
+        if (typeof activeNumInput.oninput === 'function') {
+            activeNumInput.oninput();
+        }
+        if (activeNumInput.id === 'calcWeight' || activeNumInput.id === 'calcReps') {
+            calculate1RM();
+        }
     }
 
     function numpadNextField() {
@@ -2236,8 +2152,6 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         activeNumInput = null;
-        const globalPad = document.getElementById('globalNumpad');
-        if (globalPad) globalPad.classList.remove('visible');
     }
 
     let workoutSeconds = 0; let workoutInterval = null; let workoutStartTimestamp = 0;
@@ -3170,7 +3084,6 @@
     let timerTime = 90; let timerTotal = 90; let timerInterval = null;
     let timerTargetTimestamp = 0; let timerTickTimeout = null;
     let restQuarterNotified = false;
-    let timerBarInstant = false;
 
     function recordRestForActiveSet(durationSec) {
         if (!pendingRestTracking) return;
@@ -3202,18 +3115,7 @@
         }
 
         const ratio = timerTotal > 0 ? (timerTime / timerTotal) : 0;
-        if (linearFill) {
-            if (timerBarInstant) linearFill.style.transition = 'none';
-            linearFill.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
-            if (timerBarInstant) {
-                // Do not animate from the old position when +30s/-30s is pressed.
-                // The bar jumps directly to the mathematically correct position.
-                setTimeout(() => {
-                    if (linearFill) linearFill.style.transition = '';
-                }, 50);
-            }
-        }
-        timerBarInstant = false;
+        if (linearFill) linearFill.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
 
         let toneClass = 'state-normal';
         if (timerInterval && timerTime > 0) {
@@ -3313,9 +3215,6 @@
                 scheduleTimerTick();
             }
         }
-        // Adjustment is an intentional discontinuity: never let CSS interpolate
-        // from the previous percentage, which made the bar visibly slide backward.
-        timerBarInstant = true;
         updateTimerDisplay();
     }
 
@@ -3906,8 +3805,6 @@
     const GITHUB_USERNAME = 'Khushaim'; const GITHUB_REPO = 'gym'; const CHECK_INTERVAL_MS = 120000;
     let currentCommitSha = null;
     async function checkForUpdates() {
-        // ECO: no network polling while the user explicitly prioritizes battery.
-        if (appData && appData.powerSaveMode) return;
         try {
             const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/commits?per_page=1&t=${Date.now()}`;
             const res = await fetch(url, { cache: 'no-store' });
@@ -3939,40 +3836,6 @@
             }, CHECK_INTERVAL_MS);
         }
     });
-
-    // Make every numeric form field use the in-app keypad instead of the OS keyboard.
-    function prepareNumericFields(root = document) {
-        root.querySelectorAll('input[type="number"]').forEach(input => {
-            input.classList.add('num-target');
-            input.setAttribute('inputmode', 'none');
-            input.setAttribute('readonly', 'readonly');
-            if (!input.dataset.numpadBound) {
-                input.dataset.numpadBound = '1';
-                input.addEventListener('click', () => setActiveNumTarget(input));
-                input.addEventListener('focus', () => setActiveNumTarget(input));
-            }
-        });
-    }
-    prepareNumericFields();
-    // Delegated fallback: dynamic workout/Edit Split fields are covered even when
-    // they are rendered after the MutationObserver has not yet flushed.
-    document.addEventListener('pointerdown', (e) => {
-        const input = e.target.closest && e.target.closest('input[type="number"], input.num-target');
-        if (!input) return;
-        if (!input.classList.contains('num-target')) {
-            input.classList.add('num-target');
-            input.setAttribute('inputmode', 'none');
-            input.setAttribute('readonly', 'readonly');
-        }
-        setActiveNumTarget(input);
-    }, { passive: true });
-
-    const numericFieldObserver = new MutationObserver(muts => {
-        let changed = false;
-        muts.forEach(m => { if (m.addedNodes && m.addedNodes.length) changed = true; });
-        if (changed) prepareNumericFields();
-    });
-    numericFieldObserver.observe(document.body, { childList: true, subtree: true });
 
     window.onload = loadData;
 </script>
