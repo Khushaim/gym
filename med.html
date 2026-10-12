@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>مذاكرة — Study Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' };</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Cairo', system-ui, -apple-system, sans-serif; }
+  html, body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+  body { transition: background-color .3s, color .3s; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  .dark ::-webkit-scrollbar-thumb { background: #475569; }
+
+  .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  .dark .glass { background: rgba(15,23,42,0.92); }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+  input, textarea, select, button { outline: none; font-family: inherit; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-fade-up { animation: fadeUp .3s cubic-bezier(.4,0,.2,1) both; }
+
+  @keyframes sheetUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .anim-sheet { animation: sheetUp .3s cubic-bezier(.4,0,.2,1) both; }
+
+  @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+  .anim-backdrop { animation: backdropIn .2s ease-out both; }
+
+  @keyframes popIn { 0% { transform: scale(.4); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  .anim-pop { animation: popIn .28s cubic-bezier(.4,0,.2,1) both; }
+
+  @keyframes pulseSoft { 0%,100% { opacity: .35; } 50% { opacity: .55; } }
+  .anim-pulse-soft { animation: pulseSoft 3.5s ease-in-out infinite; }
+
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-slide-down { animation: slideDown .2s ease-out both; }
+
+  @keyframes checkBounce { 0% { transform: scale(0); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+  .anim-check { animation: checkBounce .35s cubic-bezier(.4,0,.2,1) both; }
+
+  .modal-wrap {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 0;
+  }
+  @media (min-width: 640px) {
+    .modal-wrap { align-items: center; padding: 1rem; }
+  }
+  .modal-panel {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 24px 24px 0 0;
+    overflow-y: auto;
+    box-shadow: 0 -10px 40px rgba(0,0,0,.15);
+  }
+  @media (min-width: 640px) {
+    .modal-panel {
+      max-width: 34rem;
+      max-height: 85vh;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+  }
+
+  .focus-ring:focus-visible { box-shadow: 0 0 0 3px rgba(99,102,241,.35); }
+  button { user-select: none; -webkit-user-select: none; }
+</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
+
+/* ============================================================
+   SOUND ENGINE
+   ============================================================ */
+const Sound = {
+  ctx: null,
+  enabled: true,
+
+  _init() {
+    if (!this.ctx) {
+      try {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) { console.warn('Audio not supported', e); }
+    }
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  },
+
+  _tone(freq, duration, type = 'sine', volume = 0.08, delay = 0) {
+    if (!this.enabled || !this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(volume, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + duration + 0.02);
+  },
+
+  play(name) {
+    if (!this.enabled) return;
+    this._init();
+    if (!this.ctx) return;
+
+    switch (name) {
+      case 'click':
+        this._tone(680, 0.045, 'sine', 0.05);
+        break;
+      case 'navigate':
+        this._tone(520, 0.06, 'sine', 0.045);
+        this._tone(780, 0.05, 'sine', 0.035, 0.04);
+        break;
+      case 'add':
+        this._tone(660, 0.08, 'sine', 0.07);
+        this._tone(990, 0.1, 'sine', 0.06, 0.07);
+        break;
+      case 'success':
+        // Achievement chime - C5 E5 G5 C6
+        this._tone(523.25, 0.14, 'sine', 0.09);
+        this._tone(659.25, 0.14, 'sine', 0.09, 0.09);
+        this._tone(783.99, 0.16, 'sine', 0.09, 0.18);
+        this._tone(1046.50, 0.28, 'sine', 0.1, 0.28);
+        break;
+      case 'undo':
+        this._tone(500, 0.08, 'sine', 0.06);
+        this._tone(380, 0.1, 'sine', 0.05, 0.06);
+        break;
+      case 'delete':
+        this._tone(320, 0.09, 'triangle', 0.06);
+        this._tone(220, 0.14, 'triangle', 0.05, 0.07);
+        break;
+      case 'open':
+        this._tone(440, 0.06, 'sine', 0.05);
+        this._tone(660, 0.09, 'sine', 0.05, 0.05);
+        break;
+      case 'close':
+        this._tone(660, 0.06, 'sine', 0.045);
+        this._tone(440, 0.08, 'sine', 0.045, 0.05);
+        break;
+      case 'toggle':
+        this._tone(880, 0.06, 'sine', 0.05);
+        break;
+      case 'error':
+        this._tone(200, 0.12, 'square', 0.05);
+        break;
+    }
+  },
+};
+
+/* ============================================================
+   ICONS
+   ============================================================ */
+const Svg = ({ children, size = 20, className = '', strokeWidth = 2, ...rest }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth={strokeWidth}
+    strokeLinecap="round" strokeLinejoin="round" className={className} {...rest}>{children}</svg>
+);
+const IBook    = p => <Svg {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Svg>;
+const IPlus    = p => <Svg {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></Svg>;
+const ITimer   = p => <Svg {...p}><line x1="10" y1="2" x2="14" y2="2"/><line x1="12" y1="14" x2="15" y2="11"/><circle cx="12" cy="14" r="8"/></Svg>;
+const ICheck   = p => <Svg {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Svg>;
+const ICircle  = p => <Svg {...p}><circle cx="12" cy="12" r="10"/></Svg>;
+const IChevR   = p => <Svg {...p}><polyline points="9 18 15 12 9 6"/></Svg>;
+const IFlame   = p => <Svg {...p}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></Svg>;
+const IFile    = p => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></Svg>;
+const IVideo   = p => <Svg {...p}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></Svg>;
+const ICap     = p => <Svg {...p}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></Svg>;
+const IMore    = p => <Svg {...p}><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></Svg>;
+const ITrash   = p => <Svg {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></Svg>;
+const IX       = p => <Svg {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Svg>;
+const IClock   = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Svg>;
+const IZap     = p => <Svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Svg>;
+const IMoon    = p => <Svg {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></Svg>;
+const ISun     = p => <Svg {...p}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></Svg>;
+const ITrend   = p => <Svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></Svg>;
+const IList    = p => <Svg {...p}><rect x="3" y="5" width="6" height="6" rx="1"/><path d="m3 17 2 2 4-4"/><line x1="13" y1="8" x2="21" y2="8"/><line x1="13" y1="18" x2="21" y2="18"/></Svg>;
+const IFolder  = p => <Svg {...p}><path d="M6 14l1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/></Svg>;
+const ILayers  = p => <Svg {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></Svg>;
+const IBar     = p => <Svg {...p}><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></Svg>;
+const IPlay    = p => <Svg {...p}><polygon points="6 3 20 12 6 21 6 3"/></Svg>;
+const IPause   = p => <Svg {...p}><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></Svg>;
+const IReset   = p => <Svg {...p}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></Svg>;
+const ISpark   = p => <Svg {...p}><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></Svg>;
+const IStar    = p => <Svg {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Svg>;
+const ICal     = p => <Svg {...p}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></Svg>;
+const INote    = p => <Svg {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></Svg>;
+const ITarget  = p => <Svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Svg>;
+const IRefresh = p => <Svg {...p}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></Svg>;
+const IVolume  = p => <Svg {...p}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></Svg>;
+const IVolumeX = p => <Svg {...p}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></Svg>;
+const IBadge   = p => <Svg {...p}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></Svg>;
+
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const STUDY_TYPES = [
+  { id: 'chapter', label: 'محاضرة', Icon: ICap,     color: '#8B5CF6' },
+  { id: 'lecture', label: 'شرح',    Icon: IBook,    color: '#3B82F6' },
+  { id: 'video',   label: 'فيديو',  Icon: IVideo,   color: '#F43F5E' },
+  { id: 'file',    label: 'ملف',    Icon: IFile,    color: '#F59E0B' },
+  { id: 'lesson',  label: 'درس',    Icon: ILayers,  color: '#10B981' },
+  { id: 'other',   label: 'أخرى',   Icon: IMore,    color: '#64748B' },
+];
+
+const ASSIGNMENT_TYPES = [
+  { id: 'assignment', label: 'واجب',    Icon: IFile,    color: '#6366F1' },
+  { id: 'project',    label: 'مشروع',   Icon: IFolder,  color: '#F97316' },
+  { id: 'quiz',       label: 'كويز',    Icon: ITarget,  color: '#06B6D4' },
+  { id: 'other',      label: 'أخرى',    Icon: IMore,    color: '#64748B' },
+];
+
+const LIST_META = {
+  study:      { label: 'قائمة المذاكرة', icon: IBook,    emptyMsg: 'لا توجد مهام مذاكرة بعد',   types: STUDY_TYPES },
+  review:     { label: 'قائمة المراجعة', icon: IRefresh, emptyMsg: 'لا توجد مهام مراجعة بعد',   types: STUDY_TYPES },
+  assignment: { label: 'واجبات ومشاريع', icon: IFolder,  emptyMsg: 'لا توجد واجبات بعد',        types: ASSIGNMENT_TYPES },
+};
+
+const SUBJECT_COLORS = ['#6366F1','#8B5CF6','#10B981','#F59E0B','#F43F5E','#06B6D4','#F97316','#EC4899'];
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const pad = n => String(n).padStart(2, '0');
+
+function timeLeft(target) {
+  const diff = Math.max(0, Math.floor((new Date(target).getTime() - Date.now()) / 1000));
+  return {
+    days: Math.floor(diff / 86400), hours: Math.floor((diff % 86400) / 3600),
+    minutes: Math.floor((diff % 3600) / 60), seconds: diff % 60,
+    total: diff, isPast: diff === 0,
+  };
+}
+
+function useStore(key, initial) {
+  const [val, setVal] = useState(() => {
+    try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : initial; }
+    catch { return initial; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  }, [key, val]);
+  return [val, setVal];
+}
+
+function useEscapeKey(onEsc) {
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onEsc(); };
+    document.addEventListener('keydown', h);
+    return () => document.removeEventListener('keydown', h);
+  }, [onEsc]);
+}
+
+/* ============================================================
+   GLOBAL CLICK SOUND HANDLER
+   ============================================================ */
+function useGlobalClickSound() {
+  useEffect(() => {
+    const handler = e => {
+      const btn = e.target.closest('button, a, [role="button"], [data-sound]');
+      if (!btn) return;
+      const custom = btn.dataset.sound;
+      if (custom === 'none') return;
+      if (custom) Sound.play(custom);
+      else Sound.play('click');
+    };
+    document.addEventListener('click', handler, true);
+    return () => document.removeEventListener('click', handler, true);
+  }, []);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function Modal({ children, onClose }) {
+  useEscapeKey(onClose);
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
+  return (
+    <div
+      className="modal-wrap bg-slate-950/70 backdrop-blur-sm anim-backdrop"
+      onClick={onClose}>
+      <div
+        onClick={e => e.stopPropagation()}
+        className="modal-panel bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 anim-sheet focus-ring">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function ModalHeader({ title, onClose }) {
+  return (
+    <div className="flex items-center justify-between px-6 pt-6 pb-4 sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 z-10">
+      <h3 className="text-lg font-bold">{title}</h3>
+      <button onClick={onClose} data-sound="close"
+        className="rounded-full p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring">
+        <IX size={18} />
+      </button>
+    </div>
+  );
+}
+
+/* ============================================================
+   UI HELPERS
+   ============================================================ */
+function SegmentedTabs({ options, value, onChange, size = 'md' }) {
+  const padX = size === 'sm' ? 'px-2 py-1.5 text-[11px]' : 'px-3 py-2 text-sm';
+  return (
+    <div className="flex gap-1 rounded-xl bg-slate-100 dark:bg-slate-800 p-1">
+      {options.map(opt => {
+        const active = value === opt.id;
+        return (
+          <button key={opt.id} onClick={() => onChange(opt.id)}
+            className={`flex-1 rounded-lg font-semibold transition-all focus-ring ${padX} ${
+              active
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+            }`}>
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function EmptyState({ Icon, message, action }) {
+  return (
+    <div className="rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-8 text-center">
+      <Icon size={40} className="mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{message}</p>
+      {action && (
+        <button onClick={action.onClick}
+          className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline focus-ring rounded-lg px-2 py-1">
+          <IPlus size={14} /> {action.label}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ProgressRing({ progress, size = 80, strokeWidth = 8, color = 'white', track = 'rgba(255,255,255,0.25)', centerText }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={track} strokeWidth={strokeWidth} />
+        <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
+          strokeLinecap="round" strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - progress / 100)}
+          style={{ transition: 'stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)' }} />
+      </svg>
+      {centerText && (
+        <div className="absolute inset-0 flex items-center justify-center text-sm font-bold">
+          {centerText}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   LIST PANEL
+   ============================================================ */
+function ListPanel({ items, kind, onToggle, onDelete, onAdd, showExamBadge, exams }) {
+  const [filter, setFilter] = useState('all');
+  const [groupByType, setGroupByType] = useState(true);
+
+  const meta = LIST_META[kind];
+  const types = meta.types;
+
+  const filtered = useMemo(() => {
+    if (filter === 'active') return items.filter(i => !i.completed);
+    if (filter === 'done') return items.filter(i => i.completed);
+    return items;
+  }, [items, filter]);
+
+  const grouped = useMemo(() => {
+    if (!groupByType) return { 'الكل': filtered };
+    const g = {};
+    filtered.forEach(it => {
+      const t = types.find(x => x.id === it.type);
+      const label = t ? t.label : 'أخرى';
+      if (!g[label]) g[label] = [];
+      g[label].push(it);
+    });
+    const ordered = {};
+    types.forEach(t => { if (g[t.label]) ordered[t.label] = g[t.label]; });
+    Object.keys(g).forEach(k => { if (!ordered[k]) ordered[k] = g[k]; });
+    return ordered;
+  }, [filtered, groupByType, types]);
+
+  const done = items.filter(i => i.completed).length;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <SegmentedTabs
+          size="sm"
+          value={filter}
+          onChange={setFilter}
+          options={[
+            { id: 'all', label: `الكل (${items.length})` },
+            { id: 'active', label: `نشطة (${items.length - done})` },
+            { id: 'done', label: `مكتملة (${done})` },
+          ]}
+        />
+        <button onClick={() => setGroupByType(g => !g)}
+          className="rounded-xl bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus-ring">
+          {groupByType ? 'بدون تجميع' : 'تجميع حسب النوع'}
+        </button>
+      </div>
+
+      {items.length === 0 ? (
+        <EmptyState Icon={meta.icon} message={meta.emptyMsg}
+          action={{ label: 'إضافة الآن', onClick: onAdd }} />
+      ) : filtered.length === 0 ? (
+        <div className="rounded-2xl bg-slate-50 dark:bg-slate-900/50 p-8 text-center text-sm text-slate-500 dark:text-slate-400">
+          لا توجد عناصر مطابقة للفلتر
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {Object.keys(grouped).map(groupLabel => {
+            const groupItems = grouped[groupLabel];
+            const typeObj = types.find(t => t.label === groupLabel);
+            return (
+              <div key={groupLabel}>
+                {groupByType && (
+                  <div className="mb-2 flex items-center gap-2">
+                    {typeObj && <typeObj.Icon size={14} style={{ color: typeObj.color }} />}
+                    <h4 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      {groupLabel} · {groupItems.filter(i => i.completed).length}/{groupItems.length}
+                    </h4>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  {groupItems.map(it => {
+                    const t = types.find(x => x.id === it.type);
+                    const examRef = showExamBadge && it.examId && exams
+                      ? exams.find(e => e.id === it.examId) : null;
+                    const isDueSoon = kind === 'assignment' && it.dueDate && !it.completed
+                      && new Date(it.dueDate).getTime() - Date.now() < 86400 * 3 * 1000
+                      && new Date(it.dueDate).getTime() > Date.now();
+                    const isOverdue = kind === 'assignment' && it.dueDate && !it.completed
+                      && new Date(it.dueDate).getTime() < Date.now();
+                    return (
+                      <div key={it.id}
+                        className={`group flex items-center gap-3 rounded-xl bg-white dark:bg-slate-900 p-3 border transition-all ${
+                          it.completed
+                            ? 'opacity-60 border-slate-200 dark:border-slate-800'
+                            : 'border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'
+                        }`}>
+                        <button onClick={() => onToggle(it.id)} data-sound={it.completed ? 'undo' : 'success'}
+                          className="flex-shrink-0 focus-ring rounded-full">
+                          {it.completed ? (
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white anim-check">
+                              <ICheck size={16} />
+                            </div>
+                          ) : (
+                            <ICircle size={24} className="text-slate-300 dark:text-slate-600" />
+                          )}
+                        </button>
+
+                        {t && !groupByType && <t.Icon size={14} style={{ color: t.color }} className="flex-shrink-0" />}
+
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium truncate ${
+                            it.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100'
+                          }`}>{it.title}</p>
+                          <div className="flex items-center flex-wrap gap-2 mt-0.5">
+                            {examRef && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50 rounded-md px-1.5 py-0.5 border border-purple-200 dark:border-purple-900/60">
+                                <ITimer size={9} /> {examRef.title}
+                              </span>
+                            )}
+                            {it.dueDate && (
+                              <p className={`text-[11px] flex items-center gap-1 ${
+                                isOverdue ? 'text-red-500 font-semibold'
+                                : isDueSoon ? 'text-orange-500 font-semibold'
+                                : 'text-slate-500 dark:text-slate-400'
+                              }`}>
+                                <ICal size={10} />
+                                {isOverdue ? 'فات: ' : isDueSoon ? 'قريب: ' : 'ينتهي: '}
+                                {new Date(it.dueDate).toLocaleDateString('ar-SA', { dateStyle: 'medium' })}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <button onClick={() => onDelete(it.id)} data-sound="delete"
+                          className="opacity-0 group-hover:opacity-100 sm:opacity-60 rounded-lg p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all flex-shrink-0 focus-ring">
+                          <ITrash size={14} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   NOTES PANEL
+   ============================================================ */
+function NotesPanel({ notes, onAdd, onDelete }) {
+  const [text, setText] = useState('');
+  const add = () => { if (!text.trim()) return; onAdd(text.trim()); setText(''); };
+
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-800">
+        <textarea
+          value={text}
+          onChange={e => setText(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) add(); }}
+          placeholder="اكتب ملاحظتك هنا..."
+          rows={3}
+          className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 resize-none focus:border-indigo-500 dark:focus:border-indigo-500 transition-colors"
+        />
+        <div className="mt-3 flex items-center justify-between">
+          <span className="text-[11px] text-slate-400 dark:text-slate-500">Ctrl+Enter للحفظ السريع</span>
+          <button disabled={!text.trim()} onClick={add} data-sound={text.trim() ? 'add' : 'none'}
+            className={`rounded-xl px-5 py-2 text-sm font-semibold transition-all focus-ring ${
+              text.trim()
+                ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95'
+                : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+            }`}>
+            حفظ
+          </button>
+        </div>
+      </div>
+
+      {notes.length === 0 ? (
+        <EmptyState Icon={INote} message="لا توجد ملاحظات بعد" />
+      ) : (
+        <div className="space-y-2">
+          {notes.map(n => (
+            <div key={n.id}
+              className="group flex items-start gap-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 p-4">
+              <INote size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
+              <p className="flex-1 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap break-words">{n.text}</p>
+              <button onClick={() => onDelete(n.id)} data-sound="delete"
+                className="opacity-0 group-hover:opacity-100 sm:opacity-60 text-slate-400 hover:text-red-500 transition-all focus-ring rounded-lg p-1">
+                <ITrash size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   APP
+   ============================================================ */
+function App() {
+  const [subjects, setSubjects] = useStore('sp4_subjects', []);
+  const [exams, setExams] = useStore('sp4_exams', []);
+  const [items, setItems] = useStore('sp4_items', []);
+  const [notes, setNotes] = useStore('sp4_notes', []);
+  const [sessions, setSessions] = useStore('sp4_sessions', []);
+  const [dark, setDark] = useStore('sp4_dark', false);
+  const [soundEnabled, setSoundEnabled] = useStore('sp4_sound', true);
+
+  const [view, setView] = useState('dashboard');
+  const [activeSubjectId, setActiveSubjectId] = useState(null);
+  const [activeExamId, setActiveExamId] = useState(null);
+  const [modal, setModal] = useState(null);
+
+  useGlobalClickSound();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+    document.body.classList.toggle('dark', dark);
+  }, [dark]);
+
+  useEffect(() => {
+    Sound.enabled = soundEnabled;
+  }, [soundEnabled]);
+
+  const closeModal = () => setModal(null);
+
+  const navigate = (v, id) => {
+    Sound.play('navigate');
+    setView(v);
+    if (v === 'subject') setActiveSubjectId(id);
+    if (v === 'exam') setActiveExamId(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  /* ---------- Mutations ---------- */
+  const addSubject = s => { setSubjects(p => [...p, { id: uid(), createdAt: Date.now(), ...s }]); closeModal(); };
+  const addExam = e => { setExams(p => [...p, e]); closeModal(); };
+
+  const deleteSubject = id => {
+    setSubjects(p => p.filter(s => s.id !== id));
+    setItems(p => p.filter(i => i.subjectId !== id));
+    setNotes(p => p.filter(n => n.subjectId !== id));
+    setExams(p => p.filter(e => e.subjectId !== id));
+    if (activeSubjectId === id) navigate('subjects');
+    closeModal();
+  };
+
+  const deleteExam = id => {
+    setExams(p => p.filter(e => e.id !== id));
+    // Remove examId from items but keep them under the subject
+    setItems(p => p.map(i => i.examId === id ? { ...i, examId: null } : i));
+    setNotes(p => p.filter(n => n.examId !== id));
+    if (activeExamId === id) navigate('exams');
+    closeModal();
+  };
+
+  const addItems = newItems => { setItems(p => [...p, ...newItems]); closeModal(); };
+  const toggleItem = id => setItems(p => p.map(i => i.id === id
+    ? { ...i, completed: !i.completed, completedAt: !i.completed ? Date.now() : null } : i));
+  const deleteItem = id => setItems(p => p.filter(i => i.id !== id));
+
+  const addNote = n => setNotes(p => [n, ...p]);
+  const deleteNote = id => setNotes(p => p.filter(n => n.id !== id));
+  const addSession = s => setSessions(p => [...p, s]);
+
+  /* ---------- Derived ---------- */
+  const activeSubject = subjects.find(s => s.id === activeSubjectId);
+  const activeExam = exams.find(e => e.id === activeExamId);
+
+  const openAddItems = (kind, ctx) => setModal({ type: 'items', kind, ...ctx });
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <header className="sticky top-0 z-30 glass border-b border-slate-200 dark:border-slate-800">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+          <button onClick={() => navigate('dashboard')} className="flex items-center gap-2 focus-ring rounded-xl">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30">
+              <IBook size={18} />
+            </div>
+            <span className="text-lg font-bold">مذاكرة</span>
+          </button>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setSoundEnabled(!soundEnabled)}
+              data-sound="none"
+              className="rounded-xl p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring">
+              {soundEnabled ? <IVolume size={18} /> : <IVolumeX size={18} />}
+            </button>
+            <button onClick={() => setModal({ type: 'pomodoro' })}
+              className="rounded-xl p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring">
+              <ITimer size={18} />
+            </button>
+            <button onClick={() => setDark(!dark)}
+              className="rounded-xl p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring">
+              {dark ? <ISun size={18} /> : <IMoon size={18} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-4 py-6 pb-28">
+        <div key={view + (activeSubjectId || '') + (activeExamId || '')} className="anim-fade-up">
+          {view === 'dashboard' && (
+            <Dashboard
+              subjects={subjects} exams={exams} items={items} sessions={sessions}
+              onNavigate={navigate}
+              onAddSubject={() => setModal({ type: 'subject' })}
+              onAddExam={() => {
+                if (subjects.length === 0) {
+                  Sound.play('error');
+                  setModal({ type: 'needSubject' });
+                } else {
+                  setModal({ type: 'exam' });
+                }
+              }} />
+          )}
+          {view === 'subjects' && (
+            <SubjectsView
+              subjects={subjects} items={items}
+              onNavigate={navigate}
+              onAdd={() => setModal({ type: 'subject' })}
+              onDelete={id => setModal({ type: 'confirm', what: 'subject', id })} />
+          )}
+          {view === 'subject' && activeSubject && (
+            <SubjectDetail
+              subject={activeSubject}
+              items={items.filter(i => i.subjectId === activeSubject.id)}
+              notes={notes.filter(n => n.subjectId === activeSubject.id)}
+              exams={exams.filter(e => e.subjectId === activeSubject.id)}
+              onBack={() => navigate('subjects')}
+              onToggleItem={toggleItem}
+              onDeleteItem={deleteItem}
+              onAddItems={kind => openAddItems(kind, { subjectId: activeSubject.id })}
+              onAddNote={n => addNote(n)}
+              onDeleteNote={deleteNote} />
+          )}
+          {view === 'exams' && (
+            <ExamsView
+              exams={exams} items={items} subjects={subjects}
+              onAdd={() => {
+                if (subjects.length === 0) {
+                  Sound.play('error');
+                  setModal({ type: 'needSubject' });
+                } else {
+                  setModal({ type: 'exam' });
+                }
+              }}
+              onDelete={id => setModal({ type: 'confirm', what: 'exam', id })}
+              onOpen={id => navigate('exam', id)} />
+          )}
+          {view === 'exam' && activeExam && (
+            <ExamDetail
+              exam={activeExam}
+              subject={subjects.find(s => s.id === activeExam.subjectId)}
+              items={items.filter(i => i.examId === activeExam.id)}
+              notes={notes.filter(n => n.examId === activeExam.id)}
+              onBack={() => navigate('exams')}
+              onToggleItem={toggleItem}
+              onDeleteItem={deleteItem}
+              onAddItems={kind => openAddItems(kind, {
+                examId: activeExam.id,
+                subjectId: activeExam.subjectId,
+              })}
+              onAddNote={n => addNote(n)}
+              onDeleteNote={deleteNote} />
+          )}
+          {view === 'stats' && (
+            <StatsView items={items} subjects={subjects} sessions={sessions} />
+          )}
+        </div>
+      </main>
+
+      {view === 'subjects' && (
+        <button onClick={() => setModal({ type: 'subject' })}
+          className="fixed bottom-24 left-4 z-30 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/40 hover:scale-110 active:scale-95 transition-transform focus-ring">
+          <IPlus size={24} />
+        </button>
+      )}
+      {view === 'exams' && (
+        <button onClick={() => {
+          if (subjects.length === 0) {
+            Sound.play('error');
+            setModal({ type: 'needSubject' });
+          } else {
+            setModal({ type: 'exam' });
+          }
+        }}
+          className="fixed bottom-24 left-4 z-30 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xl shadow-indigo-500/40 hover:scale-110 active:scale-95 transition-transform focus-ring">
+          <IPlus size={24} />
+        </button>
+      )}
+
+      <nav className="fixed bottom-0 left-0 right-0 z-30 glass border-t border-slate-200 dark:border-slate-800">
+        <div className="mx-auto flex max-w-5xl items-center justify-around px-2 py-2">
+          {[
+            { id: 'dashboard', Icon: IBar,   label: 'الرئيسية' },
+            { id: 'subjects',  Icon: IBook,  label: 'المواد' },
+            { id: 'exams',     Icon: ITimer, label: 'اختبارات' },
+            { id: 'stats',     Icon: ITrend, label: 'إحصائيات' },
+          ].map(it => {
+            const active = view === it.id
+              || (it.id === 'subjects' && view === 'subject')
+              || (it.id === 'exams' && view === 'exam');
+            return (
+              <button key={it.id} onClick={() => navigate(it.id)} data-sound="none"
+                className={`flex flex-col items-center gap-0.5 rounded-xl px-4 py-1.5 transition-all focus-ring ${
+                  active
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
+                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}>
+                <it.Icon size={18} />
+                <span className="text-[10px] font-bold">{it.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Modals */}
+      {modal?.type === 'subject' && (
+        <Modal onClose={closeModal}>
+          <ModalHeader title="مادة جديدة" onClose={closeModal} />
+          <AddSubjectForm onAdd={addSubject} onCancel={closeModal} />
+        </Modal>
+      )}
+      {modal?.type === 'exam' && (
+        <Modal onClose={closeModal}>
+          <ModalHeader title="اختبار جديد" onClose={closeModal} />
+          <AddExamForm subjects={subjects} onAdd={addExam} onCancel={closeModal} />
+        </Modal>
+      )}
+      {modal?.type === 'items' && (
+        <Modal onClose={closeModal}>
+          <ModalHeader title={'إضافة إلى ' + LIST_META[modal.kind].label} onClose={closeModal} />
+          <ItemCreator
+            kind={modal.kind}
+            subjectId={modal.subjectId}
+            examId={modal.examId}
+            onAdd={addItems}
+            onCancel={closeModal} />
+        </Modal>
+      )}
+      {modal?.type === 'pomodoro' && (
+        <Modal onClose={closeModal}>
+          <ModalHeader title="مؤقت بومودورو" onClose={closeModal} />
+          <Pomodoro onSessionEnd={addSession} onCancel={closeModal} />
+        </Modal>
+      )}
+      {modal?.type === 'confirm' && (
+        <ConfirmModal
+          what={modal.what}
+          onCancel={closeModal}
+          onConfirm={() => {
+            if (modal.what === 'subject') deleteSubject(modal.id);
+            if (modal.what === 'exam') deleteExam(modal.id);
+          }} />
+      )}
+      {modal?.type === 'needSubject' && (
+        <Modal onClose={closeModal}>
+          <div className="p-6 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/40">
+              <IBook size={24} className="text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <h3 className="text-lg font-bold">تحتاج مادة أولاً</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              كل اختبار يجب أن يندرج تحت مادة. أضف مادة أولاً ثم أضف اختبارك.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button onClick={() => setModal({ type: 'subject' })} data-sound="add"
+                className="flex-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 py-3 text-sm font-semibold text-white active:scale-95 transition-all focus-ring">
+                إضافة مادة
+              </button>
+              <button onClick={closeModal}
+                className="flex-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 active:scale-95 transition-all focus-ring">
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   CONFIRM MODAL
+   ============================================================ */
+function ConfirmModal({ what, onCancel, onConfirm }) {
+  const title = what === 'subject' ? 'حذف المادة؟' : 'حذف الاختبار؟';
+  const desc = what === 'subject'
+    ? 'سيتم حذف كل المهام والملاحظات والاختبارات المرتبطة بهذه المادة.'
+    : 'سيتم حذف مهام التحضير والملاحظات المرتبطة بهذا الاختبار فقط.';
+  return (
+    <Modal onClose={onCancel}>
+      <div className="p-6 text-center">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+          <ITrash size={24} className="text-red-500" />
+        </div>
+        <h3 className="text-lg font-bold">{title}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{desc}</p>
+        <div className="mt-6 flex gap-3">
+          <button onClick={onConfirm} data-sound="delete"
+            className="flex-1 rounded-xl bg-red-500 hover:bg-red-600 py-3 text-sm font-semibold text-white active:scale-95 transition-all focus-ring">
+            حذف نهائي
+          </button>
+          <button onClick={onCancel}
+            className="flex-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 active:scale-95 transition-all focus-ring">
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function Dashboard({ subjects, exams, items, sessions, onNavigate, onAddSubject, onAddExam }) {
+  const upcoming = useMemo(() =>
+    exams.map(e => ({ ...e, left: timeLeft(e.date) }))
+      .filter(e => !e.left.isPast)
+      .sort((a, b) => a.left.total - b.left.total), [exams]);
+
+  const nearest = upcoming[0];
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const left = nearest ? timeLeft(nearest.date) : null;
+  const totalItems = items.length;
+  const doneItems = items.filter(i => i.completed).length;
+  const progress = totalItems ? Math.round((doneItems / totalItems) * 100) : 0;
+  const todayDone = items.filter(i => i.completed && i.completedAt
+    && new Date(i.completedAt).toDateString() === new Date().toDateString()).length;
+  const totalStudyMin = Math.round(sessions.reduce((s, x) => s + (x.duration || 0), 0) / 60);
+
+  return (
+    <div className="space-y-5">
+      {nearest ? (
+        <button onClick={() => onNavigate('exam', nearest.id)} data-sound="open"
+          className="relative w-full overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-white shadow-2xl text-right hover:scale-[1.005] transition-transform focus-ring">
+          <div className="anim-pulse-soft absolute -top-20 -right-20 h-56 w-56 rounded-full bg-white/30 blur-3xl" />
+          <div className="anim-pulse-soft absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-white/20 blur-3xl" style={{ animationDelay: '1.5s' }} />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-white/90 text-sm">
+                <IFlame size={18} className="text-yellow-300" />
+                <span className="font-medium">أقرب اختبار</span>
+              </div>
+              <IChevR size={20} className="text-white/70" />
+            </div>
+            <h1 className="mt-2 text-2xl sm:text-3xl font-bold">{nearest.title}</h1>
+            {nearest.subjectId && (
+              <p className="text-white/85 text-sm mt-1">
+                {subjects.find(s => s.id === nearest.subjectId)?.name}
+              </p>
+            )}
+            <div className="mt-5 grid grid-cols-4 gap-2 sm:gap-3">
+              {[
+                { v: left.days, l: 'يوم' }, { v: left.hours, l: 'ساعة' },
+                { v: left.minutes, l: 'دقيقة' }, { v: left.seconds, l: 'ثانية' },
+              ].map(item => (
+                <div key={item.l} className="rounded-2xl bg-white/15 backdrop-blur-sm p-2 sm:p-3 text-center border border-white/20">
+                  <div className="text-xl sm:text-2xl font-bold tabular-nums">{pad(item.v)}</div>
+                  <div className="text-[10px] sm:text-xs text-white/80 mt-0.5">{item.l}</div>
+                </div>
+              ))}
+            </div>
+            {upcoming.length > 1 && (
+              <div className="mt-5 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                {upcoming.slice(1, 5).map(e => (
+                  <div key={e.id} className="flex-shrink-0 rounded-xl bg-white/15 backdrop-blur-sm px-3 py-2 border border-white/20">
+                    <div className="text-[11px] text-white/80 truncate max-w-[100px]">{e.title}</div>
+                    <div className="text-sm font-semibold">{e.left.days} يوم</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </button>
+      ) : (
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 p-6 text-white shadow-xl">
+          <ISpark size={32} className="mb-3" />
+          <h2 className="text-xl font-bold">ابدأ رحلتك الدراسية!</h2>
+          <p className="text-white/85 text-sm mt-1">أضف مواد ثم اختباراتك وستظهر العد التنازلي هنا.</p>
+          <button onClick={onAddExam}
+            className="mt-4 rounded-xl bg-white/25 backdrop-blur-sm px-4 py-2 text-sm font-semibold border border-white/30 hover:bg-white/35 transition-colors focus-ring">
+            + إضافة اختبار
+          </button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { Icon: IBook,  v: subjects.length, label: 'مواد',   c1: '#3B82F6', c2: '#06B6D4' },
+          { Icon: ICheck, v: doneItems,       label: 'مكتمل',  c1: '#10B981', c2: '#14B8A6' },
+          { Icon: IZap,   v: todayDone,       label: 'اليوم',  c1: '#F59E0B', c2: '#F97316' },
+          { Icon: IClock, v: totalStudyMin + 'د', label: 'مذاكرة', c1: '#8B5CF6', c2: '#EC4899' },
+        ].map(s => (
+          <div key={s.label} className="rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-800 hover:-translate-y-1 transition-transform">
+            <div className="inline-flex rounded-xl p-2 text-white" style={{ background: `linear-gradient(135deg, ${s.c1}, ${s.c2})` }}>
+              <s.Icon size={16} />
+            </div>
+            <div className="mt-3 text-2xl font-bold">{s.v}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {totalItems > 0 && (
+        <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold">التقدم العام</h3>
+            <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{progress}%</span>
+          </div>
+          <div className="h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-1000"
+              style={{ width: progress + '%' }} />
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{doneItems} من {totalItems} عنصر مكتمل</p>
+        </div>
+      )}
+
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold">المواد الدراسية</h2>
+          <button onClick={() => onNavigate('subjects')}
+            className="flex items-center gap-1 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline focus-ring rounded-lg px-2 py-1">
+            عرض الكل <IChevR size={14} />
+          </button>
+        </div>
+
+        {subjects.length === 0 ? (
+          <button onClick={onAddSubject}
+            className="flex w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 py-10 text-slate-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors focus-ring">
+            <IPlus size={28} className="mb-2" />
+            <span className="text-sm font-medium">أضف مادتك الأولى</span>
+          </button>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {subjects.slice(0, 6).map(s => {
+              const st = items.filter(i => i.subjectId === s.id);
+              const dn = st.filter(i => i.completed).length;
+              const p = st.length ? (dn / st.length) * 100 : 0;
+              const examCount = exams.filter(e => e.subjectId === s.id).length;
+              return (
+                <button key={s.id} onClick={() => onNavigate('subject', s.id)}
+                  className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-800 text-right hover:scale-105 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all focus-ring">
+                  <div className="absolute top-0 right-0 h-16 w-16 rounded-bl-full opacity-10 group-hover:opacity-25 transition-opacity"
+                    style={{ backgroundColor: s.color }} />
+                  <div className="flex items-start justify-between">
+                    <div className="rounded-xl p-2" style={{ backgroundColor: s.color + '25', color: s.color }}>
+                      <IBook size={18} />
+                    </div>
+                    <span className="text-xs text-slate-400">{st.length} عنصر</span>
+                  </div>
+                  <h3 className="mt-3 font-bold truncate">{s.name}</h3>
+                  {s.instructor && <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{s.instructor}</p>}
+                  {examCount > 0 && (
+                    <p className="text-[11px] text-purple-600 dark:text-purple-400 mt-1 flex items-center gap-1">
+                      <ITimer size={10} /> {examCount} اختبار
+                    </p>
+                  )}
+                  <div className="mt-3">
+                    <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 mb-1">
+                      <span>التقدم</span><span>{Math.round(p)}%</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700"
+                        style={{ width: p + '%', backgroundColor: s.color }} />
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   SUBJECTS VIEW
+   ============================================================ */
+function SubjectsView({ subjects, items, onNavigate, onAdd, onDelete }) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">المواد</h1>
+        <button onClick={onAdd}
+          className="flex items-center gap-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 active:scale-95 transition-all focus-ring">
+          <IPlus size={16} /> مادة
+        </button>
+      </div>
+
+      {subjects.length === 0 ? (
+        <EmptyState Icon={IBook} message="لا توجد مواد بعد" action={{ label: 'أضف مادة', onClick: onAdd }} />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {subjects.map(s => {
+            const st = items.filter(i => i.subjectId === s.id);
+            const dn = st.filter(i => i.completed).length;
+            const p = st.length ? (dn / st.length) * 100 : 0;
+            return (
+              <div key={s.id}
+                className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
+                <div className="absolute top-0 right-0 h-24 w-24 rounded-bl-full opacity-10" style={{ backgroundColor: s.color }} />
+                <div className="flex items-start justify-between">
+                  <button onClick={() => onNavigate('subject', s.id)} className="flex-1 text-right focus-ring rounded-xl">
+                    <div className="rounded-xl p-2.5 w-fit" style={{ backgroundColor: s.color + '25', color: s.color }}>
+                      <IBook size={20} />
+                    </div>
+                    <h3 className="mt-3 font-bold text-lg">{s.name}</h3>
+                    {s.instructor && <p className="text-sm text-slate-500 dark:text-slate-400">{s.instructor}</p>}
+                  </button>
+                  <button onClick={() => onDelete(s.id)} data-sound="delete"
+                    className="opacity-0 group-hover:opacity-100 sm:opacity-60 rounded-lg p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all focus-ring">
+                    <ITrash size={16} />
+                  </button>
+                </div>
+                <button onClick={() => onNavigate('subject', s.id)} className="mt-4 w-full text-right focus-ring rounded-xl">
+                  <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                    <span>{dn}/{st.length} عنصر</span><span>{Math.round(p)}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700"
+                      style={{ width: p + '%', backgroundColor: s.color }} />
+                  </div>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   SUBJECT DETAIL
+   ============================================================ */
+function SubjectDetail({ subject, items, notes, exams, onBack, onToggleItem, onDeleteItem, onAddItems, onAddNote, onDeleteNote }) {
+  const [tab, setTab] = useState('study');
+
+  const studyItems = items.filter(i => i.kind === 'study');
+  const reviewItems = items.filter(i => i.kind === 'review');
+  const assignmentItems = items.filter(i => i.kind === 'assignment');
+
+  const totalDone = items.filter(i => i.completed).length;
+  const progress = items.length ? (totalDone / items.length) * 100 : 0;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <button onClick={onBack} data-sound="close"
+          className="rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring">
+          <IChevR size={20} className="text-slate-600 dark:text-slate-300" />
+        </button>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl font-bold truncate">{subject.name}</h1>
+          {subject.instructor && <p className="text-sm text-slate-500 dark:text-slate-400">{subject.instructor}</p>}
+        </div>
+      </div>
+
+      <div className="relative overflow-hidden rounded-2xl p-5 text-white shadow-lg"
+        style={{ background: `linear-gradient(135deg, ${subject.color}, ${subject.color}dd)` }}>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-white/90">التقدم الكلي</p>
+            <p className="text-3xl font-bold mt-1">{Math.round(progress)}%</p>
+            <p className="text-xs text-white/80 mt-1">{totalDone} من {items.length} عنصر</p>
+          </div>
+          <ProgressRing progress={progress} size={80} strokeWidth={8} color="white"
+            track="rgba(255,255,255,0.25)" centerText={`${totalDone}/${items.length}`} />
+        </div>
+      </div>
+
+      {/* Exams in this subject */}
+      {exams.length > 0 && (
+        <div className="rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-800">
+          <h3 className="text-xs font-bold text-slate-600 dark:text-slate-300 mb-2 flex items-center gap-2">
+            <ITimer size={14} className="text-purple-500" />
+            اختبارات هذه المادة ({exams.length})
+          </h3>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            {exams.map(e => {
+              const l = timeLeft(e.date);
+              return (
+                <div key={e.id} className="flex-shrink-0 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900/60 px-3 py-2">
+                  <div className="text-xs font-semibold text-purple-700 dark:text-purple-300 truncate max-w-[120px]">{e.title}</div>
+                  <div className="text-[10px] text-purple-500 dark:text-purple-400 mt-0.5">
+                    {l.isPast ? 'انتهى' : `${l.days} يوم`}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <SegmentedTabs
+        value={tab}
+        onChange={setTab}
+        options={[
+          { id: 'study', label: `المذاكرة (${studyItems.length})` },
+          { id: 'review', label: `المراجعة (${reviewItems.length})` },
+          { id: 'assignment', label: `واجبات (${assignmentItems.length})` },
+          { id: 'notes', label: `ملاحظات (${notes.length})` },
+        ]}
+      />
+
+      {tab === 'study' && (
+        <ListPanel items={studyItems} kind="study"
+          showExamBadge exams={exams}
+          onToggle={onToggleItem} onDelete={onDeleteItem}
+          onAdd={() => onAddItems('study')} />
+      )}
+      {tab === 'review' && (
+        <ListPanel items={reviewItems} kind="review"
+          showExamBadge exams={exams}
+          onToggle={onToggleItem} onDelete={onDeleteItem}
+          onAdd={() => onAddItems('review')} />
+      )}
+      {tab === 'assignment' && (
+        <ListPanel items={assignmentItems} kind="assignment"
+          showExamBadge exams={exams}
+          onToggle={onToggleItem} onDelete={onDeleteItem}
+          onAdd={() => onAddItems('assignment')} />
+      )}
+      {tab === 'notes' && (
+        <NotesPanel
+          notes={notes}
+          onAdd={text => onAddNote({ id: uid(), text, subjectId: subject.id, createdAt: Date.now() })}
+          onDelete={onDeleteNote} />
+      )}
+
+      {tab !== 'notes' && (
+        <button onClick={() => onAddItems(tab)} data-sound="add"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 active:scale-[.98] transition-all focus-ring">
+          <IPlus size={18} /> إضافة إلى {LIST_META[tab].label}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   EXAMS VIEW
+   ============================================================ */
+function ExamsView({ exams, items, subjects, onAdd, onDelete, onOpen }) {
+  const sorted = useMemo(() => exams.slice().sort((a, b) => new Date(a.date) - new Date(b.date)), [exams]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">الاختبارات</h1>
+        <button onClick={onAdd}
+          className="flex items-center gap-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 active:scale-95 transition-all focus-ring">
+          <IPlus size={16} /> اختبار
+        </button>
+      </div>
+
+      {sorted.length === 0 ? (
+        <EmptyState Icon={ITimer} message="لا توجد اختبارات قادمة"
+          action={{ label: 'أضف اختبار', onClick: onAdd }} />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {sorted.map(e => {
+            const examItems = items.filter(i => i.examId === e.id);
+            const dn = examItems.filter(i => i.completed).length;
+            const subject = subjects.find(s => s.id === e.subjectId);
+            return (
+              <ExamCard key={e.id} exam={e} subject={subject}
+                taskCount={examItems.length} doneCount={dn}
+                onDelete={() => onDelete(e.id)}
+                onOpen={() => onOpen(e.id)} />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ExamCard({ exam, subject, taskCount, doneCount, onDelete, onOpen }) {
+  const [left, setLeft] = useState(() => timeLeft(exam.date));
+  useEffect(() => {
+    const id = setInterval(() => setLeft(timeLeft(exam.date)), 1000);
+    return () => clearInterval(id);
+  }, [exam.date]);
+
+  const isPast = left.isPast;
+  const isSoon = !isPast && left.total < 86400 * 3;
+
+  return (
+    <div onClick={onOpen} data-sound="open"
+      className={`group relative overflow-hidden rounded-2xl p-5 shadow-lg cursor-pointer hover:scale-[1.02] transition-transform focus-ring ${
+        isPast
+          ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+          : isSoon
+            ? 'bg-gradient-to-br from-red-500 to-orange-500 text-white'
+            : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
+      }`}>
+      {isSoon && (
+        <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/25 px-2 py-1 text-[10px] font-bold backdrop-blur-sm">
+          <IFlame size={10} /> قريب!
+        </div>
+      )}
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-lg truncate">{exam.title}</h3>
+          {subject && (
+            <p className={`text-xs mt-1 ${isPast ? 'text-slate-500 dark:text-slate-400' : 'text-white/90'}`}>
+              <IBook size={10} className="inline" /> {subject.name}
+            </p>
+          )}
+          <p className={`text-xs mt-1 ${isPast ? 'text-slate-500 dark:text-slate-400' : 'text-white/85'}`}>
+            <ICal size={10} className="inline" />{' '}
+            {new Date(exam.date).toLocaleString('ar-SA', { dateStyle: 'medium', timeStyle: 'short' })}
+          </p>
+          {taskCount > 0 && (
+            <p className={`text-xs mt-1 ${isPast ? 'text-slate-500 dark:text-slate-400' : 'text-white/85'}`}>
+              <IList size={10} className="inline" /> {doneCount}/{taskCount} عنصر
+            </p>
+          )}
+        </div>
+        <button onClick={e => { e.stopPropagation(); onDelete(); }} data-sound="delete"
+          className={`rounded-lg p-1.5 transition-colors focus-ring ${
+            isPast ? 'hover:bg-slate-200 dark:hover:bg-slate-700' : 'hover:bg-white/25'
+          }`}>
+          <ITrash size={14} />
+        </button>
+      </div>
+      {!isPast ? (
+        <div className="mt-4 grid grid-cols-4 gap-2">
+          {[
+            { v: left.days, l: 'يوم' }, { v: left.hours, l: 'ساعة' },
+            { v: left.minutes, l: 'دقيقة' }, { v: left.seconds, l: 'ثانية' },
+          ].map(item => (
+            <div key={item.l} className="rounded-xl bg-white/20 backdrop-blur-sm px-1 py-2 text-center border border-white/25">
+              <div className="text-base font-bold tabular-nums">{pad(item.v)}</div>
+              <div className="text-[9px] text-white/85">{item.l}</div>
+            </div>
+          ))}
+        </div>
+      ) : <p className="mt-4 text-sm font-medium">انتهى</p>}
+    </div>
+  );
+}
+
+/* ============================================================
+   EXAM DETAIL — Only study, review, notes
+   ============================================================ */
+function ExamDetail({ exam, subject, items, notes, onBack, onToggleItem, onDeleteItem, onAddItems, onAddNote, onDeleteNote }) {
+  const [tab, setTab] = useState('study');
+  const [left, setLeft] = useState(() => timeLeft(exam.date));
+
+  useEffect(() => {
+    const id = setInterval(() => setLeft(timeLeft(exam.date)), 1000);
+    return () => clearInterval(id);
+  }, [exam.date]);
+
+  const studyItems = items.filter(i => i.kind === 'study');
+  const reviewItems = items.filter(i => i.kind === 'review');
+  // NO assignments in exam
+
+  const done = items.filter(i => i.completed).length;
+  const progress = items.length ? (done / items.length) * 100 : 0;
+  const isSoon = !left.isPast && left.total < 86400 * 3;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <button onClick={onBack} data-sound="close"
+          className="rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring">
+          <IChevR size={20} className="text-slate-600 dark:text-slate-300" />
+        </button>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl font-bold truncate">{exam.title}</h1>
+          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            {subject && (
+              <span className="inline-flex items-center gap-1 text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+                <IBook size={10} /> {subject.name}
+              </span>
+            )}
+            <span>
+              <ICal size={12} className="inline" />{' '}
+              {new Date(exam.date).toLocaleString('ar-SA', { dateStyle: 'medium', timeStyle: 'short' })}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className={`relative overflow-hidden rounded-3xl p-6 text-white shadow-2xl ${
+        left.isPast
+          ? 'bg-gradient-to-br from-slate-500 to-slate-700'
+          : isSoon
+            ? 'bg-gradient-to-br from-red-500 via-orange-500 to-pink-500'
+            : 'bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500'
+      }`}>
+        <div className="anim-pulse-soft absolute -top-20 -right-20 h-56 w-56 rounded-full bg-white/30 blur-3xl" />
+        <div className="anim-pulse-soft absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-white/20 blur-3xl" style={{ animationDelay: '1.5s' }} />
+
+        <div className="relative z-10">
+          {!left.isPast ? (
+            <>
+              <div className="flex items-center gap-2 text-white/90 text-sm mb-3">
+                {isSoon ? <IFlame size={18} className="text-yellow-300" /> : <IClock size={18} />}
+                <span className="font-medium">{isSoon ? 'الاختبار قريب!' : 'العد التنازلي'}</span>
+              </div>
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                {[
+                  { v: left.days, l: 'يوم' }, { v: left.hours, l: 'ساعة' },
+                  { v: left.minutes, l: 'دقيقة' }, { v: left.seconds, l: 'ثانية' },
+                ].map(item => (
+                  <div key={item.l} className="rounded-2xl bg-white/15 backdrop-blur-sm p-3 text-center border border-white/20">
+                    <div className="text-2xl sm:text-3xl font-bold tabular-nums">{pad(item.v)}</div>
+                    <div className="text-[10px] sm:text-xs text-white/85 mt-1">{item.l}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-4">
+              <ICheck size={48} className="mx-auto mb-2" />
+              <h2 className="text-xl font-bold">انتهى الاختبار</h2>
+              <p className="text-white/85 text-sm mt-1">بالتوفيق في النتيجة 🌟</p>
+            </div>
+          )}
+
+          {items.length > 0 && (
+            <div className="mt-6">
+              <div className="flex justify-between text-xs text-white/90 mb-2">
+                <span>التقدم في التحضير</span>
+                <span>{done}/{items.length} · {Math.round(progress)}%</span>
+              </div>
+              <div className="h-2 rounded-full bg-white/20 overflow-hidden">
+                <div className="h-full rounded-full bg-white transition-all duration-700"
+                  style={{ width: progress + '%' }} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <SegmentedTabs
+        value={tab}
+        onChange={setTab}
+        options={[
+          { id: 'study', label: `المذاكرة (${studyItems.length})` },
+          { id: 'review', label: `المراجعة (${reviewItems.length})` },
+          { id: 'notes', label: `ملاحظات (${notes.length})` },
+        ]}
+      />
+
+      {tab === 'study' && (
+        <ListPanel items={studyItems} kind="study"
+          onToggle={onToggleItem} onDelete={onDeleteItem}
+          onAdd={() => onAddItems('study')} />
+      )}
+      {tab === 'review' && (
+        <ListPanel items={reviewItems} kind="review"
+          onToggle={onToggleItem} onDelete={onDeleteItem}
+          onAdd={() => onAddItems('review')} />
+      )}
+      {tab === 'notes' && (
+        <NotesPanel
+          notes={notes}
+          onAdd={text => onAddNote({
+            id: uid(), text,
+            examId: exam.id, subjectId: exam.subjectId || null,
+            createdAt: Date.now(),
+          })}
+          onDelete={onDeleteNote} />
+      )}
+
+      {tab !== 'notes' && (
+        <button onClick={() => onAddItems(tab)} data-sound="add"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 active:scale-[.98] transition-all focus-ring">
+          <IPlus size={18} /> إضافة إلى {LIST_META[tab].label}
+        </button>
+      )}
+
+      <p className="text-center text-[11px] text-slate-400 dark:text-slate-500">
+        ✨ العناصر المضافة هنا تظهر تلقائياً في مادة: {subject?.name || '—'}
+      </p>
+    </div>
+  );
+}
+
+/* ============================================================
+   ITEM CREATOR
+   ============================================================ */
+function ItemCreator({ kind, subjectId, examId, onAdd, onCancel }) {
+  const types = LIST_META[kind].types;
+  const supportsRange = kind !== 'assignment';
+
+  const [itemType, setItemType] = useState(types[0].id);
+  const [mode, setMode] = useState(supportsRange ? 'range' : 'single');
+  const [rangeFrom, setRangeFrom] = useState(1);
+  const [rangeTo, setRangeTo] = useState(10);
+  const [prefix, setPrefix] = useState('');
+  const [singleTitle, setSingleTitle] = useState('');
+  const [customItems, setCustomItems] = useState(['']);
+  const [dueDate, setDueDate] = useState('');
+
+  const typeObj = types.find(t => t.id === itemType);
+  const typeLabel = typeObj?.label || '';
+
+  const buildItem = (title, order) => {
+    const base = {
+      id: uid(), kind, type: itemType, title,
+      completed: false, createdAt: Date.now(), order: order || 0,
+      subjectId: subjectId || null,
+      examId: examId || null,
+    };
+    if (kind === 'assignment' && dueDate) base.dueDate = dueDate;
+    return base;
+  };
+
+  const handleSubmit = () => {
+    if (mode === 'range' && supportsRange) {
+      if (rangeTo < rangeFrom) return;
+      const list = [];
+      for (let i = 0; i < rangeTo - rangeFrom + 1; i++) {
+        list.push(buildItem(`${prefix || typeLabel} ${rangeFrom + i}`, rangeFrom + i));
+      }
+      Sound.play('add');
+      onAdd(list);
+    } else if (mode === 'single') {
+      if (!singleTitle.trim()) return;
+      Sound.play('add');
+      onAdd([buildItem(singleTitle.trim())]);
+    } else {
+      const list = customItems.filter(t => t.trim()).map((t, i) => buildItem(t.trim(), i + 1));
+      if (!list.length) return;
+      Sound.play('add');
+      onAdd(list);
+    }
+  };
+
+  const totalCount = rangeTo >= rangeFrom ? rangeTo - rangeFrom + 1 : 0;
+  const preview = totalCount > 0
+    ? Array.from({ length: Math.min(totalCount, 8) }, (_, i) => `${prefix || typeLabel} ${rangeFrom + i}`)
+    : [];
+
+  const canSubmit = mode === 'single' ? singleTitle.trim()
+    : mode === 'range' ? totalCount > 0
+    : customItems.some(t => t.trim());
+
+  return (
+    <div className="p-6 space-y-4">
+      {examId && (
+        <div className="rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-900/60 p-3 flex items-start gap-2">
+          <ITimer size={14} className="text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
+          <p className="text-[11px] text-purple-700 dark:text-purple-300 leading-relaxed">
+            هذه العناصر ستُضاف إلى الاختبار <strong>و</strong> إلى مادتها تلقائياً.
+          </p>
+        </div>
+      )}
+
+      <div>
+        <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">النوع</label>
+        <div className={`grid gap-2 ${types.length > 4 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+          {types.map(type => {
+            const active = itemType === type.id;
+            return (
+              <button key={type.id} onClick={() => setItemType(type.id)}
+                className={`flex flex-col items-center gap-1 rounded-xl p-3 text-[11px] font-semibold transition-all border-2 focus-ring ${
+                  active
+                    ? 'border-indigo-500 dark:border-indigo-400'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                }`}
+                style={active
+                  ? { backgroundColor: type.color + '20', color: type.color }
+                  : { color: 'inherit' }}>
+                <type.Icon size={18} />
+                {type.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">طريقة الإضافة</label>
+        <SegmentedTabs
+          size="sm"
+          value={mode}
+          onChange={setMode}
+          options={[
+            ...(supportsRange ? [{ id: 'range', label: 'نطاق' }] : []),
+            { id: 'single', label: 'مفرد' },
+            { id: 'custom', label: 'مخصص' },
+          ]}
+        />
+      </div>
+
+      {mode === 'range' && supportsRange && (
+        <div className="space-y-3 anim-slide-down">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">البادئة (اختياري)</label>
+            <input value={prefix} onChange={e => setPrefix(e.target.value)} placeholder={typeLabel}
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 transition-colors" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">من</label>
+              <input type="number" min="1" value={rangeFrom}
+                onChange={e => setRangeFrom(Math.max(1, Number(e.target.value) || 1))}
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm text-center font-bold text-slate-900 dark:text-slate-100 focus:border-indigo-500 transition-colors" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">إلى</label>
+              <input type="number" min="1" value={rangeTo}
+                onChange={e => setRangeTo(Math.max(1, Number(e.target.value) || 1))}
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm text-center font-bold text-slate-900 dark:text-slate-100 focus:border-indigo-500 transition-colors" />
+            </div>
+          </div>
+          {totalCount > 0 && (
+            <div className="rounded-xl bg-indigo-50 dark:bg-indigo-950/50 p-3 border border-indigo-200 dark:border-indigo-900/70">
+              <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+                سيتم إنشاء <strong>{totalCount}</strong> عنصر
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {preview.map((t, i) => (
+                  <span key={i} className="rounded-md bg-white dark:bg-slate-900 px-2 py-1 text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 shadow-sm border border-indigo-200 dark:border-indigo-900/70">
+                    {t}
+                  </span>
+                ))}
+                {totalCount > 8 && (
+                  <span className="rounded-md bg-white dark:bg-slate-900 px-2 py-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    +{totalCount - 8} أخرى
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {mode === 'single' && (
+        <div className="anim-slide-down">
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">عنوان العنصر</label>
+          <input value={singleTitle} onChange={e => setSingleTitle(e.target.value)} autoFocus
+            placeholder={kind === 'assignment' ? 'مثال: مشروع الفصل الأول...' : 'مثال: المحاضرة 1...'}
+            onKeyDown={e => { if (e.key === 'Enter' && canSubmit) handleSubmit(); }}
+            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 transition-colors" />
+        </div>
+      )}
+
+      {mode === 'custom' && (
+        <div className="space-y-2 anim-slide-down">
+          {customItems.map((item, idx) => (
+            <div key={idx} className="flex gap-2">
+              <input value={item}
+                onChange={e => { const n = customItems.slice(); n[idx] = e.target.value; setCustomItems(n); }}
+                placeholder={`العنصر ${idx + 1}`}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && idx === customItems.length - 1) {
+                    e.preventDefault();
+                    setCustomItems([...customItems, '']);
+                  }
+                }}
+                className="flex-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 transition-colors" />
+              {customItems.length > 1 && (
+                <button onClick={() => setCustomItems(customItems.filter((_, i) => i !== idx))} data-sound="delete"
+                  className="rounded-xl p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors focus-ring">
+                  <ITrash size={16} />
+                </button>
+              )}
+            </div>
+          ))}
+          <button onClick={() => setCustomItems([...customItems, ''])}
+            className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline focus-ring rounded-lg px-2 py-1">
+            + إضافة عنصر آخر
+          </button>
+        </div>
+      )}
+
+      {kind === 'assignment' && (
+        <div className="anim-slide-down">
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+            تاريخ التسليم (اختياري)
+          </label>
+          <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 transition-colors" />
+        </div>
+      )}
+
+      <div className="flex gap-3 pt-2">
+        <button disabled={!canSubmit} onClick={handleSubmit} data-sound={canSubmit ? 'add' : 'none'}
+          className={`flex-1 rounded-xl py-3 text-sm font-semibold text-white transition-all focus-ring ${
+            canSubmit
+              ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/25 active:scale-95'
+              : 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed'
+          }`}>
+          إضافة
+        </button>
+        <button onClick={onCancel}
+          className="rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-5 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 transition-colors focus-ring">
+          إلغاء
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   ADD SUBJECT FORM
+   ============================================================ */
+function AddSubjectForm({ onAdd, onCancel }) {
+  const [name, setName] = useState('');
+  const [instructor, setInstructor] = useState('');
+  const [color, setColor] = useState(SUBJECT_COLORS[0]);
+
+  const canSave = name.trim();
+
+  return (
+    <div className="p-6 space-y-4">
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">اسم المادة *</label>
+        <input value={name} onChange={e => setName(e.target.value)} autoFocus
+          placeholder="مثال: رياضيات، فيزياء..."
+          onKeyDown={e => { if (e.key === 'Enter' && canSave) onAdd({ name: name.trim(), instructor: instructor.trim(), color }); }}
+          className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 transition-colors" />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">اسم الأستاذ (اختياري)</label>
+        <input value={instructor} onChange={e => setInstructor(e.target.value)}
+          placeholder="د. محمد..."
+          className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 transition-colors" />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">اللون</label>
+        <div className="flex gap-2 flex-wrap">
+          {SUBJECT_COLORS.map(c => {
+            const active = color === c;
+            return (
+              <button key={c} onClick={() => setColor(c)}
+                className="relative h-10 w-10 rounded-full transition-transform hover:scale-110 active:scale-95 focus-ring"
+                style={{ backgroundColor: c, boxShadow: active ? `0 0 0 2px white, 0 0 0 4px ${c}` : 'none' }}>
+                {active && (
+                  <div className="flex h-full w-full items-center justify-center text-white">
+                    <ICheck size={18} />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="flex gap-3 pt-2">
+        <button disabled={!canSave}
+          onClick={() => canSave && onAdd({ name: name.trim(), instructor: instructor.trim(), color })}
+          data-sound={canSave ? 'add' : 'none'}
+          className={`flex-1 rounded-xl py-3 text-sm font-semibold text-white transition-all focus-ring ${
+            canSave ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/25 active:scale-95'
+                    : 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed'
+          }`}>
+          إضافة
+        </button>
+        <button onClick={onCancel}
+          className="rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-5 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 transition-colors focus-ring">
+          إلغاء
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   ADD EXAM FORM — subject required
+   ============================================================ */
+function AddExamForm({ subjects, onAdd, onCancel }) {
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('09:00');
+  const [subjectId, setSubjectId] = useState(subjects[0]?.id || '');
+
+  const canSave = title.trim() && date && subjectId;
+
+  return (
+    <div className="p-6 space-y-4">
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">عنوان الاختبار *</label>
+        <input value={title} onChange={e => setTitle(e.target.value)} autoFocus
+          placeholder="مثال: اختبار الرياضيات النصفي..."
+          className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-500 transition-colors" />
+      </div>
+
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+          المادة * <span className="text-red-500">(إجباري)</span>
+        </label>
+        <select value={subjectId} onChange={e => setSubjectId(e.target.value)}
+          className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 transition-colors">
+          {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+          كل اختبار يندرج تحت مادة، والمهام المضافة له ستظهر في المادة أيضاً.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">التاريخ *</label>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 transition-colors" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">الوقت</label>
+          <input type="time" value={time} onChange={e => setTime(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 transition-colors" />
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-2">
+        <button disabled={!canSave}
+          onClick={() => canSave && onAdd({
+            id: uid(), title: title.trim(), date: `${date}T${time}`,
+            subjectId, createdAt: Date.now(),
+          })}
+          data-sound={canSave ? 'add' : 'none'}
+          className={`flex-1 rounded-xl py-3 text-sm font-semibold text-white transition-all focus-ring ${
+            canSave ? 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/25 active:scale-95'
+                    : 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed'
+          }`}>
+          إضافة
+        </button>
+        <button onClick={onCancel}
+          className="rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-5 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 transition-colors focus-ring">
+          إلغاء
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   STATS VIEW
+   ============================================================ */
+function StatsView({ items, subjects, sessions }) {
+  const weekly = useMemo(() => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const key = d.toDateString();
+      const count = items.filter(it => it.completedAt && new Date(it.completedAt).toDateString() === key).length;
+      days.push({ label: d.toLocaleDateString('ar-SA', { weekday: 'short' }), count });
+    }
+    return days;
+  }, [items]);
+
+  const max = Math.max(1, ...weekly.map(d => d.count));
+  const totalMin = Math.round(sessions.reduce((s, x) => s + (x.duration || 0), 0) / 60);
+  const done = items.filter(i => i.completed).length;
+  const rate = items.length ? Math.round((done / items.length) * 100) : 0;
+
+  const bySubject = subjects.map(s => {
+    const st = items.filter(i => i.subjectId === s.id);
+    return { ...s, total: st.length, done: st.filter(i => i.completed).length };
+  }).sort((a, b) => b.total - a.total);
+
+  const byKind = ['study', 'review', 'assignment'].map(k => {
+    const ki = items.filter(i => i.kind === k);
+    return { kind: k, total: ki.length, done: ki.filter(i => i.completed).length };
+  });
+
+  return (
+    <div className="space-y-5">
+      <h1 className="text-2xl font-bold">الإحصائيات</h1>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { v: done, l: 'مكتمل', c1: '#10B981', c2: '#14B8A6' },
+          { v: rate + '%', l: 'نسبة الإنجاز', c1: '#6366F1', c2: '#8B5CF6' },
+          { v: totalMin + 'د', l: 'وقت المذاكرة', c1: '#F59E0B', c2: '#F97316' },
+          { v: sessions.length, l: 'جلسات بومودورو', c1: '#EC4899', c2: '#F43F5E' },
+        ].map(s => (
+          <div key={s.l} className="rounded-2xl bg-white dark:bg-slate-900 p-4 border border-slate-200 dark:border-slate-800">
+            <div className="h-1 w-10 rounded-full" style={{ background: `linear-gradient(90deg, ${s.c1}, ${s.c2})` }} />
+            <div className="mt-3 text-2xl font-bold">{s.v}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">{s.l}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800">
+        <h3 className="font-bold mb-4">نشاط الأسبوع</h3>
+        <div className="flex items-end justify-between gap-2 h-32">
+          {weekly.map((d, i) => {
+            const h = (d.count / max) * 100;
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+                <div className="w-full rounded-t-lg transition-all duration-700"
+                  style={{
+                    height: (h > 0 ? h : 3) + '%',
+                    minHeight: '4px',
+                    background: d.count > 0 ? 'linear-gradient(to top, #6366F1, #8B5CF6)' : '#e2e8f0',
+                  }} />
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">{d.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800">
+        <h3 className="font-bold mb-4">التقدم حسب القائمة</h3>
+        <div className="space-y-3">
+          {byKind.map(k => {
+            const meta = LIST_META[k.kind];
+            const p = k.total ? (k.done / k.total) * 100 : 0;
+            return (
+              <div key={k.kind}>
+                <div className="flex items-center justify-between text-sm mb-1">
+                  <div className="flex items-center gap-2">
+                    <meta.icon size={14} className="text-indigo-500" />
+                    <span className="font-medium text-slate-700 dark:text-slate-200">{meta.label}</span>
+                  </div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{k.done}/{k.total}</span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                  <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-700"
+                    style={{ width: p + '%' }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {bySubject.length > 0 && (
+        <div className="rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800">
+          <h3 className="font-bold mb-4">التقدم حسب المادة</h3>
+          <div className="space-y-3">
+            {bySubject.map(s => {
+              const p = s.total ? (s.done / s.total) * 100 : 0;
+              return (
+                <div key={s.id}>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full" style={{ backgroundColor: s.color }} />
+                      <span className="font-medium text-slate-700 dark:text-slate-200">{s.name}</span>
+                    </div>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{s.done}/{s.total}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700"
+                      style={{ width: p + '%', backgroundColor: s.color }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   POMODORO
+   ============================================================ */
+function Pomodoro({ onSessionEnd, onCancel }) {
+  const MODES = {
+    focus: { label: 'تركيز', min: 25, color: '#6366F1' },
+    short: { label: 'راحة قصيرة', min: 5, color: '#10B981' },
+    long:  { label: 'راحة طويلة', min: 15, color: '#F59E0B' },
+  };
+  const [mode, setMode] = useState('focus');
+  const [seconds, setSeconds] = useState(25 * 60);
+  const [running, setRunning] = useState(false);
+
+  useEffect(() => { setSeconds(MODES[mode].min * 60); setRunning(false); }, [mode]);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => {
+      setSeconds(s => {
+        if (s <= 1) {
+          setRunning(false);
+          Sound.play('success');
+          if (mode === 'focus') onSessionEnd({ id: uid(), duration: MODES.focus.min * 60, endedAt: Date.now() });
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [running, mode, onSessionEnd]);
+
+  const total = MODES[mode].min * 60;
+  const progress = ((total - seconds) / total) * 100;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  const R = 90, C = 2 * Math.PI * R;
+
+  return (
+    <div className="p-6 text-center space-y-5">
+      <SegmentedTabs
+        value={mode}
+        onChange={setMode}
+        options={Object.keys(MODES).map(k => ({ id: k, label: MODES[k].label }))}
+      />
+
+      <div className="relative mx-auto" style={{ width: 220, height: 220 }}>
+        <svg className="absolute inset-0 -rotate-90" viewBox="0 0 220 220">
+          <circle cx="110" cy="110" r={R} fill="none" strokeWidth="10"
+            className="text-slate-200 dark:text-slate-800" stroke="currentColor" />
+          <circle cx="110" cy="110" r={R} fill="none" stroke={MODES[mode].color} strokeWidth="10"
+            strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - progress / 100)}
+            style={{ transition: 'stroke-dashoffset .5s linear' }} />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="text-5xl font-bold tabular-nums">{pad(m)}:{pad(s)}</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{MODES[mode].label}</div>
+        </div>
+      </div>
+
+      <div className="flex justify-center gap-3">
+        <button onClick={() => setRunning(!running)}
+          data-sound={running ? 'click' : 'open'}
+          className="flex items-center gap-2 rounded-xl px-8 py-3 text-sm font-semibold text-white shadow-lg active:scale-95 transition-transform focus-ring hover:brightness-110"
+          style={{ backgroundColor: MODES[mode].color }}>
+          {running ? <IPause size={18} /> : <IPlay size={18} />}
+          {running ? 'إيقاف' : 'ابدأ'}
+        </button>
+        <button onClick={() => { setSeconds(MODES[mode].min * 60); setRunning(false); }}
+          className="rounded-xl bg-slate-100 dark:bg-slate-800 p-3 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all focus-ring">
+          <IReset size={18} />
+        </button>
+      </div>
+
+      <p className="text-xs text-slate-500 dark:text-slate-400">جلسات التركيز تُحفظ تلقائياً ✨</p>
+    </div>
+  );
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+  </html>
