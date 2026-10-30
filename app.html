@@ -2440,15 +2440,17 @@ body[data-idle="1"] .marble-veins{
                 <!-- Forearms (Brachioradialis & Wrist Flexors) -->
                 <path d="M31 97 L45 97 L39 128 L26 125 Q27 110 31 97 Z" class="hm-region" data-hm="Forearms" onclick="inspectHeatmapMuscle('Forearms')"/>
                 <path d="M129 97 L115 97 L121 128 L134 125 Q133 110 129 97 Z" class="hm-region" data-hm="Forearms" onclick="inspectHeatmapMuscle('Forearms')"/>
-                <!-- Abs & Core (Rectus Abdominis 6-Pack + External Obliques) -->
-                <rect x="61" y="77" width="17" height="13" rx="3" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <rect x="82" y="77" width="17" height="13" rx="3" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <rect x="61" y="92" width="17" height="13" rx="3" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <rect x="82" y="92" width="17" height="13" rx="3" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <path d="M62 107 L78 107 L77 124 L65 122 Z" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <path d="M82 107 L98 107 L95 122 L83 124 Z" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <path d="M53 74 L59 77 L60 118 L52 112 Z" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
-                <path d="M107 74 L101 77 L100 118 L108 112 Z" class="hm-region" data-hm="Abs and core" onclick="inspectHeatmapMuscle('Abs and core')"/>
+                <!-- Upper Abs (Superior Rectus Abdominis) -->
+                <rect x="61" y="77" width="17" height="13" rx="3" class="hm-region" data-hm="Upper Abs" onclick="inspectHeatmapMuscle('Upper Abs')"/>
+                <rect x="82" y="77" width="17" height="13" rx="3" class="hm-region" data-hm="Upper Abs" onclick="inspectHeatmapMuscle('Upper Abs')"/>
+                <rect x="61" y="92" width="17" height="13" rx="3" class="hm-region" data-hm="Upper Abs" onclick="inspectHeatmapMuscle('Upper Abs')"/>
+                <rect x="82" y="92" width="17" height="13" rx="3" class="hm-region" data-hm="Upper Abs" onclick="inspectHeatmapMuscle('Upper Abs')"/>
+                <!-- Lower Abs (Inferior Rectus Abdominis) -->
+                <path d="M62 107 L78 107 L77 124 L65 122 Z" class="hm-region" data-hm="Lower Abs" onclick="inspectHeatmapMuscle('Lower Abs')"/>
+                <path d="M82 107 L98 107 L95 122 L83 124 Z" class="hm-region" data-hm="Lower Abs" onclick="inspectHeatmapMuscle('Lower Abs')"/>
+                <!-- Obliques (External & Internal Lateral Core) -->
+                <path d="M53 74 L59 77 L60 118 L52 112 Z" class="hm-region" data-hm="Obliques" onclick="inspectHeatmapMuscle('Obliques')"/>
+                <path d="M107 74 L101 77 L100 118 L108 112 Z" class="hm-region" data-hm="Obliques" onclick="inspectHeatmapMuscle('Obliques')"/>
                 <!-- Adductors (Inner Thighs) -->
                 <path d="M70 127 L78 127 L74 174 L68 170 Z" class="hm-region" data-hm="Adductors" onclick="inspectHeatmapMuscle('Adductors')"/>
                 <path d="M82 127 L90 127 L92 170 L86 174 Z" class="hm-region" data-hm="Adductors" onclick="inspectHeatmapMuscle('Adductors')"/>
@@ -2487,9 +2489,12 @@ body[data-idle="1"] .marble-veins{
                 <!-- Forearms (Posterior Wrist Extensors) -->
                 <path d="M30 97 L44 97 L38 127 L25 124 Z" class="hm-region" data-hm="Forearms" onclick="inspectHeatmapMuscle('Forearms')"/>
                 <path d="M116 97 L130 97 L135 124 L122 127 Z" class="hm-region" data-hm="Forearms" onclick="inspectHeatmapMuscle('Forearms')"/>
-                <!-- Glutes (Gluteus Medius & Maximus) -->
-                <path d="M52 122 L79 122 L79 152 L49 149 Q47 135 52 122 Z" class="hm-region" data-hm="Glutes" onclick="inspectHeatmapMuscle('Glutes')"/>
-                <path d="M81 122 L108 122 Q113 135 111 149 L81 152 Z" class="hm-region" data-hm="Glutes" onclick="inspectHeatmapMuscle('Glutes')"/>
+                <!-- Abductors (Outer Hip / Gluteus Medius Lateral) -->
+                <path d="M46 122 L54 122 L51 146 L44 142 Q43 132 46 122 Z" class="hm-region" data-hm="Abductors" onclick="inspectHeatmapMuscle('Abductors')"/>
+                <path d="M114 122 L106 122 L109 146 L116 142 Q117 132 114 122 Z" class="hm-region" data-hm="Abductors" onclick="inspectHeatmapMuscle('Abductors')"/>
+                <!-- Glutes (Gluteus Maximus) -->
+                <path d="M55 122 L79 122 L79 152 L52 149 Z" class="hm-region" data-hm="Glutes" onclick="inspectHeatmapMuscle('Glutes')"/>
+                <path d="M81 122 L105 122 L108 149 L81 152 Z" class="hm-region" data-hm="Glutes" onclick="inspectHeatmapMuscle('Glutes')"/>
                 <!-- Hamstrings (Biceps Femoris, Semitendinosus & Semimembranosus) -->
                 <path d="M50 154 L76 154 L72 192 L50 190 Z" class="hm-region" data-hm="Hamstrings" onclick="inspectHeatmapMuscle('Hamstrings')"/>
                 <path d="M84 154 L110 154 L110 190 L88 192 Z" class="hm-region" data-hm="Hamstrings" onclick="inspectHeatmapMuscle('Hamstrings')"/>
@@ -7303,14 +7308,22 @@ function getExerciseBioProfile(exName){
   const n = String(exName).toLowerCase();
   const muscle = entry ? entry.muscle : 'Chest';
   const sub = entry ? entry.sub : 'Mid Chest';
-  const isIsoRegex = /fly|flies|pec deck|crossover|pullover|straight arm|shrug|trap|lateral|raise|face pull|reverse pec|rear delt|curl|pushdown|overhead ext|skull|kickback|french press|leg ext|leg curl|adduct|abduct|calf|calves|crunch|plank|sit-up|woodchop|twist|wrist|hyperextension|back ext|تفتيح|فراشة|رفرفة|بول اوفر|شراغ|ترابيس|فيس بول|كيرل|حبل تراي|مسطرة|سمانة|بطن|سواعد/.test(n);
-  const isCompound = isIsoRegex ? false : (entry && entry.compound !== undefined ? !!entry.compound : true);
 
-  // Determine canonical recovery target keys for this exercise
-  // Large keys: 'Chest', 'Back', 'Legs'
-  // Small keys: 'Biceps', 'Triceps', 'Front Delts', 'Side Delts', 'Rear Delts', 'Calves', 'Traps', 'Abs and core', 'Forearms'
+  // Strict true multi-joint compound detection (only true compounds trigger 24h synergists)
+  const isIsoRegex = /fly|flies|pec deck|crossover|pullover|straight arm|shrug|trap|lateral|raise|face pull|reverse pec|rear delt|curl|pushdown|overhead ext|skull|kickback|french press|leg ext|leg curl|adduct|abduct|calf|calves|crunch|plank|sit-up|situp|woodchop|twist|wrist|hyperextension|back ext|glute bridge|hip thrust|تفتيح|فراشة|رفرفة|بول اوفر|شراغ|ترابيس|فيس بول|كيرل|حبل تراي|مسطرة|سمانة|بطن|سواعد|ضامات/.test(n);
+  const isTrueCompoundRegex = /press|bench|dip|push-up|pushup|pulldown|pull-up|pullup|chin-up|chinup|row|muscle-up|squat|lunge|split squat|rdl|deadlift|good morning|بنش|ضغط|غطس|سحب|عقلة|تجديف|بار|سكوات|ليج برس|هاك|طعن|روماني|ديدليفت/.test(n);
+  const isCompound = !isIsoRegex && isTrueCompoundRegex;
+
+  // Determine granular canonical recovery target key:
+  // - Large (72h): 'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes'
+  // - Small Main (48h): 'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps'
+  // - Small Accessory / Core (48h, separated): 'Upper Abs', 'Lower Abs', 'Obliques', 'Calves', 'Traps'
+  // - Simple / Stabilizer Exempt from Day Readiness lock: 'Adductors', 'Abductors', 'Forearms'
   let primaryKey = muscle;
   let isLarge = false;
+  let exemptFromDayReadiness = false;
+  let isMinorAccessory = false;
+
   if(muscle === 'Chest'){
     primaryKey = 'Chest';
     isLarge = true;
@@ -7318,47 +7331,73 @@ function getExerciseBioProfile(exName){
     if(sub === 'Traps' || /shrug|trap|ترابيس|شراغ/.test(n)){
       primaryKey = 'Traps';
       isLarge = false;
+      isMinorAccessory = true;
     } else {
       primaryKey = 'Back';
       isLarge = true;
     }
   } else if(muscle === 'Legs'){
-    if(sub === 'Calves' || /calf|calves|سمانة|بطة/.test(n)){
+    if(sub === 'Adductors' || /adduct|inner thigh|ضامات|فخذ داخلي/.test(n)){
+      primaryKey = 'Adductors';
+      isLarge = false;
+      exemptFromDayReadiness = true;
+      isMinorAccessory = true;
+    } else if(sub === 'Abductors' || /abduct|outer hip|فخذ خارجي|ابعاد الحوض/.test(n)){
+      primaryKey = 'Abductors';
+      isLarge = false;
+      exemptFromDayReadiness = true;
+      isMinorAccessory = true;
+    } else if(sub === 'Calves' || /calf|calves|سمانة|بطة/.test(n)){
       primaryKey = 'Calves';
       isLarge = false;
+      isMinorAccessory = true;
+    } else if(sub === 'Hamstrings' || /leg curl|hamstring|rdl|romanian|stiff-leg|good morning|glute-ham|nordic|خلفي|روماني/.test(n)){
+      primaryKey = 'Hamstrings';
+      isLarge = true;
+    } else if(sub === 'Glutes' || /hip thrust|glute bridge|kickback|قلوتس|جسر|رفس/.test(n)){
+      primaryKey = 'Glutes';
+      isLarge = true;
     } else {
-      primaryKey = 'Legs';
+      // Quads (Squat, Leg Press, Hack Squat, Leg Extension, Lunges, Split Squat)
+      primaryKey = 'Quads';
       isLarge = true;
     }
   } else if(muscle === 'Shoulders'){
-    if(sub === 'Side Delts') primaryKey = 'Side Delts';
-    else if(sub === 'Rear Delts') primaryKey = 'Rear Delts';
+    if(sub === 'Side Delts' || /lateral|side delt|upright row|جانبي/.test(n)) primaryKey = 'Side Delts';
+    else if(sub === 'Rear Delts' || /rear delt|face pull|reverse pec|خلفي|فيس بول/.test(n)) primaryKey = 'Rear Delts';
     else primaryKey = 'Front Delts';
     isLarge = false;
+  } else if(muscle === 'Abs and core' || /crunch|sit-up|situp|leg raise|knee raise|reverse crunch|oblique|woodchop|russian twist|side plank|side bend|plank|ab wheel|rollout|بطن|خواصر|بلانك/.test(n)){
+    if(sub === 'Lower Abs' || /leg raise|knee raise|reverse crunch|captain|hanging|roman chair|toes to bar|سفلي|رفع ارجل|رفع أرجل/.test(n)){
+      primaryKey = 'Lower Abs';
+    } else if(sub === 'Core' || /oblique|woodchop|twist|side plank|side bend|bicycle|plank|wheel|rollout|vacuum|جانبي|خواصر|بلانك|عجلة/.test(n)){
+      primaryKey = 'Obliques';
+    } else {
+      primaryKey = 'Upper Abs';
+    }
+    isLarge = false;
+    isMinorAccessory = true;
+  } else if(muscle === 'Forearms' || /wrist|forearm|reverse curl|farmer|ساعد|سواعد|رسغ/.test(n)){
+    primaryKey = 'Forearms';
+    isLarge = false;
+    exemptFromDayReadiness = true;
+    isMinorAccessory = true;
   } else {
-    primaryKey = muscle; // 'Biceps', 'Triceps', 'Abs and core', 'Forearms'
+    primaryKey = muscle; // 'Biceps', 'Triceps'
     isLarge = false;
   }
 
-  // Synergists recruited ONLY when this exercise is a compound movement (24h assistant recovery window)
+  // Synergists recruited ONLY when this exercise is a true multi-joint compound movement (24h assistant recovery window)
   const synergists = [];
   if(isCompound){
     if(primaryKey === 'Chest'){
       synergists.push('Triceps', 'Front Delts');
     } else if(primaryKey === 'Back' && sub !== 'Lower Back'){
-      synergists.push('Biceps', 'Rear Delts', 'Forearms');
-      if(/row|جدف|بار|تي بار|منشار/.test(n)) synergists.push('Traps');
+      synergists.push('Biceps', 'Rear Delts');
     } else if(muscle === 'Shoulders' && primaryKey === 'Front Delts'){
-      synergists.push('Triceps', 'Side Delts');
+      synergists.push('Triceps');
     } else if(primaryKey === 'Triceps' && /close grip|dip|غطس|ضيق/.test(n)){
       synergists.push('Front Delts');
-    } else if(primaryKey === 'Legs'){
-      if(sub === 'Quads' || /squat|leg press|hack|lunge|split squat|سكوات|ليج برس|هاك|طعن/.test(n)){
-        synergists.push('Glutes', 'Adductors');
-        if(/barbell|front squat|back squat|حر|بار/.test(n)) synergists.push('Abs and core');
-      } else if(sub === 'Hamstrings' || /rdl|romanian|deadlift|good morning|روماني|ديدليفت/.test(n)){
-        synergists.push('Glutes', 'Forearms', 'Traps');
-      }
     }
   }
 
@@ -7369,19 +7408,22 @@ function getExerciseBioProfile(exName){
     primaryKey: primaryKey,
     isLarge: isLarge,
     isCompound: isCompound,
+    exemptFromDayReadiness: exemptFromDayReadiness,
+    isMinorAccessory: isMinorAccessory,
     synergists: synergists
   };
 }
 
-function getMuscleTrainingEventsMap(){
-  const now = Date.now();
+function getMuscleTrainingEventsMap(futureOffsetHours){
+  const offsetHrs = parseFloat(futureOffsetHours) || 0;
+  const now = Date.now() + offsetHrs * 3600000;
+  const realNow = Date.now();
   const LOOKBACK_MS = 96 * 3600 * 1000;
-  // Group all logged history entries into workout sessions (bucketed within 4-hour windows)
   const sessions = [];
 
   function addLogToSessionBucket(exName, histEntry){
     if(!histEntry || !histEntry.date) return;
-    if(now - histEntry.date > LOOKBACK_MS || histEntry.date > now + 60000) return;
+    if(realNow - histEntry.date > LOOKBACK_MS || histEntry.date > realNow + 60000) return;
     let workingSets = 0;
     (histEntry.reps || []).forEach(function(r){
       if((parseFloat(r) || 0) > 0) workingSets++;
@@ -7398,36 +7440,37 @@ function getMuscleTrainingEventsMap(){
     bucket.items.push({ exName: exName, sets: workingSets });
   }
 
-  appData.programs.forEach(function(p){
-    (p.program || []).forEach(function(d){
-      (d.exercises || []).forEach(function(ex){
-        (ex.history || []).forEach(function(h){
-          addLogToSessionBucket(ex.name, h);
-        });
-        if(ex.supersetName){
-          (ex.supersetHistory || []).forEach(function(sh){
-            addLogToSessionBucket(ex.supersetName, sh);
-          });
-        }
+  // Only inspect the currently active split so old/inactive splits never pollute readiness!
+  const activeProg = getProgram();
+  (activeProg || []).forEach(function(d){
+    (d.exercises || []).forEach(function(ex){
+      (ex.history || []).forEach(function(h){
+        addLogToSessionBucket(ex.name, h);
       });
+      if(ex.supersetName){
+        (ex.supersetHistory || []).forEach(function(sh){
+          addLogToSessionBucket(ex.supersetName, sh);
+        });
+      }
     });
   });
 
-  // For each canonical muscle key, compute its current readiness % and remaining hours
   const muscleStatus = {};
 
-  function applyFatigueEvent(mKey, role, setsCount, sessionTs, isLarge){
-    // Determine required recovery hours (with smart low-volume adjustment)
+  function applyFatigueEvent(mKey, role, setsCount, sessionTs, isLarge, isExempt){
     let reqHours = 48;
     if(role === 'direct'){
-      if(isLarge){
-        // Large muscle (Chest, Back, Legs): 72h standard; scaled if ultra-low volume
+      if(isExempt){
+        // Simple stabilizers (Adductors, Abductors, Forearms): 36h local recovery on Heatmap
+        reqHours = setsCount <= 2 ? 24 : 36;
+      } else if(isLarge){
+        // Large muscle (Chest, Back, Quads, Hamstrings, Glutes): 72h standard; scaled if ultra-low volume
         if(setsCount === 1) reqHours = 36;
         else if(setsCount === 2) reqHours = 48;
         else if(setsCount === 3) reqHours = 60;
         else reqHours = 72;
       } else {
-        // Small muscle trained directly (Biceps, Triceps, Delts, Calves, Abs, Forearms): 48h standard
+        // Small muscle trained directly (Biceps, Triceps, Delts, Calves, Traps, Upper Abs, Lower Abs, Obliques): 48h standard
         if(setsCount === 1) reqHours = 24;
         else if(setsCount === 2) reqHours = 36;
         else reqHours = 48;
@@ -7442,7 +7485,6 @@ function getMuscleTrainingEventsMap(){
     if(rawElapsedHours >= reqHours) return;
 
     // 30-minute discrete update steps: 0.0h, 0.5h, 1.0h, 1.5h, ...
-    // Immediately after workout (0 to <30 mins): steppedHours === 0 -> 0% readiness!
     const steppedHours = Math.floor(rawElapsedHours * 2) / 2;
     const pct = clamp(Math.round((steppedHours / reqHours) * 100), 0, 100);
     const hoursLeft = Math.max(0, Math.ceil((reqHours - steppedHours) * 2) / 2);
@@ -7456,6 +7498,7 @@ function getMuscleTrainingEventsMap(){
         hoursLeft: hoursLeft,
         role: role,
         sets: setsCount,
+        exempt: !!isExempt,
         lastTs: sessionTs
       };
     }
@@ -7464,6 +7507,7 @@ function getMuscleTrainingEventsMap(){
   sessions.forEach(function(sess){
     const directSetsByKey = {};
     const directIsLarge = {};
+    const directIsExempt = {};
     const synergistCompoundSets = {};
 
     sess.items.forEach(function(it){
@@ -7471,8 +7515,8 @@ function getMuscleTrainingEventsMap(){
       if(!prof) return;
       directSetsByKey[prof.primaryKey] = (directSetsByKey[prof.primaryKey] || 0) + it.sets;
       directIsLarge[prof.primaryKey] = prof.isLarge;
+      directIsExempt[prof.primaryKey] = prof.exemptFromDayReadiness;
 
-      // Only compound exercises trigger 24h synergist fatigue!
       if(prof.isCompound && prof.synergists && prof.synergists.length){
         prof.synergists.forEach(function(synKey){
           synergistCompoundSets[synKey] = (synergistCompoundSets[synKey] || 0) + it.sets;
@@ -7481,10 +7525,10 @@ function getMuscleTrainingEventsMap(){
     });
 
     Object.keys(directSetsByKey).forEach(function(mKey){
-      applyFatigueEvent(mKey, 'direct', directSetsByKey[mKey], sess.ts, directIsLarge[mKey]);
+      applyFatigueEvent(mKey, 'direct', directSetsByKey[mKey], sess.ts, directIsLarge[mKey], directIsExempt[mKey]);
     });
     Object.keys(synergistCompoundSets).forEach(function(synKey){
-      applyFatigueEvent(synKey, 'synergist', synergistCompoundSets[synKey], sess.ts, false);
+      applyFatigueEvent(synKey, 'synergist', synergistCompoundSets[synKey], sess.ts, false, false);
     });
   });
 
@@ -7497,35 +7541,45 @@ function getDayReadinessDetail(dayIdx){
   if(!day || !Array.isArray(day.exercises) || !day.exercises.length){
     return { pct: 100, bottleneck: null, muscles: [], allDetails: [] };
   }
-  const muscleStatus = getMuscleTrainingEventsMap();
-  const dayTargetKeys = {};
+  const muscleStatus = getMuscleTrainingEventsMap(0);
+  const mainTargetKeys = {};
+  const minorAccessoryKeys = {};
+  const exemptKeys = {};
   const dayDisplayMuscles = {};
 
+  function registerDayExercise(exName){
+    const p = getExerciseBioProfile(exName);
+    if(!p) return;
+    dayDisplayMuscles[p.primaryKey] = true;
+    if(p.exemptFromDayReadiness){
+      // Simple stabilizers (Adductors, Abductors, Forearms) NEVER block or lower day readiness!
+      exemptKeys[p.primaryKey] = true;
+    } else if(p.isMinorAccessory){
+      minorAccessoryKeys[p.primaryKey] = true;
+    } else {
+      mainTargetKeys[p.primaryKey] = true;
+    }
+  }
+
   day.exercises.forEach(function(ex){
-    const p1 = getExerciseBioProfile(ex.name);
-    if(p1){
-      dayTargetKeys[p1.primaryKey] = true;
-      dayDisplayMuscles[p1.primaryKey] = true;
-      // If a day includes Shoulder Press or Chest/Back compounds, check if any primary target on this day is fatigued
-      if(p1.muscle === 'Shoulders'){
-        // Any shoulder exercise on this day checks its specific head (Front/Side/Rear Delts)
-        dayTargetKeys[p1.primaryKey] = true;
-      }
-    }
-    if(ex.supersetName){
-      const p2 = getExerciseBioProfile(ex.supersetName);
-      if(p2){
-        dayTargetKeys[p2.primaryKey] = true;
-        dayDisplayMuscles[p2.primaryKey] = true;
-      }
-    }
+    registerDayExercise(ex.name);
+    if(ex.supersetName) registerDayExercise(ex.supersetName);
   });
+
+  // Determine which keys govern this day's readiness:
+  // - If the day has main muscles (Chest, Back, Quads, Hamstrings, Glutes, Delts, Biceps, Triceps),
+  //   evaluate mainTargetKeys + minorAccessoryKeys (while exemptKeys like Adductors & Abductors are completely ignored!).
+  //   Wait: if ALL main muscles on this day are 100% fresh and only a minor accessory (e.g. Calves or Upper/Lower Abs) is recovering,
+  //   only let the minor accessory govern if the day has NO main muscles, OR weight it gently so a fresh Chest/Back/Legs day never looks like a fatigued day!
+  const hasMainMuscles = Object.keys(mainTargetKeys).length > 0;
+  const activeGovKeys = hasMainMuscles ? Object.keys(mainTargetKeys) : Object.keys(minorAccessoryKeys);
 
   let minPct = 100;
   let bottleneck = null;
   const allDetails = [];
 
-  Object.keys(dayTargetKeys).forEach(function(mKey){
+  // 1. Evaluate governing primary/main muscles of the day
+  activeGovKeys.forEach(function(mKey){
     const st = muscleStatus[mKey];
     if(st && st.pct < 100){
       allDetails.push(st);
@@ -7535,6 +7589,31 @@ function getDayReadinessDetail(dayIdx){
       }
     } else {
       allDetails.push({ key: mKey, pct: 100, reqHours: 0, hoursLeft: 0, role: 'fresh' });
+    }
+  });
+
+  // 2. If the day also has minor accessories (Upper Abs, Lower Abs, Obliques, Calves, Traps) alongside main muscles:
+  //    include them in allDetails for transparency, and if all main muscles are 100% fresh, only apply a minor 10% cap impact
+  //    (or if the user specifically trained that exact Abs sub-part directly on a core-focused day).
+  if(hasMainMuscles){
+    Object.keys(minorAccessoryKeys).forEach(function(mKey){
+      const st = muscleStatus[mKey];
+      if(st && st.pct < 100){
+        allDetails.push(st);
+        // Minor accessory on a major lifting day does not drag a 100% fresh Chest/Back/Quads/Hamstrings day down to match a fatigued day
+      } else {
+        allDetails.push({ key: mKey, pct: 100, reqHours: 0, hoursLeft: 0, role: 'fresh' });
+      }
+    });
+  }
+
+  // 3. Record exempt muscles (Adductors, Abductors, Forearms) as exempt in allDetails (0% impact on minPct)
+  Object.keys(exemptKeys).forEach(function(mKey){
+    const st = muscleStatus[mKey];
+    if(st && st.pct < 100){
+      allDetails.push(Object.assign({}, st, { exemptNote: true }));
+    } else {
+      allDetails.push({ key: mKey, pct: 100, reqHours: 0, hoursLeft: 0, role: 'fresh', exemptNote: true });
     }
   });
 
@@ -7556,9 +7635,11 @@ function showDayReadinessBreakdown(){
   const dIdx = clamp(appData.currentDayIndex || 0, 0, prog.length - 1);
   const d = prog[dIdx];
   const info = getDayReadinessDetail(dIdx);
-  const recovering = info.allDetails.filter(function(x){ return x.pct < 100; });
+  const recovering = info.allDetails.filter(function(x){ return x.pct < 100 && !x.exemptNote; });
+  const exemptRec = info.allDetails.filter(function(x){ return x.pct < 100 && x.exemptNote; });
   if(!recovering.length){
-    toast('⚡ Day ' + d.day + ' is 100% READY! All target muscles (' + (info.muscles.join(', ') || 'All') + ') are fully recovered.', 3400);
+    const exNote = exemptRec.length ? (' · [Exempt: ' + exemptRec.map(function(e){ return e.key + ' ' + e.pct + '%'; }).join(', ') + ']') : '';
+    toast('⚡ Day ' + d.day + ' is 100% READY! (' + (info.muscles.join(', ') || 'All') + ')' + exNote, 3600);
     return;
   }
   const parts = recovering.map(function(r){
@@ -7581,7 +7662,7 @@ function updateDayReadinessUI(){
   if(detail.bottleneck){
     badge.title = 'Recovering: ' + detail.bottleneck.key + ' (' + detail.bottleneck.pct + '%, ' + detail.bottleneck.hoursLeft + 'h left of ' + detail.bottleneck.reqHours + 'h)';
   } else {
-    badge.title = 'All target muscles on Day ' + d.day + ' are 100% recovered!';
+    badge.title = 'All primary muscles on Day ' + d.day + ' are 100% recovered!';
   }
   if(pct >= 80){
     badge.style.color = 'var(--green-t)';
@@ -11918,90 +11999,7 @@ function setHeatmapTimeTravel(hrs){
 
 function getDetailedHeatmapMuscleMap(futureOffsetHours){
   const offsetHrs = parseFloat(futureOffsetHours !== undefined ? futureOffsetHours : heatmapTimeTravelHours) || 0;
-  const now = Date.now() + offsetHrs * 3600000;
-  const realNow = Date.now();
-  const LOOKBACK_MS = 96 * 3600 * 1000;
-  const detailed = {};
-
-  const sessions = [];
-  function collectEvent(exName, histEntry){
-    if(!histEntry || !histEntry.date || (realNow - histEntry.date) > LOOKBACK_MS || histEntry.date > realNow + 60000) return;
-    let sets = 0;
-    (histEntry.reps || []).forEach(function(r){ if((parseFloat(r)||0) > 0) sets++; });
-    if(sets <= 0) return;
-    let b = sessions.find(function(s){ return Math.abs(s.ts - histEntry.date) < 4 * 3600 * 1000; });
-    if(!b){ b = { ts: histEntry.date, items: [] }; sessions.push(b); }
-    else if(histEntry.date > b.ts){ b.ts = histEntry.date; }
-    b.items.push({ exName: exName, sets: sets });
-  }
-
-  appData.programs.forEach(function(p){
-    (p.program || []).forEach(function(d){
-      (d.exercises || []).forEach(function(ex){
-        (ex.history || []).forEach(function(h){ collectEvent(ex.name, h); });
-        if(ex.supersetName){
-          (ex.supersetHistory || []).forEach(function(sh){ collectEvent(ex.supersetName, sh); });
-        }
-      });
-    });
-  });
-
-  function applyGranularEvent(mKey, role, setsCount, sessionTs, isLarge){
-    let reqHours = 48;
-    if(role === 'direct'){
-      if(isLarge){
-        reqHours = setsCount === 1 ? 36 : (setsCount === 2 ? 48 : (setsCount === 3 ? 60 : 72));
-      } else {
-        reqHours = setsCount === 1 ? 24 : (setsCount === 2 ? 36 : 48);
-      }
-    } else {
-      reqHours = setsCount <= 2 ? 16 : 24;
-    }
-    const rawElapsedHours = Math.max(0, (now - sessionTs) / 3600000);
-    if(rawElapsedHours >= reqHours) return;
-    const steppedHours = Math.floor(rawElapsedHours * 2) / 2;
-    const pct = clamp(Math.round((steppedHours / reqHours) * 100), 0, 100);
-    const hoursLeft = Math.max(0, Math.ceil((reqHours - steppedHours) * 2) / 2);
-
-    if(!detailed[mKey] || pct < detailed[mKey].pct || (pct === detailed[mKey].pct && hoursLeft > detailed[mKey].hoursLeft)){
-      detailed[mKey] = {
-        key: mKey, pct: pct, reqHours: reqHours, steppedHours: steppedHours,
-        hoursLeft: hoursLeft, role: role, sets: setsCount, lastTs: sessionTs
-      };
-    }
-  }
-
-  sessions.forEach(function(sess){
-    const dirSets = {};
-    const dirLarge = {};
-    const synSets = {};
-    sess.items.forEach(function(it){
-      const prof = getExerciseBioProfile(it.exName);
-      if(!prof) return;
-      if(prof.primaryKey === 'Legs'){
-        const subK = (prof.sub === 'Abductors') ? 'Glutes' : (prof.sub || 'Quads');
-        dirSets[subK] = (dirSets[subK] || 0) + it.sets;
-        dirLarge[subK] = true;
-      } else {
-        dirSets[prof.primaryKey] = (dirSets[prof.primaryKey] || 0) + it.sets;
-        dirLarge[prof.primaryKey] = prof.isLarge;
-      }
-      if(prof.isCompound && prof.synergists && prof.synergists.length){
-        prof.synergists.forEach(function(sKey){
-          synSets[sKey] = (synSets[sKey] || 0) + it.sets;
-        });
-      }
-    });
-    Object.keys(dirSets).forEach(function(k){
-      applyGranularEvent(k, 'direct', dirSets[k], sess.ts, !!dirLarge[k]);
-    });
-    Object.keys(synSets).forEach(function(k){
-      const isL = ['Chest','Back','Quads','Hamstrings','Glutes','Adductors'].indexOf(k) >= 0;
-      applyGranularEvent(k, 'synergist', synSets[k], sess.ts, isL);
-    });
-  });
-
-  return detailed;
+  return getMuscleTrainingEventsMap(offsetHrs);
 }
 
 function getWeeklyMuscleVolumeAndSplitFrequency(){
@@ -12009,8 +12007,9 @@ function getWeeklyMuscleVolumeAndSplitFrequency(){
   const volSets = {};
   const splitFreq = {};
   const allMuscleKeys = [
-    'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes', 'Adductors',
-    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps', 'Forearms', 'Abs and core', 'Calves'
+    'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes', 'Adductors', 'Abductors',
+    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps', 'Forearms',
+    'Upper Abs', 'Lower Abs', 'Obliques', 'Calves'
   ];
   allMuscleKeys.forEach(function(k){ volSets[k] = 0; splitFreq[k] = 0; });
 
@@ -12019,39 +12018,31 @@ function getWeeklyMuscleVolumeAndSplitFrequency(){
     const hitInDay = {};
     (d.exercises || []).forEach(function(ex){
       const p1 = getExerciseBioProfile(ex.name);
-      if(p1){
-        const k1 = p1.primaryKey === 'Legs' ? ((p1.sub === 'Abductors') ? 'Glutes' : (p1.sub || 'Quads')) : p1.primaryKey;
-        hitInDay[k1] = true;
-      }
+      if(p1) hitInDay[p1.primaryKey] = true;
       if(ex.supersetName){
         const p2 = getExerciseBioProfile(ex.supersetName);
-        if(p2){
-          const k2 = p2.primaryKey === 'Legs' ? ((p2.sub === 'Abductors') ? 'Glutes' : (p2.sub || 'Quads')) : p2.primaryKey;
-          hitInDay[k2] = true;
-        }
+        if(p2) hitInDay[p2.primaryKey] = true;
       }
     });
     Object.keys(hitInDay).forEach(function(k){ splitFreq[k] = (splitFreq[k] || 0) + 1; });
   });
 
-  appData.programs.forEach(function(p){
-    (p.program || []).forEach(function(d){
-      (d.exercises || []).forEach(function(ex){
-        const p1 = getExerciseBioProfile(ex.name);
-        const k1 = p1 ? (p1.primaryKey === 'Legs' ? ((p1.sub === 'Abductors') ? 'Glutes' : (p1.sub || 'Quads')) : p1.primaryKey) : 'Chest';
-        (ex.history || []).forEach(function(h){
-          if(!h || h.date < weekAgo) return;
-          (h.reps || []).forEach(function(r){ if((parseFloat(r)||0) > 0) volSets[k1] = (volSets[k1] || 0) + 1; });
-        });
-        if(ex.supersetName){
-          const p2 = getExerciseBioProfile(ex.supersetName);
-          const k2 = p2 ? (p2.primaryKey === 'Legs' ? ((p2.sub === 'Abductors') ? 'Glutes' : (p2.sub || 'Quads')) : p2.primaryKey) : 'Chest';
-          (ex.supersetHistory || []).forEach(function(sh){
-            if(!sh || sh.date < weekAgo) return;
-            (sh.reps || []).forEach(function(r){ if((parseFloat(r)||0) > 0) volSets[k2] = (volSets[k2] || 0) + 1; });
-          });
-        }
+  (prog || []).forEach(function(d){
+    (d.exercises || []).forEach(function(ex){
+      const p1 = getExerciseBioProfile(ex.name);
+      const k1 = p1 ? p1.primaryKey : 'Chest';
+      (ex.history || []).forEach(function(h){
+        if(!h || h.date < weekAgo) return;
+        (h.reps || []).forEach(function(r){ if((parseFloat(r)||0) > 0) volSets[k1] = (volSets[k1] || 0) + 1; });
       });
+      if(ex.supersetName){
+        const p2 = getExerciseBioProfile(ex.supersetName);
+        const k2 = p2 ? p2.primaryKey : 'Chest';
+        (ex.supersetHistory || []).forEach(function(sh){
+          if(!sh || sh.date < weekAgo) return;
+          (sh.reps || []).forEach(function(r){ if((parseFloat(r)||0) > 0) volSets[k2] = (volSets[k2] || 0) + 1; });
+        });
+      }
     });
   });
 
@@ -12063,16 +12054,17 @@ function renderMuscleHeatmap(){
   if(!card) return;
   const detailed = getDetailedHeatmapMuscleMap(heatmapTimeTravelHours);
   const vs = getWeeklyMuscleVolumeAndSplitFrequency();
-  const allMuscleKeys = [
-    'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes', 'Adductors',
-    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps', 'Forearms', 'Abs and core', 'Calves'
+  const mainMuscleKeys = [
+    'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes',
+    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps',
+    'Upper Abs', 'Lower Abs', 'Obliques', 'Calves'
   ];
 
   let totalPct = 0;
-  allMuscleKeys.forEach(function(k){
+  mainMuscleKeys.forEach(function(k){
     totalPct += (detailed[k] ? detailed[k].pct : 100);
   });
-  const avgPct = Math.round(totalPct / allMuscleKeys.length);
+  const avgPct = Math.round(totalPct / mainMuscleKeys.length);
 
   const regions = card.querySelectorAll('.hm-region');
   regions.forEach(function(el){
@@ -12141,19 +12133,20 @@ function renderMuscleHeatmap(){
       const st = detailed[k];
       const pct = st ? st.pct : 100;
       const isSyn = st && st.role === 'synergist' && pct < 100;
+      const isEx = ['Adductors', 'Abductors', 'Forearms'].indexOf(k) >= 0;
       const sets7d = vs.volSets[k] || 0;
       const freq = vs.splitFreq[k] || 0;
 
       let rightBadge = pct + '%';
       let col = pct >= 85 ? 'var(--green-t)' : (isSyn ? 'var(--purple-t)' : (pct >= 50 ? 'var(--amber-t)' : 'var(--red-t)'));
       let subTxt = (st && pct < 100)
-        ? ((isSyn ? '⚡ Synergist 24h · ' : ('Direct ' + st.reqHours + 'h · ')) + st.hoursLeft.toFixed(1) + 'h left')
-        : '100% Recovered';
+        ? ((isSyn ? '⚡ Synergist 24h · ' : (isEx ? '🛡️ Exempt · ' : ('Direct ' + st.reqHours + 'h · '))) + st.hoursLeft.toFixed(1) + 'h left')
+        : (isEx ? '100% (Exempt from Day Lock)' : '100% Recovered');
 
       if(heatmapLens === 'volume'){
         rightBadge = sets7d + 's';
         col = sets7d >= 8 ? 'var(--green-t)' : (sets7d > 0 ? 'var(--amber-t)' : 'var(--txt-3)');
-        subTxt = sets7d >= 10 ? 'Optimal Hypertrophy Zone' : (sets7d > 0 ? 'Maintenance Volume' : '0 sets logged (7d)');
+        subTxt = sets7d >= 10 ? 'Optimal Hypertrophy Zone' : (sets7d > 0 ? 'Active Volume' : '0 sets logged (7d)');
       } else if(heatmapLens === 'split'){
         rightBadge = freq + '×/wk';
         col = freq >= 2 ? 'var(--green-t)' : (freq === 1 ? 'var(--blue-t)' : 'var(--red-t)');
@@ -12172,11 +12165,16 @@ function renderMuscleHeatmap(){
 
   const largeGrid = $('hmLargeMusclesGrid');
   if(largeGrid){
-    largeGrid.innerHTML = buildMuscleGridHTML(['Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes', 'Adductors']);
+    largeGrid.innerHTML = buildMuscleGridHTML(['Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes']);
   }
   const smallGrid = $('hmSmallMusclesGrid');
   if(smallGrid){
-    smallGrid.innerHTML = buildMuscleGridHTML(['Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps', 'Forearms', 'Abs and core', 'Calves']);
+    smallGrid.innerHTML = buildMuscleGridHTML([
+      'Front Delts', 'Side Delts', 'Rear Delts',
+      'Biceps', 'Triceps', 'Traps',
+      'Upper Abs', 'Lower Abs', 'Obliques',
+      'Calves', 'Adductors', 'Abductors', 'Forearms'
+    ]);
   }
 
   inspectHeatmapMuscle(selectedHeatmapMuscle || 'Chest', true);
@@ -12199,6 +12197,7 @@ function inspectHeatmapMuscle(mKey, silent){
   const vs = getWeeklyMuscleVolumeAndSplitFrequency();
   const st = detailed[mKey];
   const pct = st ? st.pct : 100;
+  const isExempt = ['Adductors', 'Abductors', 'Forearms'].indexOf(mKey) >= 0;
 
   const prog = getProgram();
   const directDays = [];
@@ -12208,13 +12207,13 @@ function inspectHeatmapMuscle(mKey, silent){
     (d.exercises || []).forEach(function(ex){
       const p1 = getExerciseBioProfile(ex.name);
       if(p1){
-        if(p1.primaryKey === mKey || p1.sub === mKey) isDir = true;
+        if(p1.primaryKey === mKey) isDir = true;
         else if(p1.isCompound && p1.synergists && p1.synergists.indexOf(mKey) >= 0) isSyn = true;
       }
       if(ex.supersetName){
         const p2 = getExerciseBioProfile(ex.supersetName);
         if(p2){
-          if(p2.primaryKey === mKey || p2.sub === mKey) isDir = true;
+          if(p2.primaryKey === mKey) isDir = true;
           else if(p2.isCompound && p2.synergists && p2.synergists.indexOf(mKey) >= 0) isSyn = true;
         }
       }
@@ -12223,8 +12222,10 @@ function inspectHeatmapMuscle(mKey, silent){
     else if(isSyn) synDays.push('D' + d.day + ' (Synergist)');
   });
 
-  const isLarge = ['Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes', 'Adductors'].indexOf(mKey) >= 0;
-  const stdWindow = isLarge ? '72h Direct (24h if Synergist)' : '48h Direct · 24h Compound Synergist';
+  const isLarge = ['Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes'].indexOf(mKey) >= 0;
+  const stdWindow = isExempt
+    ? '36h Local (🛡️ Exempt — Never blocks Day Readiness)'
+    : (isLarge ? '72h Direct Large Muscle' : '48h Direct · 24h Compound Synergist');
   const isSynActive = st && st.role === 'synergist' && pct < 100;
   const statusIcon = pct >= 85 ? '🟢' : (isSynActive ? '🟣' : (pct >= 50 ? '🟡' : '🔴'));
   const box = $('heatmapInspectBox');
@@ -12238,7 +12239,7 @@ function inspectHeatmapMuscle(mKey, silent){
   if(st && st.pct < 100){
     const roleLabel = st.role === 'synergist'
       ? '⚡ Compound Synergist / Assistant (24h Window)'
-      : ('🎯 Direct Primary (' + st.reqHours + 'h Window · ' + st.sets + ' sets)');
+      : (isExempt ? '🛡️ Simple Stabilizer (Exempt from Day Readiness Lock)' : ('🎯 Direct Primary (' + st.reqHours + 'h Window · ' + st.sets + ' sets)'));
     box.innerHTML =
       '<div class="row-between" style="margin-bottom:3px">' +
         '<span class="h4">' + statusIcon + ' ' + escapeAttr(mKey) + (heatmapTimeTravelHours > 0 ? ' (at +' + heatmapTimeTravelHours + 'h)' : '') + '</span>' +
@@ -12253,7 +12254,7 @@ function inspectHeatmapMuscle(mKey, silent){
         '<span class="h4">🟢 ' + escapeAttr(mKey) + (heatmapTimeTravelHours > 0 ? ' (at +' + heatmapTimeTravelHours + 'h)' : '') + '</span>' +
         '<span class="mono" style="font-weight:900;color:var(--green-t)">100% READY</span>' +
       '</div>' +
-      '<div class="micro subtle">🧬 Window: <b>' + stdWindow + '</b> · 7d Volume: <b>' + sets7d + ' sets</b></div>' +
+      '<div class="micro subtle">🧬 Rule: <b>' + stdWindow + '</b> · 7d Volume: <b>' + sets7d + ' sets</b></div>' +
       '<div class="micro subtle" style="margin-top:2px">📅 Split Days: <b>' + escapeAttr(splitDaysInfo) + '</b></div>';
   }
 }
@@ -12341,7 +12342,9 @@ function renderAnalyticsConsistencyAndVolume(){
     { key: 'Biceps', label: 'Biceps', target: 12 },
     { key: 'Triceps', label: 'Triceps', target: 12 },
     { key: 'Calves', label: 'Calves', target: 10 },
-    { key: 'Abs and core', label: 'Abs & Core', target: 8 }
+    { key: 'Upper Abs', label: 'Upper Abs', target: 6 },
+    { key: 'Lower Abs', label: 'Lower Abs', target: 6 },
+    { key: 'Obliques', label: 'Obliques & Core', target: 6 }
   ];
 
   volBars.innerHTML = displayGroups.map(function(g){
