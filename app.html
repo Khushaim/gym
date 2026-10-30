@@ -44,7 +44,7 @@
   --accent-grad:linear-gradient(135deg,#10b981 0%,#0ea5e9 100%);
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
-  --dock-bottom:2px;
+  --dock-bottom:max(6px, calc(env(safe-area-inset-bottom, 0px) * 0.32));
 }
 [data-skin="royal"][data-theme="dark"]{
   --bg:#090806;
@@ -90,9 +90,8 @@
 /* Edge-to-edge full screen on iOS Home Screen & all browsers with zero bottom gap */
 html, body {
   width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  min-height: 100vh;
+  height: var(--app-full-h, 100%);
+  min-height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -205,8 +204,7 @@ body[data-idle="1"] .blob {
   display:flex;
   flex-direction:column;
   width:100%;
-  height:100vh;
-  height:100dvh;
+  height:var(--app-full-h, auto);
   max-width:520px;
   margin:0 auto;
   padding:calc(var(--safe-top) + 6px) 12px 0;
@@ -637,11 +635,11 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  gap:10px;
-  padding-bottom:6px;
+  gap:clamp(8px, 1.35vh, 14px);
+  padding-bottom:4px;
 }
 .hero{
-  position:relative;padding:16px 14px;border-radius:var(--r-xl);overflow:hidden;
+  position:relative;padding:clamp(14px, 2.1vh, 22px) 14px;border-radius:var(--r-xl);overflow:hidden;
   background:linear-gradient(145deg,var(--blue-g),transparent 65%),linear-gradient(320deg,var(--purple-g),transparent 60%),var(--surface);
   border:1px solid var(--line-2);box-shadow:var(--shadow),var(--spec-strong);
   width:100%;box-sizing:border-box;
@@ -663,19 +661,21 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),
 .home-action-zone{
   display:flex;
   flex-direction:column;
-  justify-content:center;
-  gap:10px;
+  justify-content:space-evenly;
+  gap:clamp(8px, 1.35vh, 14px);
   flex:1 1 auto;
   min-height:0;
   width:100%;
 }
 .home-big-btn{
   width:100%;
+  flex:1 1 auto;
+  max-height:106px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:14px;
-  padding:18px 18px;
+  padding:clamp(15px, 2.2vh, 22px) 18px;
   border-radius:var(--r-xl);
   text-align:left;
   border:1px solid var(--line-2);
@@ -2195,13 +2195,17 @@ body[data-idle="1"] .marble-veins{
 
         <!-- WEEKLY MUSCLE VOLUME DISTRIBUTION (SETS / 7 DAYS) -->
         <div class="card">
-          <div class="row-between" style="margin-bottom:6px">
+          <div class="row-between" style="margin-bottom:6px;gap:6px;flex-wrap:wrap">
             <div>
               <span class="h4" style="color:var(--purple-t)">📊 7-Day Muscle Volume Balance</span>
-              <div class="micro subtle">Working sets logged vs 10–16 set optimal hypertrophy zone</div>
+              <div class="micro subtle" id="analyticsVolSubLabel">Working sets logged vs weekly target (Standard defaults active)</div>
+            </div>
+            <div class="row gap-1">
+              <button class="btn xs purple" id="editVolTargetsBtn" onclick="toggleVolumeTargetsEditMode()">🎯 Targets</button>
+              <button class="btn xs ghost" id="resetVolTargetsBtn" onclick="resetWeeklyVolumeTargetsToStandard()" title="Restore Standard Scientific Weekly Set Targets">↺ Standard</button>
             </div>
           </div>
-          <div id="analyticsVolumeBars" class="stack" style="gap:4px"></div>
+          <div id="analyticsVolumeBars" class="stack" style="gap:5px"></div>
         </div>
 
         <div class="grid-2">
@@ -2423,8 +2427,8 @@ body[data-idle="1"] .marble-veins{
                 <ellipse cx="80" cy="21" rx="13" ry="15" class="hm-outline"/>
                 <rect x="73" y="35" width="14" height="9" rx="3" class="hm-outline"/>
                 <!-- Upper Traps (Anterior Collar) -->
-                <path d="M56 44 L73 38 L73 45 L56 48 Z" class="hm-region" data-hm="Traps" onclick="inspectHeatmapMuscle('Traps')"/>
-                <path d="M104 44 L87 38 L87 45 L104 48 Z" class="hm-region" data-hm="Traps" onclick="inspectHeatmapMuscle('Traps')"/>
+                <path d="M56 44 L73 38 L73 45 L56 48 Z" class="hm-region" data-hm="Upper Traps" onclick="inspectHeatmapMuscle('Upper Traps')"/>
+                <path d="M104 44 L87 38 L87 45 L104 48 Z" class="hm-region" data-hm="Upper Traps" onclick="inspectHeatmapMuscle('Upper Traps')"/>
                 <!-- Front Delts (Anterior Deltoid) -->
                 <path d="M42 46 Q49 41 56 45 L54 64 Q44 61 40 53 Z" class="hm-region" data-hm="Front Delts" onclick="inspectHeatmapMuscle('Front Delts')"/>
                 <path d="M118 46 Q111 41 104 45 L106 64 Q116 61 120 53 Z" class="hm-region" data-hm="Front Delts" onclick="inspectHeatmapMuscle('Front Delts')"/>
@@ -2472,17 +2476,19 @@ body[data-idle="1"] .marble-veins{
               <svg viewBox="0 0 160 270" xmlns="http://www.w3.org/2000/svg">
                 <ellipse cx="80" cy="21" rx="13" ry="15" class="hm-outline"/>
                 <rect x="73" y="35" width="14" height="7" rx="3" class="hm-outline"/>
-                <!-- Traps (Upper, Mid & Lower Trapezius Diamond) -->
-                <polygon points="80,36 105,45 80,76 55,45" class="hm-region" data-hm="Traps" onclick="inspectHeatmapMuscle('Traps')"/>
+                <!-- Upper Traps (Superior Trapezius Neck/Collar Ridge) -->
+                <polygon points="80,35 103,44 92,50 68,50 57,44" class="hm-region" data-hm="Upper Traps" onclick="inspectHeatmapMuscle('Upper Traps')"/>
+                <!-- Upper Back (Rhomboids, Mid/Lower Trapezius & Teres Major) -->
+                <polygon points="55,46 68,51 92,51 105,46 98,74 80,82 62,74" class="hm-region" data-hm="Upper Back" onclick="inspectHeatmapMuscle('Upper Back')"/>
                 <!-- Rear Delts (Posterior Deltoid) -->
                 <path d="M39 46 L54 45 L53 63 L37 60 Z" class="hm-region" data-hm="Rear Delts" onclick="inspectHeatmapMuscle('Rear Delts')"/>
                 <path d="M106 45 L121 46 L123 60 L107 63 Z" class="hm-region" data-hm="Rear Delts" onclick="inspectHeatmapMuscle('Rear Delts')"/>
                 <!-- Side Delts (Outer Cap from Posterior View) -->
                 <path d="M32 51 L38 47 L37 64 L31 61 Z" class="hm-region" data-hm="Side Delts" onclick="inspectHeatmapMuscle('Side Delts')"/>
                 <path d="M128 51 L122 47 L123 64 L129 61 Z" class="hm-region" data-hm="Side Delts" onclick="inspectHeatmapMuscle('Side Delts')"/>
-                <!-- Back (Latissimus Dorsi V-Taper, Teres Major & Thoracolumbar Erectors) -->
-                <path d="M53 60 L78 74 L78 122 L59 119 L49 84 Z" class="hm-region" data-hm="Back" onclick="inspectHeatmapMuscle('Back')"/>
-                <path d="M107 60 L82 74 L82 122 L101 119 L111 84 Z" class="hm-region" data-hm="Back" onclick="inspectHeatmapMuscle('Back')"/>
+                <!-- Lats (Latissimus Dorsi V-Taper & Lower Back) -->
+                <path d="M53 62 L62 75 L78 83 L78 122 L59 119 L49 84 Z" class="hm-region" data-hm="Lats" onclick="inspectHeatmapMuscle('Lats')"/>
+                <path d="M107 62 L98 75 L82 83 L82 122 L101 119 L111 84 Z" class="hm-region" data-hm="Lats" onclick="inspectHeatmapMuscle('Lats')"/>
                 <!-- Triceps Brachii (Long, Lateral & Medial Heads) -->
                 <path d="M34 66 L48 66 L45 95 L32 94 Z" class="hm-region" data-hm="Triceps" onclick="inspectHeatmapMuscle('Triceps')"/>
                 <path d="M112 66 L126 66 L128 94 L115 95 Z" class="hm-region" data-hm="Triceps" onclick="inspectHeatmapMuscle('Triceps')"/>
@@ -3326,16 +3332,55 @@ document.addEventListener('webkitfullscreenchange', updateFullScreenBtnUI);
 document.addEventListener('msfullscreenchange', updateFullScreenBtnUI);
 window.addEventListener('resize', updateFullScreenBtnUI, {passive:true});
 
+function syncIOSFullBleedViewport(){
+  try{
+    const docEl = document.documentElement;
+    const vp = document.getElementById('appViewport');
+    const bg = document.getElementById('bgRoot');
+    if(!vp) return;
+    docEl.style.removeProperty('--app-full-h');
+    const vpH = Math.round(vp.getBoundingClientRect().height || 0);
+    const bgH = bg ? Math.round(bg.getBoundingClientRect().height || 0) : vpH;
+    // If bgRoot (position:fixed; inset:0) is taller than appViewport, match bgRoot's exact full-bleed height
+    if(bgH > vpH){
+      docEl.style.setProperty('--app-full-h', bgH + 'px');
+      return;
+    }
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if(isIOS && isStandaloneMode()){
+      const isPortrait = !window.matchMedia || window.matchMedia('(orientation: portrait)').matches;
+      const scrW = (window.screen && window.screen.width) ? window.screen.width : window.innerWidth;
+      const scrH = (window.screen && window.screen.height) ? window.screen.height : 0;
+      const scale = (window.innerWidth && scrW) ? (window.innerWidth / scrW) : 1;
+      const targetH = Math.round(scrH * scale);
+      if(isPortrait && targetH > vpH && (targetH - vpH) <= 110){
+        docEl.style.setProperty('--app-full-h', targetH + 'px');
+      }
+    }
+  }catch(e){}
+}
+
 (function initStandaloneAndPowerManager(){
   if(isStandaloneMode()){
     document.documentElement.setAttribute('data-standalone', 'true');
   }
+  syncIOSFullBleedViewport();
+  setTimeout(syncIOSFullBleedViewport, 80);
+  setTimeout(syncIOSFullBleedViewport, 350);
   window.addEventListener('focusout', function(){
-    setTimeout(function(){ window.scrollTo(0, 0); }, 60);
+    setTimeout(function(){ window.scrollTo(0, 0); syncIOSFullBleedViewport(); }, 60);
   }, {passive:true});
   window.addEventListener('resize', function(){
     window.scrollTo(0, 0);
+    syncIOSFullBleedViewport();
   }, {passive:true});
+  window.addEventListener('orientationchange', function(){
+    setTimeout(syncIOSFullBleedViewport, 120);
+  }, {passive:true});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', syncIOSFullBleedViewport, {passive:true});
+  }
 
   // Smart GPU Idle Sleep: pauses ONLY background blobs after 5s of no touch (never pauses timer/cardio bars)
   let idleTouchTimer = null;
@@ -7329,11 +7374,17 @@ function getExerciseBioProfile(exName){
     isLarge = true;
   } else if(muscle === 'Back'){
     if(sub === 'Traps' || /shrug|trap|ترابيس|شراغ/.test(n)){
-      primaryKey = 'Traps';
+      primaryKey = 'Upper Traps';
       isLarge = false;
       isMinorAccessory = true;
+    } else if(
+      (sub === 'Upper Back' || sub === 'Mid Back' || /wide row|wide-grip.*row|chest-supported|chest supported|t-bar|barbell row|pendlay|seated cable row|seal row|meadows row|kelso|ظهر علوي|ظهر داخلي|سمك|تي بار|تجديف/.test(n)) &&
+      !/lat row|single-arm lat|سحب فردي للاتس/.test(n)
+    ){
+      primaryKey = 'Upper Back';
+      isLarge = true;
     } else {
-      primaryKey = 'Back';
+      primaryKey = 'Lats';
       isLarge = true;
     }
   } else if(muscle === 'Legs'){
@@ -7392,7 +7443,7 @@ function getExerciseBioProfile(exName){
   if(isCompound){
     if(primaryKey === 'Chest'){
       synergists.push('Triceps', 'Front Delts');
-    } else if(primaryKey === 'Back' && sub !== 'Lower Back'){
+    } else if((primaryKey === 'Lats' || primaryKey === 'Upper Back') && sub !== 'Lower Back'){
       synergists.push('Biceps', 'Rear Delts');
     } else if(muscle === 'Shoulders' && primaryKey === 'Front Delts'){
       synergists.push('Triceps');
@@ -12002,13 +12053,91 @@ function getDetailedHeatmapMuscleMap(futureOffsetHours){
   return getMuscleTrainingEventsMap(offsetHrs);
 }
 
+const STANDARD_WEEKLY_VOLUME_TARGETS = {
+  'Chest': 14,
+  'Lats': 12,
+  'Upper Back': 10,
+  'Upper Traps': 8,
+  'Quads': 12,
+  'Hamstrings': 10,
+  'Glutes': 10,
+  'Side Delts': 12,
+  'Front Delts': 8,
+  'Rear Delts': 10,
+  'Biceps': 12,
+  'Triceps': 12,
+  'Calves': 10,
+  'Upper Abs': 6,
+  'Lower Abs': 6,
+  'Obliques': 6
+};
+let volumeTargetsEditMode = false;
+
+function getMuscleWeeklyTarget(mKey){
+  const std = STANDARD_WEEKLY_VOLUME_TARGETS[mKey] !== undefined ? STANDARD_WEEKLY_VOLUME_TARGETS[mKey] : 10;
+  if(appData && appData.customVolumeTargets && typeof appData.customVolumeTargets[mKey] === 'number'){
+    return clamp(Math.round(appData.customVolumeTargets[mKey]), 1, 40);
+  }
+  return std;
+}
+
+function hasCustomWeeklyTargets(){
+  if(!appData || !appData.customVolumeTargets) return false;
+  return Object.keys(STANDARD_WEEKLY_VOLUME_TARGETS).some(function(k){
+    return appData.customVolumeTargets[k] !== undefined && appData.customVolumeTargets[k] !== STANDARD_WEEKLY_VOLUME_TARGETS[k];
+  });
+}
+
+function toggleVolumeTargetsEditMode(){
+  playSound('tap');
+  volumeTargetsEditMode = !volumeTargetsEditMode;
+  const btn = $('editVolTargetsBtn');
+  if(btn){
+    btn.textContent = volumeTargetsEditMode ? '✓ Done' : '🎯 Targets';
+    btn.className = volumeTargetsEditMode ? 'btn xs green' : 'btn xs purple';
+  }
+  renderAnalyticsConsistencyAndVolume();
+}
+
+function adjustMuscleWeeklyTarget(mKey, delta){
+  playSound('tap');
+  if(!appData.customVolumeTargets || typeof appData.customVolumeTargets !== 'object'){
+    appData.customVolumeTargets = {};
+  }
+  const cur = getMuscleWeeklyTarget(mKey);
+  const next = clamp(cur + delta, 1, 40);
+  if(next === STANDARD_WEEKLY_VOLUME_TARGETS[mKey]){
+    delete appData.customVolumeTargets[mKey];
+  } else {
+    appData.customVolumeTargets[mKey] = next;
+  }
+  save();
+  renderAnalyticsConsistencyAndVolume();
+  if(typeof renderMuscleHeatmap === 'function') renderMuscleHeatmap();
+}
+
+function resetWeeklyVolumeTargetsToStandard(){
+  playSound('success');
+  appData.customVolumeTargets = {};
+  volumeTargetsEditMode = false;
+  const btn = $('editVolTargetsBtn');
+  if(btn){
+    btn.textContent = '🎯 Targets';
+    btn.className = 'btn xs purple';
+  }
+  save();
+  renderAnalyticsConsistencyAndVolume();
+  if(typeof renderMuscleHeatmap === 'function') renderMuscleHeatmap();
+  toast('↺ Weekly muscle targets restored to Standard scientific defaults');
+}
+
 function getWeeklyMuscleVolumeAndSplitFrequency(){
   const weekAgo = Date.now() - 7 * 86400000;
   const volSets = {};
   const splitFreq = {};
   const allMuscleKeys = [
-    'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes', 'Adductors', 'Abductors',
-    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps', 'Forearms',
+    'Chest', 'Lats', 'Upper Back', 'Upper Traps', 'Quads', 'Hamstrings', 'Glutes', 'Adductors', 'Abductors',
+    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Forearms',
     'Upper Abs', 'Lower Abs', 'Obliques', 'Calves'
   ];
   allMuscleKeys.forEach(function(k){ volSets[k] = 0; splitFreq[k] = 0; });
@@ -12055,8 +12184,8 @@ function renderMuscleHeatmap(){
   const detailed = getDetailedHeatmapMuscleMap(heatmapTimeTravelHours);
   const vs = getWeeklyMuscleVolumeAndSplitFrequency();
   const mainMuscleKeys = [
-    'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes',
-    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Traps',
+    'Chest', 'Lats', 'Upper Back', 'Quads', 'Hamstrings', 'Glutes',
+    'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Upper Traps',
     'Upper Abs', 'Lower Abs', 'Obliques', 'Calves'
   ];
 
@@ -12165,13 +12294,13 @@ function renderMuscleHeatmap(){
 
   const largeGrid = $('hmLargeMusclesGrid');
   if(largeGrid){
-    largeGrid.innerHTML = buildMuscleGridHTML(['Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes']);
+    largeGrid.innerHTML = buildMuscleGridHTML(['Chest', 'Lats', 'Upper Back', 'Quads', 'Hamstrings', 'Glutes']);
   }
   const smallGrid = $('hmSmallMusclesGrid');
   if(smallGrid){
     smallGrid.innerHTML = buildMuscleGridHTML([
       'Front Delts', 'Side Delts', 'Rear Delts',
-      'Biceps', 'Triceps', 'Traps',
+      'Biceps', 'Triceps', 'Upper Traps',
       'Upper Abs', 'Lower Abs', 'Obliques',
       'Calves', 'Adductors', 'Abductors', 'Forearms'
     ]);
@@ -12222,7 +12351,7 @@ function inspectHeatmapMuscle(mKey, silent){
     else if(isSyn) synDays.push('D' + d.day + ' (Synergist)');
   });
 
-  const isLarge = ['Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes'].indexOf(mKey) >= 0;
+  const isLarge = ['Chest', 'Lats', 'Upper Back', 'Quads', 'Hamstrings', 'Glutes'].indexOf(mKey) >= 0;
   const stdWindow = isExempt
     ? '36h Local (🛡️ Exempt — Never blocks Day Readiness)'
     : (isLarge ? '72h Direct Large Muscle' : '48h Direct · 24h Compound Synergist');
@@ -12331,30 +12460,60 @@ function renderAnalyticsConsistencyAndVolume(){
 
   const vs = getWeeklyMuscleVolumeAndSplitFrequency();
   const displayGroups = [
-    { key: 'Chest', label: 'Chest', target: 14 },
-    { key: 'Back', label: 'Back & Lats', target: 16 },
-    { key: 'Quads', label: 'Quads', target: 12 },
-    { key: 'Hamstrings', label: 'Hamstrings', target: 10 },
-    { key: 'Glutes', label: 'Glutes', target: 10 },
-    { key: 'Side Delts', label: 'Side Delts', target: 12 },
-    { key: 'Front Delts', label: 'Front Delts', target: 8 },
-    { key: 'Rear Delts', label: 'Rear Delts', target: 10 },
-    { key: 'Biceps', label: 'Biceps', target: 12 },
-    { key: 'Triceps', label: 'Triceps', target: 12 },
-    { key: 'Calves', label: 'Calves', target: 10 },
-    { key: 'Upper Abs', label: 'Upper Abs', target: 6 },
-    { key: 'Lower Abs', label: 'Lower Abs', target: 6 },
-    { key: 'Obliques', label: 'Obliques & Core', target: 6 }
+    { key: 'Chest', label: 'Chest' },
+    { key: 'Lats', label: 'Lats (Back Width)' },
+    { key: 'Upper Back', label: 'Upper Back (Thickness)' },
+    { key: 'Upper Traps', label: 'Upper Traps' },
+    { key: 'Quads', label: 'Quads' },
+    { key: 'Hamstrings', label: 'Hamstrings' },
+    { key: 'Glutes', label: 'Glutes' },
+    { key: 'Side Delts', label: 'Side Delts' },
+    { key: 'Front Delts', label: 'Front Delts' },
+    { key: 'Rear Delts', label: 'Rear Delts' },
+    { key: 'Biceps', label: 'Biceps' },
+    { key: 'Triceps', label: 'Triceps' },
+    { key: 'Calves', label: 'Calves' },
+    { key: 'Upper Abs', label: 'Upper Abs' },
+    { key: 'Lower Abs', label: 'Lower Abs' },
+    { key: 'Obliques', label: 'Obliques & Core' }
   ];
+
+  const isCustom = hasCustomWeeklyTargets();
+  const subLbl = $('analyticsVolSubLabel');
+  if(subLbl){
+    subLbl.textContent = volumeTargetsEditMode
+      ? 'Tap − / + to customize weekly target sets per muscle (or tap ↺ Standard to reset)'
+      : (isCustom ? 'Custom weekly targets active · Tap 🎯 Targets to edit or ↺ Standard to reset' : 'Standard scientific targets active · Tap 🎯 Targets to customize');
+  }
+  const rstBtn = $('resetVolTargetsBtn');
+  if(rstBtn){
+    rstBtn.style.opacity = isCustom ? '1' : '0.65';
+  }
 
   volBars.innerHTML = displayGroups.map(function(g){
     const s = vs.volSets[g.key] || 0;
-    const pct = clamp((s / g.target) * 100, 0, 100);
-    const barCol = s >= 10 ? 'linear-gradient(90deg,var(--green),var(--blue))' : (s >= 4 ? 'linear-gradient(90deg,var(--amber),var(--green))' : 'var(--blue)');
-    return '<div class="vol-bar-row">' +
-      '<span style="font-weight:800;color:var(--txt-2)">' + g.label + '</span>' +
+    const target = getMuscleWeeklyTarget(g.key);
+    const stdTarget = STANDARD_WEEKLY_VOLUME_TARGETS[g.key] || 10;
+    const isRowCustom = target !== stdTarget;
+    const pct = clamp((s / target) * 100, 0, 100);
+    const barCol = s >= target ? 'linear-gradient(90deg,var(--green),var(--blue))' : (s >= Math.ceil(target * 0.5) ? 'linear-gradient(90deg,var(--amber),var(--green))' : 'var(--blue)');
+
+    if(volumeTargetsEditMode){
+      return '<div class="vol-bar-row" style="grid-template-columns:112px 1fr auto;gap:6px;align-items:center">' +
+        '<span style="font-weight:800;color:var(--txt-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + g.label + (isRowCustom ? ' <b style="color:var(--purple-t)">*</b>' : '') + '</span>' +
+        '<div class="bar" style="height:6px"><div class="bar-fill" style="width:' + pct + '%;background:' + barCol + '"></div></div>' +
+        '<div class="row" style="gap:3px;align-items:center">' +
+          '<button class="btn sq-sm" style="width:22px;height:22px;font-size:12px;padding:0" onclick="adjustMuscleWeeklyTarget(\'" + g.key + "\', -1)">−</button>' +
+          '<span class="mono" style="min-width:44px;text-align:center;font-weight:900;font-size:10.5px;color:' + (isRowCustom ? 'var(--purple-t)' : 'var(--txt)') + '">' + s + '/' + target + 's</span>' +
+          '<button class="btn sq-sm" style="width:22px;height:22px;font-size:12px;padding:0" onclick="adjustMuscleWeeklyTarget(\'" + g.key + "\', 1)">+</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    return '<div class="vol-bar-row" style="grid-template-columns:112px 1fr 48px">' +
+      '<span style="font-weight:800;color:var(--txt-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + g.label + (isRowCustom ? ' <b style="color:var(--purple-t)" title="Custom Target (Standard: ' + stdTarget + 's)">*</b>' : '') + '</span>' +
       '<div class="bar" style="height:6px"><div class="bar-fill" style="width:' + pct + '%;background:' + barCol + '"></div></div>' +
-      '<span class="mono" style="text-align:right;font-weight:900;color:' + (s >= 10 ? 'var(--green-t)' : 'var(--txt)') + '">' + s + '/' + g.target + 's</span>' +
+      '<span class="mono" onclick="toggleVolumeTargetsEditMode()" title="Tap to customize weekly target sets" style="cursor:pointer;text-align:right;font-weight:900;color:' + (s >= target ? 'var(--green-t)' : (isRowCustom ? 'var(--purple-t)' : 'var(--txt)')) + '">' + s + '/' + target + 's</span>' +
     '</div>';
   }).join('');
 }
