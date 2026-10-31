@@ -4071,17 +4071,37 @@ function normalizePrograms(){
         if(!Array.isArray(ex.supersetHistory)) ex.supersetHistory = [];
         if(ex.viewMode === undefined) ex.viewMode = appData.globalViewMode || 'all';
         if(ex.isEach === undefined) ex.isEach = false;
-        // Purge phantom warmup sets auto-injected by old generator if user never actually logged warmups
-        const hasLoggedWarmups = (ex.history || []).some(function(h){
-          return h && Array.isArray(h.warmupReps) && h.warmupReps.some(function(r){ return (parseFloat(r)||0) > 0; });
-        });
-        if(!hasLoggedWarmups && (ex.warmupSets === 1 || ex.warmupSets === 2)){
+        if(!appData._purgedAutoWarmupsV2){
           ex.warmupSets = 0;
         }
         if(ex.warmupSets === undefined) ex.warmupSets = 0;
+        // Clean history: remove empty unlogged sessions (all reps 0) and any corrupted [0, 0, X] entries
+        if(Array.isArray(ex.history) && ex.history.length){
+          const hadValidNonZero = ex.history.some(function(h){
+            return h && Array.isArray(h.weights) && (parseFloat(h.weights[0]) || 0) > 0 && Array.isArray(h.reps) && (parseFloat(h.reps[0]) || 0) > 0;
+          });
+          ex.history = ex.history.filter(function(h){
+            if(!h || !Array.isArray(h.reps)) return false;
+            const anyRep = h.reps.some(function(r){ return (parseFloat(r) || 0) > 0; });
+            if(!anyRep) return false;
+            if(h.exName && String(h.exName).trim().toLowerCase() !== String(ex.name).trim().toLowerCase()) return false;
+            // If an exercise has valid history with weight > 0 on Set 1, drop corrupted entries where Set 1 & Set 2 weights are 0 but Set 3 > 0
+            if(hadValidNonZero && Array.isArray(h.weights) && h.weights.length >= 3){
+              const w0 = parseFloat(h.weights[0]) || 0;
+              const w1 = parseFloat(h.weights[1]) || 0;
+              const w2 = parseFloat(h.weights[2]) || 0;
+              if(w0 === 0 && w1 === 0 && w2 > 0) return false;
+            }
+            return true;
+          });
+        }
       });
     });
   });
+  if(!appData._purgedAutoWarmupsV2){
+    appData._purgedAutoWarmupsV2 = true;
+    safeRemoveItem('activeLiveWorkoutSessionV2');
+  }
   if(!appData.activeProgramId || !appData.programs.some(function(p){ return p.id === appData.activeProgramId; }))
     appData.activeProgramId = appData.programs[0].id;
 }
@@ -7940,6 +7960,22 @@ function getHistoricalBest1RM(ex){
   });
   return best;
 }
+function getLatestValidHistoryEntry(ex, isSuperset){
+  if(!ex) return null;
+  const list = isSuperset ? ex.supersetHistory : ex.history;
+  if(!Array.isArray(list) || !list.length) return null;
+  const targetName = String(isSuperset ? (ex.supersetName || '') : (ex.name || '')).trim().toLowerCase();
+  const sorted = list.slice().sort(function(a, b){ return (a.date || 0) - (b.date || 0); });
+  for(let i = sorted.length - 1; i >= 0; i--){
+    const h = sorted[i];
+    if(!h || !Array.isArray(h.reps)) continue;
+    if(!isSuperset && h.exName && String(h.exName).trim().toLowerCase() !== targetName) continue;
+    const hasValidRep = h.reps.some(function(r){ return (parseFloat(r) || 0) > 0; });
+    if(hasValidRep) return h;
+  }
+  return null;
+}
+
 function startWorkout(){
   const prog = getProgram();
   const curDay = prog[appData.currentDayIndex];
@@ -7949,24 +7985,24 @@ function startWorkout(){
     openEditor();
     return;
   }
+  // CRITICAL FIX: Set workoutActive = false and wipe #setsContainer BEFORE resetTimer()
+  // so resetTimer() -> syncWorkout() -> saveCurrentEx() NEVER scrapes stale DOM inputs from a previous exercise/day!
+  workoutActive = false;
+  if($('setsContainer')) $('setsContainer').innerHTML = '';
   clearLiveWorkout();
-  workoutActive = true;
-  playSound('success');
+  resetTimer();
   activeExIndex = 0; visitedEx = {};
   const sessionTs = Date.now();
   activeSessionData = JSON.parse(JSON.stringify(curDay.exercises));
   const isDeload = (typeof isDeloadModeActive === 'function' && isDeloadModeActive());
   activeSessionData.forEach(function(ex){
     ex.viewMode = appData.globalViewMode || 'all';
-    const lh = ex.history && ex.history.length ? ex.history[ex.history.length-1] : null;
-    const ls = ex.supersetHistory && ex.supersetHistory.length ? ex.supersetHistory[ex.supersetHistory.length-1] : null;
+    const validLh = getLatestValidHistoryEntry(ex, false);
+    const ls = getLatestValidHistoryEntry(ex, true);
     let drops = [];
-    if(!isDeload && lh && Array.isArray(lh.drops)) drops = lh.drops.map(function(a){ return Array.isArray(a) ? a.map(function(d){ return {w:d.w!==undefined?d.w:'',r:d.r!==undefined?d.r:''}; }) : []; });
+    if(!isDeload && validLh && Array.isArray(validLh.drops)) drops = validLh.drops.map(function(a){ return Array.isArray(a) ? a.map(function(d){ return {w:d.w!==undefined?d.w:'',r:d.r!==undefined?d.r:''}; }) : []; });
     let sdrops = [];
     if(!isDeload && ls && Array.isArray(ls.drops)) sdrops = ls.drops.map(function(a){ return Array.isArray(a) ? a.map(function(d){ return {w:d.w!==undefined?d.w:'',r:d.r!==undefined?d.r:''}; }) : []; });
-    // Only pre-fill history if it belongs to the exact same exercise (never inherit another exercise's numbers!)
-    const isMatchingHist = !lh || !lh.exName || (String(lh.exName).trim().toLowerCase() === String(ex.name).trim().toLowerCase());
-    const validLh = isMatchingHist ? lh : null;
     let initWeights = validLh && validLh.weights ? validLh.weights.slice() : [];
     let initReps = validLh && validLh.reps ? validLh.reps.slice() : [];
     let initSSWeights = ls && ls.weights ? ls.weights.slice() : [];
@@ -7975,8 +8011,8 @@ function startWorkout(){
       const setCnt = Math.max(1, ex.sets || 3);
       initWeights = []; initReps = [];
       for(let si = 0; si < setCnt; si++){
-        const baseW = (lh && lh.weights && lh.weights[si] !== undefined) ? parseFloat(lh.weights[si]) : ((lh && lh.weights && lh.weights[0] !== undefined) ? parseFloat(lh.weights[0]) : 20);
-        const baseR = (lh && lh.reps && lh.reps[si] !== undefined && lh.reps[si] > 0) ? parseFloat(lh.reps[si]) : ((lh && lh.reps && lh.reps[0] > 0) ? parseFloat(lh.reps[0]) : 10);
+        const baseW = (validLh && validLh.weights && validLh.weights[si] !== undefined) ? parseFloat(validLh.weights[si]) : ((validLh && validLh.weights && validLh.weights[0] !== undefined) ? parseFloat(validLh.weights[0]) : 20);
+        const baseR = (validLh && validLh.reps && validLh.reps[si] !== undefined && validLh.reps[si] > 0) ? parseFloat(validLh.reps[si]) : ((validLh && validLh.reps && validLh.reps[0] > 0) ? parseFloat(validLh.reps[0]) : 10);
         initWeights.push(baseW > 0 ? Math.round((baseW * 0.75) * 2) / 2 : 0);
         initReps.push(Math.max(5, Math.round(baseR * 0.75)));
       }
@@ -7993,8 +8029,8 @@ function startWorkout(){
     }
     ex.currentEntry = {
       date: sessionTs,
-      warmupWeights: lh && lh.warmupWeights ? lh.warmupWeights.slice() : [],
-      warmupReps: lh && lh.warmupReps ? lh.warmupReps.slice() : [],
+      warmupWeights: validLh && validLh.warmupWeights ? validLh.warmupWeights.slice() : [],
+      warmupReps: validLh && validLh.warmupReps ? validLh.warmupReps.slice() : [],
       warmupRestTimes: [],
       weights: initWeights,
       reps: initReps,
@@ -8006,7 +8042,8 @@ function startWorkout(){
       isDeloadSession: isDeload
     };
   });
-  resetTimer();
+  workoutActive = true;
+  playSound('success');
   startStopwatch();
   syncViewModeUI();
   renderWorkout();
@@ -8596,11 +8633,12 @@ function renderWorkout(){
   const techBtn = $('techChangedBtn');
   if(techBtn) techBtn.classList.toggle('on', !!(ex.currentEntry && ex.currentEntry.techniqueChanged));
   $('ssHistBtn').classList.toggle('hidden', !ex.supersetName);
-  const c = $('setsContainer'); c.innerHTML = '';
-  const rawLh = ex.history && ex.history.length ? ex.history[ex.history.length-1] : null;
-  const isMatchLh = !rawLh || !rawLh.exName || (String(rawLh.exName).trim().toLowerCase() === String(ex.name).trim().toLowerCase());
-  const lh = isMatchLh ? rawLh : null;
-  const ls = ex.supersetHistory && ex.supersetHistory.length ? ex.supersetHistory[ex.supersetHistory.length-1] : null;
+  const c = $('setsContainer');
+  c.innerHTML = '';
+  c.dataset.renderedExId = String(ex._id || activeExIndex);
+  c.dataset.renderedExName = String(ex.name || '');
+  const lh = getLatestValidHistoryEntry(ex, false);
+  const ls = getLatestValidHistoryEntry(ex, true);
   const ce = ex.currentEntry || {};
   for(let w = 0; w < (ex.warmupSets || 0); w++){
     const pw = (lh && lh.warmupReps && lh.warmupReps[w] > 0) ? (lh.warmupWeights[w] !== undefined ? lh.warmupWeights[w] : 0) : '-';
@@ -8925,6 +8963,8 @@ function paintRow(i, type, pw, pr, dropIdx){
 }
 function saveCurrentEx(){
   const ex = activeSessionData[activeExIndex]; if(!ex) return;
+  const c = $('setsContainer');
+  if(!c || c.dataset.renderedExId !== String(ex._id || activeExIndex) || !c.querySelector('.set-row')) return;
   ex.note = $('activeExNote').value;
   const mode = appData.globalViewMode || 'all';
   ex.viewMode = mode;
@@ -9281,6 +9321,8 @@ function askExit(){ playSound('warn'); openModal('modal-exit'); }
 function confirmExit(saveIt){
   closeModal('modal-exit'); stopStopwatch(); killAllSounds();
   if(saveIt){ saveCurrentEx(); commitSession(); save(); }
+  workoutActive = false;
+  if($('setsContainer')){ $('setsContainer').innerHTML = ''; delete $('setsContainer').dataset.renderedExId; }
   clearLiveWorkout(); activeSessionData = []; activeExIndex = 0; resetTimer(); route();
 }
 let sessionRating = null, summaryRefs = [];
@@ -9293,6 +9335,7 @@ function commitSession(){
   activeSessionData.forEach(function(ex, i){
     if(!ex.currentEntry) return;
     const orig = day.exercises.find(function(o){ return o._id && o._id === ex._id; }) || day.exercises[i];
+    const hasMainSets = ex.currentEntry.reps && ex.currentEntry.reps.some(function(r){ return (parseFloat(r) || 0) > 0; });
     if(orig){
       orig.name = ex.name;
       orig.isEach = !!ex.isEach;
@@ -9301,19 +9344,21 @@ function commitSession(){
         orig.supersetIsEach = !!ex.supersetIsEach;
         orig._ssSavedEach = !!ex.supersetIsEach;
       }
-      if(!orig.history) orig.history = [];
-      orig.history.push({
-        exName: ex.name,
-        date: ex.currentEntry.date,
-        warmupWeights: ex.currentEntry.warmupWeights, warmupReps: ex.currentEntry.warmupReps,
-        warmupRestTimes: ex.currentEntry.warmupRestTimes,
-        weights: ex.currentEntry.weights, reps: ex.currentEntry.reps,
-        restTimes: ex.currentEntry.restTimes,
-        drops: ex.currentEntry.drops || [],
-        techniqueChanged: ex.currentEntry.techniqueChanged,
-        rating: sessionRating || null
-      });
-      if(orig.history.length > 15) orig.history = orig.history.slice(-15);
+      if(hasMainSets){
+        if(!orig.history) orig.history = [];
+        orig.history.push({
+          exName: ex.name,
+          date: ex.currentEntry.date,
+          warmupWeights: ex.currentEntry.warmupWeights, warmupReps: ex.currentEntry.warmupReps,
+          warmupRestTimes: ex.currentEntry.warmupRestTimes,
+          weights: ex.currentEntry.weights, reps: ex.currentEntry.reps,
+          restTimes: ex.currentEntry.restTimes,
+          drops: ex.currentEntry.drops || [],
+          techniqueChanged: ex.currentEntry.techniqueChanged,
+          rating: sessionRating || null
+        });
+        if(orig.history.length > 15) orig.history = orig.history.slice(-15);
+      }
       const hasSSSets = ex.currentEntry.supersetReps && ex.currentEntry.supersetReps.some(function(r){ return r > 0; });
       if(orig.supersetName && hasSSSets){
         if(!orig.supersetHistory) orig.supersetHistory = [];
@@ -9403,6 +9448,8 @@ function finishWorkout(){
 
   summaryRefs = activeSessionData.map(function(ex){ return { id:ex._id, date: ex.currentEntry && ex.currentEntry.date || 0 }; });
   commitSession(); save();
+  workoutActive = false;
+  if($('setsContainer')){ $('setsContainer').innerHTML = ''; delete $('setsContainer').dataset.renderedExId; }
   stopStopwatch(); clearLiveWorkout();
   activeSessionData = []; activeExIndex = 0;
   populateSummaryModalUI(appData.lastWorkoutSummary);
@@ -10173,7 +10220,11 @@ function delHist(idx){
   askConfirm('Delete Log Entry', 'Delete this recorded session from history?', function(){
     const ex = histTarget.ex, type = histTarget.type;
     const list = type === 'super' ? ex.supersetHistory : ex.history;
-    list.splice(idx, 1);
+    const sorted = list.slice().sort(function(a,b){ return a.date - b.date; });
+    const targetItem = sorted[idx];
+    const realIdx = list.indexOf(targetItem);
+    if(realIdx >= 0) list.splice(realIdx, 1);
+    else list.splice(idx, 1);
     save(); renderHist(); updateHomeStats(); updateWeekGoal();
   });
 }
