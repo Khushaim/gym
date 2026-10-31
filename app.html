@@ -44,7 +44,14 @@
   --accent-grad:linear-gradient(135deg,#10b981 0%,#0ea5e9 100%);
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
-  --dock-bottom:2px;
+  --dock-bottom:max(11px, calc(env(safe-area-inset-bottom, 0px) * 0.34));
+}
+#iosHapticSwitch{
+  -webkit-appearance:auto !important;
+  appearance:auto !important;
+  width:32px !important;
+  height:20px !important;
+  opacity:0.01 !important;
 }
 [data-skin="royal"][data-theme="dark"]{
   --bg:#090806;
@@ -330,7 +337,7 @@ body.numpad-ActivePad .modal-body {
 .dock{
   display:flex;align-items:center;justify-content:space-between;gap:2px;
   height:60px;min-height:60px;
-  margin:6px 0 var(--dock-bottom);
+  margin:5px 0 var(--dock-bottom);
   padding:5px 4px;
   border-radius:var(--r-xl);
   background:linear-gradient(155deg,rgba(125,211,252,.08),rgba(125,211,252,.015)),var(--surface);
@@ -637,8 +644,8 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  gap:10px;
-  padding-bottom:6px;
+  gap:8px;
+  padding-bottom:4px;
 }
 .hero{
   position:relative;padding:16px 14px;border-radius:var(--r-xl);overflow:hidden;
@@ -781,7 +788,7 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),
 #editorList > *, #manualBuilderList > *{flex-shrink:0}
 #screen-editor .screen-body, #screen-manual-builder .screen-body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;height:100%;min-height:0;width:100%;max-width:100%;gap:7px;overflow:hidden}
 
-#screen-workout .screen-body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto;height:100%;min-height:0;width:100%;max-width:100%;gap:6px;overflow:hidden;padding-bottom:var(--dock-bottom)}
+#screen-workout .screen-body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto;height:100%;min-height:0;width:100%;max-width:100%;gap:6px;overflow:hidden;padding-bottom:0}
 #screen-workout .workout-ex-card{
   padding:6px 8px;
   width:100%;max-width:100%;min-width:0;
@@ -2609,7 +2616,7 @@ body[data-idle="1"] .marble-veins{
 </div>
 
 <div id="toast">Keep going!</div>
-<label id="iosHapticLabel" for="iosHapticSwitch" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden"><input type="checkbox" switch id="iosHapticSwitch" tabindex="-1"></label>
+<label id="iosHapticLabel" for="iosHapticSwitch" aria-hidden="true" onclick="event.stopPropagation()" style="position:fixed;bottom:0;left:0;width:1px;height:1px;opacity:0.01;overflow:hidden;z-index:-1;pointer-events:none"><input type="checkbox" switch id="iosHapticSwitch" tabindex="-1" onclick="event.stopPropagation()"></label>
 
 <div id="pip">
   <div class="pip-row-top">
@@ -3333,6 +3340,10 @@ document.addEventListener('msfullscreenchange', updateFullScreenBtnUI);
 window.addEventListener('resize', updateFullScreenBtnUI, {passive:true});
 
 (function initStandaloneAndPowerManager(){
+  const ua = navigator.userAgent || '';
+  if(/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)){
+    document.documentElement.setAttribute('data-ios', 'true');
+  }
   if(isStandaloneMode()){
     document.documentElement.setAttribute('data-standalone', 'true');
   }
@@ -3565,7 +3576,7 @@ const EXERCISE_CATALOG = [
   {name:"Single-Arm Machine High Row", group:"high_row", muscle:"Back", sub:"Lats (Lower)", equip:"Machine", compound:true, aliases:["Iso-lateral high row","Hammer high row","Single arm lat pulldown"]},
   {name:"Wide Row", group:"wide_row", muscle:"Back", sub:"Upper Back", equip:"Machine", compound:true, aliases:["Wide-Grip Seated Row (Upper Back)","Wide grip row","Upper back row","Wide machine row"]},
   {name:"Wide-Grip Seated Cable Row", group:"wide_cable_row", muscle:"Back", sub:"Upper Back", equip:"Cable", compound:true, aliases:["Upper back cable row","Flared elbow row"]},
-  {name:"Low Row Chest Supported", group:"cs_row", muscle:"Back", sub:"Mid Back", equip:"Machine", compound:true, aliases:["Chest-Supported Machine Row","Chest supported row","Machine row","Low row machine"]},
+  {name:"Low Row (Chest-Supported)", group:"low_row", muscle:"Back", sub:"Lats (Lower)", equip:"Machine", compound:true, aliases:["Low Row","Machine Low Row","Low Row Chest Supported","Chest-Supported Low Row","Low row machine","Seated Low Row","لو رو"]},
   {name:"Chest-Supported Machine Row", group:"cs_row", muscle:"Back", sub:"Mid Back", equip:"Machine", compound:true, aliases:["Seated machine row","Hammer strength row"]},
   {name:"Seated Cable Row", group:"cable_row", muscle:"Back", sub:"Mid Back", equip:"Cable", compound:true, aliases:["Cable row","Close grip row","Low cable row"]},
   {name:"One Arm Dumbbell Row", group:"db_row", muscle:"Back", sub:"Lats (Width)", equip:"Dumbbell", compound:true, aliases:["Single-Arm Dumbbell Row","Single arm dumbbell row","DB row","One arm row"]},
@@ -3730,13 +3741,13 @@ function classifyExerciseByAI(rawName){
     muscle = 'Shoulders'; sub = 'Side Delts'; compound = /upright/.test(n);
   } else if(/shoulder|ohp|military|arnold|front raise|z press|overhead press|كتف|أكتاف|شولدر|أمامي/.test(n)){
     muscle = 'Shoulders'; sub = 'Front Delts'; compound = !/raise|رفرفة/.test(n);
-  } else if(/trap|shrug|rack pull|kelso|ترابيس|مجنص|هز أكتاف/.test(n) && !/lat/.test(n)){
+  } else if(/trap|shrug|rack pull|kelso|ترابيس|شراغ|هز أكتاف/.test(n) && !/lat|مجنص/.test(n)){
     muscle = 'Back'; sub = 'Traps'; compound = false;
   } else if(/hyperextension|back ext|good morning|erector|قطنية|أسفل ظهر/.test(n)){
     muscle = 'Back'; sub = 'Lower Back'; compound = false;
-  } else if(/pulldown|pull-up|pullup|chin-up|lat|pullover|straight arm|سحب عالي|عقلة|لات|بول اوفر|مجنص/.test(n)){
+  } else if(/pulldown|pull-up|pullup|chin-up|lat|low row|pullover|straight arm|سحب عالي|عقلة|لات|مجنص|بول اوفر|لو رو|سحب واطي|سحب سفلي/.test(n)){
     muscle = 'Back';
-    sub = /v grip|close|underhand|reverse|ضيق|مقلوب/.test(n) ? 'Lats (Lower)' : (/pullover|straight arm|بول اوفر/.test(n) ? 'Lats (Isolation)' : 'Lats (Width)');
+    sub = /low|واطي|سفلي|v grip|close|underhand|reverse|ضيق|مقلوب/.test(n) ? 'Lats (Lower)' : (/pullover|straight arm|بول اوفر/.test(n) ? 'Lats (Isolation)' : 'Lats (Width)');
     compound = !/pullover|straight arm/.test(n);
   } else if(/row|deadlift|t-bar|meadows|pendlay|back|سحب|ظهر|منشار|تي بار|ديدليفت/.test(n)){
     muscle = 'Back';
@@ -4060,6 +4071,13 @@ function normalizePrograms(){
         if(!Array.isArray(ex.supersetHistory)) ex.supersetHistory = [];
         if(ex.viewMode === undefined) ex.viewMode = appData.globalViewMode || 'all';
         if(ex.isEach === undefined) ex.isEach = false;
+        // Purge phantom warmup sets auto-injected by old generator if user never actually logged warmups
+        const hasLoggedWarmups = (ex.history || []).some(function(h){
+          return h && Array.isArray(h.warmupReps) && h.warmupReps.some(function(r){ return (parseFloat(r)||0) > 0; });
+        });
+        if(!hasLoggedWarmups && (ex.warmupSets === 1 || ex.warmupSets === 2)){
+          ex.warmupSets = 0;
+        }
         if(ex.warmupSets === undefined) ex.warmupSets = 0;
       });
     });
@@ -5886,10 +5904,10 @@ function getCalibratedExAndSets(parsedRules){
   let baseSets = 3;
   let compoundWarmups = 2;
 
-  if(exp === 'beginner'){ stdEx = 5; baseSets = 3; compoundWarmups = 1; }
-  else if(exp === 'intermediate'){ stdEx = 6; baseSets = 3; compoundWarmups = 2; }
-  else if(exp === 'advanced'){ stdEx = 7; baseSets = 3; compoundWarmups = 2; }
-  else if(exp === 'elite'){ stdEx = 7; baseSets = 4; compoundWarmups = 2; }
+  if(exp === 'beginner'){ stdEx = 5; baseSets = 3; compoundWarmups = 0; }
+  else if(exp === 'intermediate'){ stdEx = 6; baseSets = 3; compoundWarmups = 0; }
+  else if(exp === 'advanced'){ stdEx = 7; baseSets = 3; compoundWarmups = 0; }
+  else if(exp === 'elite'){ stdEx = 7; baseSets = 4; compoundWarmups = 0; }
 
   if(effectiveAge >= 50){
     compoundWarmups = Math.max(2, compoundWarmups + 1);
@@ -5960,12 +5978,8 @@ function sortExercisesIntraDay(exArray){
     return a.idx - b.idx;
   }).map(function(x, newIdx){
     const entry = findCatalogEntry(x.item.name) || x.item;
-    // Assign warmup sets to the first 1-2 heavy compound movements of the day
-    if(newIdx === 0 || (newIdx === 1 && entry && entry.compound)){
-      if(!x.item.warmupSets) x.item.warmupSets = 2;
-    } else {
-      x.item.warmupSets = 0;
-    }
+    // Do not force phantom warmup sets automatically (user adds them via +Warm if desired)
+    x.item.warmupSets = x.item.warmupSets || 0;
     return x.item;
   });
 }
@@ -7126,7 +7140,12 @@ function pickExercise(name){
       renderManualStudio();
     }
   } else if(dbTarget.mode === 'editor' && dbTarget.editIdx !== -1){
-    prog[editorDayIdx].exercises[dbTarget.editIdx].name = name;
+    const targetEx = prog[editorDayIdx].exercises[dbTarget.editIdx];
+    if(targetEx && targetEx.name !== name){
+      targetEx.name = name;
+      targetEx.history = [];
+      targetEx.supersetHistory = [];
+    }
     save(); renderEditor();
   } else if(dbTarget.mode === 'editorSS' && dbTarget.ssIdx !== -1){
     const cur = prog[editorDayIdx].exercises[dbTarget.ssIdx];
@@ -7358,9 +7377,11 @@ function getExerciseBioProfile(exName){
       primaryKey = 'Upper Traps';
       isLarge = false;
       isMinorAccessory = true;
+    } else if(/low row|لو رو|سحب واطي|سحب سفلي|lat row|single-arm lat|سحب فردي للاتس|pulldown|pull-up|chin-up|pullover|straight arm|عقلة|مجنص|بول اوفر/.test(n)){
+      primaryKey = 'Lats';
+      isLarge = true;
     } else if(
-      (sub === 'Upper Back' || sub === 'Mid Back' || /wide row|wide-grip.*row|chest-supported|chest supported|t-bar|barbell row|pendlay|seated cable row|seal row|meadows row|kelso|ظهر علوي|ظهر داخلي|سمك|تي بار|تجديف/.test(n)) &&
-      !/lat row|single-arm lat|سحب فردي للاتس/.test(n)
+      (sub === 'Upper Back' || sub === 'Mid Back' || /wide row|wide-grip.*row|chest-supported|chest supported|t-bar|barbell row|pendlay|seated cable row|seal row|meadows row|kelso|ظهر علوي|ظهر داخلي|سمك|تي بار|تجديف/.test(n))
     ){
       primaryKey = 'Upper Back';
       isLarge = true;
@@ -7943,8 +7964,11 @@ function startWorkout(){
     if(!isDeload && lh && Array.isArray(lh.drops)) drops = lh.drops.map(function(a){ return Array.isArray(a) ? a.map(function(d){ return {w:d.w!==undefined?d.w:'',r:d.r!==undefined?d.r:''}; }) : []; });
     let sdrops = [];
     if(!isDeload && ls && Array.isArray(ls.drops)) sdrops = ls.drops.map(function(a){ return Array.isArray(a) ? a.map(function(d){ return {w:d.w!==undefined?d.w:'',r:d.r!==undefined?d.r:''}; }) : []; });
-    let initWeights = lh && lh.weights ? lh.weights.slice() : [];
-    let initReps = lh && lh.reps ? lh.reps.slice() : [];
+    // Only pre-fill history if it belongs to the exact same exercise (never inherit another exercise's numbers!)
+    const isMatchingHist = !lh || !lh.exName || (String(lh.exName).trim().toLowerCase() === String(ex.name).trim().toLowerCase());
+    const validLh = isMatchingHist ? lh : null;
+    let initWeights = validLh && validLh.weights ? validLh.weights.slice() : [];
+    let initReps = validLh && validLh.reps ? validLh.reps.slice() : [];
     let initSSWeights = ls && ls.weights ? ls.weights.slice() : [];
     let initSSReps = ls && ls.reps ? ls.reps.slice() : [];
     if(isDeload){
@@ -8573,7 +8597,9 @@ function renderWorkout(){
   if(techBtn) techBtn.classList.toggle('on', !!(ex.currentEntry && ex.currentEntry.techniqueChanged));
   $('ssHistBtn').classList.toggle('hidden', !ex.supersetName);
   const c = $('setsContainer'); c.innerHTML = '';
-  const lh = ex.history && ex.history.length ? ex.history[ex.history.length-1] : null;
+  const rawLh = ex.history && ex.history.length ? ex.history[ex.history.length-1] : null;
+  const isMatchLh = !rawLh || !rawLh.exName || (String(rawLh.exName).trim().toLowerCase() === String(ex.name).trim().toLowerCase());
+  const lh = isMatchLh ? rawLh : null;
   const ls = ex.supersetHistory && ex.supersetHistory.length ? ex.supersetHistory[ex.supersetHistory.length-1] : null;
   const ce = ex.currentEntry || {};
   for(let w = 0; w < (ex.warmupSets || 0); w++){
@@ -9277,6 +9303,7 @@ function commitSession(){
       }
       if(!orig.history) orig.history = [];
       orig.history.push({
+        exName: ex.name,
         date: ex.currentEntry.date,
         warmupWeights: ex.currentEntry.warmupWeights, warmupReps: ex.currentEntry.warmupReps,
         warmupRestTimes: ex.currentEntry.warmupRestTimes,
@@ -10484,7 +10511,17 @@ function renderEditor(){
   });
   requestAnimationFrame(fitAllVisibleNameInputs);
 }
-function editName(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].name = v; classifyAndRegisterCustomExercise(v, false); save(); }
+function editName(i, v){
+  const p = getProgram();
+  const targetEx = p[editorDayIdx].exercises[i];
+  if(targetEx && targetEx.name !== v){
+    targetEx.name = v;
+    targetEx.history = [];
+    targetEx.supersetHistory = [];
+    classifyAndRegisterCustomExercise(v, false);
+    save();
+  }
+}
 function editSSName(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].supersetName = v; classifyAndRegisterCustomExercise(v, false); save(); }
 function editSets(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].sets = clamp(parseInt(v) || 1, 1, 20); save(); }
 function editWarm(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].warmupSets = clamp(parseInt(v) || 0, 0, 10); save(); }
