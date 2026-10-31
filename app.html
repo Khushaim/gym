@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="IRON PULSE">
 <meta name="application-name" content="IRON PULSE">
 <meta name="theme-color" content="#050b18">
@@ -2609,6 +2609,7 @@ body[data-idle="1"] .marble-veins{
 </div>
 
 <div id="toast">Keep going!</div>
+<label id="iosHapticLabel" for="iosHapticSwitch" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden"><input type="checkbox" switch id="iosHapticSwitch" tabindex="-1"></label>
 
 <div id="pip">
   <div class="pip-row-top">
@@ -3223,7 +3224,7 @@ function safeRemoveItem(k){
         short_name: 'IRON PULSE',
         description: 'Strength, Split & Cardio Tracker',
         start_url: '.',
-        display: 'fullscreen',
+        display: 'standalone',
         background_color: '#050b18',
         theme_color: '#050b18',
         icons: [
@@ -3231,10 +3232,9 @@ function safeRemoveItem(k){
           { src: pngUrl, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
         ]
       };
-      const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
       const mLink = document.createElement('link');
       mLink.rel = 'manifest';
-      mLink.href = URL.createObjectURL(blob);
+      mLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
       document.head.appendChild(mLink);
     }
   }catch(e){}
@@ -3449,6 +3449,26 @@ function fadeOutNode(node, ms){
   }catch(e){ try{ node.osc.stop(); }catch(_){} }
 }
 function stopAllSounds(){ const snap = activeNodes.slice(); activeNodes = []; snap.forEach(function(n){ fadeOutNode(n, 20); }); }
+function triggerHapticFeedback(vibPattern, soundType){
+  try{
+    if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics){
+      const style = (soundType === 'alarm' || soundType === 'bell' || soundType === 'warn') ? 'HEAVY' : (soundType === 'success' ? 'MEDIUM' : 'LIGHT');
+      window.Capacitor.Plugins.Haptics.impact({ style: style });
+      return;
+    }
+    if('vibrate' in navigator){
+      navigator.vibrate(vibPattern);
+      return;
+    }
+    const lbl = document.getElementById('iosHapticLabel');
+    if(lbl){
+      lbl.click();
+      if(soundType === 'alarm' || soundType === 'bell' || soundType === 'success'){
+        setTimeout(function(){ try{ lbl.click(); }catch(_){} }, 90);
+      }
+    }
+  }catch(e){}
+}
 function playSound(type){
   const isPriorityAlert = (type === 'alarm' || type === 'bell');
   const now = performance.now();
@@ -3456,7 +3476,7 @@ function playSound(type){
   lastSoundTime = now;
   initAudio();
   const def = SOUND_MAP[type] || SOUND_MAP.click;
-  if(!appData.powerSaveMode && 'vibrate' in navigator && def.vib){ try{ navigator.vibrate(def.vib); }catch(e){} }
+  if(!appData.powerSaveMode && def.vib){ triggerHapticFeedback(def.vib, type); }
   if(!audioCtx || !audioMaster) return;
   if(!isPriorityAlert && type !== 'success'){
     const nonAlertNodes = activeNodes.filter(function(n){ return !n.isAlert; });
