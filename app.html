@@ -1991,9 +1991,13 @@ body[data-idle="1"] .marble-veins{
           </div>
           <div class="w-row">
             <input type="text" id="activeExNote" class="w-note-input" placeholder="📌 Notes" onchange="saveNote()">
-            <div class="w-step-box" title="Minimum Weight Increment (adds − / + buttons next to Weight)">
+            <div class="w-step-box" title="Main Exercise Minimum Weight Increment (adds − / + buttons next to Weight)">
               <span class="micro" style="color:var(--green-t);font-size:8px">±Step</span>
-              <input type="text" readonly inputmode="none" id="activeExStep" class="num-target step-target" data-label="Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveExStep(this.value)">
+              <input type="text" readonly inputmode="none" id="activeExStep" class="num-target step-target" data-label="Main Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveExStep(this.value)">
+            </div>
+            <div class="w-step-box hidden" id="activeSSStepWrap" style="border-color:var(--purple-b);background:rgba(168,85,247,.10)" title="Superset Exercise Minimum Weight Increment (adds − / + buttons next to Superset Weight)">
+              <span class="micro" style="color:var(--purple-t);font-size:8px">⚡±SS</span>
+              <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
             </div>
             <button class="chip purple w-compact-chip" style="height:25px;font-size:9px" id="techChangedBtn" onclick="toggleTechChanged()" title="Different machine or grip? Pauses strict PR comparison">Tech Changed</button>
           </div>
@@ -6877,6 +6881,7 @@ function manualLinkSS(i){
   cur._ssSavedNote = next.note || '';
   cur._ssSavedWarmup = next.warmupSets || 0;
   cur._ssSavedEach = !!next.isEach;
+  cur.supersetMinWeightStep = next.minWeightStep || 0;
   arr.splice(i + 1, 1);
   playSound('success');
   renderManualStudio();
@@ -6904,11 +6909,13 @@ function manualUnlinkSS(i){
     history: Array.isArray(ex.supersetHistory) ? ex.supersetHistory.slice() : [],
     supersetHistory: [],
     viewMode: appData.globalViewMode || 'all',
-    isEach: !!ex._ssSavedEach
+    isEach: !!ex._ssSavedEach,
+    minWeightStep: ex.supersetMinWeightStep || 0
   });
   delete ex.supersetName;
   delete ex.supersetSets;
   delete ex.supersetHistory;
+  delete ex.supersetMinWeightStep;
   delete ex._ssSavedId;
   delete ex._ssSavedNote;
   delete ex._ssSavedWarmup;
@@ -6966,6 +6973,8 @@ function renderManualStudio(){
           '<button class="btn icon-sq" onclick="openDBManual(' + i + ',true)">📁</button>' +
           '<span class="mini-lbl" style="color:var(--purple-t)">Sets</span>' +
           '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Superset Sets" value="' + (ex.supersetSets||ex.sets) + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].supersetSets=clamp(parseInt(this.value)||1,1,20)">' +
+          '<span class="mini-lbl" style="color:var(--purple-t)">±Step</span>' +
+          '<input type="text" readonly inputmode="none" class="mini-input num-target step-target" data-label="Superset Min Weight Increment" placeholder="—" value="' + (ex.supersetMinWeightStep||'') + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].supersetMinWeightStep=Math.max(0,parseFloat(this.value)||0)">' +
           '<button class="btn icon-sq red" onclick="manualUnlinkSS(' + i + ')" title="Unlink Superset">⛓️</button>' +
         '</div>' :
         '<div class="ss-actions">' +
@@ -8626,6 +8635,12 @@ function renderWorkout(){
   if(stepInp && document.activeElement !== stepInp){
     stepInp.value = (ex.minWeightStep && parseFloat(ex.minWeightStep) > 0) ? ex.minWeightStep : '';
   }
+  const ssStepWrap = $('activeSSStepWrap');
+  if(ssStepWrap) ssStepWrap.classList.toggle('hidden', !hasSS);
+  const ssStepInp = $('activeSSExStep');
+  if(ssStepInp && document.activeElement !== ssStepInp){
+    ssStepInp.value = (hasSS && ex.supersetMinWeightStep && parseFloat(ex.supersetMinWeightStep) > 0) ? ex.supersetMinWeightStep : '';
+  }
   const eachBtn = $('eachBtn');
   eachBtn.textContent = 'Each: ' + (ex.isEach ? 'ON' : 'OFF');
   eachBtn.classList.toggle('on', !!ex.isEach);
@@ -8721,12 +8736,27 @@ function saveActiveExStep(val){
   saveCurrentEx();
   const num = parseFloat(val);
   ex.minWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
-  // Also persist minWeightStep to the saved split exercise so it's remembered next session!
   const prog = getProgram();
   const day = prog[appData.currentDayIndex];
   if(day && Array.isArray(day.exercises)){
     const orig = day.exercises.find(function(o){ return o._id && o._id === ex._id; }) || day.exercises[activeExIndex];
     if(orig) orig.minWeightStep = ex.minWeightStep;
+  }
+  save();
+  renderWorkout();
+  syncWorkout();
+}
+function saveActiveSSExStep(val){
+  const ex = activeSessionData[activeExIndex];
+  if(!ex || !ex.supersetName) return;
+  saveCurrentEx();
+  const num = parseFloat(val);
+  ex.supersetMinWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
+  const prog = getProgram();
+  const day = prog[appData.currentDayIndex];
+  if(day && Array.isArray(day.exercises)){
+    const orig = day.exercises.find(function(o){ return o._id && o._id === ex._id; }) || day.exercises[activeExIndex];
+    if(orig) orig.supersetMinWeightStep = ex.supersetMinWeightStep;
   }
   save();
   renderWorkout();
@@ -8754,7 +8784,9 @@ function rowHTML(i, type, pw, pr, vw, vr, dropIdx, ssName){
   const rmTxt = rm > 0 ? rm.toFixed(1) : '—';
   const isDeload = (typeof isDeloadModeActive === 'function' && isDeloadModeActive());
   const ex = activeSessionData[activeExIndex];
-  const wStep = (!isDeload && ex) ? (parseFloat(ex.minWeightStep) || 0) : 0;
+  const isSSType = (type === 'super' || type === 'superDrop');
+  const rawStepVal = ex ? (isSSType ? ex.supersetMinWeightStep : ex.minWeightStep) : 0;
+  const wStep = (!isDeload && ex) ? (parseFloat(rawStepVal) || 0) : 0;
   let slot = '';
   if(isDeload){
     slot = '<button type="button" class="btn xs blue" onclick="confirmRepsDoubleTap($(\'' + p + 'r_' + i + '\'),' + i + ',\'' + type + '\',\'' + pw + '\',\'' + pr + '\',' + dropIdx + ')" style="padding:3px 5px;font-size:8.5px;white-space:nowrap" title="Confirm Deload Set &amp; Rest">✓Set</button>';
@@ -9339,10 +9371,12 @@ function commitSession(){
     if(orig){
       orig.name = ex.name;
       orig.isEach = !!ex.isEach;
+      orig.minWeightStep = ex.minWeightStep || 0;
       if(ex.supersetName){
         orig.supersetName = ex.supersetName;
         orig.supersetIsEach = !!ex.supersetIsEach;
         orig._ssSavedEach = !!ex.supersetIsEach;
+        orig.supersetMinWeightStep = ex.supersetMinWeightStep || 0;
       }
       if(hasMainSets){
         if(!orig.history) orig.history = [];
@@ -10445,6 +10479,7 @@ function editorLinkSS(i){
   cur._ssSavedNote = next.note || '';
   cur._ssSavedWarmup = next.warmupSets || 0;
   cur._ssSavedEach = !!next.isEach;
+  cur.supersetMinWeightStep = next.minWeightStep || 0;
   arr.splice(i + 1, 1);
   playSound('success');
   save();
@@ -10477,11 +10512,13 @@ function unlinkSS(i){
     history: Array.isArray(ex.supersetHistory) ? ex.supersetHistory.slice() : [],
     supersetHistory: [],
     viewMode: appData.globalViewMode || 'all',
-    isEach: !!ex._ssSavedEach
+    isEach: !!ex._ssSavedEach,
+    minWeightStep: ex.supersetMinWeightStep || 0
   });
   delete ex.supersetName;
   delete ex.supersetSets;
   delete ex.supersetHistory;
+  delete ex.supersetMinWeightStep;
   delete ex._ssSavedId;
   delete ex._ssSavedNote;
   delete ex._ssSavedWarmup;
@@ -10540,6 +10577,8 @@ function renderEditor(){
           '<button class="btn icon-sq" onclick="openDBSuper(' + i + ')">📁</button>' +
           '<span class="mini-lbl" style="color:var(--purple-t)">Sets</span>' +
           '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Superset Sets" value="' + (ex.supersetSets||ex.sets) + '" onclick="setActiveNumTarget(this)" oninput="editSSSets(' + i + ',this.value)">' +
+          '<span class="mini-lbl" style="color:var(--purple-t)">±Step</span>' +
+          '<input type="text" readonly inputmode="none" class="mini-input num-target step-target" data-label="Superset Min Weight Increment (Ex ' + (i+1) + ')" placeholder="—" value="' + (ex.supersetMinWeightStep||'') + '" onclick="setActiveNumTarget(this)" oninput="editSSMinStep(' + i + ',this.value)">' +
           '<button class="btn icon-sq" onclick="openHistProg(' + editorDayIdx + ',' + i + ',\'super\')">📊</button>' +
           '<button class="btn icon-sq red" onclick="unlinkSS(' + i + ')" title="Unlink Superset">⛓️</button>' +
         '</div>' :
@@ -10580,6 +10619,12 @@ function editMinStep(i, v){
   const p = getProgram();
   const num = parseFloat(v);
   p[editorDayIdx].exercises[i].minWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
+  save();
+}
+function editSSMinStep(i, v){
+  const p = getProgram();
+  const num = parseFloat(v);
+  p[editorDayIdx].exercises[i].supersetMinWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
   save();
 }
 function editSSSets(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].supersetSets = clamp(parseInt(v) || 1, 1, 20); save(); }
