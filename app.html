@@ -512,8 +512,76 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),
 .timer-rect-fill.half{background:linear-gradient(90deg,var(--amber),var(--amber-t))}
 .timer-rect-fill.quarter{background:linear-gradient(90deg,var(--red),var(--red-t))}
 
-.set-row{display:grid;grid-template-columns:52px 38px minmax(0,1fr) minmax(0,1.15fr);gap:5px;align-items:center;padding:6px 7px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);min-height:44px;width:100%;max-width:100%;box-sizing:border-box;position:relative}
+.set-row{display:grid;grid-template-columns:48px 34px minmax(0,1.16fr) minmax(0,1fr);gap:5px;align-items:center;padding:6px 7px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);min-height:44px;width:100%;max-width:100%;box-sizing:border-box;position:relative}
 .set-row.has-wstep{grid-template-columns:44px 30px minmax(0,1fr) minmax(0,1fr);gap:4px;padding:6px 5px}
+.screen:not(.active){contain:layout style paint}
+.modal:not(.open){contain:layout style paint}
+body.numpad-ActivePad .modal.open{align-items:flex-start;padding-top:max(10px, env(safe-area-inset-top, 10px))}
+body.numpad-ActivePad .modal.open .modal-card{max-height:55dvh;transition:max-height .22s ease, transform .22s ease}
+/* Practical vertical & zoom compactness when outside Fullscreen so all screen content is 100% visible */
+html.is-windowed-mode #appViewport{padding:max(3px, env(safe-area-inset-top, 3px)) 10px 0}
+html.is-windowed-mode .app-header{height:44px;min-height:44px;margin-bottom:5px;padding:0 9px}
+html.is-windowed-mode .brand-badge{width:28px;height:28px}
+html.is-windowed-mode .brand-badge svg{width:17px;height:17px}
+html.is-windowed-mode .brand-text b{font-size:11.5px}
+html.is-windowed-mode .icon-btn{width:31px;height:31px;font-size:14px;border-radius:9px}
+html.is-windowed-mode .screen-body{gap:5px}
+html.is-windowed-mode .hero{padding:8px 10px}
+html.is-windowed-mode #homeDayName{height:24px !important;font-size:18px !important}
+html.is-windowed-mode .home-action-zone{gap:5px}
+html.is-windowed-mode .home-big-btn{padding:8px 11px;min-height:46px}
+html.is-windowed-mode .home-big-btn .hb-icon{width:32px;height:32px;font-size:16px}
+html.is-windowed-mode .home-big-btn .hb-title{font-size:13px}
+html.is-windowed-mode .home-big-btn .hb-sub{font-size:9.5px}
+html.is-windowed-mode .card{padding:8px 10px}
+html.is-windowed-mode .stat{padding:5px 4px}
+html.is-windowed-mode .stat .v{font-size:15px}
+html.is-windowed-mode .journey-banner{padding:8px 10px}
+html.is-windowed-mode .journey-unit{padding:4px 3px}
+html.is-windowed-mode .journey-unit .jv{font-size:15px}
+html.is-windowed-mode .workout-ex-card{padding:6px 8px !important;gap:4px !important}
+html.is-windowed-mode .set-row{min-height:38px;padding:4px 5px}
+html.is-windowed-mode .timer-card{padding:5px 8px;gap:3px}
+html.is-windowed-mode .timer-rect{padding:3px 8px}
+html.is-windowed-mode .timer-rect-time{font-size:17px}
+html.is-windowed-mode .timer-controls .btn{height:28px;font-size:11px;padding:0 8px}
+html.is-windowed-mode .action-bar .btn{height:35px;padding:5px 10px;font-size:12px}
+html.is-windowed-mode .dock{height:50px;min-height:50px;margin:3px 0 calc(var(--dock-bottom) * 0.65);padding:3px}
+html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
+/* Gym Journey Counter Banner */
+.journey-banner{
+  padding:11px 12px;border-radius:var(--r-lg);
+  background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(56,189,248,.10),rgba(168,85,247,.10)),var(--surface-2);
+  border:1px solid var(--green-b);box-shadow:0 6px 20px rgba(0,0,0,.22);
+}
+.journey-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
+.journey-unit{background:rgba(5,11,24,.45);border:1px solid var(--line-2);border-radius:10px;padding:6px 4px;text-align:center}
+[data-theme="light"] .journey-unit{background:rgba(255,255,255,.72)}
+.journey-unit .jv{font-family:var(--font-mono);font-size:18px;font-weight:900;color:var(--green-t);line-height:1.05}
+.journey-unit .jl{font-size:8.5px;font-weight:800;color:var(--txt-3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+/* Cardio 5s Countdown Overlay */
+.cardio-cd-overlay{
+  position:absolute;inset:0;z-index:45;
+  background:rgba(4,9,20,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;
+  border-radius:var(--r-xl);
+}
+.cardio-cd-num{
+  width:118px;height:118px;border-radius:50%;
+  background:radial-gradient(circle,rgba(56,189,248,.24),rgba(16,185,129,.08));
+  border:3px solid var(--blue-b);display:grid;place-items:center;
+  font-family:var(--font-mono);font-size:56px;font-weight:900;color:var(--green-t);
+  box-shadow:0 0 34px rgba(56,189,248,.32);
+}
+.water-rest-done{text-decoration:line-through;color:var(--txt-3) !important;opacity:.78}
+/* Prominent Tour CTA Button */
+.tour-cta-hero-btn{
+  width:100%;padding:14px 16px;border-radius:14px;font-size:14px;font-weight:900;
+  background:linear-gradient(135deg,#10b981,#0ea5e9,#8b5cf6);color:#fff;
+  border:1.5px solid rgba(255,255,255,.35);
+  box-shadow:0 0 28px rgba(16,185,129,.48), inset 0 1px 0 rgba(255,255,255,.35);
+  letter-spacing:.3px;text-transform:uppercase;cursor:pointer;
+}
 .set-row.has-wstep .meta .tag{font-size:8.2px}
 .set-row.has-wstep .meta .prev,.set-row.has-wstep .meta .rm{font-size:7.8px}
 .set-row.has-wstep .slot .btn{padding:2px 2.5px !important;font-size:7.8px !important;max-width:30px;overflow:hidden;text-overflow:clip}
@@ -1561,6 +1629,41 @@ body[data-idle="1"] .marble-veins{
           <p class="muted tiny">Calibrates intensity, working sets, warmups & joint-safe biomechanics</p>
         </div>
 
+        <div class="card tight hud" style="border-color:var(--blue-b)">
+          <div class="row-between" style="margin-bottom:6px">
+            <span class="h4" style="color:var(--blue-t)">🧬 Unified Athlete Profile &amp; Goal</span>
+            <button type="button" class="btn xs blue" onclick="openAthleteProfileModal()">⚙️ Full Profile</button>
+          </div>
+          <div class="grid-3" style="gap:6px;margin-bottom:6px">
+            <div>
+              <label class="label">Weight (<span class="unit-txt">kg</span>)</label>
+              <input type="text" readonly inputmode="none" class="num-target" id="aiProfWeightInput" data-label="Body Weight" value="75" onclick="setActiveNumTarget(this)" oninput="syncProfileFromAIWizard()" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:5px">
+            </div>
+            <div>
+              <label class="label">Height (cm)</label>
+              <input type="text" readonly inputmode="none" class="num-target" id="aiProfHeightInput" data-label="Height (cm)" value="175" onclick="setActiveNumTarget(this)" oninput="syncProfileFromAIWizard()" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:5px">
+            </div>
+            <div>
+              <label class="label">Physique Goal</label>
+              <select id="aiProfGoalSelect" onchange="syncProfileFromAIWizard()" style="padding:5px;font-size:11px;font-weight:800">
+                <option value="bulk">💪 Bulk (Gain)</option>
+                <option value="cut">🔥 Cut (Shred)</option>
+                <option value="recomp">⚖️ Recomp</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2" style="gap:6px">
+            <div>
+              <label class="label">Birth Date (Auto-Age)</label>
+              <input type="date" id="aiProfBirthInput" onchange="syncProfileFromAIWizard()" style="padding:4px 6px;font-size:11px;font-family:var(--font-mono)">
+            </div>
+            <div>
+              <label class="label">Gym Start (Optional)</label>
+              <input type="date" id="aiProfGymStartInput" onchange="syncProfileFromAIWizard()" style="padding:4px 6px;font-size:11px;font-family:var(--font-mono)">
+            </div>
+          </div>
+        </div>
+
         <div class="card tight">
           <div class="grid-2" style="align-items:center">
             <div>
@@ -1925,9 +2028,30 @@ body[data-idle="1"] .marble-veins{
             <span class="micro subtle" id="weekGoalText">0 / 4 sessions goal</span>
             <span class="micro" style="color:var(--green-t)" id="weekGoalPct">0%</span>
           </div>
-          <div class="row-between" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line)">
-            <span class="micro subtle">Post-Workout Victory Report</span>
-            <button class="btn xs purple" onclick="openLastWorkoutSummary()">🏆 Last Workout Summary</button>
+          <div class="row-between" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);gap:5px;flex-wrap:wrap">
+            <button class="btn xs blue flex1" onclick="openWeightTrackerModal()">⚖️ Weight &amp; Goal</button>
+            <button class="btn xs green flex1" onclick="openMonthlyReportModal()">📅 Monthly Report</button>
+            <button class="btn xs purple flex1" onclick="openLastWorkoutSummary()">🏆 Victory Card</button>
+          </div>
+        </div>
+
+        <!-- OPTIONAL MOTIVATIONAL GYM JOURNEY LIVE COUNTER (SHOWN WHEN GYM START DATE IS SET) -->
+        <div class="journey-banner hidden" id="homeGymJourneyCard" onclick="openAthleteProfileModal()" style="cursor:pointer" title="Tap to edit Gym Start Date or Athlete Profile">
+          <div class="row-between">
+            <div class="row gap-1" style="align-items:center">
+              <span style="font-size:15px">⏳</span>
+              <span class="h4" style="color:var(--green-t)" id="homeJourneyTitle">Iron Journey</span>
+            </div>
+            <span class="db-badge" id="homeJourneyRankBadge" style="color:var(--amber-t);border-color:var(--amber-b)">🔥 Dedicated</span>
+          </div>
+          <div class="journey-grid">
+            <div class="journey-unit"><div class="jv" id="journeyYearsVal">0</div><div class="jl" data-i18n="years">Years</div></div>
+            <div class="journey-unit"><div class="jv" id="journeyMonthsVal">0</div><div class="jl" data-i18n="months">Months</div></div>
+            <div class="journey-unit"><div class="jv" id="journeyDaysVal">0</div><div class="jl" data-i18n="days">Days</div></div>
+          </div>
+          <div class="row-between micro subtle" style="margin-top:6px">
+            <span id="homeJourneyTotalDaysTxt">Total: 0 days of consistency</span>
+            <span style="color:var(--blue-t)" id="homeJourneyStartTxt">Started: —</span>
           </div>
         </div>
 
@@ -1975,7 +2099,7 @@ body[data-idle="1"] .marble-veins{
           <div class="bar"><div class="bar-fill" id="workoutProgressBar"></div></div>
           <div class="workout-live-strip" id="workoutLiveTelemetryStrip">
             <span id="wLiveVolTxt">📊 Session: 0 sets · 0 kg</span>
-            <span class="plate-hint" id="wLivePlateHint" onclick="openQuickPlates()" title="Tap to open Plate Calculator">💿 Plates: —</span>
+            <span class="micro subtle" id="wLiveGoalHint" onclick="openAthleteProfileModal()" style="cursor:pointer;color:var(--blue-t)">🎯 Goal: Bulk</span>
           </div>
         </div>
 
@@ -2141,7 +2265,14 @@ body[data-idle="1"] .marble-veins{
 
     <!-- CARDIO ACTIVE SCREEN -->
     <section id="screen-cardio-active" class="screen">
-      <div class="screen-body" style="justify-content:space-between;text-align:center;padding-bottom:var(--dock-bottom)">
+      <div class="screen-body" style="justify-content:space-between;text-align:center;padding-bottom:var(--dock-bottom);position:relative">
+        <!-- 5-SECOND INITIAL COUNTDOWN OVERLAY WITH INSTANT CANCEL -->
+        <div id="cardioCountdownOverlay" class="cardio-cd-overlay hidden">
+          <div class="micro" style="color:var(--blue-t);font-weight:900;letter-spacing:1px">⚡ GET READY FOR CARDIO</div>
+          <div class="cardio-cd-num" id="cardioCountdownNum">5</div>
+          <div class="tiny muted" id="cardioCountdownSub">Starting session in 5 seconds...</div>
+          <button type="button" class="btn red block lg" onclick="cancelCardioDuringCountdown()" style="max-width:260px;margin-top:8px">✕ Cancel Cardio (Don't Save)</button>
+        </div>
         <div class="row-between">
           <h3 class="h2" style="color:var(--blue-t)">🏃 Cardio</h3>
           <button class="chip" onclick="activatePip('cardio')">👁️ PiP</button>
@@ -2163,70 +2294,126 @@ body[data-idle="1"] .marble-veins{
       </div>
     </section>
 
-    <!-- ANALYSIS SCREEN -->
+    <!-- ANALYSIS SCREEN (ORGANIZED INTO 3 CLEAN SUB-PAGES FOR SIMPLICITY) -->
     <section id="screen-analytics" class="screen">
       <div class="screen-body scroll">
-        <div class="row-between">
+        <div class="row-between" style="gap:6px">
           <h3 class="h2">📈 Analysis</h3>
           <div class="row gap-1">
-            <button class="btn sq-sm" onclick="changeAnalyticsDay(-1)">◀</button>
-            <span class="chip" id="analyticsDayTitle">Day 1</span>
-            <button class="btn sq-sm" onclick="changeAnalyticsDay(1)">▶</button>
-            <button class="btn xs red" onclick="deleteLatestSession()" title="Delete latest session">🗑️</button>
+            <button class="btn xs blue" onclick="openPRBoard()">🏆 PRs</button>
+            <button class="btn xs purple" onclick="openMonthlyReportModal()">📅 Monthly</button>
+            <button class="btn xs ghost" onclick="openCardioHistory()">🏃 Cardio</button>
           </div>
-        </div>
-        <div class="card tight hud">
-          <select id="analyticsExerciseSelect" onchange="renderChart()" style="margin-bottom:7px"></select>
-          <div class="chart-box"><div id="chartScrubBadge"></div><svg id="progressSvg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="none"></svg></div>
-          <div class="row-between" style="font-size:9.5px;font-weight:800;color:var(--txt-2);margin-top:6px;flex-wrap:wrap;gap:6px">
-            <span id="chartStartVal">Start: —</span>
-            <span id="chartGrowthVal">Growth: —</span>
-            <span id="chartPeakVal">Peak: —</span>
-          </div>
-        </div>
-        <div class="card hud" id="analyticsAICard" style="border-color:var(--green-b);background:linear-gradient(150deg,rgba(16,185,129,.12),rgba(14,165,233,.08)),var(--surface)">
-          <div class="row-between" style="margin-bottom:5px">
-            <span class="h4" style="color:var(--green-t)">🤖 AI Performance & Muscle Audit</span>
-            <button class="btn xs green" onclick="askAIAboutCurrentAnalytics()">💬 Ask Coach</button>
-          </div>
-          <div id="analyticsAIContent" class="tiny muted" style="line-height:1.45">Select an exercise or log sets to unlock real-time AI biomechanics & progression insights.</div>
-          <div id="analyticsAISubMuscles" class="inj-grid" style="justify-content:flex-start;margin-top:6px"></div>
-        </div>
-        <!-- 28-DAY CONSISTENCY & PR ACTIVITY MATRIX -->
-        <div class="card">
-          <div class="row-between" style="margin-bottom:4px">
-            <div>
-              <span class="h4" style="color:var(--blue-t)">📅 28-Day Training &amp; PR Matrix</span>
-              <div class="micro subtle">🟢 Lift · 👑 PR Day · 🔵 Cardio</div>
-            </div>
-            <span class="db-badge" id="analyticsAdherenceBadge">0 Active Days</span>
-          </div>
-          <div id="analyticsConsistencyGrid" class="consistency-grid"></div>
         </div>
 
-        <!-- WEEKLY MUSCLE VOLUME DISTRIBUTION (SETS / 7 DAYS) -->
-        <div class="card">
-          <div class="row-between" style="margin-bottom:6px;gap:6px;flex-wrap:wrap">
-            <div>
-              <span class="h4" style="color:var(--purple-t)">📊 7-Day Muscle Volume Balance</span>
-              <div class="micro subtle" id="analyticsVolSubLabel">Working sets logged vs weekly target (Standard defaults active)</div>
-            </div>
-            <div class="row gap-1">
-              <button class="btn xs purple" id="editVolTargetsBtn" onclick="toggleVolumeTargetsEditMode()">🎯 Targets</button>
-              <button class="btn xs ghost" id="resetVolTargetsBtn" onclick="resetWeeklyVolumeTargetsToStandard()" title="Restore Standard Scientific Weekly Set Targets">↺ Standard</button>
-            </div>
-          </div>
-          <div id="analyticsVolumeBars" class="stack" style="gap:5px"></div>
+        <!-- 3-TAB SUB-PAGE SWITCHER -->
+        <div class="seg" style="width:100%">
+          <div class="seg-btn on" id="anSubTabLifts" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('lifts')">📈 Lifts &amp; 1RM</div>
+          <div class="seg-btn" id="anSubTabVolume" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('volume')">🎯 Muscle Targets</div>
+          <div class="seg-btn" id="anSubTabWeight" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('weight')">⚖️ Weight &amp; Goal</div>
         </div>
 
-        <div class="grid-2">
-          <button class="btn blue" onclick="openCardioHistory()">🏃 Cardio Logs</button>
-          <button class="btn purple" onclick="openPRBoard()">🏆 PR Board</button>
+        <!-- SUB-PAGE 1: LIFTS, 1RM CHART, AI AUDIT & 28-DAY CONSISTENCY -->
+        <div id="anPageLifts" class="stack gap-2">
+          <div class="card tight hud">
+            <div class="row-between" style="margin-bottom:6px">
+              <span class="micro subtle">Select Day &amp; Exercise</span>
+              <div class="row gap-1">
+                <button class="btn sq-sm" onclick="changeAnalyticsDay(-1)">◀</button>
+                <span class="chip" id="analyticsDayTitle">Day 1</span>
+                <button class="btn sq-sm" onclick="changeAnalyticsDay(1)">▶</button>
+                <button class="btn xs red" onclick="deleteLatestSession()" title="Delete latest session">🗑️</button>
+              </div>
+            </div>
+            <select id="analyticsExerciseSelect" onchange="renderChart()" style="margin-bottom:7px"></select>
+            <div class="chart-box"><div id="chartScrubBadge"></div><svg id="progressSvg" width="100%" height="100%" viewBox="0 0 400 130" preserveAspectRatio="none"></svg></div>
+            <div class="row-between" style="font-size:9.5px;font-weight:800;color:var(--txt-2);margin-top:6px;flex-wrap:wrap;gap:6px">
+              <span id="chartStartVal">Start: —</span>
+              <span id="chartGrowthVal">Growth: —</span>
+              <span id="chartPeakVal">Peak: —</span>
+            </div>
+          </div>
+
+          <div class="card hud" id="analyticsAICard" style="border-color:var(--green-b);background:linear-gradient(150deg,rgba(16,185,129,.12),rgba(14,165,233,.08)),var(--surface)">
+            <div class="row-between" style="margin-bottom:5px">
+              <span class="h4" style="color:var(--green-t)">🤖 AI Performance &amp; Muscle Audit</span>
+              <button class="btn xs green" onclick="askAIAboutCurrentAnalytics()">💬 Ask Coach</button>
+            </div>
+            <div id="analyticsAIContent" class="tiny muted" style="line-height:1.45">Select an exercise or log sets to unlock real-time AI biomechanics &amp; progression insights.</div>
+            <div id="analyticsAISubMuscles" class="inj-grid" style="justify-content:flex-start;margin-top:6px"></div>
+          </div>
+
+          <!-- 28-DAY CONSISTENCY & PR ACTIVITY MATRIX -->
+          <div class="card">
+            <div class="row-between" style="margin-bottom:4px">
+              <div>
+                <span class="h4" style="color:var(--blue-t)">📅 28-Day Training &amp; PR Matrix</span>
+                <div class="micro subtle">🟢 Lift · 👑 PR Day · 🔵 Cardio</div>
+              </div>
+              <span class="db-badge" id="analyticsAdherenceBadge">0 Active Days</span>
+            </div>
+            <div id="analyticsConsistencyGrid" class="consistency-grid"></div>
+          </div>
+        </div>
+
+        <!-- SUB-PAGE 2: WEEKLY MUSCLE VOLUME & TARGET SETS PER MUSCLE -->
+        <div id="anPageVolume" class="stack gap-2 hidden">
+          <div class="card hud" style="border-color:var(--purple-b)">
+            <div class="row-between" style="margin-bottom:6px;gap:6px;flex-wrap:wrap">
+              <div>
+                <span class="h4" style="color:var(--purple-t)">📊 7-Day Muscle Volume &amp; Weekly Targets</span>
+                <div class="micro subtle" id="analyticsVolSubLabel">Use − / + or tap any target number to set your weekly goal per muscle</div>
+              </div>
+              <div class="row gap-1">
+                <button class="btn xs purple" id="editVolTargetsBtn" onclick="toggleVolumeTargetsEditMode()">✓ Edit On</button>
+                <button class="btn xs ghost" id="resetVolTargetsBtn" onclick="resetWeeklyVolumeTargetsToStandard()" title="Restore Standard Scientific Weekly Set Targets">↺ Standard</button>
+              </div>
+            </div>
+            <div id="analyticsVolumeBars" class="stack" style="gap:5px"></div>
+          </div>
+        </div>
+
+        <!-- SUB-PAGE 3: BODY WEIGHT, GOAL PROGRESS & MONTHLY REPORTS -->
+        <div id="anPageWeight" class="stack gap-2 hidden">
+          <div class="card hud" id="analyticsWeightCard" style="border-color:var(--blue-b)">
+            <div class="row-between" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">
+              <div>
+                <span class="h4" style="color:var(--blue-t)">⚖️ Body Weight &amp; Goal Progress</span>
+                <div class="micro subtle" id="weightGoalStatusSub">Goal: Bulk · Track weekly weight vs target</div>
+              </div>
+              <div class="row gap-1">
+                <button class="btn xs green" onclick="openWeeklyWeightModal(true)">+ Log Weight</button>
+                <button class="btn xs ghost" onclick="openAthleteProfileModal()">🧬 Profile</button>
+              </div>
+            </div>
+            <div class="seg" style="width:100%;margin-bottom:7px">
+              <div class="seg-btn" id="anGoalCutBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('cut')">🔥 Cut (تنشيف)</div>
+              <div class="seg-btn on" id="anGoalBulkBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('bulk')">💪 Bulk (تضخيم)</div>
+              <div class="seg-btn" id="anGoalRecompBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('recomp')">⚖️ Recomp (ثبات)</div>
+            </div>
+            <div id="weightGoalVerdictBanner" class="card glass" style="padding:7px 10px;margin-bottom:7px;font-size:10.5px;font-weight:800"></div>
+            <div class="chart-box" style="height:124px"><svg id="weightProgressSvg" width="100%" height="100%" viewBox="0 0 400 118" preserveAspectRatio="none"></svg></div>
+            <div class="row-between" style="font-size:9.5px;font-weight:800;color:var(--txt-2);margin-top:6px;flex-wrap:wrap;gap:6px">
+              <span id="wChartStartVal">Start: —</span>
+              <span id="wChartDeltaVal">Change: —</span>
+              <span id="wChartLatestVal">Current: —</span>
+            </div>
+          </div>
+
+          <div class="card hud" style="border-color:var(--green-b)">
+            <div class="row-between">
+              <div>
+                <div class="h4" style="color:var(--green-t)">📅 Monthly Progress Reports Archive</div>
+                <div class="micro subtle">Compare Start vs End weights &amp; reps for every exercise (1+ year archive)</div>
+              </div>
+              <button class="btn sm green" onclick="openMonthlyReportModal()">Open Archive →</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CALCULATORS SCREEN -->
+    <!-- CALCULATORS SCREEN (CLEAN SUB-PAGE TABS) -->
     <section id="screen-tools" class="screen">
       <div class="screen-body scroll">
         <div class="row-between">
@@ -2236,16 +2423,12 @@ body[data-idle="1"] .marble-veins{
             <div class="seg-btn" id="unitLb" onclick="setUnit('lb')">LB</div>
           </div>
         </div>
-        <!-- DEDICATED ENTRY BUTTON AT THE VERY TOP TO OPEN CAFFEINE SUB-SCREEN CALCULATOR -->
-        <div class="card hud" style="border-color:var(--amber-b);background:linear-gradient(145deg,rgba(245,158,11,.15),rgba(14,165,233,.08)),var(--surface)">
-          <div class="row-between" style="gap:10px">
-            <div style="min-width:0">
-              <div class="h4" style="color:var(--amber-t)">☕ Blood Caffeine &amp; Half-Life Calculator</div>
-              <div class="tiny muted" style="margin-top:2px;line-height:1.35">Hour-by-hour blood clearance curve, CYP1A2 liver metabolism (Weight, Age &amp; Smoking), and sleep-safe window</div>
-            </div>
-            <button class="btn amber sm" style="flex-shrink:0;font-weight:900" onclick="openCaffeineCalcScreen()">Open ☕ →</button>
-          </div>
+        <div class="seg" style="width:100%">
+          <div class="seg-btn on" id="toolsTab1RM" style="flex:1;text-align:center" onclick="switchToolsSubPage('1rm')">🏋️ 1RM &amp; Loads</div>
+          <div class="seg-btn" id="toolsTabPlates" style="flex:1;text-align:center" onclick="switchToolsSubPage('plates')">💿 Plate Loader</div>
+          <div class="seg-btn" id="toolsTabCaff" style="flex:1;text-align:center" onclick="openCaffeineCalcScreen()">☕ Caffeine</div>
         </div>
+        <div id="toolsPane1RM" class="stack gap-2">
         <div class="card hud">
           <div class="row-between" style="margin-bottom:7px"><span class="h4">1RM Calculator</span><span class="micro subtle">Epley Formula</span></div>
           <div class="grid-2" style="margin-bottom:7px">
@@ -2266,15 +2449,27 @@ body[data-idle="1"] .marble-veins{
           <div class="micro subtle center" style="margin-bottom:5px">Above = overload · Below = back-off sets</div>
           <div id="pyrList" class="stack" style="gap:4px"></div>
         </div>
-        <div class="card">
-          <div class="row-between" style="margin-bottom:7px"><span class="h4">🏋️ Plate Calculator</span><span class="micro subtle">per side</span></div>
+        </div>
+        <div id="toolsPanePlates" class="stack gap-2 hidden">
+        <div class="card hud" style="border-color:var(--amber-b)">
+          <div class="row-between" style="margin-bottom:7px"><span class="h4" style="color:var(--amber-t)">💿 Plate Calculator</span><span class="micro subtle">per side</span></div>
           <div><label class="label">Target Total Weight</label><input type="text" readonly inputmode="none" class="num-target" data-label="Plate Target Weight" id="plateTarget" value="100" onclick="setActiveNumTarget(this)" oninput="calcPlates()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px;margin-bottom:7px"></div>
-          <div><label class="label">Bar weight</label>
-            <div class="chip-row" style="justify-content:flex-start;margin-bottom:7px">
-              <div class="chip on" onclick="setBar(20,this)">20</div>
-              <div class="chip" onclick="setBar(15,this)">15</div>
-              <div class="chip" onclick="setBar(10,this)">10</div>
-              <div class="chip" onclick="setBar(25,this)">25</div>
+          <div class="grid-2" style="gap:8px;margin-bottom:7px">
+            <div>
+              <label class="label">Bar weight (<span class="unit-txt">kg</span>)</label>
+              <div class="chip-row" id="toolsBarChips" style="justify-content:flex-start">
+                <div class="chip on" data-bar="20" onclick="setBar(20,this)">20</div>
+                <div class="chip" data-bar="15" onclick="setBar(15,this)">15</div>
+                <div class="chip" data-bar="10" onclick="setBar(10,this)">10</div>
+                <div class="chip" data-bar="25" onclick="setBar(25,this)">25</div>
+              </div>
+            </div>
+            <div>
+              <label class="label">Max Plate Available</label>
+              <div class="seg" style="width:100%">
+                <div class="seg-btn on" id="toolsMaxPlate20" style="flex:1;text-align:center" onclick="setMaxPlateOption(20)">Max 20<span class="unit-txt">kg</span></div>
+                <div class="seg-btn" id="toolsMaxPlate25" style="flex:1;text-align:center" onclick="setMaxPlateOption(25)">Max 25<span class="unit-txt">kg</span></div>
+              </div>
             </div>
           </div>
           <div class="card glass" style="padding:10px">
@@ -2282,8 +2477,17 @@ body[data-idle="1"] .marble-veins{
             <div id="plateText" style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;font-family:var(--font-mono);font-weight:900"><span class="micro subtle">—</span></div>
           </div>
         </div>
+        </div>
 
-
+        <div class="card hud" style="border-color:var(--amber-b);background:linear-gradient(145deg,rgba(245,158,11,.15),rgba(14,165,233,.08)),var(--surface)">
+          <div class="row-between" style="gap:10px">
+            <div style="min-width:0">
+              <div class="h4" style="color:var(--amber-t)">☕ Blood Caffeine &amp; Half-Life Sub-Page</div>
+              <div class="tiny muted" style="margin-top:2px;line-height:1.35">Auto-synced with your Athlete Profile weight &amp; age · Hour-by-hour clearance curve</div>
+            </div>
+            <button class="btn amber sm" style="flex-shrink:0;font-weight:900" onclick="openCaffeineCalcScreen()">Open ☕ →</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2475,9 +2679,9 @@ body[data-idle="1"] .marble-veins{
                 <!-- Knees Reference -->
                 <rect x="51" y="190" width="16" height="9" rx="3" class="hm-outline"/>
                 <rect x="93" y="190" width="16" height="9" rx="3" class="hm-outline"/>
-                <!-- Calves (Anterior Tibialis & Medial Gastrocnemius) -->
-                <path d="M50 201 L68 201 Q69 225 64 252 L52 252 Q47 225 50 201 Z" class="hm-region" data-hm="Calves" onclick="inspectHeatmapMuscle('Calves')"/>
-                <path d="M92 201 L110 201 Q113 225 108 252 L96 252 Q91 225 92 201 Z" class="hm-region" data-hm="Calves" onclick="inspectHeatmapMuscle('Calves')"/>
+                <!-- Anterior Shin / Tibialis Anterior (Does NOT turn red when training posterior Calves!) -->
+                <path d="M50 201 L68 201 Q69 225 64 252 L52 252 Q47 225 50 201 Z" class="hm-region" data-hm="Tibialis" onclick="inspectHeatmapMuscle('Calves')"/>
+                <path d="M92 201 L110 201 Q113 225 108 252 L96 252 Q91 225 92 201 Z" class="hm-region" data-hm="Tibialis" onclick="inspectHeatmapMuscle('Calves')"/>
               </svg>
             </div>
 
@@ -2497,9 +2701,12 @@ body[data-idle="1"] .marble-veins{
                 <!-- Side Delts (Outer Cap from Posterior View) -->
                 <path d="M32 51 L38 47 L37 64 L31 61 Z" class="hm-region" data-hm="Side Delts" onclick="inspectHeatmapMuscle('Side Delts')"/>
                 <path d="M128 51 L122 47 L123 64 L129 61 Z" class="hm-region" data-hm="Side Delts" onclick="inspectHeatmapMuscle('Side Delts')"/>
-                <!-- Lats (Latissimus Dorsi V-Taper & Lower Back) -->
-                <path d="M53 62 L62 75 L78 83 L78 122 L59 119 L49 84 Z" class="hm-region" data-hm="Lats" onclick="inspectHeatmapMuscle('Lats')"/>
-                <path d="M107 62 L98 75 L82 83 L82 122 L101 119 L111 84 Z" class="hm-region" data-hm="Lats" onclick="inspectHeatmapMuscle('Lats')"/>
+                <!-- Lats (Latissimus Dorsi V-Taper) -->
+                <path d="M53 62 L62 75 L78 83 L78 101 L56 99 L49 82 Z" class="hm-region" data-hm="Lats" onclick="inspectHeatmapMuscle('Lats')"/>
+                <path d="M107 62 L98 75 L82 83 L82 101 L104 99 L111 82 Z" class="hm-region" data-hm="Lats" onclick="inspectHeatmapMuscle('Lats')"/>
+                <!-- Lower Back (Lumbar Erector Spinae — 48h Primary / 24h Synergist) -->
+                <path d="M56 101 L78 102 L78 121 L55 120 Z" class="hm-region" data-hm="Lower Back" onclick="inspectHeatmapMuscle('Lower Back')"/>
+                <path d="M104 101 L82 102 L82 121 L105 120 Z" class="hm-region" data-hm="Lower Back" onclick="inspectHeatmapMuscle('Lower Back')"/>
                 <!-- Triceps Brachii (Long, Lateral & Medial Heads) -->
                 <path d="M34 66 L48 66 L45 95 L32 94 Z" class="hm-region" data-hm="Triceps" onclick="inspectHeatmapMuscle('Triceps')"/>
                 <path d="M112 66 L126 66 L128 94 L115 95 Z" class="hm-region" data-hm="Triceps" onclick="inspectHeatmapMuscle('Triceps')"/>
@@ -2678,64 +2885,107 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 
-<!-- SETTINGS MODAL -->
+<!-- SETTINGS MODAL (CLEAN, SIMPLE, ORGANIZED, MINIMAL TEXT) -->
 <div class="modal" id="modal-settings">
-  <div class="modal-card">
+  <div class="modal-card" style="max-height:86dvh">
     <div class="modal-head"><span class="modal-title">⚙️ Settings</span><button class="btn sq-sm" onclick="closeModal('modal-settings')">✕</button></div>
-    <div class="modal-body">
-      <div class="card glass">
+    <div class="modal-body" style="gap:7px">
+      <!-- 1. PROFILE & REPORTS QUICK CARDS -->
+      <div class="grid-2" style="gap:6px">
+        <button class="card glass center" style="padding:10px 8px;border-color:var(--green-b);cursor:pointer" onclick="closeModal('modal-settings');openAthleteProfileModal()">
+          <div style="font-size:18px;margin-bottom:2px">🧬</div>
+          <div class="h4" style="color:var(--green-t)">Athlete Profile</div>
+          <div class="micro subtle" id="settingsProfileSummarySub" style="margin-top:2px">Bio · Goal · Journey</div>
+        </button>
+        <button class="card glass center" style="padding:10px 8px;border-color:var(--purple-b);cursor:pointer" onclick="closeModal('modal-settings');openMonthlyReportModal()">
+          <div style="font-size:18px;margin-bottom:2px">📅</div>
+          <div class="h4" style="color:var(--purple-t)">Monthly Reports</div>
+          <div class="micro subtle" style="margin-top:2px">Progress Archive</div>
+        </button>
+      </div>
+
+      <!-- 2. UNITS & GYM PLATES -->
+      <div class="card glass" style="padding:9px 11px">
+        <div class="row-between" style="margin-bottom:6px">
+          <span class="h4">⚖️ Weight Unit</span>
+          <div class="seg">
+            <div class="seg-btn on" id="setUnitKgBtn" onclick="setUnit('kg')">KG</div>
+            <div class="seg-btn" id="setUnitLbBtn" onclick="setUnit('lb')">LB</div>
+          </div>
+        </div>
+        <div class="row-between" style="padding-top:6px;border-top:1px solid var(--line)">
+          <span class="h4">💿 Max Plate</span>
+          <div class="seg">
+            <div class="seg-btn on" id="setMaxPlate20Btn" onclick="setMaxPlateOption(20)">20kg</div>
+            <div class="seg-btn" id="setMaxPlate25Btn" onclick="setMaxPlateOption(25)">25kg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. WORKOUT & TRACKING PREFERENCES -->
+      <div class="card glass" style="padding:9px 11px;display:flex;flex-direction:column;gap:6px">
         <div class="row-between">
-          <span class="h4">Theme</span>
+          <span class="h4">🎯 Weekly Goal</span>
+          <div class="row gap-1">
+            <button class="btn sq-sm" style="width:26px;height:26px" onclick="adjustWeeklyGoal(-1)">−</button>
+            <input type="text" readonly inputmode="none" class="num-target" data-label="Weekly Goal (1-7)" id="weeklyGoalInput" value="4" onclick="setActiveNumTarget(this)" oninput="setWeeklyGoal(this.value)" style="width:44px;text-align:center;font-family:var(--font-mono);font-weight:800;padding:3px;font-size:12px">
+            <button class="btn sq-sm" style="width:26px;height:26px" onclick="adjustWeeklyGoal(1)">+</button>
+          </div>
+        </div>
+        <div class="row-between" style="padding-top:6px;border-top:1px solid var(--line)">
+          <span class="h4">⚖️ Weight Popup</span>
+          <div class="row gap-1">
+            <button class="chip" id="settingsWeightPopupBtn" onclick="toggleWeeklyWeightPopupSetting()">ON</button>
+            <button class="btn xs blue" onclick="closeModal('modal-settings');openWeeklyWeightModal(true)">Log</button>
+          </div>
+        </div>
+        <div class="row-between" style="padding-top:6px;border-top:1px solid var(--line)">
+          <span class="h4">🛡️ Auto-Deload</span>
+          <div class="row gap-1">
+            <button class="chip" id="settingsDeloadToggleBtn" onclick="toggleAutoDeloadEnabled()">ON</button>
+            <button class="btn xs ghost" onclick="closeModal('modal-settings');openDeloadConfigModal()">⚙️</button>
+          </div>
+        </div>
+        <div class="row-between" style="padding-top:6px;border-top:1px solid var(--line)">
+          <span class="h4">🔋 ECO Saver</span>
+          <button class="chip" id="ecoBtn" onclick="toggleEco();refreshSettingsUI()">OFF</button>
+        </div>
+      </div>
+
+      <!-- 4. THEME -->
+      <div class="card glass" style="padding:9px 11px">
+        <div class="row-between">
+          <span class="h4">🎨 Theme</span>
           <div class="row gap-1">
             <button class="chip" id="themeDarkChip" onclick="setTheme(true)">🌙 Dark</button>
             <button class="chip" id="themeLightChip" onclick="setTheme(false)">☀️ Light</button>
           </div>
         </div>
-        <div class="skin-grid">
+        <div class="skin-grid" style="margin-top:6px">
           <button class="skin-pill" id="skinCyber" onclick="setSkin('cyber')">⚡ Cyber</button>
           <button class="skin-pill" id="skinRoyal" onclick="setSkin('royal')">👑 Gold</button>
           <button class="skin-pill" id="skinHyper" onclick="setSkin('hyper')">🔮 Violet</button>
           <button class="skin-pill" id="skinAero" onclick="setTheme(false)">❄️ Light</button>
         </div>
       </div>
-      <div class="card glass row-between">
-        <div>
-          <div class="h4">🔋 Smart Battery &amp; ECO Governor</div>
-          <div class="micro subtle" id="batteryStatusSub">120Hz Active · Idle GPU Sleep (0% waste)</div>
-        </div>
-        <button class="chip" id="ecoBtn" onclick="toggleEco();refreshSettingsUI()">OFF</button>
-      </div>
-      <div class="card glass row-between">
-        <div><div class="h4">🛡️ Auto-Deload Countdown</div><div class="micro subtle">Show cycle countdown &amp; recovery prompt</div></div>
-        <div class="row gap-1">
-          <button class="chip" id="settingsDeloadToggleBtn" onclick="toggleAutoDeloadEnabled()">ON</button>
-          <button class="btn xs ghost" onclick="closeModal('modal-settings');openDeloadConfigModal()">⚙️</button>
-        </div>
-      </div>
-      <div class="card glass row-between">
-        <div style="min-width:0"><div class="h4">Weekly Goal</div><div class="micro subtle">sessions per week</div></div>
-        <div class="row gap-1" style="flex-shrink:0">
-          <button class="btn sq-sm" onclick="adjustWeeklyGoal(-1)">−</button>
-          <input type="text" readonly inputmode="none" class="num-target" data-label="Weekly Goal (1-7)" id="weeklyGoalInput" value="4" onclick="setActiveNumTarget(this)" oninput="setWeeklyGoal(this.value)" style="width:52px;text-align:center;font-family:var(--font-mono);font-weight:800;padding:5px;font-size:12.5px">
-          <button class="btn sq-sm" onclick="adjustWeeklyGoal(1)">+</button>
-        </div>
-      </div>
-      <button class="btn block" onclick="closeModal('modal-settings');openPrograms()">📂 Manage Splits</button>
-      <div class="grid-2">
-        <button class="btn blue" onclick="exportBackup()">📤 Export Backup</button>
-        <button class="btn purple" onclick="triggerImportBackup()">📥 Import Backup</button>
+
+      <!-- 5. TOUR & DATA MANAGEMENT -->
+      <button class="tour-cta-hero-btn" style="padding:11px 14px;font-size:12.5px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 Start Interactive App Tour</button>
+      <div class="grid-2" style="gap:6px">
+        <button class="btn sm" onclick="closeModal('modal-settings');openPrograms()">📂 Splits</button>
+        <button class="btn sm" onclick="closeModal('modal-settings');changeName()">👤 Name</button>
+        <button class="btn sm blue" onclick="exportBackup()">📤 Export</button>
+        <button class="btn sm purple" onclick="triggerImportBackup()">📥 Import</button>
+        <button class="btn sm amber" onclick="closeModal('modal-settings');resetStats()">🔄 Reset Stats</button>
+        <button class="btn sm red" onclick="closeModal('modal-settings');deleteProgram()">🗑️ Delete Split</button>
       </div>
       <input type="file" id="importBackupInput" accept=".json,application/json" class="hidden" onchange="importBackupFile(this)">
-      <button class="btn green block" onclick="closeModal('modal-settings');startAppTutorial(true)">🎓 Quick App Tour (Tutorial)</button>
-      <button class="btn block" onclick="closeModal('modal-settings');changeName()">👤 Change Name</button>
-      <button class="btn amber block" onclick="closeModal('modal-settings');resetStats()">🔄 Reset Stats</button>
-      <button class="btn red block" onclick="closeModal('modal-settings');deleteProgram()">🗑️ Delete Split</button>
     </div>
     <button class="btn primary block" onclick="closeModal('modal-settings')">Done</button>
   </div>
 </div>
 
-<!-- 1. SEPARATE QUICK 1RM CALCULATOR POPUP -->
+<!-- 1. SEPARATE QUICK 1RM CALCULATOR POPUP (USES IN-APP NUMBER BOARD) -->
 <div class="modal" id="modal-quick1rm">
   <div class="modal-card center">
     <div class="modal-head">
@@ -2745,11 +2995,19 @@ body[data-idle="1"] .marble-veins{
     <div class="grid-2">
       <div>
         <label class="label">Weight (<span class="unit-txt">kg</span>)</label>
-        <input type="text" readonly inputmode="none" class="num-target" data-label="1RM Weight" id="q1rmWeight" value="100" onclick="setActiveNumTarget(this)" oninput="renderQuick1RM()" style="text-align:center;font-size:18px;font-weight:900;font-family:var(--font-mono);padding:7px">
+        <div class="row gap-1 num-target-proxy">
+          <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('q1rmWeight', -2.5, renderQuick1RM)">−</button>
+          <input type="text" readonly inputmode="none" class="num-target" data-label="1RM Weight" id="q1rmWeight" value="100" onclick="setActiveNumTarget(this)" oninput="renderQuick1RM()" style="text-align:center;font-size:16px;font-weight:900;font-family:var(--font-mono);padding:6px">
+          <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('q1rmWeight', 2.5, renderQuick1RM)">+</button>
+        </div>
       </div>
       <div>
         <label class="label">Reps</label>
-        <input type="text" readonly inputmode="none" class="num-target" data-label="1RM Reps" id="q1rmReps" value="5" onclick="setActiveNumTarget(this)" oninput="renderQuick1RM()" style="text-align:center;font-size:18px;font-weight:900;font-family:var(--font-mono);padding:7px">
+        <div class="row gap-1 num-target-proxy">
+          <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('q1rmReps', -1, renderQuick1RM)">−</button>
+          <input type="text" readonly inputmode="none" class="num-target" data-label="1RM Reps" id="q1rmReps" value="5" onclick="setActiveNumTarget(this)" oninput="renderQuick1RM()" style="text-align:center;font-size:16px;font-weight:900;font-family:var(--font-mono);padding:6px">
+          <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('q1rmReps', 1, renderQuick1RM)">+</button>
+        </div>
       </div>
     </div>
     <div class="card glass center" style="padding:10px">
@@ -2757,6 +3015,7 @@ body[data-idle="1"] .marble-veins{
       <div class="mono" style="font-size:28px;font-weight:900;color:var(--green-t);line-height:1.1;margin-top:3px">
         <span id="q1rmResult">116.7</span> <span class="unit-txt" style="font-size:13px;color:var(--txt-2)">kg</span>
       </div>
+      <div class="micro subtle" id="q1rmRelBwTxt" style="margin-top:3px;color:var(--blue-t)"></div>
     </div>
     <div class="micro subtle">Tap any intensity zone to apply weight to your current set:</div>
     <div id="q1rmPctGrid" class="rep-load-grid"></div>
@@ -2764,53 +3023,86 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 
-<!-- 2. SEPARATE QUICK LOADS BY REPS & PYRAMID CALCULATOR POPUP -->
+<!-- 2. SEPARATE QUICK LOADS BY REPS & PYRAMID CALCULATOR POPUP (USES IN-APP NUMBER BOARD) -->
 <div class="modal" id="modal-quickloads">
   <div class="modal-card">
     <div class="modal-head">
-      <span class="modal-title" style="color:var(--green-t)">📊 Loads by Reps & Pyramid</span>
+      <span class="modal-title" style="color:var(--green-t)">📊 Loads by Reps &amp; Pyramid</span>
       <button class="btn sq-sm" onclick="closeModal('modal-quickloads')">✕</button>
     </div>
-    <div class="grid-3">
+    <div class="micro subtle center" style="margin-top:-4px;color:var(--blue-t)">Tap Weight, Reps, or any box below to open the Number Board &amp; recalculate live!</div>
+    <div class="grid-3" style="gap:5px">
       <div>
-        <label class="label">Weight</label>
-        <input type="text" readonly inputmode="none" class="num-target" data-label="Base Weight" id="qLoadsWeight" value="100" onclick="setActiveNumTarget(this)" oninput="renderQuickLoads()" style="text-align:center;font-size:14px;font-weight:900;font-family:var(--font-mono);padding:6px">
+        <label class="label">Weight (<span class="unit-txt">kg</span>)</label>
+        <div class="row num-target-proxy" style="gap:2px">
+          <button type="button" class="btn sq-sm num-target-proxy" style="width:24px;height:30px;padding:0" onclick="stepQuickCalcField('qLoadsWeight', -2.5, renderQuickLoads)">−</button>
+          <input type="text" readonly inputmode="none" class="num-target" data-label="Base Weight" id="qLoadsWeight" value="100" onclick="setActiveNumTarget(this)" oninput="renderQuickLoads()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:5px 2px">
+          <button type="button" class="btn sq-sm num-target-proxy" style="width:24px;height:30px;padding:0" onclick="stepQuickCalcField('qLoadsWeight', 2.5, renderQuickLoads)">+</button>
+        </div>
       </div>
       <div>
         <label class="label">Reps</label>
-        <input type="text" readonly inputmode="none" class="num-target" data-label="Base Reps" id="qLoadsReps" value="5" onclick="setActiveNumTarget(this)" oninput="renderQuickLoads()" style="text-align:center;font-size:14px;font-weight:900;font-family:var(--font-mono);padding:6px">
+        <div class="row num-target-proxy" style="gap:2px">
+          <button type="button" class="btn sq-sm num-target-proxy" style="width:24px;height:30px;padding:0" onclick="stepQuickCalcField('qLoadsReps', -1, renderQuickLoads)">−</button>
+          <input type="text" readonly inputmode="none" class="num-target" data-label="Base Reps" id="qLoadsReps" value="5" onclick="setActiveNumTarget(this)" oninput="renderQuickLoads()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:5px 2px">
+          <button type="button" class="btn sq-sm num-target-proxy" style="width:24px;height:30px;padding:0" onclick="stepQuickCalcField('qLoadsReps', 1, renderQuickLoads)">+</button>
+        </div>
       </div>
       <div>
         <label class="label">Step</label>
-        <input type="text" readonly inputmode="none" class="num-target" data-label="Pyramid Step" id="qLoadsStep" value="2.5" onclick="setActiveNumTarget(this)" oninput="renderQuickLoads()" style="text-align:center;font-size:14px;font-weight:900;font-family:var(--font-mono);padding:6px">
+        <div class="row num-target-proxy" style="gap:2px">
+          <button type="button" class="btn sq-sm num-target-proxy" style="width:24px;height:30px;padding:0" onclick="stepQuickCalcField('qLoadsStep', -0.5, renderQuickLoads)">−</button>
+          <input type="text" readonly inputmode="none" class="num-target" data-label="Pyramid Step" id="qLoadsStep" value="2.5" onclick="setActiveNumTarget(this)" oninput="renderQuickLoads()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:5px 2px">
+          <button type="button" class="btn sq-sm num-target-proxy" style="width:24px;height:30px;padding:0" onclick="stepQuickCalcField('qLoadsStep', 0.5, renderQuickLoads)">+</button>
+        </div>
       </div>
+    </div>
+    <div class="row-between card glass" style="padding:6px 10px">
+      <span class="micro subtle">Live Estimated 1RM:</span>
+      <span class="mono" style="font-weight:900;font-size:14px;color:var(--green-t)" id="qLoadsLive1RMBadge">116.7 kg</span>
     </div>
     <div class="seg" style="width:100%;justify-content:center">
       <div class="seg-btn on" id="qLoadsTabReps" style="flex:1" onclick="switchQuickLoadsTab('reps')">🎯 Weights by Reps</div>
       <div class="seg-btn" id="qLoadsTabPyr" style="flex:1" onclick="switchQuickLoadsTab('pyr')">📐 Pyramid Step</div>
     </div>
-    <div class="modal-body" style="max-height:240px">
+    <div class="modal-body" style="max-height:220px">
       <div id="qLoadsRepsPane">
-        <div class="micro subtle center" style="margin-bottom:5px">Max weight you can lift for each rep count (tap to use):</div>
-        <div id="qLoadsRepTable" class="rep-load-grid"></div>
+        <div class="micro subtle center" style="margin-bottom:5px">Tap any box to edit with Number Board, or tap <b>✓ Use</b> to send to set:</div>
+        <div id="qLoadsRepTable" class="rep-load-grid num-target-proxy"></div>
       </div>
-      <div id="qLoadsPyrPane" class="hidden stack" style="gap:4px"></div>
+      <div id="qLoadsPyrPane" class="hidden stack num-target-proxy" style="gap:4px"></div>
     </div>
-    <button class="btn primary block" onclick="closeModal('modal-quickloads')">Close</button>
+    <div class="row gap-2">
+      <button class="btn green flex1" onclick="applyCurrentQuickLoadsToSet()">⚡ Apply Current Weight × Reps</button>
+      <button class="btn primary flex1" onclick="closeModal('modal-quickloads')">Close</button>
+    </div>
   </div>
 </div>
 
-<!-- 3. SEPARATE QUICK PLATES CALCULATOR POPUP -->
+<!-- 3. SEPARATE QUICK PLATES CALCULATOR POPUP (ON-DEMAND ONLY + MAX 20/25 OPTION) -->
 <div class="modal" id="modal-quickplates">
   <div class="modal-card center">
     <div class="modal-head"><span class="modal-title" style="color:var(--amber-t)">💿 Plate Calculator</span><button class="btn sq-sm" onclick="closeModal('modal-quickplates')">✕</button></div>
     <div class="micro subtle">Target Total Weight (<span class="unit-txt">kg</span>)</div>
-    <input type="text" readonly inputmode="none" class="num-target" data-label="Target Plate Weight" id="quickPlateInput" value="100" onclick="setActiveNumTarget(this)" oninput="renderQuickPlates()" style="text-align:center;font-size:20px;font-weight:900;font-family:var(--font-mono);padding:8px">
-    <div class="chip-row" id="qpBarChips">
-      <div class="chip on" onclick="setQuickBar(20)">Bar 20</div>
-      <div class="chip" onclick="setQuickBar(15)">Bar 15</div>
-      <div class="chip" onclick="setQuickBar(10)">Bar 10</div>
-      <div class="chip" onclick="setQuickBar(25)">Bar 25</div>
+    <div class="row gap-2 num-target-proxy" style="justify-content:center">
+      <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('quickPlateInput', -2.5, renderQuickPlates)">−</button>
+      <input type="text" readonly inputmode="none" class="num-target" data-label="Target Plate Weight" id="quickPlateInput" value="100" onclick="setActiveNumTarget(this)" oninput="renderQuickPlates()" style="text-align:center;font-size:20px;font-weight:900;font-family:var(--font-mono);padding:8px;width:130px">
+      <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('quickPlateInput', 2.5, renderQuickPlates)">+</button>
+    </div>
+    <div class="row-between" style="gap:6px;flex-wrap:wrap">
+      <div class="chip-row" id="qpBarChips" style="flex:1">
+        <div class="chip on" data-bar="20" onclick="setQuickBar(20)">Bar 20</div>
+        <div class="chip" data-bar="15" onclick="setQuickBar(15)">Bar 15</div>
+        <div class="chip" data-bar="10" onclick="setQuickBar(10)">Bar 10</div>
+        <div class="chip" data-bar="25" onclick="setQuickBar(25)">Bar 25</div>
+      </div>
+    </div>
+    <div class="row-between card glass" style="padding:7px 10px">
+      <span class="micro subtle">Max Plate Size in Gym:</span>
+      <div class="seg">
+        <div class="seg-btn on" id="qpMaxPlate20" onclick="setMaxPlateOption(20)">Max 20<span class="unit-txt">kg</span></div>
+        <div class="seg-btn" id="qpMaxPlate25" onclick="setMaxPlateOption(25)">Max 25<span class="unit-txt">kg</span></div>
+      </div>
     </div>
     <div class="card glass" style="padding:10px">
       <div class="micro subtle">Load on Each Side (Bar: <span id="qpBarLbl">20</span>)</div>
@@ -3070,14 +3362,15 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 
-<!-- CARDIO SUMMARY MODAL -->
+<!-- CARDIO SUMMARY MODAL (SAVE OR DISCARD) -->
 <div class="modal" id="modal-cardiosummary">
   <div class="modal-card">
     <h3 class="h2 center" style="color:var(--blue-t)">🏃 Cardio Complete</h3>
-    <div class="grid-3">
-      <div class="stat center"><span class="lbl">Active</span><span class="v blue" id="csActive">00:00</span></div>
-      <div class="stat center"><span class="lbl">Rest</span><span class="v amber" id="csRest">00:00</span></div>
-      <div class="stat center"><span class="lbl">Rests</span><span class="v green" id="csCount">0</span></div>
+    <div class="grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+      <div class="stat center" style="padding:7px 4px"><span class="lbl">Active</span><span class="v blue" style="font-size:13px" id="csActive">00:00</span></div>
+      <div class="stat center" style="padding:7px 4px"><span class="lbl">Rest</span><span class="v amber" style="font-size:13px" id="csRest">00:00</span></div>
+      <div class="stat center" style="padding:7px 4px"><span class="lbl">Rests</span><span class="v green" style="font-size:13px" id="csCount">0</span></div>
+      <div class="stat center" style="padding:7px 4px"><span class="lbl">Est. Burn</span><span class="v purple" style="font-size:13px" id="csCalories">0 kcal</span></div>
     </div>
     <div class="center">
       <div class="micro subtle" style="margin-bottom:6px">Rate this session</div>
@@ -3086,7 +3379,145 @@ body[data-idle="1"] .marble-veins{
         <button onclick="rateCardio(this,'🔥')">🔥</button><button onclick="rateCardio(this,'💪')">💪</button>
       </div>
     </div>
-    <button class="btn primary block" onclick="closeCardioSummary()">Save & Exit</button>
+    <div class="row gap-2">
+      <button class="btn red flex1" onclick="discardCardioSummary()">🗑️ Don't Save</button>
+      <button class="btn primary flex1" onclick="closeCardioSummary()">💾 Save Session</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNIFIED ATHLETE PROFILE, GOAL & GYM START DATE MODAL -->
+<div class="modal" id="modal-athlete-profile">
+  <div class="modal-card" style="max-height:86dvh">
+    <div class="modal-head">
+      <span class="modal-title" style="color:var(--green-t)">🧬 Athlete Profile &amp; Goal</span>
+      <button class="btn sq-sm" onclick="closeModal('modal-athlete-profile')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="micro subtle">Synced across AI Coach, Caffeine Calculator, Cardio Burn, 1RM &amp; Weight Tracker:</div>
+      <div class="grid-2" style="gap:8px">
+        <div>
+          <label class="label">Body Weight (<span class="unit-txt">kg</span>)</label>
+          <div class="row gap-1">
+            <button type="button" class="btn sq-sm" onclick="stepProfileField('profWeightInput', -0.5)">−</button>
+            <input type="text" readonly inputmode="none" class="num-target" id="profWeightInput" data-label="Body Weight" value="75" onclick="setActiveNumTarget(this)" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:6px">
+            <button type="button" class="btn sq-sm" onclick="stepProfileField('profWeightInput', 0.5)">+</button>
+          </div>
+        </div>
+        <div>
+          <label class="label">Height (cm)</label>
+          <div class="row gap-1">
+            <button type="button" class="btn sq-sm" onclick="stepProfileField('profHeightInput', -1)">−</button>
+            <input type="text" readonly inputmode="none" class="num-target" id="profHeightInput" data-label="Height (cm)" value="175" onclick="setActiveNumTarget(this)" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:6px">
+            <button type="button" class="btn sq-sm" onclick="stepProfileField('profHeightInput', 1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="gap:8px">
+        <div>
+          <label class="label">Birth Date (Auto-Calculates Age)</label>
+          <input type="date" id="profBirthDateInput" onchange="onProfileBirthDateChange()" style="padding:6px;font-family:var(--font-mono);font-size:12px">
+        </div>
+        <div>
+          <label class="label">Age (Years)</label>
+          <div class="row gap-1">
+            <button type="button" class="btn sq-sm" onclick="stepProfileField('profAgeInput', -1)">−</button>
+            <input type="text" readonly inputmode="none" class="num-target" id="profAgeInput" data-label="Age (Years)" value="23" onclick="setActiveNumTarget(this)" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:6px">
+            <button type="button" class="btn sq-sm" onclick="stepProfileField('profAgeInput', 1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:10px;border-color:var(--blue-b)">
+        <label class="label" style="color:var(--blue-t)">🎯 Current Physique &amp; Training Goal</label>
+        <div class="seg" style="width:100%;margin-bottom:6px">
+          <div class="seg-btn" id="profGoalCut" style="flex:1;text-align:center" onclick="selectProfileGoal('cut')">🔥 Cut (تنشيف)</div>
+          <div class="seg-btn on" id="profGoalBulk" style="flex:1;text-align:center" onclick="selectProfileGoal('bulk')">💪 Bulk (تضخيم)</div>
+          <div class="seg-btn" id="profGoalRecomp" style="flex:1;text-align:center" onclick="selectProfileGoal('recomp')">⚖️ Recomp (ثبات)</div>
+        </div>
+        <div class="micro subtle" id="profGoalDescTxt">Muscle gain focus: evaluates weight graph as advancing when gaining steady lean weight.</div>
+      </div>
+
+      <div class="card glass" style="padding:10px;border-color:var(--green-b)">
+        <div class="row-between" style="margin-bottom:4px">
+          <label class="label" style="margin:0;color:var(--green-t)">⏳ Gym Start Date (Optional)</label>
+          <button type="button" class="btn xs ghost" onclick="$('profGymStartDateInput').value='';previewProfileGymJourney()">Clear</button>
+        </div>
+        <div class="micro subtle" style="margin-bottom:6px">Displays a motivating live Years • Months • Days counter on the Home Screen!</div>
+        <input type="date" id="profGymStartDateInput" onchange="previewProfileGymJourney()" style="padding:6px;font-family:var(--font-mono);font-size:12px">
+        <div class="micro" id="profGymJourneyPreview" style="margin-top:6px;color:var(--amber-t);font-weight:800"></div>
+      </div>
+    </div>
+    <button class="btn primary block" onclick="saveAthleteProfileModal()">💾 Save Athlete Profile ✓</button>
+  </div>
+</div>
+
+<!-- WEEKLY BODY WEIGHT CHECK-IN & TRACKER MODAL -->
+<div class="modal" id="modal-weekly-weight">
+  <div class="modal-card" style="max-height:86dvh">
+    <div class="modal-head">
+      <span class="modal-title" style="color:var(--blue-t)">⚖️ Weekly Body Weight Check-In</span>
+      <button class="btn sq-sm" onclick="skipWeeklyWeightCheckIn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="card glass center" style="padding:10px;border-color:var(--blue-b)">
+        <div class="micro" style="color:var(--blue-t);margin-bottom:4px" id="wwModalWeekLabel">Week Check-In · Goal: Bulk</div>
+        <div class="row gap-2" style="justify-content:center;margin:6px 0">
+          <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('wwModalInput', -0.5)">−</button>
+          <input type="text" readonly inputmode="none" class="num-target" id="wwModalInput" data-label="Current Body Weight" value="75" onclick="setActiveNumTarget(this)" style="width:120px;text-align:center;font-size:22px;font-weight:900;font-family:var(--font-mono);padding:7px">
+          <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('wwModalInput', 0.5)">+</button>
+          <span class="unit-txt mono" style="font-weight:900;color:var(--txt-2)">kg</span>
+        </div>
+        <input type="text" id="wwModalNote" placeholder="Optional note (e.g. morning fasted, post-refeed)" style="font-size:11px;padding:6px 8px;margin-top:4px;text-align:center">
+      </div>
+      <div id="wwModalGraphWrap" class="card glass" style="padding:10px">
+        <div class="row-between" style="margin-bottom:4px">
+          <span class="h4" style="color:var(--green-t)">📈 Weight Trend &amp; Goal Verdict</span>
+          <span class="micro" id="wwModalTrendBadge"></span>
+        </div>
+        <div id="wwModalHistoryList" class="stack" style="gap:4px;max-height:130px;overflow-y:auto"></div>
+      </div>
+      <div class="row-between card glass" style="padding:7px 10px">
+        <span class="micro subtle">🔔 Weekly Auto-Popup Reminder</span>
+        <button type="button" class="chip on" id="wwModalAutoToggleBtn" onclick="toggleWeeklyWeightPopupSetting()">ON</button>
+      </div>
+    </div>
+    <div class="row gap-2">
+      <button type="button" class="btn ghost flex1" onclick="skipWeeklyWeightCheckIn()">⏭️ Skip for Now (Log Later)</button>
+      <button type="button" class="btn primary flex1" onclick="saveWeeklyWeightLog()">💾 Log Weight ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- MONTHLY PROGRESS REPORT & HISTORICAL ARCHIVE MODAL -->
+<div class="modal" id="modal-monthly-report">
+  <div class="modal-card" style="max-height:86dvh">
+    <div class="modal-head">
+      <span class="modal-title" style="color:var(--green-t)">📅 Monthly Progress Report</span>
+      <button class="btn sq-sm" onclick="closeModal('modal-monthly-report')">✕</button>
+    </div>
+    <div class="row-between card glass" style="padding:7px 10px;gap:6px">
+      <button type="button" class="btn sq-sm" onclick="stepMonthlyReportArchive(-1)">◀</button>
+      <select id="monthlyReportSelect" onchange="renderMonthlyReportModal(this.value)" style="flex:1;text-align:center;font-weight:900;font-size:12px;padding:5px"></select>
+      <button type="button" class="btn sq-sm" onclick="stepMonthlyReportArchive(1)">▶</button>
+    </div>
+    <div id="monthlyReportSummaryBanner" class="card glass" style="padding:8px 10px;border-color:var(--green-b)"></div>
+    <div class="modal-body" id="monthlyReportBody" style="max-height:48dvh"></div>
+    <button class="btn primary block" onclick="closeModal('modal-monthly-report')">Done ✓</button>
+  </div>
+</div>
+
+<!-- FIRST-TIME INTERACTIVE TOUR INVITATION MODAL -->
+<div class="modal" id="modal-tour-invite">
+  <div class="modal-card center" style="padding:20px 16px;border-color:var(--green-b)">
+    <div style="font-size:40px;line-height:1;margin-bottom:6px">🚀</div>
+    <h3 class="h2" style="color:var(--green-t);margin-bottom:4px">Welcome to IRON PULSE!</h3>
+    <p class="muted tiny" style="line-height:1.5;margin-bottom:12px">
+      Would you like a quick, interactive guided tour across all pages? You'll see how to navigate every screen, use the <b>Double-Tap Reps</b> rest shortcut, customize <b>±Step</b>, inspect the <b>Muscle Recovery Heatmap</b>, and use your <b>AI Coach</b>!
+    </p>
+    <button type="button" class="tour-cta-hero-btn" onclick="acceptFirstTimeTourInvite()">🚀 YES! START INTERACTIVE APP TOUR →</button>
+    <button type="button" class="btn ghost block sm" style="margin-top:6px" onclick="declineFirstTimeTourInvite()">No thanks, skip tour (Available anytime in ⚙️ Settings)</button>
   </div>
 </div>
 
@@ -3275,6 +3706,9 @@ function scheduleRePromptFullScreen(delayMs){
 function updateFullScreenBtnUI(){
   const btn = document.getElementById('fullscreenBtn');
   const fs = isCurrentlyFullScreen();
+  const isFullOrStandalone = !!(fs || isStandaloneMode());
+  document.documentElement.classList.toggle('is-windowed-mode', !isFullOrStandalone);
+  document.documentElement.classList.toggle('is-fullscreen-mode', isFullOrStandalone);
   if(btn){
     btn.classList.toggle('fs-on', fs);
     btn.textContent = '⛶';
@@ -3371,10 +3805,10 @@ window.addEventListener('resize', updateFullScreenBtnUI, {passive:true});
   document.addEventListener('touchstart', wakeGPU, {passive:true});
   idleTouchTimer = setTimeout(function(){ document.body.dataset.idle = '1'; }, 5000);
 
-  // Close Numpad automatically if user taps outside numpad and outside a num-target
+  // Close Numpad automatically if user taps outside numpad and outside a num-target / num-target-proxy
   document.addEventListener('pointerdown', function(e){
     if(!activeNum) return;
-    if(e.target.closest('#numpad') || e.target.closest('.num-target')) return;
+    if(e.target.closest('#numpad') || e.target.closest('.num-target') || e.target.closest('.num-target-proxy')) return;
     closeNumpad();
   }, {passive:true});
 })();
@@ -4181,8 +4615,8 @@ function load(){
 }
 function trimHistory(){
   appData.programs.forEach(function(p){ p.program.forEach(function(d){ d.exercises.forEach(function(ex){
-    if(ex.history && ex.history.length > 15) ex.history = ex.history.slice(-15);
-    if(ex.supersetHistory && ex.supersetHistory.length > 15) ex.supersetHistory = ex.supersetHistory.slice(-15);
+    if(ex.history && ex.history.length > 250) ex.history = ex.history.slice(-250);
+    if(ex.supersetHistory && ex.supersetHistory.length > 250) ex.supersetHistory = ex.supersetHistory.slice(-250);
   }); }); });
   save();
 }
@@ -4360,6 +4794,10 @@ function startSetup(){ playSound('success'); showScreen('screen-program-type', t
 
 function startSuggestWizard(){
   playSound('success');
+  if(typeof ensureAthleteProfile === 'function') ensureAthleteProfile();
+  const prof = appData.athleteProfile || {};
+  if(prof.age) suggestData.age = prof.age;
+  if(prof.gender) suggestData.gender = prof.gender;
   if(!suggestData.days) suggestData.days = 4;
   if(!suggestData.exPref) suggestData.exPref = 6;
   if(!suggestData.age) suggestData.age = 23;
@@ -4368,6 +4806,14 @@ function startSuggestWizard(){
   $('sgExVal').value = suggestData.exPref;
   $('aiMaxSetsVal').value = suggestData.maxSetsDay || 18;
   if($('aiSetsPerExVal')) $('aiSetsPerExVal').value = suggestData.setsPerExPref || 3;
+  if($('aiProfWeightInput')) $('aiProfWeightInput').value = prof.weight || 75;
+  if($('aiProfHeightInput')) $('aiProfHeightInput').value = prof.heightCm || 175;
+  if($('aiProfGoalSelect')) $('aiProfGoalSelect').value = prof.goal || 'bulk';
+  if($('aiProfBirthInput')) $('aiProfBirthInput').value = prof.birthDate || '';
+  if($('aiProfGymStartInput')) $('aiProfGymStartInput').value = prof.gymStartDate || '';
+  if(prof.gymStartDate && typeof inferExpFromGymStart === 'function'){
+    suggestData.exp = inferExpFromGymStart(prof.gymStartDate) || suggestData.exp;
+  }
   sgSelectGender(suggestData.gender || 'male');
   aiSelectExp(suggestData.exp || 'intermediate');
   aiRenderInjuries();
@@ -5740,61 +6186,107 @@ async function callCloudLLMForJSONSplit(sysPrompt, usrPrompt, cal, rules, timeou
     }
   }
 
-  // Gateway 2: LLM7 Cloud (Default / DeepSeek-V4-Flash-0731 / Fast)
+  // Gateway 2: LLM7 Cloud (Single fast race, never sequential 30s loop!)
   async function tryLLM7JSON(){
-    const models = ['default', 'DeepSeek-V4-Flash-0731', 'fast'];
-    for(let i = 0; i < models.length; i++){
-      if(i > 0) await sleepMs(1100);
-      const mdl = models[i];
-      const ctrl = new AbortController();
-      const timer = setTimeout(function(){ ctrl.abort(); }, Math.min(timeoutMs, 9500));
-      try{
-        const r = await fetch('https://api.llm7.io/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer unused'
-          },
-          body: JSON.stringify({
-            model: mdl,
-            messages: msgs,
-            temperature: 0.35
-          }),
-          signal: ctrl.signal
-        });
-        clearTimeout(timer);
-        if(r.ok){
-          const txt = cleanLLMOutput(await r.text());
-          const splitObj = parseCloudLLMJsonSplit(txt, cal, rules);
-          if(splitObj){
-            lastCloudModelUsed = mdl === 'DeepSeek-V4-Flash-0731' ? 'DeepSeek V4 Flash' : 'LLM7 Cloud (' + mdl + ')';
-            return splitObj;
-          }
+    const ctrl = new AbortController();
+    const timer = setTimeout(function(){ ctrl.abort(); }, Math.min(timeoutMs, 2400));
+    try{
+      const r = await fetch('https://api.llm7.io/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'fast',
+          messages: msgs,
+          temperature: 0.35
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(timer);
+      if(r.ok){
+        const txt = cleanLLMOutput(await r.text());
+        const splitObj = parseCloudLLMJsonSplit(txt, cal, rules);
+        if(splitObj){
+          lastCloudModelUsed = 'LLM7 Turbo AI';
+          return splitObj;
         }
-      }catch(e){
-        clearTimeout(timer);
       }
+    }catch(e){
+      clearTimeout(timer);
     }
     throw new Error('LLM7 JSON failed');
   }
 
   try{
-    if(typeof Promise.any === 'function'){
-      return await Promise.any([
-        tryPollinationsJSON('openai-large', 'OpenAI GPT-4.1 Large'),
-        tryLLM7JSON()
-      ]);
-    } else {
-      try{ return await tryPollinationsJSON('openai-large', 'OpenAI GPT-4.1 Large'); }
-      catch(_){ return await tryLLM7JSON(); }
-    }
+    const fastRace = (typeof Promise.any === 'function')
+      ? Promise.any([
+          tryPollinationsJSON('openai-large', 'OpenAI GPT-4.1 Large'),
+          tryLLM7JSON()
+        ])
+      : tryPollinationsJSON('openai-large', 'OpenAI GPT-4.1 Large');
+    // Strict 2.4-second ceiling so AI generation NEVER hangs or stalls!
+    return await Promise.race([
+      fastRace,
+      new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 2400); })
+    ]);
   }catch(e){
     return null;
   }
 }
 
+function carryOverHistoricalWeightsToGeneratedSplit(progDays){
+  if(!Array.isArray(progDays)) return;
+  const histMap = {};
+  (appData.programs || []).forEach(function(p){
+    (p.program || []).forEach(function(d){
+      (d.exercises || []).forEach(function(ex){
+        const k = String(ex.name || '').trim().toLowerCase();
+        if(k && ex.history && ex.history.length){
+          if(!histMap[k] || ex.history.length > histMap[k].history.length){
+            histMap[k] = {
+              history: JSON.parse(JSON.stringify(ex.history)),
+              minWeightStep: ex.minWeightStep || 0,
+              note: ex.note || ''
+            };
+          }
+        }
+        if(ex.supersetName){
+          const sk = String(ex.supersetName || '').trim().toLowerCase();
+          if(sk && ex.supersetHistory && ex.supersetHistory.length){
+            if(!histMap[sk] || ex.supersetHistory.length > histMap[sk].history.length){
+              histMap[sk] = {
+                history: JSON.parse(JSON.stringify(ex.supersetHistory)),
+                minWeightStep: ex.supersetMinWeightStep || 0,
+                note: ''
+              };
+            }
+          }
+        }
+      });
+    });
+  });
+
+  progDays.forEach(function(d){
+    (d.exercises || []).forEach(function(ex){
+      const k = String(ex.name || '').trim().toLowerCase();
+      if(histMap[k]){
+        ex.history = JSON.parse(JSON.stringify(histMap[k].history));
+        if(histMap[k].minWeightStep > 0) ex.minWeightStep = histMap[k].minWeightStep;
+        if(!ex.note && histMap[k].note) ex.note = histMap[k].note;
+      }
+      if(ex.supersetName){
+        const sk = String(ex.supersetName || '').trim().toLowerCase();
+        if(histMap[sk]){
+          ex.supersetHistory = JSON.parse(JSON.stringify(histMap[sk].history));
+          if(histMap[sk].minWeightStep > 0) ex.supersetMinWeightStep = histMap[sk].minWeightStep;
+        }
+      }
+    });
+  });
+}
+
 async function aiProceedGeneration(allowAutoCompleteMissing){
   closeModal('modal-ai-insufficient');
+  if(typeof syncProfileFromAIWizard === 'function') syncProfileFromAIWizard();
   suggestData.regenSeed = (suggestData.regenSeed || 0) + 1;
   if($('aiFreePromptInput')) suggestData.freePrompt = $('aiFreePromptInput').value.trim();
 
@@ -5805,107 +6297,75 @@ async function aiProceedGeneration(allowAutoCompleteMissing){
   const rules = parseAIFreePrompt(promptTxt);
   const cal = getCalibratedExAndSets(rules);
   const targetDays = rules.promptDays || suggestData.days || 4;
+  const prof = (typeof ensureAthleteProfile === 'function') ? ensureAthleteProfile() : {};
+  const goalLabel = prof.goal === 'cut' ? 'Cut (Fat Loss & Strength Retention)' : (prof.goal === 'recomp' ? 'Body Recomposition' : 'Lean Bulk (Hypertrophy)');
 
-  // Open the Live AI Thinking & Deep Analysis Modal so the AI genuinely analyzes & builds the program before showing the preview!
   const logBox = $('aiThinkStepsLog');
   if(logBox) logBox.innerHTML = '';
   openModal('modal-ai-thinking');
   if(genBtn){
     genBtn.disabled = true;
-    genBtn.textContent = '🤖 AI is Analyzing & Engineering...';
+    genBtn.textContent = '🤖 Engineering 2026 Split...';
   }
 
   const tStart = performance.now();
   updateAIThinkingUI(
-    22,
-    'Stage 1 / 4 · Parsing your custom instructions & constraints...',
-    '🔍 <b>Profile:</b> ' + suggestData.gender.toUpperCase() + ', Age ' + suggestData.age + ', ' + suggestData.exp.toUpperCase() + ' (' + targetDays + ' Days/Wk, ' + cal.baseSets + ' sets/ex)'
+    30,
+    'Stage 1 / 3 · Syncing Athlete Bio, Goal & Biomechanics...',
+    '🧬 <b>Athlete Profile:</b> ' + suggestData.gender.toUpperCase() + ', Age ' + suggestData.age + ', ' + (prof.weight || 75) + unitLabel() + ' · Goal: <b style="color:var(--green-t)">' + goalLabel + '</b>'
   );
-  await sleepMs(380);
+  await sleepMs(140);
 
-  if(promptTxt || customSpName){
+  // Build the 2026 biomechanical split immediately
+  buildAISplitPreview(allowAutoCompleteMissing);
+
+  if(promptTxt.length > 1 || customSpName.length > 1){
     const detectedList = (rules.appliedSummaryEn && rules.appliedSummaryEn.length)
       ? rules.appliedSummaryEn.join(' · ')
       : ('Custom Request: "' + escapeAttr(promptTxt || customSpName) + '"');
     updateAIThinkingUI(
-      46,
-      'Stage 2 / 4 · Extracting rules from "Tell the AI Everything You Want"...',
-      '🎯 <b>Detected Rules:</b> <span style="color:var(--green-t)">' + detectedList + '</span>'
-    );
-  } else {
-    updateAIThinkingUI(
-      46,
-      'Stage 2 / 4 · Calibrating 2×/wk sub-muscle & angle balance...',
-      '🧬 <b>Split Architecture:</b> ' + (SPLITS[suggestData.selectedSplitKey] ? SPLITS[suggestData.selectedSplitKey].name : 'Custom Split')
-    );
-  }
-  await sleepMs(420);
-
-  // Build the local deep-compiled baseline first
-  buildAISplitPreview(allowAutoCompleteMissing);
-
-  // If user wrote custom text in "Tell the AI Everything You Want" or "Others", query Live Cloud LLM Architect and wait for it!
-  if(promptTxt.length > 1 || customSpName.length > 1){
-    updateAIThinkingUI(
-      72,
-      'Stage 3 / 4 · Consulting Cloud AI Architect (GPT-4.1 / DeepSeek)...',
-      '🌐 <b>Cloud LLM:</b> Engineering custom exercise selection & biomechanical angles for your prompt...'
+      68,
+      'Stage 2 / 3 · Compiling Custom Rules & Biomechanical Angles...',
+      '🎯 <b>Applied Rules:</b> <span style="color:var(--green-t)">' + detectedList + '</span>'
     );
     try{
       const wl = suggestData.whitelist || [];
-      const langInstruction = rules.isArabic ? 'Write coachNotes in Arabic explaining exactly how you obeyed every instruction.' : 'Write coachNotes in English explaining how you obeyed every instruction.';
+      const langInstruction = rules.isArabic ? 'Write coachNotes in Arabic.' : 'Write coachNotes in English.';
       const sys =
-        'You are an elite bodybuilding AI Split Architect. ' +
-        'You MUST 100% obey the USER CUSTOM PROMPT without exception: ' +
-        'if the user asks for specific muscles per day, specific exercise counts per muscle, "only" certain muscles, or excludes muscles (like "no legs"), obey it strictly! ' +
-        langInstruction + ' ' +
-        'Return ONLY a valid JSON object matching this exact schema: ' +
-        '{"splitName":"string","coachNotes":"string","days":[{"label":"string","exercises":[{"name":"string","sets":' + cal.baseSets + '}]}]}';
+        'You are a 2026 Exercise Science PhD & Pro Bodybuilding AI Split Architect. ' +
+        'Strictly obey the USER CUSTOM PROMPT. ' + langInstruction + ' ' +
+        'Return ONLY valid JSON: {"splitName":"string","coachNotes":"string","days":[{"label":"string","exercises":[{"name":"string","sets":' + cal.baseSets + '}]}]}';
       const usr =
-        'Days=' + targetDays +
-        ', Default Exercises/Day=' + cal.exPerDay +
-        ', Sets/Exercise=' + cal.baseSets +
+        'Goal=' + goalLabel + ', Days=' + targetDays + ', Ex/Day=' + cal.exPerDay + ', Sets/Ex=' + cal.baseSets +
         ', Injuries=' + (suggestData.injuries.join(',') || 'None') +
-        (wl.length ? (', Allowed Exercises=' + wl.join(', ')) : '') +
-        ', Seed=' + suggestData.regenSeed +
-        '.\nUSER CUSTOM PROMPT (OBEY 100%): "' + (promptTxt || customSpName) + '"';
+        (wl.length ? (', Whitelist=' + wl.join(', ')) : '') +
+        ', Seed=' + suggestData.regenSeed + '.\nPROMPT: "' + (promptTxt || customSpName) + '"';
 
-      const cloudSplit = await callCloudLLMForJSONSplit(sys, usr, cal, rules, 10500);
+      const cloudSplit = await callCloudLLMForJSONSplit(sys, usr, cal, rules, 2300);
       if(cloudSplit && cloudSplit.program && cloudSplit.program.length > 0){
         suggestData.generatedProgram = cloudSplit.program;
         if(cloudSplit.splitName) suggestData.generatedMeta.splitName = cloudSplit.splitName;
         if(cloudSplit.coachNotes) suggestData.generatedMeta.cloudCoachNotes = cloudSplit.coachNotes;
-        suggestData.generatedMeta.engineUsed = lastCloudModelUsed || 'Cloud AI';
-        updateAIThinkingUI(
-          95,
-          'Stage 4 / 4 · Verified 100% compliance (' + (lastCloudModelUsed || 'Cloud LLM') + ')',
-          '✅ <b>Cloud AI (' + escapeAttr(lastCloudModelUsed || 'LLM') + '):</b> Custom split generated & verified against all constraints!'
-        );
+        suggestData.generatedMeta.engineUsed = lastCloudModelUsed || '2026 Neural AI';
       } else {
-        suggestData.generatedMeta.engineUsed = 'Deep Prompt Compiler';
-        updateAIThinkingUI(
-          95,
-          'Stage 4 / 4 · Verified 100% compliance with your custom rules',
-          '✅ <b>Deep Prompt Compiler:</b> Applied 100% of your custom muscle, day & set rules!'
-        );
+        suggestData.generatedMeta.engineUsed = '2026 Biomechanical AI Compiler';
       }
     }catch(e){
-      suggestData.generatedMeta.engineUsed = 'Deep Prompt Compiler';
-      updateAIThinkingUI(
-        95,
-        'Stage 4 / 4 · Verified 100% compliance with your custom rules',
-        '✅ <b>Deep Prompt Compiler:</b> Applied 100% of your custom muscle, day & set rules!'
-      );
+      suggestData.generatedMeta.engineUsed = '2026 Biomechanical AI Compiler';
     }
-    await sleepMs(450);
   } else {
-    updateAIThinkingUI(
-      96,
-      'Stage 4 / 4 · Finalizing sets, warmups & sub-muscle targets...',
-      '✅ <b>Complete:</b> 100% sub-muscle coverage ready!'
-    );
-    await sleepMs(380);
+    suggestData.generatedMeta.engineUsed = '2026 Biomechanical AI Compiler';
   }
+
+  // Carry over any existing exercise history & ±Step from the user's previous splits!
+  carryOverHistoricalWeightsToGeneratedSplit(suggestData.generatedProgram);
+
+  updateAIThinkingUI(
+    100,
+    'Stage 3 / 3 · Split Ready & Historical PRs Linked!',
+    '✅ <b>Ready:</b> 100% sub-muscle coverage, Lower Back recovery spacing, and historical weights synced!'
+  );
+  await sleepMs(120);
 
   const elapsedSec = ((performance.now() - tStart) / 1000).toFixed(1);
   if(suggestData.generatedMeta) suggestData.generatedMeta.analysisTimeSec = elapsedSec;
@@ -7383,22 +7843,26 @@ function getExerciseBioProfile(exName){
   const muscle = entry ? entry.muscle : 'Chest';
   const sub = entry ? entry.sub : 'Mid Chest';
 
-  // Strict true multi-joint compound detection (only true compounds trigger 24h synergists)
-  const isIsoRegex = /fly|flies|pec deck|crossover|pullover|straight arm|shrug|trap|lateral|raise|face pull|reverse pec|rear delt|curl|pushdown|overhead ext|skull|kickback|french press|leg ext|leg curl|adduct|abduct|calf|calves|crunch|plank|sit-up|situp|woodchop|twist|wrist|hyperextension|back ext|glute bridge|hip thrust|تفتيح|فراشة|رفرفة|بول اوفر|شراغ|ترابيس|فيس بول|كيرل|حبل تراي|مسطرة|سمانة|بطن|سواعد|ضامات/.test(n);
-  const isTrueCompoundRegex = /press|bench|dip|push-up|pushup|pulldown|pull-up|pullup|chin-up|chinup|row|muscle-up|squat|lunge|split squat|rdl|deadlift|good morning|بنش|ضغط|غطس|سحب|عقلة|تجديف|بار|سكوات|ليج برس|هاك|طعن|روماني|ديدليفت/.test(n);
-  const isCompound = !isIsoRegex && isTrueCompoundRegex;
+  // True multi-joint & heavy synergist-recruiting movement detection
+  const isIsoRegex = /fly|flies|pec deck|crossover|pullover|straight arm|shrug|trap|lateral|raise|reverse pec|rear delt|curl|pushdown|overhead ext|skull|kickback|french press|leg ext|leg curl|adduct|abduct|calf|calves|tibialis|crunch|plank|sit-up|situp|woodchop|twist|wrist|تفتيح|فراشة|رفرفة|بول اوفر|شراغ|ترابيس|كيرل|حبل تراي|مسطرة|سمانة|بطن|سواعد|ضامات/.test(n);
+  const isTrueCompoundRegex = /press|bench|dip|push-up|pushup|pulldown|pull-up|pullup|chin-up|chinup|row|muscle-up|squat|lunge|split squat|step-up|rdl|romanian|stiff-leg|deadlift|good morning|back ext|hyperextension|hip thrust|glute bridge|face pull|upright row|بنش|ضغط|غطس|سحب|عقلة|تجديف|بار|سكوات|ليج برس|هاك|طعن|روماني|ديدليفت|باك اكستنشن|قطنية|ظهر سفلي|هيب ثرست|جسر/.test(n);
+  const isCompound = (!isIsoRegex && isTrueCompoundRegex) || /hip thrust|glute bridge|back ext|hyperextension|face pull|upright row|هيب ثرست|باك اكستنشن/.test(n);
 
-  // Determine granular canonical recovery target key:
-  // - Large (72h): 'Chest', 'Back', 'Quads', 'Hamstrings', 'Glutes'
-  // - Small Main (48h): 'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps'
-  // - Small Accessory / Core (48h, separated): 'Upper Abs', 'Lower Abs', 'Obliques', 'Calves', 'Traps'
-  // - Simple / Stabilizer Exempt from Day Readiness lock: 'Adductors', 'Abductors', 'Forearms'
   let primaryKey = muscle;
   let isLarge = false;
   let exemptFromDayReadiness = false;
   let isMinorAccessory = false;
+  const extraPrimaryKeys = []; // Secondary muscles receiving PRIMARY-LEVEL heavy direct loading (e.g. Lower Back 48h in RDL/Deadlift!)
 
-  if(muscle === 'Chest'){
+  if(/back ext|hyperextension|good morning|rack pull|lower back|erector|باك اكستنشن|قطنية|ظهر سفلي|صباح الخير/.test(n) || sub === 'Lower Back'){
+    primaryKey = 'Lower Back';
+    isLarge = false; // 48h direct primary recovery window!
+    isMinorAccessory = false;
+  } else if(/deadlift|ديدليفت/.test(n) && !/rdl|romanian|stiff|روماني/.test(n)){
+    primaryKey = 'Lower Back';
+    isLarge = false; // 48h direct recovery for Lower Back
+    extraPrimaryKeys.push('Hamstrings', 'Glutes');
+  } else if(muscle === 'Chest'){
     primaryKey = 'Chest';
     isLarge = true;
   } else if(muscle === 'Back'){
@@ -7429,18 +7893,26 @@ function getExerciseBioProfile(exName){
       isLarge = false;
       exemptFromDayReadiness = true;
       isMinorAccessory = true;
+    } else if(/tibialis|أمامية الساق|امامية الساق/.test(n)){
+      primaryKey = 'Tibialis';
+      isLarge = false;
+      exemptFromDayReadiness = true;
+      isMinorAccessory = true;
     } else if(sub === 'Calves' || /calf|calves|سمانة|بطة/.test(n)){
       primaryKey = 'Calves';
       isLarge = false;
       isMinorAccessory = true;
-    } else if(sub === 'Hamstrings' || /leg curl|hamstring|rdl|romanian|stiff-leg|good morning|glute-ham|nordic|خلفي|روماني/.test(n)){
+    } else if(sub === 'Hamstrings' || /leg curl|hamstring|rdl|romanian|stiff-leg|glute-ham|nordic|خلفي|روماني/.test(n)){
       primaryKey = 'Hamstrings';
       isLarge = true;
-    } else if(sub === 'Glutes' || /hip thrust|glute bridge|kickback|قلوتس|جسر|رفس/.test(n)){
+      // Heavy Hinge (RDL / Stiff-Leg Deadlift) works Lower Back with heavy direct eccentric/isometric tension -> 48h direct recovery!
+      if(/rdl|romanian|stiff-leg|stiff leg|good morning|روماني/.test(n)){
+        extraPrimaryKeys.push('Lower Back');
+      }
+    } else if(sub === 'Glutes' || /hip thrust|glute bridge|kickback|قلوتس|جسر|رفس|هيب ثرست/.test(n)){
       primaryKey = 'Glutes';
       isLarge = true;
     } else {
-      // Quads (Squat, Leg Press, Hack Squat, Leg Extension, Lunges, Split Squat)
       primaryKey = 'Quads';
       isLarge = true;
     }
@@ -7469,18 +7941,92 @@ function getExerciseBioProfile(exName){
     isLarge = false;
   }
 
-  // Synergists recruited ONLY when this exercise is a true multi-joint compound movement (24h assistant recovery window)
+  // Comprehensive Biomechanical Synergist / Assistant Muscle Mapping (24h assistant recovery window)
   const synergists = [];
-  if(isCompound){
-    if(primaryKey === 'Chest'){
-      synergists.push('Triceps', 'Front Delts');
-    } else if((primaryKey === 'Lats' || primaryKey === 'Upper Back') && sub !== 'Lower Back'){
-      synergists.push('Biceps', 'Rear Delts');
-    } else if(muscle === 'Shoulders' && primaryKey === 'Front Delts'){
-      synergists.push('Triceps');
-    } else if(primaryKey === 'Triceps' && /close grip|dip|غطس|ضيق/.test(n)){
-      synergists.push('Front Delts');
+  function addSyn(k){
+    if(k && k !== primaryKey && extraPrimaryKeys.indexOf(k) < 0 && synergists.indexOf(k) < 0){
+      synergists.push(k);
     }
+  }
+
+  if(primaryKey === 'Chest' && isCompound){
+    addSyn('Front Delts');
+    addSyn('Triceps');
+  } else if(primaryKey === 'Lats'){
+    if(/pullover|straight arm|بول اوفر/.test(n)){
+      addSyn('Triceps'); // Long head of triceps stabilizes straight-arm pullover
+    } else {
+      addSyn('Biceps');
+      addSyn('Rear Delts');
+      addSyn('Upper Back');
+      addSyn('Forearms');
+    }
+  } else if(primaryKey === 'Upper Back'){
+    addSyn('Lats');
+    addSyn('Biceps');
+    addSyn('Rear Delts');
+    addSyn('Forearms');
+    // Free-standing rows & seated cable rows recruit Lower Back as a 24h stabilizer (unless chest-supported / seal row)
+    if(!/chest-supported|chest supported|seal row|machine.*row|مسنود/.test(n)){
+      addSyn('Lower Back');
+    }
+  } else if(primaryKey === 'Lower Back'){
+    addSyn('Glutes');
+    addSyn('Hamstrings');
+    if(/deadlift|rack pull|ديدليفت/.test(n)){
+      addSyn('Upper Back');
+      addSyn('Upper Traps');
+      addSyn('Forearms');
+    }
+  } else if(primaryKey === 'Glutes'){
+    if(/hip thrust|glute bridge|هيب ثرست|جسر/.test(n)){
+      addSyn('Lower Back');
+      addSyn('Hamstrings');
+      addSyn('Quads');
+    } else if(/lunge|split squat|step-up|طعن/.test(n)){
+      addSyn('Quads');
+      addSyn('Hamstrings');
+      addSyn('Adductors');
+      addSyn('Lower Back');
+    }
+  } else if(primaryKey === 'Hamstrings'){
+    if(/rdl|romanian|stiff-leg|stiff leg|good morning|روماني/.test(n)){
+      addSyn('Glutes');
+      addSyn('Forearms');
+      addSyn('Upper Traps');
+    } else if(/glute-ham|nordic/.test(n)){
+      addSyn('Glutes');
+      addSyn('Calves');
+      addSyn('Lower Back');
+    }
+  } else if(primaryKey === 'Quads' && isCompound){
+    addSyn('Glutes');
+    addSyn('Adductors');
+    // Free-weight squats, lunges, and split squats recruit Lower Back as a 24h stabilizer
+    if(/barbell.*squat|back squat|front squat|safety bar|zercher|lunge|split squat|step-up|سكوات حر|بار سكوات|طعن|بلغاري/.test(n) && !/hack|leg press|pendulum|belt squat|ليج برس|هاك/.test(n)){
+      addSyn('Lower Back');
+    }
+    if(/lunge|split squat|step-up|طعن|بلغاري/.test(n)){
+      addSyn('Hamstrings');
+    }
+  } else if(primaryKey === 'Front Delts' && isCompound){
+    addSyn('Triceps');
+    addSyn('Side Delts');
+    addSyn('Upper Traps');
+  } else if(primaryKey === 'Side Delts' && /upright row|سحب عمودي/.test(n)){
+    addSyn('Upper Traps');
+    addSyn('Front Delts');
+    addSyn('Biceps');
+  } else if(primaryKey === 'Rear Delts' && /face pull|rear delt row|فيس بول/.test(n)){
+    addSyn('Upper Back');
+    addSyn('Upper Traps');
+  } else if(primaryKey === 'Triceps' && /close grip|close-grip|dip|jm press|غطس|ضيق/.test(n)){
+    addSyn('Chest');
+    addSyn('Front Delts');
+  } else if(primaryKey === 'Biceps' && /chin-up|chinup|reverse curl/.test(n)){
+    addSyn('Forearms');
+  } else if(primaryKey === 'Upper Traps' && /shrug|شراغ|ترابيس/.test(n)){
+    addSyn('Forearms');
   }
 
   return {
@@ -7488,6 +8034,7 @@ function getExerciseBioProfile(exName){
     muscle: muscle,
     sub: sub,
     primaryKey: primaryKey,
+    extraPrimaryKeys: extraPrimaryKeys,
     isLarge: isLarge,
     isCompound: isCompound,
     exemptFromDayReadiness: exemptFromDayReadiness,
@@ -7599,7 +8146,16 @@ function getMuscleTrainingEventsMap(futureOffsetHours){
       directIsLarge[prof.primaryKey] = prof.isLarge;
       directIsExempt[prof.primaryKey] = prof.exemptFromDayReadiness;
 
-      if(prof.isCompound && prof.synergists && prof.synergists.length){
+      if(Array.isArray(prof.extraPrimaryKeys)){
+        prof.extraPrimaryKeys.forEach(function(epKey){
+          directSetsByKey[epKey] = (directSetsByKey[epKey] || 0) + it.sets;
+          // Lower Back has 48h primary recovery (isLarge = false), whereas Hamstrings/Glutes have 72h (isLarge = true)
+          directIsLarge[epKey] = (['Chest','Lats','Upper Back','Quads','Hamstrings','Glutes'].indexOf(epKey) >= 0);
+          directIsExempt[epKey] = false;
+        });
+      }
+
+      if(prof.synergists && prof.synergists.length){
         prof.synergists.forEach(function(synKey){
           synergistCompoundSets[synKey] = (synergistCompoundSets[synKey] || 0) + it.sets;
         });
@@ -7813,7 +8369,9 @@ function refreshHome(){
   updateWeekGoal();
   updateDayReadinessUI();
   if(typeof updateDeloadUI === 'function') updateDeloadUI();
+  if(typeof updateGymJourneyBanner === 'function') updateGymJourneyBanner();
   if(typeof renderMuscleHeatmap === 'function') renderMuscleHeatmap();
+  if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome();
 }
 
 function triggerDirAnim(el, dir){
@@ -8296,12 +8854,48 @@ function getHistoricalSupersetBest1RM(ex){
   return best;
 }
 
+function stepQuickCalcField(id, delta, cb){
+  playSound('key');
+  const inp = $(id);
+  if(!inp) return;
+  let v = parseFloat(inp.value) || 0;
+  v = Math.max(0.5, Math.round((v + delta) * 100) / 100);
+  inp.value = v;
+  if($('numpad') && $('numpad').classList.contains('open') && activeNum === inp){
+    $('numpadValue').textContent = String(v);
+  }
+  if(typeof cb === 'function') cb();
+}
+
+function getAvailableGymPlates(){
+  const isLb = (appData.unit === 'lb');
+  const maxOpt = (appData.maxPlateKg === 25) ? 25 : 20;
+  if(isLb){
+    // In LB mode: Max 20kg equivalent = 45lb max plate; Max 25kg equivalent = 55lb max plate
+    return (maxOpt === 25) ? [55, 45, 35, 25, 10, 5, 2.5] : [45, 35, 25, 10, 5, 2.5];
+  }
+  return (maxOpt === 25) ? [25, 20, 15, 10, 5, 2.5, 1.25] : [20, 15, 10, 5, 2.5, 1.25];
+}
+
+function setMaxPlateOption(maxKg){
+  playSound('tap');
+  appData.maxPlateKg = (maxKg === 25) ? 25 : 20;
+  if(appData.athleteProfile) appData.athleteProfile.maxPlateKg = appData.maxPlateKg;
+  save();
+  refreshUnitUI();
+  renderQuickPlates();
+  calcPlates();
+  const isLb = (appData.unit === 'lb');
+  const disp = isLb ? (appData.maxPlateKg === 25 ? '55 lb' : '45 lb') : (appData.maxPlateKg + ' kg');
+  toast('💿 Max Plate set to ' + disp);
+}
+
 /* 1. Standalone 1RM Popup */
 function openQuick1RM(){
   const cur = getActiveWorkoutWeightAndReps();
   $('q1rmWeight').value = cur.w;
   $('q1rmReps').value = cur.r;
-  document.querySelectorAll('.unit-txt').forEach(function(el){ el.textContent = unitLabel(); });
+  refreshUnitUI();
   renderQuick1RM();
   openModal('modal-quick1rm');
 }
@@ -8310,6 +8904,11 @@ function renderQuick1RM(){
   const r = parseFloat($('q1rmReps').value) || 0;
   const rm = calc1RMVal(w, r);
   $('q1rmResult').textContent = rm > 0 ? rm.toFixed(1) : '0.0';
+  const relEl = $('q1rmRelBwTxt');
+  if(relEl){
+    const bw = (appData.athleteProfile && parseFloat(appData.athleteProfile.weight) > 0) ? parseFloat(appData.athleteProfile.weight) : 0;
+    relEl.textContent = (rm > 0 && bw > 0) ? ('Relative Strength: ' + (rm / bw).toFixed(2) + '× Body Weight (' + bw + unitLabel() + ')') : '';
+  }
   const grid = $('q1rmPctGrid');
   if(!grid) return;
   if(rm <= 0){ grid.innerHTML = ''; return; }
@@ -8327,13 +8926,17 @@ function renderQuick1RM(){
   }).join('');
 }
 
-/* 2. Standalone Loads by Reps & Pyramid Popup ("الاوزان الي اقدر اشيلها بالعدات") */
+/* 2. Standalone Loads by Reps & Pyramid Popup (Interactive Keyboard/Numpad Editing!) */
 let qLoadsActiveTab = 'reps';
 function openQuickLoads(){
   const cur = getActiveWorkoutWeightAndReps();
   $('qLoadsWeight').value = cur.w;
   $('qLoadsReps').value = cur.r;
-  document.querySelectorAll('.unit-txt').forEach(function(el){ el.textContent = unitLabel(); });
+  const ex = workoutActive && activeSessionData ? activeSessionData[activeExIndex] : null;
+  if(ex && parseFloat(ex.minWeightStep) > 0){
+    $('qLoadsStep').value = parseFloat(ex.minWeightStep);
+  }
+  refreshUnitUI();
   renderQuickLoads();
   openModal('modal-quickloads');
 }
@@ -8344,16 +8947,36 @@ function switchQuickLoadsTab(tab){
   $('qLoadsRepsPane').classList.toggle('hidden', tab !== 'reps');
   $('qLoadsPyrPane').classList.toggle('hidden', tab !== 'pyr');
 }
+function selectLoadCellForLiveEdit(wVal, rVal){
+  playSound('tap');
+  if($('qLoadsWeight')) $('qLoadsWeight').value = wVal;
+  if($('qLoadsReps')) $('qLoadsReps').value = rVal;
+  renderQuickLoads();
+  if($('qLoadsWeight')) setActiveNumTarget($('qLoadsWeight'));
+}
+function applyCurrentQuickLoadsToSet(){
+  const w = parseFloat($('qLoadsWeight').value) || 0;
+  const r = parseFloat($('qLoadsReps').value) || 0;
+  if(w > 0 || r > 0){
+    applyWeightRepsToActiveSet(w, r);
+    closeNumpad();
+    closeModal('modal-quickloads');
+  }
+}
 function renderQuickLoads(){
   const w = parseFloat($('qLoadsWeight').value) || 0;
   const r = parseFloat($('qLoadsReps').value) || 0;
-  const step = parseFloat($('qLoadsStep').value) || 2.5;
+  const step = parseFloat($('qLoadsStep').value) || (appData.unit === 'lb' ? 5 : 2.5);
   const rm = calc1RMVal(w, r);
+  const rmBadge = $('qLoadsLive1RMBadge');
+  if(rmBadge){
+    rmBadge.textContent = rm > 0 ? (rm.toFixed(1) + ' ' + unitLabel()) : '—';
+  }
   const repTable = $('qLoadsRepTable');
   const pyrPane = $('qLoadsPyrPane');
   if(rm <= 0){
-    if(repTable) repTable.innerHTML = '<div class="micro subtle center" style="grid-column:1/-1;padding:12px">Enter weight and reps above</div>';
-    if(pyrPane) pyrPane.innerHTML = '<div class="micro subtle center" style="padding:12px">Enter weight and reps above</div>';
+    if(repTable) repTable.innerHTML = '<div class="micro subtle center" style="grid-column:1/-1;padding:12px">Tap Weight or Reps above to enter values</div>';
+    if(pyrPane) pyrPane.innerHTML = '<div class="micro subtle center" style="padding:12px">Tap Weight or Reps above to enter values</div>';
     return;
   }
   const repTargets = [1, 2, 3, 5, 6, 8, 10, 12, 15, 20];
@@ -8362,8 +8985,11 @@ function renderQuickLoads(){
       const estW = repCnt === 1 ? rm : (rm / (1 + repCnt / 30));
       const cleanW = Math.round(estW * 2) / 2;
       const isCur = Math.round(r) === repCnt;
-      return '<div class="rep-load-cell" style="' + (isCur ? 'border-color:var(--green-b);background:var(--green-g)' : '') + '" onclick="applyWeightRepsToActiveSet(' + cleanW + ',' + repCnt + ');closeModal(\'modal-quickloads\')">' +
-        '<span class="mono" style="font-size:11.5px;color:var(--blue-t)">' + repCnt + (repCnt === 1 ? ' rep' : ' reps') + '</span>' +
+      return '<div class="rep-load-cell" style="position:relative;' + (isCur ? 'border-color:var(--green-b);background:var(--green-g)' : '') + '" onclick="selectLoadCellForLiveEdit(' + cleanW + ',' + repCnt + ')" title="Tap to edit weight/reps with keyboard">' +
+        '<div class="row-between" style="width:100%;gap:4px">' +
+          '<span class="mono" style="font-size:11px;color:var(--blue-t)">' + repCnt + (repCnt === 1 ? ' rep' : ' reps') + '</span>' +
+          '<button type="button" class="btn xs green" style="padding:1px 5px;font-size:8.5px" onclick="event.stopPropagation();applyWeightRepsToActiveSet(' + cleanW + ',' + repCnt + ');closeNumpad();closeModal(\'modal-quickloads\')">✓ Use</button>' +
+        '</div>' +
         '<span class="mono" style="font-size:13.5px;font-weight:900;color:var(--txt)">' + cleanW + ' ' + unitLabel() + '</span>' +
       '</div>';
     }).join('');
@@ -8387,23 +9013,23 @@ function renderQuickLoads(){
     }
     let html = '';
     above.forEach(function(item){
-      html += '<div class="pyr-row" style="cursor:pointer" onclick="applyWeightRepsToActiveSet(' + item.weight + ',' + item.reps + ');closeModal(\'modal-quickloads\')"><span class="pyr-weight">' + item.weight + unitLabel() + '</span><span class="pyr-arrow">↑</span><span class="pyr-reps">' + item.reps + ' reps</span></div>';
+      html += '<div class="pyr-row" style="cursor:pointer" onclick="selectLoadCellForLiveEdit(' + item.weight + ',' + item.reps + ')"><span class="pyr-weight">' + item.weight + unitLabel() + '</span><span class="pyr-arrow">↑</span><span class="pyr-reps">' + item.reps + ' reps</span><button type="button" class="btn xs green" style="padding:2px 6px;font-size:8.5px" onclick="event.stopPropagation();applyWeightRepsToActiveSet(' + item.weight + ',' + item.reps + ');closeNumpad();closeModal(\'modal-quickloads\')">✓ Use</button></div>';
     });
-    html += '<div class="pyr-row pyr-mid" style="cursor:pointer" onclick="applyWeightRepsToActiveSet(' + w + ',' + r + ');closeModal(\'modal-quickloads\')"><span class="pyr-weight">' + w + unitLabel() + '</span><span class="pyr-arrow">=</span><span class="pyr-reps">' + r + ' reps</span></div>';
+    html += '<div class="pyr-row pyr-mid" style="cursor:pointer" onclick="selectLoadCellForLiveEdit(' + w + ',' + r + ')"><span class="pyr-weight">' + w + unitLabel() + '</span><span class="pyr-arrow">=</span><span class="pyr-reps">' + r + ' reps</span><button type="button" class="btn xs green" style="padding:2px 6px;font-size:8.5px" onclick="event.stopPropagation();applyWeightRepsToActiveSet(' + w + ',' + r + ');closeNumpad();closeModal(\'modal-quickloads\')">✓ Use</button></div>';
     below.forEach(function(item){
-      html += '<div class="pyr-row" style="cursor:pointer" onclick="applyWeightRepsToActiveSet(' + item.weight + ',' + item.reps + ');closeModal(\'modal-quickloads\')"><span class="pyr-weight">' + item.weight + unitLabel() + '</span><span class="pyr-arrow">↓</span><span class="pyr-reps">' + item.reps + ' reps</span></div>';
+      html += '<div class="pyr-row" style="cursor:pointer" onclick="selectLoadCellForLiveEdit(' + item.weight + ',' + item.reps + ')"><span class="pyr-weight">' + item.weight + unitLabel() + '</span><span class="pyr-arrow">↓</span><span class="pyr-reps">' + item.reps + ' reps</span><button type="button" class="btn xs green" style="padding:2px 6px;font-size:8.5px" onclick="event.stopPropagation();applyWeightRepsToActiveSet(' + item.weight + ',' + item.reps + ');closeNumpad();closeModal(\'modal-quickloads\')">✓ Use</button></div>';
     });
     pyrPane.innerHTML = html;
   }
 }
 
-/* 3. Standalone Plates Popup */
-function setQuickBar(kg){
-  appData.barWeight = kg;
+/* 3. Standalone Plates Popup (On-Demand Only + Max 20/25kg & Full KG/LB Support) */
+function setQuickBar(val){
+  appData.barWeight = val;
   save();
-  $('qpBarLbl').textContent = kg + unitLabel();
+  $('qpBarLbl').textContent = val + ' ' + unitLabel();
   document.querySelectorAll('#qpBarChips .chip').forEach(function(c){
-    c.classList.toggle('on', c.textContent.indexOf(String(kg)) >= 0);
+    c.classList.toggle('on', parseFloat(c.dataset.bar) === val);
   });
   renderQuickPlates();
   calcPlates();
@@ -8411,31 +9037,33 @@ function setQuickBar(kg){
 function openQuickPlates(){
   const cur = getActiveWorkoutWeightAndReps();
   $('quickPlateInput').value = cur.w;
-  const bar = appData.barWeight || 20;
-  $('qpBarLbl').textContent = bar + unitLabel();
-  document.querySelectorAll('#qpBarChips .chip').forEach(function(c){
-    c.classList.toggle('on', c.textContent.indexOf(String(bar)) >= 0);
-  });
-  document.querySelectorAll('.unit-txt').forEach(function(el){ el.textContent = unitLabel(); });
+  refreshUnitUI();
   renderQuickPlates();
   openModal('modal-quickplates');
 }
 function renderQuickPlates(){
   const target = parseFloat($('quickPlateInput').value) || 0;
-  const bar = appData.barWeight || 20;
+  const defaultBar = appData.unit === 'lb' ? 45 : 20;
+  const bar = appData.barWeight || defaultBar;
+  if($('qpBarLbl')) $('qpBarLbl').textContent = bar + ' ' + unitLabel();
   const el = $('quickPlateResult');
+  if(!el) return;
   const perSide = (target - bar) / 2;
   if(target <= 0){ el.innerHTML = '<span class="micro subtle">—</span>'; return; }
-  if(perSide <= 0){ el.innerHTML = '<span class="chip on">Bar only</span>'; return; }
-  const plates = [25, 20, 15, 10, 5, 2.5, 1.25];
+  if(perSide <= 0){ el.innerHTML = '<span class="chip on">Bar only (' + bar + unitLabel() + ')</span>'; return; }
+  const plates = getAvailableGymPlates();
   const used = []; let remain = perSide;
   plates.forEach(function(p){ while(remain >= p - 0.001){ used.push(p); remain -= p; } });
   if(!used.length){ el.innerHTML = '<span class="micro subtle">—</span>'; return; }
   const counts = {};
   used.forEach(function(p){ counts[p] = (counts[p] || 0) + 1; });
-  el.innerHTML = Object.keys(counts).sort(function(a,b){ return parseFloat(b) - parseFloat(a); }).map(function(p){
-    return '<span class="chip on" style="font-family:var(--font-mono);font-weight:900">' + p + unitLabel() + '×' + counts[p] + '</span>';
+  let html = Object.keys(counts).sort(function(a,b){ return parseFloat(b) - parseFloat(a); }).map(function(p){
+    return '<span class="chip on" style="font-family:var(--font-mono);font-weight:900">' + p + unitLabel() + ' × ' + counts[p] + '</span>';
   }).join('');
+  if(remain > 0.05){
+    html += '<span class="chip amber" style="font-size:9.5px">+' + (Math.round(remain * 100) / 100) + unitLabel() + ' micro</span>';
+  }
+  el.innerHTML = html;
 }
 
 /* 4. Live Workout AI Set Coach Popup */
@@ -8564,24 +9192,11 @@ function updateWorkoutTelemetry(){
   if(volEl){
     volEl.textContent = '📊 Session: ' + sessSets + ' set' + (sessSets === 1 ? '' : 's') + ' · ' + fmtVol(Math.round(sessVol)) + ' ' + unitLabel();
   }
-  if(plateEl){
-    const curWR = getActiveWorkoutWeightAndReps();
-    const bar = appData.barWeight || 20;
-    const perSide = (curWR.w - bar) / 2;
-    if(curWR.w > bar && perSide > 0){
-      const plates = [25, 20, 15, 10, 5, 2.5, 1.25];
-      const counts = {};
-      let rem = perSide;
-      plates.forEach(function(p){
-        while(rem >= p - 0.001){ counts[p] = (counts[p] || 0) + 1; rem -= p; }
-      });
-      const parts = Object.keys(counts).sort(function(a,b){ return parseFloat(b) - parseFloat(a); }).map(function(p){
-        return p + '×' + counts[p];
-      });
-      plateEl.textContent = '💿 Side: ' + (parts.length ? parts.join(' + ') : 'Bar');
-    } else {
-      plateEl.textContent = '💿 Plates Calculator →';
-    }
+  const goalEl = $('wLiveGoalHint');
+  if(goalEl){
+    const g = (appData.athleteProfile && appData.athleteProfile.goal) || 'bulk';
+    const gMap = { cut: '🔥 Goal: Cut', bulk: '💪 Goal: Bulk', recomp: '⚖️ Goal: Recomp' };
+    goalEl.textContent = gMap[g] || '💪 Goal: Bulk';
   }
 }
 
@@ -9808,9 +10423,8 @@ function startCardioSession(){
   }
 
   acquireWake();
-  playSound('success');
+  playSound('tap');
   cardioSchedule = buildSchedule(cardioTotal, cardioCount, cardioRestDur);
-  cardioStart = Date.now();
   if(cardioEcoSelected && !appData.powerSaveMode){
     cardioEcoHere = true;
     appData.powerSaveMode = true;
@@ -9820,12 +10434,62 @@ function startCardioSession(){
     cardioEcoHere = false;
   }
   showScreen('screen-cardio-active');
-  resumeCardio();
+  startCardioInitialCountdown();
+}
+
+let _cardioCountdownInt = null;
+let _cardioCountdownRem = 5;
+
+function startCardioInitialCountdown(){
+  clearInterval(_cardioCountdownInt);
+  if(cardioInt){ clearInterval(cardioInt); cardioInt = null; }
+  _cardioCountdownRem = 5;
+  const ov = $('cardioCountdownOverlay');
+  const numEl = $('cardioCountdownNum');
+  const subEl = $('cardioCountdownSub');
+  const m = String(Math.floor(cardioTotal / 60)).padStart(2, '0');
+  const s = String(cardioTotal % 60).padStart(2, '0');
+  if($('cardioMainDisplay')) $('cardioMainDisplay').textContent = m + ':' + s;
+  if(ov) ov.classList.remove('hidden');
+  if(numEl) numEl.textContent = '5';
+  if(subEl) subEl.textContent = 'Starting in 5 seconds... Tap Cancel below to abort without saving.';
+  _cardioCountdownInt = setInterval(function(){
+    _cardioCountdownRem--;
+    if(_cardioCountdownRem > 0){
+      playSound('key');
+      if(numEl) numEl.textContent = String(_cardioCountdownRem);
+      if(subEl) subEl.textContent = 'Starting in ' + _cardioCountdownRem + ' second' + (_cardioCountdownRem === 1 ? '' : 's') + '...';
+    } else {
+      clearInterval(_cardioCountdownInt);
+      _cardioCountdownInt = null;
+      if(ov) ov.classList.add('hidden');
+      playSound('success');
+      cardioStart = Date.now();
+      resumeCardio();
+    }
+  }, 1000);
+}
+
+function cancelCardioDuringCountdown(){
+  clearInterval(_cardioCountdownInt);
+  _cardioCountdownInt = null;
+  if(cardioInt){ clearInterval(cardioInt); cardioInt = null; }
+  const ov = $('cardioCountdownOverlay');
+  if(ov) ov.classList.add('hidden');
+  if(cardioEcoHere){ appData.powerSaveMode = false; applyPower(); save(); }
+  clearLiveCardio();
+  releaseWake();
+  pendingCardio = null;
+  playSound('warn');
+  toast('🚫 Cardio cancelled — nothing saved');
+  showScreen('screen-cardio-setup');
 }
 
 let cardioSessionHalf = false, cardioSessionQuarter = false;
 function resumeCardio(){
   if(cardioInt) clearInterval(cardioInt);
+  const ov = $('cardioCountdownOverlay');
+  if(ov) ov.classList.add('hidden');
   cardioSessionHalf = false; cardioSessionQuarter = false; window._cardioMilestones = {};
 
   const tick = function(){
@@ -9943,6 +10607,7 @@ function resumeCardio(){
     if(pipTotalBar) pipTotalBar.style.width = (activeRemain / cardioTotal * 100) + '%';
 
     if(activeRest){
+      merged.classList.remove('water-rest-done');
       title.textContent = '💧 WATER BREAK (MAIN TIMER PAUSED)';
       title.style.color = 'var(--amber-t)';
       const rr = Math.max(0, activeRest.endSec - wallElapsed);
@@ -9955,6 +10620,7 @@ function resumeCardio(){
       if(pipLabel) pipLabel.textContent = 'Rest left';
       if(pipStep) pipStep.textContent = rm + ':' + rs;
     } else if(nextRest){
+      merged.classList.remove('water-rest-done');
       title.textContent = 'Active time until next rest';
       title.style.color = 'var(--blue-t)';
       const actLeftToRest = Math.max(0, nextRest.activeTriggerSec - activeElapsed);
@@ -9967,15 +10633,13 @@ function resumeCardio(){
       if(pipLabel) pipLabel.textContent = 'Next rest';
       if(pipStep) pipStep.textContent = nm + ':' + ns;
     } else {
-      title.textContent = 'Final stretch — no more rests';
-      title.style.color = 'var(--green-t)';
-      const lastTrigger = cardioSchedule.length ? (cardioSchedule[cardioSchedule.length - 1].activeTriggerSec || 0) : 0;
-      const finalSegLen = Math.max(1, cardioTotal - lastTrigger);
-      step.style.width = (clamp(activeRemain / finalSegLen, 0, 1) * 100) + '%';
-      step.style.background = 'linear-gradient(90deg,var(--green),var(--blue))';
-      merged.textContent = m + ':' + s;
-      if(pipLabel) pipLabel.textContent = 'Finish in';
-      if(pipStep) pipStep.textContent = m + ':' + s;
+      title.textContent = 'NO MORE WATER RESTS';
+      title.style.color = 'var(--txt-3)';
+      step.style.width = '0%';
+      merged.textContent = '---';
+      merged.classList.add('water-rest-done');
+      if(pipLabel) pipLabel.textContent = 'Water rests';
+      if(pipStep) pipStep.textContent = '---';
     }
     if(wallElapsed % 4 === 0 || activeRest) syncCardio();
   };
@@ -10002,12 +10666,20 @@ function restoreCardio(o){
   toast('Cardio session restored 🔥');
 }
 function endCardio(){
-  askConfirm('End Cardio Session', 'Finish your cardio session now and view summary?', function(){
-    endCardioConfirmed();
-  });
+  if(_cardioCountdownInt){
+    cancelCardioDuringCountdown();
+    return;
+  }
+  const elapsedSec = cardioStart ? Math.floor((Date.now() - cardioStart) / 1000) : 0;
+  if(elapsedSec <= 5){
+    cancelCardioDuringCountdown();
+    return;
+  }
+  endCardioConfirmed();
 }
 function endCardioConfirmed(){
   playSound('warn');
+  clearInterval(_cardioCountdownInt); _cardioCountdownInt = null;
   if(cardioInt){ clearInterval(cardioInt); cardioInt = null; }
   killAllSounds(); releaseWake();
   const wallElapsed = Math.floor((Date.now() - cardioStart) / 1000);
@@ -10022,20 +10694,47 @@ function endCardioConfirmed(){
   showCardioSummary(Math.max(1, wallElapsed), activeSec, restSec);
 }
 function rateCardio(el, emoji){ playSound('tap'); document.querySelectorAll('#modal-cardiosummary .rating button').forEach(function(b){ b.classList.remove('on'); }); el.classList.add('on'); cardioRating = emoji; }
+function estimateCardioCalories(activeSec, type){
+  const prof = appData.athleteProfile || {};
+  const rawW = parseFloat(prof.weight) || 75;
+  const weightKg = (appData.unit === 'lb') ? (rawW / 2.20462) : rawW;
+  const metMap = { treadmill: 7.2, stairs: 8.8, bike: 6.8, elliptical: 6.5, rowing: 7.5, other: 6.2, none: 6.0 };
+  const met = metMap[type] || 6.5;
+  const hrs = Math.max(0, activeSec) / 3600;
+  return Math.max(1, Math.round(met * weightKg * hrs));
+}
 function showCardioSummary(totalWall, activeSec, restSec){
   let rests = 0;
   cardioSchedule.forEach(function(r){
     if(totalWall > r.startSec) rests++;
   });
+  const kcal = estimateCardioCalories(activeSec, cardioType);
   $('csActive').textContent = Math.floor(activeSec/60) + 'm ' + (activeSec%60) + 's';
   $('csRest').textContent = Math.floor(restSec/60) + 'm ' + (restSec%60) + 's';
   $('csCount').textContent = rests + '/' + cardioSchedule.length;
-  pendingCardio = {date:Date.now(), durationMins:Math.max(1, Math.round(activeSec/60)), activeWalkingSec:activeSec, totalRestSec:restSec, rests:rests, cardioType:cardioType, intensity:null};
+  if($('csCalories')) $('csCalories').textContent = kcal + ' kcal';
+  pendingCardio = {date:Date.now(), durationMins:Math.max(1, Math.round(activeSec/60)), activeWalkingSec:activeSec, totalRestSec:restSec, rests:rests, calories:kcal, cardioType:cardioType, intensity:null};
   openModal('modal-cardiosummary');
 }
 function closeCardioSummary(){
-  if(pendingCardio){ pendingCardio.rating = cardioRating || null; appData.cardioHistory.push(pendingCardio); save(); pendingCardio = null; }
-  closeModal('modal-cardiosummary'); route();
+  if(pendingCardio){
+    pendingCardio.rating = cardioRating || null;
+    appData.cardioHistory.push(pendingCardio);
+    save();
+    pendingCardio = null;
+    playSound('success');
+    toast('💾 Cardio session saved!');
+  }
+  closeModal('modal-cardiosummary');
+  route();
+}
+function discardCardioSummary(){
+  pendingCardio = null;
+  cardioRating = null;
+  playSound('warn');
+  closeModal('modal-cardiosummary');
+  toast('🗑️ Cardio session discarded (not saved)');
+  route();
 }
 function openCardioHistory(){
   const c = $('cardioHistList'); c.innerHTML = '';
@@ -10063,6 +10762,7 @@ function updateAnalyticsUI(){
   renderChart();
   renderAnalyticsAIAudit();
   if(typeof renderAnalyticsConsistencyAndVolume === 'function') renderAnalyticsConsistencyAndVolume();
+  if(typeof renderWeightProgressChart === 'function') renderWeightProgressChart();
 }
 function deleteLatestSession(){
   playSound('warn');
@@ -10724,6 +11424,28 @@ function refreshSettingsUI(){
     dlBtn.textContent = cfg.enabled ? '🛡️ ON' : 'OFF';
     dlBtn.classList.toggle('on', !!cfg.enabled);
   }
+  refreshUnitUI();
+  const prof = (typeof ensureAthleteProfile === 'function') ? ensureAthleteProfile() : {};
+  const wpBtn = $('settingsWeightPopupBtn');
+  if(wpBtn){
+    const wpOn = prof.weeklyWeightPrompt !== false;
+    wpBtn.textContent = wpOn ? '🔔 ON' : 'OFF';
+    wpBtn.classList.toggle('on', wpOn);
+  }
+  const wwToggle = $('wwModalAutoToggleBtn');
+  if(wwToggle){
+    const wpOn = prof.weeklyWeightPrompt !== false;
+    wwToggle.textContent = wpOn ? '🔔 ON' : 'OFF';
+    wwToggle.classList.toggle('on', wpOn);
+  }
+  const profSub = $('settingsProfileSummarySub');
+  if(profSub){
+    const gLbl = prof.goal === 'cut' ? 'Cut' : (prof.goal === 'recomp' ? 'Recomp' : 'Bulk');
+    profSub.textContent = (prof.weight || 75) + unitLabel() + ' · ' + (prof.heightCm || 175) + 'cm · Age ' + (prof.age || 23) + ' · Goal: ' + gLbl;
+  }
+  const lang = appData.lang || 'en';
+  if($('langEnBtn')) $('langEnBtn').classList.toggle('on', lang !== 'ar');
+  if($('langArBtn')) $('langArBtn').classList.toggle('on', lang === 'ar');
 }
 function adjustWeeklyGoal(d){ appData.weeklyGoal = Math.max(1, Math.min(7, (appData.weeklyGoal || 4) + d)); save(); refreshSettingsUI(); updateWeekGoal(); }
 function setWeeklyGoal(v){ const n = parseInt(v); if(!isNaN(n) && n >= 1 && n <= 7){ appData.weeklyGoal = n; save(); updateWeekGoal(); } }
@@ -10941,36 +11663,116 @@ function calcPyramid(){
   below.forEach(function(item){ out.insertAdjacentHTML('beforeend', '<div class="pyr-row"><span class="pyr-weight">' + item.weight + unitLabel() + '</span><span class="pyr-arrow">↓</span><span class="pyr-reps">' + item.reps + ' reps</span></div>'); });
 }
 function calcPlates(){
-  const target = parseFloat($('plateTarget').value) || 0;
-  const bar = appData.barWeight || 20;
+  const inp = $('plateTarget');
+  if(!inp) return;
+  const target = parseFloat(inp.value) || 0;
+  const defaultBar = appData.unit === 'lb' ? 45 : 20;
+  const bar = appData.barWeight || defaultBar;
   const el = $('plateText');
+  if(!el) return;
   const perSide = (target - bar) / 2;
   if(target <= 0){ el.innerHTML = '<span class="micro subtle">—</span>'; return; }
-  if(perSide <= 0){ el.innerHTML = '<span class="chip on" style="pointer-events:none">Bar only</span>'; return; }
-  const plates = [25, 20, 15, 10, 5, 2.5, 1.25];
+  if(perSide <= 0){ el.innerHTML = '<span class="chip on" style="pointer-events:none">Bar only (' + bar + unitLabel() + ')</span>'; return; }
+  const plates = getAvailableGymPlates();
   const used = []; let remain = perSide;
   plates.forEach(function(p){ while(remain >= p - 0.001){ used.push(p); remain -= p; } });
   if(!used.length){ el.innerHTML = '<span class="micro subtle">—</span>'; return; }
   const counts = {};
   used.forEach(function(p){ counts[p] = (counts[p] || 0) + 1; });
   const parts = Object.keys(counts).sort(function(a,b){ return parseFloat(b) - parseFloat(a); }).map(function(p){
-    return '<span class="chip on" style="pointer-events:none;font-family:var(--font-mono);font-weight:900">' + p + unitLabel() + '×' + counts[p] + '</span>';
+    return '<span class="chip on" style="pointer-events:none;font-family:var(--font-mono);font-weight:900">' + p + unitLabel() + ' × ' + counts[p] + '</span>';
   });
+  if(remain > 0.05){
+    parts.push('<span class="chip amber" style="pointer-events:none;font-size:9.5px">+' + (Math.round(remain * 100) / 100) + unitLabel() + ' micro</span>');
+  }
   el.innerHTML = parts.join('');
 }
-function setBar(kg, el){
-  appData.barWeight = kg; save();
-  document.querySelectorAll('#screen-tools .chip').forEach(function(c){
-    if(c.parentElement && c.parentElement.contains(el) && c !== el) c.classList.remove('on');
-  });
-  if(el) el.classList.add('on');
+function setBar(val, el){
+  appData.barWeight = val; save();
+  refreshUnitUI();
   calcPlates();
+  renderQuickPlates();
 }
-function setUnit(u){ appData.unit = u; save(); refreshUnitUI(); calc1RM(); calcPyramid(); calcPlates(); }
+function setUnit(u){
+  const prevUnit = appData.unit || 'kg';
+  appData.unit = (u === 'lb') ? 'lb' : 'kg';
+  if(prevUnit !== appData.unit){
+    // Map standard bar weights between KG and LB automatically
+    if(appData.unit === 'lb'){
+      if(appData.barWeight === 20) appData.barWeight = 45;
+      else if(appData.barWeight === 15) appData.barWeight = 35;
+      else if(appData.barWeight === 10) appData.barWeight = 25;
+      else if(appData.barWeight === 25) appData.barWeight = 55;
+      else appData.barWeight = 45;
+      if(appData.athleteProfile && appData.athleteProfile.weight){
+        appData.athleteProfile.weight = Math.round(appData.athleteProfile.weight * 2.20462 * 2) / 2;
+      }
+    } else {
+      if(appData.barWeight === 45) appData.barWeight = 20;
+      else if(appData.barWeight === 35) appData.barWeight = 15;
+      else if(appData.barWeight === 25) appData.barWeight = 10;
+      else if(appData.barWeight === 55) appData.barWeight = 25;
+      else appData.barWeight = 20;
+      if(appData.athleteProfile && appData.athleteProfile.weight){
+        appData.athleteProfile.weight = Math.round((appData.athleteProfile.weight / 2.20462) * 2) / 2;
+      }
+    }
+  }
+  save();
+  refreshUnitUI();
+  calc1RM();
+  calcPyramid();
+  calcPlates();
+  if(workoutActive && currentScreen === 'screen-workout') renderWorkout();
+  if(typeof renderWeightProgressChart === 'function') renderWeightProgressChart();
+  toast('⚖️ Unit system set to ' + appData.unit.toUpperCase());
+}
 function refreshUnitUI(){
+  const isLb = (appData.unit === 'lb');
+  const uLbl = unitLabel();
+  const maxOpt = (appData.maxPlateKg === 25) ? 25 : 20;
   const kg = $('unitKg'), lb = $('unitLb');
-  if(kg) kg.classList.toggle('on', appData.unit === 'kg');
-  if(lb) lb.classList.toggle('on', appData.unit === 'lb');
+  if(kg) kg.classList.toggle('on', !isLb);
+  if(lb) lb.classList.toggle('on', isLb);
+  if($('setUnitKgBtn')) $('setUnitKgBtn').classList.toggle('on', !isLb);
+  if($('setUnitLbBtn')) $('setUnitLbBtn').classList.toggle('on', isLb);
+  if($('calcUnitLbl')) $('calcUnitLbl').textContent = ' ' + uLbl;
+  document.querySelectorAll('.unit-txt').forEach(function(el){ el.textContent = uLbl; });
+
+  // Update Max Plate buttons labels & active state
+  const lbl20 = isLb ? 'Max 45lb' : 'Max 20kg';
+  const lbl25 = isLb ? 'Max 55lb' : 'Max 25kg';
+  ['toolsMaxPlate20','qpMaxPlate20','setMaxPlate20Btn'].forEach(function(id){
+    const b = $(id);
+    if(b){
+      b.classList.toggle('on', maxOpt === 20);
+      b.textContent = id === 'setMaxPlate20Btn' ? (isLb ? '45lb' : '20kg') : lbl20;
+    }
+  });
+  ['toolsMaxPlate25','qpMaxPlate25','setMaxPlate25Btn'].forEach(function(id){
+    const b = $(id);
+    if(b){
+      b.classList.toggle('on', maxOpt === 25);
+      b.textContent = id === 'setMaxPlate25Btn' ? (isLb ? '55lb' : '25kg') : lbl25;
+    }
+  });
+
+  // Update Bar weight chips for KG vs LB
+  const barPresets = isLb ? [45, 35, 25, 55] : [20, 15, 10, 25];
+  if(barPresets.indexOf(appData.barWeight) < 0) appData.barWeight = barPresets[0];
+  const qpContainer = $('qpBarChips');
+  if(qpContainer){
+    qpContainer.innerHTML = barPresets.map(function(bVal){
+      return '<div class="chip' + (appData.barWeight === bVal ? ' on' : '') + '" data-bar="' + bVal + '" onclick="setQuickBar(' + bVal + ')">Bar ' + bVal + '</div>';
+    }).join('');
+  }
+  const toolsBarContainer = $('toolsBarChips');
+  if(toolsBarContainer){
+    toolsBarContainer.innerHTML = barPresets.map(function(bVal){
+      return '<div class="chip' + (appData.barWeight === bVal ? ' on' : '') + '" data-bar="' + bVal + '" onclick="setBar(' + bVal + ',this)">' + bVal + '</div>';
+    }).join('');
+  }
+  if($('qpBarLbl')) $('qpBarLbl').textContent = appData.barWeight + ' ' + uLbl;
 }
 
 document.addEventListener('visibilitychange', function(){
@@ -11672,11 +12474,13 @@ async function callRealCloudLLM(systemPrompt, conversationMessages, timeoutMs){
   }
 
   try{
-    if(typeof Promise.any === 'function'){
-      return await Promise.any([queryPollinationsFast(), queryLLM7Gateway()]);
-    } else {
-      try{ return await queryPollinationsFast(); }catch(_){ return await queryLLM7Gateway(); }
-    }
+    const pAny = (typeof Promise.any === 'function')
+      ? Promise.any([queryPollinationsFast(), queryLLM7Gateway()])
+      : queryPollinationsFast();
+    return await Promise.race([
+      pAny,
+      new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 3400); })
+    ]);
   }catch(e){
     return null;
   }
@@ -11687,6 +12491,31 @@ function executeAgenticChatCommandIfRequested(userMsg){
   const norm = normalizeDigits(msg);
   const timerMatch = norm.match(/(?:التايمر|وقت الراحة|الراحة|rest timer|timer to)\s*(\d{2,3})/i);
   const isAr = /[\u0600-\u06FF]/.test(msg);
+
+  // Log body weight via AI chat (e.g. "سجل وزني 78" or "log my weight 78")
+  const weightMatch = norm.match(/(?:سجل وزني|وزني اليوم|وزني صار|log.*weight|my weight is)\s*(\d{2,3}(?:\.\d+)?)/i);
+  if(weightMatch){
+    const wVal = clamp(parseFloat(weightMatch[1]) || 75, 25, 350);
+    const prof = ensureAthleteProfile();
+    prof.weight = wVal;
+    const wk = getCurrentISOWeekKey();
+    appData.weightLogs.push({ date: Date.now(), weight: wVal, unit: appData.unit || 'kg', note: 'AI Chat', weekKey: wk });
+    appData.lastWeightPromptWeek = wk;
+    save();
+    renderWeightProgressChart();
+    const verd = evaluateWeightGoalProgress(appData.weightLogs, prof.goal);
+    return isAr
+      ? ('⚖️ أبشر يا وحش! سجلت وزنك <b>' + wVal + ' ' + unitLabel() + '</b> لهذا الأسبوع (' + wk + ') وحدثت ملفك الشخصي وحاسبة الكافيين!<br>📈 <b>تقييم الهدف:</b> ' + verd.fullText)
+      : ('⚖️ Logged your body weight at <b>' + wVal + ' ' + unitLabel() + '</b> for week ' + wk + '!<br>📈 <b>Goal Verdict:</b> ' + verd.fullText);
+  }
+
+  // Open Monthly Progress Report via AI chat
+  if(/التقرير الشهري|تقرير الشهر|monthly report/i.test(norm)){
+    setTimeout(function(){ openMonthlyReportModal(); }, 180);
+    return isAr
+      ? '📅 أبشر يا بطل! فتحت لك <b>التقرير الشهري الشامل</b> لتقارن أوزانك وعداتك في كل تمرين (مع أرشيف جميع الشهور السابقة).'
+      : '📅 Opening your <b>Monthly Progress Report & Archive</b> right now!';
+  }
   if(timerMatch){
     const newSec = clamp(parseInt(timerMatch[1]) || 90, 15, 600);
     appData.defaultTimer = newSec;
@@ -12171,6 +13000,7 @@ const STANDARD_WEEKLY_VOLUME_TARGETS = {
   'Chest': 14,
   'Lats': 12,
   'Upper Back': 10,
+  'Lower Back': 8,
   'Upper Traps': 8,
   'Quads': 12,
   'Hamstrings': 10,
@@ -12185,7 +13015,7 @@ const STANDARD_WEEKLY_VOLUME_TARGETS = {
   'Lower Abs': 6,
   'Obliques': 6
 };
-let volumeTargetsEditMode = false;
+let volumeTargetsEditMode = true;
 
 function getMuscleWeeklyTarget(mKey){
   const std = STANDARD_WEEKLY_VOLUME_TARGETS[mKey] !== undefined ? STANDARD_WEEKLY_VOLUME_TARGETS[mKey] : 10;
@@ -12250,9 +13080,9 @@ function getWeeklyMuscleVolumeAndSplitFrequency(){
   const volSets = {};
   const splitFreq = {};
   const allMuscleKeys = [
-    'Chest', 'Lats', 'Upper Back', 'Upper Traps', 'Quads', 'Hamstrings', 'Glutes', 'Adductors', 'Abductors',
+    'Chest', 'Lats', 'Upper Back', 'Lower Back', 'Upper Traps', 'Quads', 'Hamstrings', 'Glutes', 'Adductors', 'Abductors',
     'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Forearms',
-    'Upper Abs', 'Lower Abs', 'Obliques', 'Calves'
+    'Upper Abs', 'Lower Abs', 'Obliques', 'Calves', 'Tibialis'
   ];
   allMuscleKeys.forEach(function(k){ volSets[k] = 0; splitFreq[k] = 0; });
 
@@ -12274,9 +13104,15 @@ function getWeeklyMuscleVolumeAndSplitFrequency(){
     (d.exercises || []).forEach(function(ex){
       const p1 = getExerciseBioProfile(ex.name);
       const k1 = p1 ? p1.primaryKey : 'Chest';
+      const extra1 = (p1 && Array.isArray(p1.extraPrimaryKeys)) ? p1.extraPrimaryKeys : [];
       (ex.history || []).forEach(function(h){
         if(!h || h.date < weekAgo) return;
-        (h.reps || []).forEach(function(r){ if((parseFloat(r)||0) > 0) volSets[k1] = (volSets[k1] || 0) + 1; });
+        (h.reps || []).forEach(function(r){
+          if((parseFloat(r)||0) > 0){
+            volSets[k1] = (volSets[k1] || 0) + 1;
+            extra1.forEach(function(ek){ volSets[ek] = (volSets[ek] || 0) + 1; });
+          }
+        });
       });
       if(ex.supersetName){
         const p2 = getExerciseBioProfile(ex.supersetName);
@@ -12298,7 +13134,7 @@ function renderMuscleHeatmap(){
   const detailed = getDetailedHeatmapMuscleMap(heatmapTimeTravelHours);
   const vs = getWeeklyMuscleVolumeAndSplitFrequency();
   const mainMuscleKeys = [
-    'Chest', 'Lats', 'Upper Back', 'Quads', 'Hamstrings', 'Glutes',
+    'Chest', 'Lats', 'Upper Back', 'Lower Back', 'Quads', 'Hamstrings', 'Glutes',
     'Front Delts', 'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Upper Traps',
     'Upper Abs', 'Lower Abs', 'Obliques', 'Calves'
   ];
@@ -12413,10 +13249,11 @@ function renderMuscleHeatmap(){
   const smallGrid = $('hmSmallMusclesGrid');
   if(smallGrid){
     smallGrid.innerHTML = buildMuscleGridHTML([
+      'Lower Back', 'Upper Traps',
       'Front Delts', 'Side Delts', 'Rear Delts',
-      'Biceps', 'Triceps', 'Upper Traps',
+      'Biceps', 'Triceps', 'Calves',
       'Upper Abs', 'Lower Abs', 'Obliques',
-      'Calves', 'Adductors', 'Abductors', 'Forearms'
+      'Adductors', 'Abductors', 'Forearms'
     ]);
   }
 
@@ -12450,14 +13287,14 @@ function inspectHeatmapMuscle(mKey, silent){
     (d.exercises || []).forEach(function(ex){
       const p1 = getExerciseBioProfile(ex.name);
       if(p1){
-        if(p1.primaryKey === mKey) isDir = true;
-        else if(p1.isCompound && p1.synergists && p1.synergists.indexOf(mKey) >= 0) isSyn = true;
+        if(p1.primaryKey === mKey || (Array.isArray(p1.extraPrimaryKeys) && p1.extraPrimaryKeys.indexOf(mKey) >= 0)) isDir = true;
+        else if(p1.synergists && p1.synergists.indexOf(mKey) >= 0) isSyn = true;
       }
       if(ex.supersetName){
         const p2 = getExerciseBioProfile(ex.supersetName);
         if(p2){
-          if(p2.primaryKey === mKey) isDir = true;
-          else if(p2.isCompound && p2.synergists && p2.synergists.indexOf(mKey) >= 0) isSyn = true;
+          if(p2.primaryKey === mKey || (Array.isArray(p2.extraPrimaryKeys) && p2.extraPrimaryKeys.indexOf(mKey) >= 0)) isDir = true;
+          else if(p2.synergists && p2.synergists.indexOf(mKey) >= 0) isSyn = true;
         }
       }
     });
@@ -12577,6 +13414,7 @@ function renderAnalyticsConsistencyAndVolume(){
     { key: 'Chest', label: 'Chest' },
     { key: 'Lats', label: 'Lats (Back Width)' },
     { key: 'Upper Back', label: 'Upper Back (Thickness)' },
+    { key: 'Lower Back', label: 'Lower Back (Lumbar)' },
     { key: 'Upper Traps', label: 'Upper Traps' },
     { key: 'Quads', label: 'Quads' },
     { key: 'Hamstrings', label: 'Hamstrings' },
@@ -12596,8 +13434,8 @@ function renderAnalyticsConsistencyAndVolume(){
   const subLbl = $('analyticsVolSubLabel');
   if(subLbl){
     subLbl.textContent = volumeTargetsEditMode
-      ? 'Tap − / + to customize weekly target sets per muscle (or tap ↺ Standard to reset)'
-      : (isCustom ? 'Custom weekly targets active · Tap 🎯 Targets to edit or ↺ Standard to reset' : 'Standard scientific targets active · Tap 🎯 Targets to customize');
+      ? 'Tap − / + or type target sets per muscle (or tap ↺ Standard to reset)'
+      : (isCustom ? 'Custom weekly targets active · Tap 🎯 Targets or any number to edit' : 'Standard scientific targets active · Tap 🎯 Targets or any number to customize');
   }
   const rstBtn = $('resetVolTargetsBtn');
   if(rstBtn){
@@ -12613,21 +13451,21 @@ function renderAnalyticsConsistencyAndVolume(){
     const barCol = s >= target ? 'linear-gradient(90deg,var(--green),var(--blue))' : (s >= Math.ceil(target * 0.5) ? 'linear-gradient(90deg,var(--amber),var(--green))' : 'var(--blue)');
 
     if(volumeTargetsEditMode){
-      return '<div class="vol-bar-row" style="grid-template-columns:112px 1fr auto;gap:6px;align-items:center">' +
+      return '<div class="vol-bar-row" style="grid-template-columns:108px 1fr auto;gap:6px;align-items:center">' +
         '<span style="font-weight:800;color:var(--txt-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + g.label + (isRowCustom ? ' <b style="color:var(--purple-t)">*</b>' : '') + '</span>' +
         '<div class="bar" style="height:6px"><div class="bar-fill" style="width:' + pct + '%;background:' + barCol + '"></div></div>' +
         '<div class="row" style="gap:3px;align-items:center">' +
-          '<button class="btn sq-sm" style="width:22px;height:22px;font-size:12px;padding:0" onclick="adjustMuscleWeeklyTarget(\'" + g.key + "\', -1)">−</button>' +
-          '<span class="mono" style="min-width:44px;text-align:center;font-weight:900;font-size:10.5px;color:' + (isRowCustom ? 'var(--purple-t)' : 'var(--txt)') + '">' + s + '/' + target + 's</span>' +
-          '<button class="btn sq-sm" style="width:22px;height:22px;font-size:12px;padding:0" onclick="adjustMuscleWeeklyTarget(\'" + g.key + "\', 1)">+</button>' +
+          '<button type="button" class="btn sq-sm" style="width:24px;height:24px;font-size:13px;padding:0" onclick="adjustMuscleWeeklyTarget(\'' + g.key + '\', -1)">−</button>' +
+          '<input type="text" readonly inputmode="none" class="num-target" data-label="Weekly Target Sets (' + g.label + ')" value="' + target + '" onclick="setActiveNumTarget(this)" oninput="setMuscleWeeklyTargetDirect(\'' + g.key + '\', this.value)" style="width:36px;height:23px;padding:1px 2px;font-size:11px;font-weight:900;font-family:var(--font-mono);text-align:center;color:' + (isRowCustom ? 'var(--purple-t)' : 'var(--green-t)') + '">' +
+          '<button type="button" class="btn sq-sm" style="width:24px;height:24px;font-size:13px;padding:0" onclick="adjustMuscleWeeklyTarget(\'' + g.key + '\', 1)">+</button>' +
         '</div>' +
       '</div>';
     }
 
-    return '<div class="vol-bar-row" style="grid-template-columns:112px 1fr 48px">' +
+    return '<div class="vol-bar-row" style="grid-template-columns:112px 1fr 54px;align-items:center">' +
       '<span style="font-weight:800;color:var(--txt-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + g.label + (isRowCustom ? ' <b style="color:var(--purple-t)" title="Custom Target (Standard: ' + stdTarget + 's)">*</b>' : '') + '</span>' +
       '<div class="bar" style="height:6px"><div class="bar-fill" style="width:' + pct + '%;background:' + barCol + '"></div></div>' +
-      '<span class="mono" onclick="toggleVolumeTargetsEditMode()" title="Tap to customize weekly target sets" style="cursor:pointer;text-align:right;font-weight:900;color:' + (s >= target ? 'var(--green-t)' : (isRowCustom ? 'var(--purple-t)' : 'var(--txt)')) + '">' + s + '/' + target + 's</span>' +
+      '<span class="mono" onclick="toggleVolumeTargetsEditMode()" title="Tap to customize weekly target sets" style="cursor:pointer;text-align:right;font-weight:900;padding:2px 4px;border-radius:6px;background:var(--surface-3);border:1px solid var(--line);color:' + (s >= target ? 'var(--green-t)' : (isRowCustom ? 'var(--purple-t)' : 'var(--txt)')) + '">' + s + '/' + target + 's</span>' +
     '</div>';
   }).join('');
 }
@@ -12951,16 +13789,19 @@ let caffIsSmoker = false;
 
 function openCaffeineCalcScreen(){
   playSound('nav');
+  const prof = (typeof ensureAthleteProfile === 'function') ? ensureAthleteProfile() : {};
+  const syncedWeight = prof.weight || (appData.caffBio && appData.caffBio.weight) || 75;
+  const syncedAge = prof.age || (appData.caffBio && appData.caffBio.age) || 23;
+  if($('caffWeightInput')) $('caffWeightInput').value = syncedWeight;
+  if($('caffAgeInput')) $('caffAgeInput').value = syncedAge;
   if(appData.caffBio){
-    if($('caffWeightInput')) $('caffWeightInput').value = appData.caffBio.weight || 75;
-    if($('caffAgeInput')) $('caffAgeInput').value = appData.caffBio.age || 24;
     if($('caffDoseSlider')) $('caffDoseSlider').value = appData.caffBio.dose || 200;
     if($('caffDoseDisplay')) $('caffDoseDisplay').textContent = appData.caffBio.dose || 200;
     caffIsSmoker = !!appData.caffBio.smoker;
   }
   if($('caffSmokerNo')) $('caffSmokerNo').classList.toggle('on', !caffIsSmoker);
   if($('caffSmokerYes')) $('caffSmokerYes').classList.toggle('on', caffIsSmoker);
-  document.querySelectorAll('.unit-txt').forEach(function(el){ el.textContent = unitLabel(); });
+  refreshUnitUI();
   renderCaffeineCalculator();
   showScreen('screen-caffeine-calc');
 }
@@ -13007,6 +13848,10 @@ function renderCaffeineCalculator(){
   const age = clamp(parseInt($('caffAgeInput') && $('caffAgeInput').value) || 24, 12, 95);
 
   appData.caffBio = { dose: doseMg, weight: rawWeight, age: age, smoker: caffIsSmoker };
+  if(appData.athleteProfile){
+    appData.athleteProfile.weight = rawWeight;
+    appData.athleteProfile.age = age;
+  }
   save();
 
   // Clinical CYP1A2 Half-Life (t1/2) Model:
@@ -13968,60 +14813,937 @@ const TUTORIAL_BY_SCREEN = {
   ]
 };
 
-let tutScreenId = 'screen-home';
+
+let activeAnalyticsSubPage = 'lifts';
+function switchAnalyticsSubPage(tab){
+  playSound('tap');
+  activeAnalyticsSubPage = tab || 'lifts';
+  if($('anSubTabLifts')) $('anSubTabLifts').classList.toggle('on', activeAnalyticsSubPage === 'lifts');
+  if($('anSubTabVolume')) $('anSubTabVolume').classList.toggle('on', activeAnalyticsSubPage === 'volume');
+  if($('anSubTabWeight')) $('anSubTabWeight').classList.toggle('on', activeAnalyticsSubPage === 'weight');
+  if($('anPageLifts')) $('anPageLifts').classList.toggle('hidden', activeAnalyticsSubPage !== 'lifts');
+  if($('anPageVolume')) $('anPageVolume').classList.toggle('hidden', activeAnalyticsSubPage !== 'volume');
+  if($('anPageWeight')) $('anPageWeight').classList.toggle('hidden', activeAnalyticsSubPage !== 'weight');
+  if(activeAnalyticsSubPage === 'volume'){
+    renderAnalyticsConsistencyAndVolume();
+  } else if(activeAnalyticsSubPage === 'weight'){
+    renderWeightProgressChart();
+  } else {
+    renderChart();
+  }
+}
+
+function switchToolsSubPage(tab){
+  playSound('tap');
+  const isPlates = (tab === 'plates');
+  if($('toolsTab1RM')) $('toolsTab1RM').classList.toggle('on', !isPlates);
+  if($('toolsTabPlates')) $('toolsTabPlates').classList.toggle('on', isPlates);
+  if($('toolsPane1RM')) $('toolsPane1RM').classList.toggle('hidden', isPlates);
+  if($('toolsPanePlates')) $('toolsPanePlates').classList.toggle('hidden', !isPlates);
+  if(isPlates) calcPlates();
+  else { calc1RM(); calcPyramid(); }
+}
+
+function setMuscleWeeklyTargetDirect(mKey, rawVal){
+  const v = parseInt(rawVal);
+  if(isNaN(v) || v < 1) return;
+  if(!appData.customVolumeTargets || typeof appData.customVolumeTargets !== 'object'){
+    appData.customVolumeTargets = {};
+  }
+  const clamped = clamp(v, 1, 40);
+  if(clamped === STANDARD_WEEKLY_VOLUME_TARGETS[mKey]){
+    delete appData.customVolumeTargets[mKey];
+  } else {
+    appData.customVolumeTargets[mKey] = clamped;
+  }
+  save();
+}
+
+/* ============================================================================
+ * 6. UNIFIED ATHLETE PROFILE, GYM JOURNEY COUNTER, WEEKLY WEIGHT TRACKER
+ *    & MONTHLY PROGRESS REPORTS ARCHIVE
+ * ============================================================================ */
+function computeAgeFromBirthDate(birthDateStr){
+  if(!birthDateStr) return null;
+  const parts = String(birthDateStr).split('-');
+  if(parts.length < 3) return null;
+  const by = parseInt(parts[0]), bm = parseInt(parts[1]) - 1, bd = parseInt(parts[2]);
+  if(isNaN(by) || isNaN(bm) || isNaN(bd)) return null;
+  const today = new Date();
+  let age = today.getFullYear() - by;
+  const mDiff = today.getMonth() - bm;
+  if(mDiff < 0 || (mDiff === 0 && today.getDate() < bd)) age--;
+  return clamp(age, 10, 99);
+}
+
+function inferExpFromGymStart(gymStartStr){
+  if(!gymStartStr) return null;
+  const dt = new Date(gymStartStr);
+  if(isNaN(dt.getTime())) return null;
+  const months = (Date.now() - dt.getTime()) / (30.4375 * 86400000);
+  if(months < 6) return 'beginner';
+  if(months < 24) return 'intermediate';
+  if(months < 60) return 'advanced';
+  return 'elite';
+}
+
+function ensureAthleteProfile(){
+  if(!appData.athleteProfile || typeof appData.athleteProfile !== 'object'){
+    appData.athleteProfile = {
+      weight: (appData.caffBio && appData.caffBio.weight) ? appData.caffBio.weight : 75,
+      heightCm: 175,
+      birthDate: '',
+      age: (appData.caffBio && appData.caffBio.age) ? appData.caffBio.age : (suggestData.age || 23),
+      gender: suggestData.gender || 'male',
+      gymStartDate: '',
+      goal: 'bulk',
+      maxPlateKg: appData.maxPlateKg || 20,
+      weeklyWeightPrompt: true
+    };
+  }
+  const p = appData.athleteProfile;
+  if(!p.weight || p.weight < 25) p.weight = 75;
+  if(!p.heightCm || p.heightCm < 100) p.heightCm = 175;
+  if(p.birthDate){
+    const calcA = computeAgeFromBirthDate(p.birthDate);
+    if(calcA) p.age = calcA;
+  }
+  if(!p.age || p.age < 10) p.age = 23;
+  if(!p.goal || ['cut','bulk','recomp'].indexOf(p.goal) < 0) p.goal = 'bulk';
+  if(p.weeklyWeightPrompt === undefined) p.weeklyWeightPrompt = true;
+  if(!Array.isArray(appData.weightLogs)) appData.weightLogs = [];
+  if(!appData.monthlyReportsArchive || typeof appData.monthlyReportsArchive !== 'object') appData.monthlyReportsArchive = {};
+  return p;
+}
+
+function calculateExactGymJourney(startDateStr){
+  if(!startDateStr) return null;
+  const start = new Date(startDateStr + 'T00:00:00');
+  const now = new Date();
+  if(isNaN(start.getTime()) || start > now) return null;
+
+  let years = now.getFullYear() - start.getFullYear();
+  let months = now.getMonth() - start.getMonth();
+  let days = now.getDate() - start.getDate();
+
+  if(days < 0){
+    months--;
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if(months < 0){
+    years--;
+    months += 12;
+  }
+  const totalDays = Math.max(0, Math.floor((now.getTime() - start.getTime()) / 86400000));
+  let rank = '🌱 Iron Initiate';
+  if(years >= 5) rank = '💎 Iron Legend (5Y+)';
+  else if(years >= 3) rank = '👑 Gym Veteran (3Y+)';
+  else if(years >= 1) rank = '🔥 Iron Warrior (1Y+)';
+  else if(months >= 3) rank = '⚡ Dedicated Lifter';
+
+  return { years: years, months: months, days: days, totalDays: totalDays, rank: rank, startStr: startDateStr };
+}
+
+function updateGymJourneyBanner(){
+  const card = $('homeGymJourneyCard');
+  if(!card) return;
+  const prof = ensureAthleteProfile();
+  const j = calculateExactGymJourney(prof.gymStartDate);
+  if(!j){
+    card.classList.add('hidden');
+    return;
+  }
+  card.classList.remove('hidden');
+  if($('journeyYearsVal')) $('journeyYearsVal').textContent = j.years;
+  if($('journeyMonthsVal')) $('journeyMonthsVal').textContent = j.months;
+  if($('journeyDaysVal')) $('journeyDaysVal').textContent = j.days;
+  if($('homeJourneyRankBadge')) $('homeJourneyRankBadge').textContent = j.rank;
+  const isAr = (appData.lang === 'ar');
+  if($('homeJourneyTitle')) $('homeJourneyTitle').textContent = isAr ? 'رحلتك في الجيم' : 'Your Iron Journey';
+  if($('homeJourneyTotalDaysTxt')) $('homeJourneyTotalDaysTxt').textContent = isAr ? ('إجمالي الاستمرارية: ' + j.totalDays + ' يوم 🔥') : ('Total Dedication: ' + j.totalDays + ' Days Strong 🔥');
+  if($('homeJourneyStartTxt')) $('homeJourneyStartTxt').textContent = (isAr ? 'البداية: ' : 'Since: ') + j.startStr;
+}
+
+function stepProfileField(id, delta){
+  playSound('key');
+  const inp = $(id);
+  if(!inp) return;
+  let v = parseFloat(inp.value) || 0;
+  v = Math.max(1, Math.round((v + delta) * 10) / 10);
+  inp.value = v;
+}
+
+function onProfileBirthDateChange(){
+  const bStr = $('profBirthDateInput') ? $('profBirthDateInput').value : '';
+  const age = computeAgeFromBirthDate(bStr);
+  if(age && $('profAgeInput')) $('profAgeInput').value = age;
+}
+
+let _tempProfileGoal = 'bulk';
+function selectProfileGoal(g){
+  playSound('tap');
+  _tempProfileGoal = g || 'bulk';
+  if($('profGoalCut')) $('profGoalCut').classList.toggle('on', _tempProfileGoal === 'cut');
+  if($('profGoalBulk')) $('profGoalBulk').classList.toggle('on', _tempProfileGoal === 'bulk');
+  if($('profGoalRecomp')) $('profGoalRecomp').classList.toggle('on', _tempProfileGoal === 'recomp');
+  const descEl = $('profGoalDescTxt');
+  if(descEl){
+    if(_tempProfileGoal === 'cut'){
+      descEl.textContent = '🔥 Cut (تنشيف): Weight graph marks downward weight trend as Advancing (Green) and weight gain as Regressing.';
+    } else if(_tempProfileGoal === 'recomp'){
+      descEl.textContent = '⚖️ Body Recomposition (ثبات وبناء): Weight graph marks stable weight (±1%) + rising gym strength as Optimal Progress.';
+    } else {
+      descEl.textContent = '💪 Bulk (تضخيم): Weight graph marks steady weight gain as Advancing (Green) and weight loss as Regressing.';
+    }
+  }
+}
+
+function previewProfileGymJourney(){
+  const s = $('profGymStartDateInput') ? $('profGymStartDateInput').value : '';
+  const prev = $('profGymJourneyPreview');
+  if(!prev) return;
+  const j = calculateExactGymJourney(s);
+  if(!j){
+    prev.textContent = 'Optional — leave empty to hide the Home Journey counter.';
+  } else {
+    prev.textContent = '🔥 ' + j.years + ' Years · ' + j.months + ' Months · ' + j.days + ' Days (' + j.totalDays + ' total days · ' + j.rank + ')';
+  }
+}
+
+function openAthleteProfileModal(){
+  playSound('tap');
+  const prof = ensureAthleteProfile();
+  refreshUnitUI();
+  if($('profWeightInput')) $('profWeightInput').value = prof.weight || 75;
+  if($('profHeightInput')) $('profHeightInput').value = prof.heightCm || 175;
+  if($('profBirthDateInput')) $('profBirthDateInput').value = prof.birthDate || '';
+  if($('profAgeInput')) $('profAgeInput').value = prof.age || 23;
+  if($('profGymStartDateInput')) $('profGymStartDateInput').value = prof.gymStartDate || '';
+  selectProfileGoal(prof.goal || 'bulk');
+  previewProfileGymJourney();
+  openModal('modal-athlete-profile');
+}
+
+function saveAthleteProfileModal(){
+  const prof = ensureAthleteProfile();
+  const w = clamp(parseFloat($('profWeightInput') && $('profWeightInput').value) || 75, 25, 350);
+  const h = clamp(parseInt($('profHeightInput') && $('profHeightInput').value) || 175, 100, 240);
+  const bDate = $('profBirthDateInput') ? $('profBirthDateInput').value.trim() : '';
+  let age = clamp(parseInt($('profAgeInput') && $('profAgeInput').value) || 23, 10, 99);
+  if(bDate){
+    const calcA = computeAgeFromBirthDate(bDate);
+    if(calcA) age = calcA;
+  }
+  const gStart = $('profGymStartDateInput') ? $('profGymStartDateInput').value.trim() : '';
+  prof.weight = w;
+  prof.heightCm = h;
+  prof.birthDate = bDate;
+  prof.age = age;
+  prof.goal = _tempProfileGoal || 'bulk';
+  prof.gymStartDate = gStart;
+  suggestData.age = age;
+  if(appData.caffBio){
+    appData.caffBio.weight = w;
+    appData.caffBio.age = age;
+  }
+  // Also sync AI wizard fields if present
+  if($('aiProfWeightInput')) $('aiProfWeightInput').value = w;
+  if($('aiProfHeightInput')) $('aiProfHeightInput').value = h;
+  if($('aiProfGoalSelect')) $('aiProfGoalSelect').value = prof.goal;
+  if($('aiProfBirthInput')) $('aiProfBirthInput').value = bDate;
+  if($('aiProfGymStartInput')) $('aiProfGymStartInput').value = gStart;
+  if($('aiAgeInput')) $('aiAgeInput').value = age;
+  if(gStart){
+    const infExp = inferExpFromGymStart(gStart);
+    if(infExp) aiSelectExp(infExp);
+  }
+  save();
+  updateGymJourneyBanner();
+  updateWorkoutTelemetry();
+  refreshSettingsUI();
+  renderWeightProgressChart();
+  closeNumpad();
+  closeModal('modal-athlete-profile');
+  playSound('success');
+  toast('🧬 Athlete Profile & Goal saved across the app!');
+}
+
+function syncProfileFromAIWizard(){
+  const prof = ensureAthleteProfile();
+  if($('aiProfWeightInput') && parseFloat($('aiProfWeightInput').value) > 25){
+    prof.weight = clamp(parseFloat($('aiProfWeightInput').value), 25, 350);
+  }
+  if($('aiProfHeightInput') && parseInt($('aiProfHeightInput').value) > 100){
+    prof.heightCm = clamp(parseInt($('aiProfHeightInput').value), 100, 240);
+  }
+  if($('aiProfGoalSelect')){
+    prof.goal = $('aiProfGoalSelect').value || 'bulk';
+  }
+  if($('aiProfBirthInput') && $('aiProfBirthInput').value){
+    prof.birthDate = $('aiProfBirthInput').value;
+    const calcA = computeAgeFromBirthDate(prof.birthDate);
+    if(calcA){
+      prof.age = calcA;
+      suggestData.age = calcA;
+      if($('aiAgeInput')) $('aiAgeInput').value = calcA;
+    }
+  }
+  if($('aiProfGymStartInput')){
+    prof.gymStartDate = $('aiProfGymStartInput').value || '';
+    if(prof.gymStartDate){
+      const infExp = inferExpFromGymStart(prof.gymStartDate);
+      if(infExp) aiSelectExp(infExp);
+    }
+  }
+  save();
+  updateGymJourneyBanner();
+}
+
+function setAthleteGoalQuick(g){
+  playSound('tap');
+  const prof = ensureAthleteProfile();
+  prof.goal = g || 'bulk';
+  save();
+  updateWorkoutTelemetry();
+  renderWeightProgressChart();
+  const names = { cut: '🔥 Cutting (تنشيف)', bulk: '💪 Bulking (تضخيم)', recomp: '⚖️ Body Recomp (ثبات وبناء)' };
+  toast('🎯 Goal updated to ' + (names[g] || g));
+}
+
+/* ============ WEEKLY BODY WEIGHT CHECK-IN & GOAL GRAPH ============ */
+function getCurrentISOWeekKey(ts){
+  const d = new Date(ts || Date.now());
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  const weekNum = 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return d.getFullYear() + '-W' + String(weekNum).padStart(2, '0');
+}
+
+function toggleWeeklyWeightPopupSetting(){
+  playSound('tap');
+  const prof = ensureAthleteProfile();
+  prof.weeklyWeightPrompt = !(prof.weeklyWeightPrompt !== false);
+  save();
+  refreshSettingsUI();
+  toast(prof.weeklyWeightPrompt ? '🔔 Weekly Weight Check-In Popup Enabled' : '🔕 Weekly Weight Check-In Popup Disabled');
+}
+
+function openWeightTrackerModal(){
+  openWeeklyWeightModal(true);
+}
+
+function openWeeklyWeightModal(manualOpen){
+  playSound('tap');
+  const prof = ensureAthleteProfile();
+  refreshUnitUI();
+  const wk = getCurrentISOWeekKey();
+  const gMap = { cut: '🔥 Cut (تنشيف)', bulk: '💪 Bulk (تضخيم)', recomp: '⚖️ Recomp (ثبات)' };
+  if($('wwModalWeekLabel')) $('wwModalWeekLabel').textContent = wk + ' · Goal: ' + (gMap[prof.goal] || 'Bulk');
+  if($('wwModalInput')) $('wwModalInput').value = prof.weight || 75;
+  if($('wwModalNote')) $('wwModalNote').value = '';
+  refreshSettingsUI();
+  renderWeeklyWeightModalHistory();
+  openModal('modal-weekly-weight');
+}
+
+function renderWeeklyWeightModalHistory(){
+  const prof = ensureAthleteProfile();
+  const logs = (appData.weightLogs || []).slice().sort(function(a,b){ return a.date - b.date; });
+  const listEl = $('wwModalHistoryList');
+  const badgeEl = $('wwModalTrendBadge');
+  if(!listEl) return;
+  if(!logs.length){
+    listEl.innerHTML = '<div class="micro subtle center" style="padding:10px">No weight logs yet — log your first weight above!</div>';
+    if(badgeEl) badgeEl.textContent = 'Baseline';
+    return;
+  }
+  const verdict = evaluateWeightGoalProgress(logs, prof.goal);
+  if(badgeEl){
+    badgeEl.textContent = verdict.shortBadge;
+    badgeEl.style.color = verdict.color;
+  }
+  listEl.innerHTML = logs.slice(-8).reverse().map(function(item, idx){
+    const dt = new Date(item.date).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    return '<div class="row-between" style="font-size:11px;padding:4px 6px;border-radius:7px;background:var(--surface-3)">' +
+      '<span><b>' + dt + '</b> <span class="micro subtle">(' + (item.weekKey || '') + ')</span>' + (item.note ? (' · <i class="subtle">' + escapeAttr(item.note) + '</i>') : '') + '</span>' +
+      '<span class="mono" style="font-weight:900;color:var(--green-t)">' + item.weight + ' ' + (item.unit || unitLabel()) + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function saveWeeklyWeightLog(){
+  const prof = ensureAthleteProfile();
+  const val = clamp(parseFloat($('wwModalInput') && $('wwModalInput').value) || prof.weight || 75, 25, 350);
+  const note = $('wwModalNote') ? $('wwModalNote').value.trim() : '';
+  const wk = getCurrentISOWeekKey();
+  prof.weight = val;
+  if(appData.caffBio) appData.caffBio.weight = val;
+  if(!Array.isArray(appData.weightLogs)) appData.weightLogs = [];
+
+  // If already logged today, update today's entry; otherwise push new entry
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const existingToday = appData.weightLogs.find(function(x){ return x.date >= todayStart.getTime(); });
+  if(existingToday){
+    existingToday.weight = val;
+    existingToday.unit = appData.unit || 'kg';
+    existingToday.note = note;
+    existingToday.weekKey = wk;
+  } else {
+    appData.weightLogs.push({
+      date: Date.now(),
+      weight: val,
+      unit: appData.unit || 'kg',
+      note: note,
+      weekKey: wk
+    });
+  }
+  appData.lastWeightPromptWeek = wk;
+  save();
+  renderWeightProgressChart();
+  renderWeeklyWeightModalHistory();
+  closeNumpad();
+  closeModal('modal-weekly-weight');
+  playSound('success');
+  toast('⚖️ Logged body weight: ' + val + ' ' + unitLabel());
+}
+
+function skipWeeklyWeightCheckIn(){
+  // Allow user to skip for now and log anytime later during the week from Home/Analysis!
+  appData.lastWeightSkipDay = new Date().toDateString();
+  save();
+  closeNumpad();
+  closeModal('modal-weekly-weight');
+  toast('⏭️ Skipped for now — you can log your weight anytime from Home or Analysis!');
+}
+
+function evaluateWeightGoalProgress(logs, goal){
+  goal = goal || 'bulk';
+  if(!logs || logs.length < 2){
+    return {
+      status: 'baseline',
+      color: 'var(--blue-t)',
+      shortBadge: '🎯 Baseline Set',
+      fullText: 'Log at least 2 weigh-ins to evaluate your ' + goal.toUpperCase() + ' progression trend.'
+    };
+  }
+  const first = logs[0];
+  const prev = logs[logs.length - 2];
+  const cur = logs[logs.length - 1];
+  const recentDelta = Math.round((cur.weight - prev.weight) * 100) / 100;
+  const totalDelta = Math.round((cur.weight - first.weight) * 100) / 100;
+  const u = unitLabel();
+  const signRec = recentDelta > 0 ? '+' : '';
+
+  if(goal === 'cut'){
+    if(recentDelta < -0.05 || (recentDelta === 0 && totalDelta < -0.2)){
+      return {
+        status: 'advancing',
+        color: 'var(--green-t)',
+        shortBadge: '🟢 Advancing (Cut ' + signRec + recentDelta + u + ')',
+        fullText: '🟢 Advancing Toward Cut Goal: Weight is trending down (' + signRec + recentDelta + ' ' + u + ' vs last log · Total: ' + (totalDelta > 0 ? '+' : '') + totalDelta + ' ' + u + '). Keep protein & lifting intensity high!'
+      };
+    } else if(recentDelta > 0.15){
+      return {
+        status: 'regressing',
+        color: 'var(--red-t)',
+        shortBadge: '🔴 Regressing (Cut +' + recentDelta + u + ')',
+        fullText: '🔴 Off-Target for Cut: Weight increased by +' + recentDelta + ' ' + u + ' while goal is Cutting. Tighten daily calorie deficit by ~250–300 kcal or add 15m cardio.'
+      };
+    } else {
+      return {
+        status: 'steady',
+        color: 'var(--amber-t)',
+        shortBadge: '🟡 Holding Steady (' + signRec + recentDelta + u + ')',
+        fullText: '🟡 Weight Holding Steady: ' + cur.weight + ' ' + u + '. Slightly reduce calories (-150 kcal) to resume fat loss.'
+      };
+    }
+  } else if(goal === 'recomp'){
+    if(Math.abs(recentDelta) <= 0.8){
+      return {
+        status: 'advancing',
+        color: 'var(--green-t)',
+        shortBadge: '🟢 Optimal Recomp (' + signRec + recentDelta + u + ')',
+        fullText: '🟢 Optimal Body Recomposition: Body weight is stable (' + cur.weight + ' ' + u + ', Δ ' + signRec + recentDelta + ' ' + u + ') while building strength in the gym!'
+      };
+    } else {
+      return {
+        status: 'steady',
+        color: 'var(--amber-t)',
+        shortBadge: '🟡 Drifting (' + signRec + recentDelta + u + ')',
+        fullText: '🟡 Weight shifted by ' + signRec + recentDelta + ' ' + u + ' — adjust calories slightly toward maintenance for strict Body Recomposition.'
+      };
+    }
+  } else {
+    // Bulk (Muscle Gain)
+    if(recentDelta > 0.05 || (recentDelta === 0 && totalDelta > 0.2)){
+      return {
+        status: 'advancing',
+        color: 'var(--green-t)',
+        shortBadge: '🟢 Advancing (Bulk ' + signRec + recentDelta + u + ')',
+        fullText: '🟢 Advancing Toward Bulk Goal: Gaining lean mass steadily (' + signRec + recentDelta + ' ' + u + ' vs last log · Total: ' + (totalDelta > 0 ? '+' : '') + totalDelta + ' ' + u + '). Fueling progressive overload!'
+      };
+    } else if(recentDelta < -0.15){
+      return {
+        status: 'regressing',
+        color: 'var(--red-t)',
+        shortBadge: '🔴 Regressing (Bulk ' + recentDelta + u + ')',
+        fullText: '🔴 Off-Target for Bulk: Weight dropped by ' + recentDelta + ' ' + u + ' while goal is Bulking. Add +250–350 kcal/day to support muscle growth.'
+      };
+    } else {
+      return {
+        status: 'steady',
+        color: 'var(--amber-t)',
+        shortBadge: '🟡 Holding Flat (' + signRec + recentDelta + u + ')',
+        fullText: '🟡 Weight Holding Flat at ' + cur.weight + ' ' + u + '. Add +200 kcal/day to enter a clean lean-bulk surplus.'
+      };
+    }
+  }
+}
+
+function renderWeightProgressChart(){
+  const prof = ensureAthleteProfile();
+  const goal = prof.goal || 'bulk';
+  if($('anGoalCutBtn')) $('anGoalCutBtn').classList.toggle('on', goal === 'cut');
+  if($('anGoalBulkBtn')) $('anGoalBulkBtn').classList.toggle('on', goal === 'bulk');
+  if($('anGoalRecompBtn')) $('anGoalRecompBtn').classList.toggle('on', goal === 'recomp');
+
+  const logs = (appData.weightLogs || []).slice().sort(function(a,b){ return a.date - b.date; });
+  const pts = logs.length ? logs : [{ date: Date.now(), weight: prof.weight || 75, weekKey: getCurrentISOWeekKey() }];
+  const verdict = evaluateWeightGoalProgress(logs, goal);
+
+  const banner = $('weightGoalVerdictBanner');
+  if(banner){
+    banner.textContent = verdict.fullText;
+    banner.style.color = verdict.color;
+    banner.style.borderColor = verdict.status === 'advancing' ? 'var(--green-b)' : (verdict.status === 'regressing' ? 'var(--red-b)' : 'var(--blue-b)');
+  }
+  const sub = $('weightGoalStatusSub');
+  if(sub){
+    const gNames = { cut: 'Cut (تنشيف)', bulk: 'Bulk (تضخيم)', recomp: 'Body Recomp (ثبات وبناء)' };
+    sub.textContent = 'Active Goal: ' + (gNames[goal] || 'Bulk') + ' · ' + logs.length + ' weigh-in' + (logs.length === 1 ? '' : 's') + ' recorded';
+  }
+
+  const startW = pts[0].weight;
+  const curW = pts[pts.length - 1].weight;
+  const diff = Math.round((curW - startW) * 100) / 100;
+  const u = unitLabel();
+  if($('wChartStartVal')) $('wChartStartVal').textContent = 'Start: ' + startW + ' ' + u;
+  if($('wChartLatestVal')) $('wChartLatestVal').textContent = 'Current: ' + curW + ' ' + u;
+  const dEl = $('wChartDeltaVal');
+  if(dEl){
+    dEl.textContent = 'Total Δ: ' + (diff > 0 ? '+' : '') + diff + ' ' + u;
+    dEl.style.color = verdict.color;
+  }
+
+  const svg = $('weightProgressSvg');
+  if(!svg) return;
+  svg.innerHTML = '';
+  const W = 400, H = 118, P = 20;
+  const weights = pts.map(function(p){ return p.weight; });
+  const minW = Math.min.apply(null, weights) - 1.5;
+  const maxW = Math.max.apply(null, weights) + 1.5;
+  const range = (maxW - minW) || 1;
+  const strokeCol = verdict.status === 'regressing' ? 'var(--red-t)' : (verdict.status === 'advancing' ? 'var(--green-t)' : 'var(--blue-t)');
+
+  let path = '';
+  const coords = [];
+  pts.forEach(function(p, i){
+    const x = pts.length === 1 ? (W / 2) : (P + (i / Math.max(1, pts.length - 1)) * (W - P * 2));
+    const y = H - P - ((p.weight - minW) / range) * (H - P * 2);
+    coords.push({ x: x, y: y, w: p.weight, date: p.date });
+    if(i === 0) path += 'M ' + x + ' ' + y;
+    else path += ' L ' + x + ' ' + y;
+  });
+
+  svg.innerHTML += '<line x1="' + P + '" y1="' + (H - P) + '" x2="' + (W - P) + '" y2="' + (H - P) + '" stroke="var(--line)" stroke-width="1"/>';
+  if(coords.length > 1){
+    const area = path + ' L ' + coords[coords.length - 1].x + ' ' + (H - P) + ' L ' + coords[0].x + ' ' + (H - P) + ' Z';
+    svg.innerHTML += '<defs><linearGradient id="wgGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' + strokeCol + '" stop-opacity="0.38"/><stop offset="100%" stop-color="' + strokeCol + '" stop-opacity="0"/></linearGradient></defs>' +
+      '<path d="' + area + '" fill="url(#wgGrad)"/><path d="' + path + '" fill="none" stroke="' + strokeCol + '" stroke-width="2.5"/>';
+  }
+  coords.forEach(function(c){
+    const dt = new Date(c.date).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    svg.innerHTML += '<circle cx="' + c.x + '" cy="' + c.y + '" r="4" fill="' + strokeCol + '"/>' +
+      '<text x="' + c.x + '" y="' + Math.max(11, c.y - 7) + '" text-anchor="middle" fill="var(--txt)" font-size="8.5" font-weight="800">' + c.w + u + ' (' + dt + ')</text>';
+  });
+}
+
+/* ============ MONTHLY PROGRESS REPORT & 1+ YEAR HISTORICAL ARCHIVE ============ */
+function getMonthKeyFromTs(ts){
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function formatMonthKeyDisplay(mKey){
+  if(!mKey) return '';
+  const parts = String(mKey).split('-');
+  if(parts.length < 2) return mKey;
+  const y = parseInt(parts[0]), m = parseInt(parts[1]) - 1;
+  const dt = new Date(y, m, 1);
+  return dt.toLocaleDateString(appData.lang === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long' });
+}
+
+function getAllAvailableReportMonths(){
+  const monthSet = {};
+  const now = new Date();
+  // Always include current month and the past 12 months so user can inspect up to 1+ year ago anytime!
+  for(let i = 0; i <= 12; i++){
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    monthSet[getMonthKeyFromTs(d.getTime())] = true;
+  }
+  // Also include any month that has actual workout history or archived reports (even 2-3 years ago!)
+  (appData.programs || []).forEach(function(p){
+    (p.program || []).forEach(function(d){
+      (d.exercises || []).forEach(function(ex){
+        (ex.history || []).forEach(function(h){ if(h && h.date) monthSet[getMonthKeyFromTs(h.date)] = true; });
+        (ex.supersetHistory || []).forEach(function(h){ if(h && h.date) monthSet[getMonthKeyFromTs(h.date)] = true; });
+      });
+    });
+  });
+  if(appData.monthlyReportsArchive){
+    Object.keys(appData.monthlyReportsArchive).forEach(function(k){ monthSet[k] = true; });
+  }
+  return Object.keys(monthSet).sort().reverse(); // Newest month first
+}
+
+function buildMonthlyReportForMonth(monthKey){
+  const parts = String(monthKey).split('-');
+  const yr = parseInt(parts[0]), mo = parseInt(parts[1]) - 1;
+  const monthStart = new Date(yr, mo, 1, 0, 0, 0, 0).getTime();
+  const monthEnd = new Date(yr, mo + 1, 0, 23, 59, 59, 999).getTime();
+
+  const items = [];
+  const seenNames = {};
+
+  function evaluateExHistoryForMonth(exName, histList, exRef, isSuperset){
+    if(!exName || !Array.isArray(histList) || !histList.length) return;
+    const sorted = histList.slice().sort(function(a,b){ return (a.date || 0) - (b.date || 0); });
+    const inMonth = sorted.filter(function(h){
+      return h && h.date >= monthStart && h.date <= monthEnd && Array.isArray(h.reps) && h.reps.some(function(r){ return (parseFloat(r)||0) > 0; });
+    });
+    if(!inMonth.length) return;
+
+    const beforeMonth = sorted.filter(function(h){
+      return h && h.date < monthStart && !h.techniqueChanged && Array.isArray(h.reps) && h.reps.some(function(r){ return (parseFloat(r)||0) > 0; });
+    });
+
+    // Baseline = last session before this month (or first session of this month if new exercise)
+    const startEntry = beforeMonth.length ? beforeMonth[beforeMonth.length - 1] : inMonth[0];
+    const endEntry = inMonth[inMonth.length - 1];
+    const hadTechChange = inMonth.some(function(h){ return !!h.techniqueChanged; }) || !!(appData.monthlyTechOverrides && appData.monthlyTechOverrides[monthKey + '::' + exName]);
+
+    function extractTopSet(h){
+      let bestW = 0, bestR = 0, bestRM = 0;
+      (h.reps || []).forEach(function(r, idx){
+        const rv = parseFloat(r) || 0;
+        const wv = parseFloat((h.weights || [])[idx]) || 0;
+        if(rv > 0){
+          const rm = calc1RMVal(wv, rv);
+          if(rm >= bestRM){ bestRM = rm; bestW = wv; bestR = rv; }
+        }
+      });
+      return { w: bestW, r: bestR, rm: bestRM, date: h.date };
+    }
+
+    const sTop = extractTopSet(startEntry);
+    const eTop = extractTopSet(endEntry);
+    const key = exName.toLowerCase();
+    if(seenNames[key]) return;
+    seenNames[key] = true;
+
+    items.push({
+      name: exName,
+      sessionsCount: inMonth.length,
+      startW: sTop.w, startR: sTop.r, startRM: sTop.rm,
+      endW: eTop.w, endR: eTop.r, endRM: eTop.rm,
+      deltaW: Math.round((eTop.w - sTop.w) * 100) / 100,
+      deltaR: eTop.r - sTop.r,
+      deltaPctRM: sTop.rm > 0 ? (((eTop.rm - sTop.rm) / sTop.rm) * 100) : 0,
+      techniqueChanged: hadTechChange
+    });
+  }
+
+  (appData.programs || []).forEach(function(p){
+    (p.program || []).forEach(function(d){
+      (d.exercises || []).forEach(function(ex){
+        evaluateExHistoryForMonth(ex.name, ex.history, ex, false);
+        if(ex.supersetName){
+          evaluateExHistoryForMonth(ex.supersetName, ex.supersetHistory, ex, true);
+        }
+      });
+    });
+  });
+
+  // Save snapshot into archive if items exist
+  if(items.length > 0){
+    if(!appData.monthlyReportsArchive) appData.monthlyReportsArchive = {};
+    appData.monthlyReportsArchive[monthKey] = {
+      monthKey: monthKey,
+      updatedAt: Date.now(),
+      items: items
+    };
+  } else if(appData.monthlyReportsArchive && appData.monthlyReportsArchive[monthKey]){
+    return appData.monthlyReportsArchive[monthKey].items || [];
+  }
+
+  return items;
+}
+
+function toggleMonthlyExerciseTechChanged(monthKey, exName){
+  playSound('tap');
+  if(!appData.monthlyTechOverrides || typeof appData.monthlyTechOverrides !== 'object'){
+    appData.monthlyTechOverrides = {};
+  }
+  const k = monthKey + '::' + exName;
+  appData.monthlyTechOverrides[k] = !appData.monthlyTechOverrides[k];
+  save();
+  renderMonthlyReportModal(monthKey);
+}
+
+function openMonthlyReportModal(targetMonthKey){
+  playSound('tap');
+  const months = getAllAvailableReportMonths();
+  const sel = $('monthlyReportSelect');
+  if(sel){
+    sel.innerHTML = months.map(function(m){
+      return '<option value="' + m + '">' + formatMonthKeyDisplay(m) + ' (' + m + ')</option>';
+    }).join('');
+  }
+  const chosen = targetMonthKey && months.indexOf(targetMonthKey) >= 0 ? targetMonthKey : months[0];
+  if(sel) sel.value = chosen;
+  renderMonthlyReportModal(chosen);
+  openModal('modal-monthly-report');
+}
+
+function stepMonthlyReportArchive(dir){
+  playSound('nav');
+  const sel = $('monthlyReportSelect');
+  if(!sel || !sel.options.length) return;
+  const nextIdx = clamp(sel.selectedIndex - dir, 0, sel.options.length - 1);
+  sel.selectedIndex = nextIdx;
+  renderMonthlyReportModal(sel.value);
+}
+
+function renderMonthlyReportModal(monthKey){
+  const items = buildMonthlyReportForMonth(monthKey);
+  const banner = $('monthlyReportSummaryBanner');
+  const body = $('monthlyReportBody');
+  const u = unitLabel();
+  if(!body) return;
+
+  if(!items.length){
+    if(banner){
+      banner.innerHTML = '<div class="center micro subtle">📅 <b>' + formatMonthKeyDisplay(monthKey) + '</b> · No workout sessions recorded in this month yet.</div>';
+    }
+    body.innerHTML = '<div class="card glass center" style="padding:22px"><div style="font-size:28px;margin-bottom:6px">📊</div><div class="tiny muted">No logged exercises for <b>' + formatMonthKeyDisplay(monthKey) + '</b>.<br>Use ◀ / ▶ above to browse other months in your archive!</div></div>';
+    return;
+  }
+
+  let improvedCount = 0;
+  let techResetCount = 0;
+  items.forEach(function(it){
+    if(it.techniqueChanged) techResetCount++;
+    else if(it.deltaPctRM > 0.1 || it.deltaW > 0 || (it.deltaW === 0 && it.deltaR > 0)) improvedCount++;
+  });
+
+  if(banner){
+    banner.innerHTML =
+      '<div class="row-between">' +
+        '<span class="h4" style="color:var(--green-t)">📊 ' + formatMonthKeyDisplay(monthKey) + '</span>' +
+        '<span class="db-badge">' + items.length + ' Exercises</span>' +
+      '</div>' +
+      '<div class="micro subtle" style="margin-top:3px">👑 Progressed: <b style="color:var(--green-t)">' + improvedCount + ' lifts</b> · 🔄 Technique Reset: <b>' + techResetCount + '</b></div>';
+  }
+
+  body.innerHTML = items.map(function(it){
+    const startStr = it.startW + u + ' × ' + it.startR;
+    const endStr = it.endW + u + ' × ' + it.endR;
+    let badgeHTML = '';
+    if(it.techniqueChanged){
+      badgeHTML = '<span class="db-badge" style="color:var(--purple-t);border-color:var(--purple-b)">🔄 Technique Changed (New Baseline)</span>';
+    } else if(it.deltaW > 0 || (it.deltaW === 0 && it.deltaR > 0) || it.deltaPctRM > 0.2){
+      const wPart = it.deltaW !== 0 ? ((it.deltaW > 0 ? '+' : '') + it.deltaW + u + ' ') : '';
+      const rPart = it.deltaR !== 0 ? ((it.deltaR > 0 ? '+' : '') + it.deltaR + 'r ') : '';
+      badgeHTML = '<span class="db-badge" style="color:var(--green-t);border-color:var(--green-b)">🚀 ' + wPart + rPart + '(' + (it.deltaPctRM >= 0 ? '+' : '') + it.deltaPctRM.toFixed(1) + '% 1RM)</span>';
+    } else if(it.deltaPctRM < -0.5){
+      badgeHTML = '<span class="db-badge" style="color:var(--amber-t);border-color:var(--amber-b)">⚡ ' + it.deltaPctRM.toFixed(1) + '% 1RM</span>';
+    } else {
+      badgeHTML = '<span class="db-badge" style="color:var(--blue-t)">⚖️ Maintained</span>';
+    }
+
+    return '<div class="card glass" style="padding:9px 10px">' +
+      '<div class="row-between" style="gap:6px;margin-bottom:4px">' +
+        '<span style="font-weight:900;font-size:12px;color:var(--txt)">' + escapeAttr(it.name) + '</span>' +
+        '<button type="button" class="chip ' + (it.techniqueChanged ? 'purple on' : '') + '" style="padding:2px 7px;font-size:8.5px" onclick="toggleMonthlyExerciseTechChanged(\'' + monthKey + '\', \'' + escapeAttr(it.name).replace(/'/g, "\\'") + '\')">🔄 Tech Changed</button>' +
+      '</div>' +
+      '<div class="row-between" style="font-size:11px;font-family:var(--font-mono)">' +
+        '<span class="subtle">Was: <b style="color:var(--txt-2)">' + startStr + '</b></span>' +
+        '<span style="color:var(--blue-t)">→</span>' +
+        '<span>Now: <b style="color:var(--green-t)">' + endStr + '</b></span>' +
+      '</div>' +
+      '<div class="row-between" style="margin-top:5px">' +
+        '<span class="micro subtle">' + it.sessionsCount + ' session' + (it.sessionsCount === 1 ? '' : 's') + ' in month</span>' +
+        badgeHTML +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============ AUTO POPUPS ON HOME (FIRST-TIME TOUR, MONTHLY REPORT, WEEKLY WEIGHT) ============ */
+function checkAutoPopupsOnHome(){
+  if(currentScreen !== 'screen-home') return;
+  const fsModal = $('modal-fullscreen');
+  if(fsModal && fsModal.classList.contains('open')) return;
+
+  // 1. First-Time Device Interactive Tour Invitation (ONLY ONCE ever on this device!)
+  if(!safeGetItem('ironPulseFirstTimeOnboardingDoneV4')){
+    openModal('modal-tour-invite');
+    return;
+  }
+
+  // 2. Monthly Progress Report Auto Pop-Up (At the start of a new month if previous month had workouts!)
+  const now = new Date();
+  const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevMonthKey = getMonthKeyFromTs(prevMonthDate.getTime());
+  if(appData.lastSeenMonthlyReport !== prevMonthKey){
+    const prevItems = buildMonthlyReportForMonth(prevMonthKey);
+    if(prevItems && prevItems.length > 0){
+      appData.lastSeenMonthlyReport = prevMonthKey;
+      save();
+      openMonthlyReportModal(prevMonthKey);
+      return;
+    }
+  }
+
+  // 3. Weekly Body Weight Check-In Pop-Up (If enabled in Settings, not logged this week, and not skipped today)
+  const prof = ensureAthleteProfile();
+  if(prof.weeklyWeightPrompt !== false){
+    const curWeek = getCurrentISOWeekKey();
+    const todayStr = new Date().toDateString();
+    const loggedThisWeek = (appData.weightLogs || []).some(function(x){ return x.weekKey === curWeek; });
+    if(!loggedThisWeek && appData.lastWeightPromptWeek !== curWeek && appData.lastWeightSkipDay !== todayStr){
+      openWeeklyWeightModal(false);
+    }
+  }
+}
+
+/* ============================================================================
+ * 7. FIRST-TIME-ONLY MULTI-PAGE INTERACTIVE APP TOUR (NAVIGATES ALL PAGES)
+ * ============================================================================ */
+const FULL_MULTIPAGE_TOUR_STEPS = [
+  {
+    screen: 'screen-home',
+    selector: '#screen-home .hero',
+    title: '🏠 1/9 · Home Cockpit & Day Readiness',
+    desc: 'Swipe left/right on the day card to switch training days. The ⚡ READY badge tracks real-time 30-min muscle recovery across your split!'
+  },
+  {
+    screen: 'screen-home',
+    selector: '.home-big-btn.workout-launch',
+    title: '💪 2/9 · Launch Live Workout & Cardio',
+    desc: 'Tap Workout to start lifting with pre-filled historical weights, or tap Cardio for timed sessions with automatic water rests.'
+  },
+  {
+    screen: 'screen-home',
+    selector: '#screen-home .card.hud',
+    title: '📅 3/9 · Weight Tracker, Monthly Report & Victory Card',
+    desc: 'Quick-access buttons for your Weekly Body Weight & Goal Graph, Monthly Progress Reports Archive, and Shareable Victory Card!'
+  },
+  {
+    screen: 'screen-editor',
+    selector: '#screen-editor .card.hud',
+    title: '🛠️ 4/9 · Split Editor & Independent ±Step',
+    desc: 'Reorder exercises with 120Hz drag-and-drop, link Supersets (with separate ±Step for Main & Superset!), or tap 🤖 AI Rebuild.'
+  },
+  {
+    screen: 'screen-heatmap',
+    selector: '#homeHeatmapCard',
+    title: '🧬 5/9 · 360° Muscle & Synergist Heatmap',
+    desc: 'Inspect Front & Back muscles (including Lower Back: 48h primary in RDL/Back Extension vs 24h synergist in Hip Thrust/Squat!). Use Time Travel (+6h to +72h) to preview future recovery.'
+  },
+  {
+    screen: 'screen-ai-chat',
+    selector: '#screen-ai-chat .card.hud',
+    title: '🤖 6/9 · 2026 Omni-AI Coach',
+    desc: 'Ask anything in Arabic or English — audit your split, break plateaus, log your weight, or change rest timers directly via chat!'
+  },
+  {
+    screen: 'screen-analytics',
+    selector: '#screen-analytics .card.hud:first-of-type',
+    title: '📈 7/9 · 1RM Charts, Weekly Muscle Targets & Weight Graph',
+    desc: 'Scrub your 1RM lift curve, customize weekly set targets per muscle (🎯 Targets), and track your Cut/Bulk/Recomp weight trend!'
+  },
+  {
+    screen: 'screen-tools',
+    selector: '#screen-tools .card:nth-of-type(1)',
+    title: '🧮 8/9 · Caffeine Clearance, 1RM, Loads & Plates',
+    desc: 'Includes the CYP1A2 Blood Caffeine Calculator (auto-synced with your Athlete Profile weight & age!), 1RM, Pyramid Loads, and 20kg/25kg Plate Loader.'
+  },
+  {
+    screen: 'screen-home',
+    selector: '.header-actions',
+    title: '🎓 9/9 · Live Workout Shortcuts & Settings',
+    desc: 'During a workout, DOUBLE-TAP any Reps box to confirm the set & launch the Rest Timer! Tap ⚙️ Settings anytime to edit your Athlete Profile, Language (EN/AR), or replay this tour.'
+  }
+];
+
 let tutSteps = [];
 let tutIndex = 0;
 let tutActive = false;
 
-function getValidStepsForScreen(screenId){
-  const raw = TUTORIAL_BY_SCREEN[screenId] || [];
-  return raw.filter(function(s){
-    const el = document.querySelector(s.selector);
-    return !!(el && el.offsetParent !== null);
-  });
-}
-
 function maybeStartScreenTour(screenId){
-  if(tutActive) return;
-  const targetScreen = screenId || currentScreen;
-  if(!targetScreen || !TUTORIAL_BY_SCREEN[targetScreen]) return;
-  if(safeGetItem('ironPulseTourV3_' + targetScreen)) return;
-  const fsModal = $('modal-fullscreen');
-  if(fsModal && fsModal.classList.contains('open')) return;
-  startScreenTour(targetScreen, false);
+  // Disabled per-screen auto-interruption! Tour only prompts once on first-time device use.
+  if(screenId === 'screen-home'){
+    checkAutoPopupsOnHome();
+  }
 }
 
 function maybeStartFirstTimeTutorial(){
-  maybeStartScreenTour(currentScreen);
+  checkAutoPopupsOnHome();
+}
+
+function acceptFirstTimeTourInvite(){
+  safeSetItem('ironPulseFirstTimeOnboardingDoneV4', '1');
+  closeModal('modal-tour-invite');
+  startFullMultiPageTutorial();
+}
+
+function declineFirstTimeTourInvite(){
+  safeSetItem('ironPulseFirstTimeOnboardingDoneV4', '1');
+  closeModal('modal-tour-invite');
+  playSound('tap');
+  toast('👍 Tour skipped — you can start it anytime from ⚙️ Settings!');
+  setTimeout(checkAutoPopupsOnHome, 350);
 }
 
 function startAppTutorial(force){
-  if(force){
-    Object.keys(TUTORIAL_BY_SCREEN).forEach(function(k){
-      safeRemoveItem('ironPulseTourV3_' + k);
-    });
-  }
-  const targetScreen = (currentScreen && TUTORIAL_BY_SCREEN[currentScreen]) ? currentScreen : 'screen-home';
-  if(currentScreen !== targetScreen){
-    refreshHome();
-    showScreen(targetScreen, true);
-  }
-  startScreenTour(targetScreen, true);
+  startFullMultiPageTutorial();
 }
 
-function startScreenTour(screenId, force){
-  if(!force && safeGetItem('ironPulseTourV3_' + screenId)) return;
-  const valid = getValidStepsForScreen(screenId);
-  if(!valid.length) return;
+function startFullMultiPageTutorial(){
+  safeSetItem('ironPulseFirstTimeOnboardingDoneV4', '1');
   closeNumpad();
-  tutScreenId = screenId;
-  tutSteps = valid;
+  tutSteps = FULL_MULTIPAGE_TOUR_STEPS.slice();
   tutIndex = 0;
   tutActive = true;
   const ov = $('tutorialOverlay');
   if(ov) ov.classList.add('open');
-  playSound('nav');
+  playSound('success');
   renderTutorialStep();
+}
+
+function navigateForTutorialStep(step){
+  if(!step || !step.screen) return;
+  if(currentScreen !== step.screen){
+    if(step.screen === 'screen-home') refreshHome();
+    else if(step.screen === 'screen-editor') renderEditor();
+    else if(step.screen === 'screen-heatmap') renderMuscleHeatmap();
+    else if(step.screen === 'screen-analytics') updateAnalyticsUI();
+    else if(step.screen === 'screen-tools'){ calc1RM(); calcPyramid(); calcPlates(); }
+    showScreen(step.screen, true);
+  }
 }
 
 function renderTutorialStep(){
@@ -14029,50 +15751,55 @@ function renderTutorialStep(){
   const step = tutSteps[tutIndex];
   if(!step){ finishAppTutorial(); return; }
 
-  $('tutStepPill').textContent = 'TOUR ' + (tutIndex + 1) + ' / ' + tutSteps.length;
-  $('tutTitle').textContent = step.title;
-  $('tutDesc').textContent = step.desc;
+  navigateForTutorialStep(step);
 
-  const dots = $('tutDots');
-  if(dots){
-    dots.innerHTML = tutSteps.map(function(_, i){
-      return '<span class="tut-dot' + (i === tutIndex ? ' on' : '') + '"></span>';
-    }).join('');
-  }
+  setTimeout(function(){
+    if(!tutActive) return;
+    $('tutStepPill').textContent = 'STEP ' + (tutIndex + 1) + ' / ' + tutSteps.length;
+    $('tutTitle').textContent = step.title;
+    $('tutDesc').textContent = step.desc;
 
-  const prevBtn = $('tutPrevBtn');
-  if(prevBtn) prevBtn.style.visibility = tutIndex === 0 ? 'hidden' : 'visible';
-  const nextBtn = $('tutNextBtn');
-  if(nextBtn) nextBtn.textContent = (tutIndex === tutSteps.length - 1) ? 'Got It ✓' : 'Next →';
+    const dots = $('tutDots');
+    if(dots){
+      dots.innerHTML = tutSteps.map(function(_, i){
+        return '<span class="tut-dot' + (i === tutIndex ? ' on' : '') + '"></span>';
+      }).join('');
+    }
 
-  const target = document.querySelector(step.selector);
-  const spot = $('tutSpotlight');
-  const card = $('tutCard');
-  if(!target || !spot || !card){ finishAppTutorial(); return; }
+    const prevBtn = $('tutPrevBtn');
+    if(prevBtn) prevBtn.style.visibility = tutIndex === 0 ? 'hidden' : 'visible';
+    const nextBtn = $('tutNextBtn');
+    if(nextBtn) nextBtn.textContent = (tutIndex === tutSteps.length - 1) ? 'Finish Tour ✓' : 'Next Page →';
 
-  try{ target.scrollIntoView({block:'nearest'}); }catch(e){}
+    const target = document.querySelector(step.selector) || document.querySelector('.screen.active .card') || document.body;
+    const spot = $('tutSpotlight');
+    const card = $('tutCard');
+    if(!spot || !card){ finishAppTutorial(); return; }
 
-  const r = target.getBoundingClientRect();
-  const pad = 6;
-  const top = Math.max(4, r.top - pad);
-  const left = Math.max(4, r.left - pad);
-  const width = Math.min(window.innerWidth - 8, r.width + pad * 2);
-  const height = r.height + pad * 2;
+    try{ target.scrollIntoView({block:'nearest'}); }catch(e){}
 
-  spot.style.top = top + 'px';
-  spot.style.left = left + 'px';
-  spot.style.width = width + 'px';
-  spot.style.height = height + 'px';
+    const r = target.getBoundingClientRect();
+    const pad = 6;
+    const top = Math.max(4, r.top - pad);
+    const left = Math.max(4, r.left - pad);
+    const width = Math.min(window.innerWidth - 8, r.width + pad * 2);
+    const height = Math.min(window.innerHeight - 80, r.height + pad * 2);
 
-  const cardH = card.offsetHeight || 165;
-  const spaceBelow = window.innerHeight - (top + height);
-  let cardTop;
-  if(spaceBelow >= cardH + 18){
-    cardTop = top + height + 12;
-  } else {
-    cardTop = Math.max(12, top - cardH - 12);
-  }
-  card.style.top = cardTop + 'px';
+    spot.style.top = top + 'px';
+    spot.style.left = left + 'px';
+    spot.style.width = width + 'px';
+    spot.style.height = height + 'px';
+
+    const cardH = card.offsetHeight || 165;
+    const spaceBelow = window.innerHeight - (top + height);
+    let cardTop;
+    if(spaceBelow >= cardH + 18){
+      cardTop = top + height + 12;
+    } else {
+      cardTop = Math.max(12, top - cardH - 12);
+    }
+    card.style.top = cardTop + 'px';
+  }, 90);
 }
 
 function stepAppTutorial(dir){
@@ -14090,11 +15817,13 @@ function stepAppTutorial(dir){
 
 function finishAppTutorial(){
   tutActive = false;
-  if(tutScreenId){
-    safeSetItem('ironPulseTourV3_' + tutScreenId, '1');
-  }
+  safeSetItem('ironPulseFirstTimeOnboardingDoneV4', '1');
   const ov = $('tutorialOverlay');
   if(ov) ov.classList.remove('open');
+  if(currentScreen !== 'screen-home'){
+    refreshHome();
+    showScreen('screen-home', true);
+  }
   playSound('success');
 }
 
@@ -14107,6 +15836,75 @@ function onTutorialBackdropClick(e){
 window.addEventListener('resize', function(){
   if(tutActive) renderTutorialStep();
 }, {passive:true});
+
+/* ============================================================================
+ * 8. PRO BILINGUAL LOCALIZATION ENGINE (STANDARD ENGLISH DEFAULT + PRO ARABIC)
+ * ============================================================================ */
+const I18N_AR_MAP = {
+  'Home': 'الرئيسية',
+  'Split': 'الجدول',
+  'Heatmap': 'العضلات',
+  'AI Coach': 'المدرب الذكي',
+  'Analysis': 'التحليلات',
+  'Tools': 'الحاسبات',
+  'Current Day': 'اليوم الحالي',
+  'Workout': 'تمرين الحديد',
+  "Start today's strength session": 'ابدأ جلسة القوة والضخامة اليوم',
+  'Cardio': 'الكارديو',
+  'Timed session & water breaks': 'مؤقت ذكي مع فترات شرب الماء',
+  'Weekly Summary': 'ملخص الأسبوع',
+  'Sessions': 'الجلسات',
+  'Volume': 'الحجم التدريبي',
+  'PRs (7d)': 'الأرقام القياسية',
+  '⚖️ Weight & Goal': '⚖️ الوزن والهدف',
+  '📅 Monthly Report': '📅 التقرير الشهري',
+  '🏆 Victory Card': '🏆 بطاقة الإنجاز',
+  'Years': 'سنوات',
+  'Months': 'شهور',
+  'Days': 'أيام',
+  '⚙️ Settings': '⚙️ الإعدادات',
+  '📂 Manage Splits': '📂 إدارة الجداول',
+  '📤 Export Backup': '📤 تصدير نسخة',
+  '📥 Import Backup': '📥 استعادة نسخة',
+  '🎓 Start Full Multi-Page App Tour': '🎓 ابدأ الجولة التعريفية الشاملة للتطبيق',
+  '👤 Change Name': '👤 تغيير الاسم',
+  '🔄 Reset Stats': '🔄 تصفير السجل',
+  '🗑️ Delete Split': '🗑️ حذف الجدول',
+  'Done': 'تم'
+};
+const I18N_EN_REVERSE = {};
+Object.keys(I18N_AR_MAP).forEach(function(enKey){
+  I18N_EN_REVERSE[I18N_AR_MAP[enKey]] = enKey;
+});
+
+function setAppLanguage(lang){
+  playSound('tap');
+  appData.lang = (lang === 'ar') ? 'ar' : 'en';
+  save();
+  applyAppLanguage();
+  refreshSettingsUI();
+  updateGymJourneyBanner();
+  toast(appData.lang === 'ar' ? '🇸🇦 تم تفعيل اللغة العربية الاحترافية' : '🌐 Language set to Standard English');
+}
+
+function applyAppLanguage(){
+  const isAr = (appData.lang === 'ar');
+  document.documentElement.setAttribute('data-lang', isAr ? 'ar' : 'en');
+  // Translate dock labels and key static elements cleanly while keeping universal numbers/inputs LTR
+  document.querySelectorAll('.dock-item .lbl, .hb-title, .hb-sub, .stat .lbl, .journey-unit .jl, #modal-settings .btn, #modal-settings .modal-title, #screen-home .h4, #screen-home .daypick .lbl, #screen-home .btn.xs').forEach(function(el){
+    const txt = (el.textContent || '').trim();
+    if(isAr && I18N_AR_MAP[txt]){
+      el.dataset.origEn = txt;
+      el.textContent = I18N_AR_MAP[txt];
+    } else if(!isAr){
+      if(el.dataset.origEn){
+        el.textContent = el.dataset.origEn;
+      } else if(I18N_EN_REVERSE[txt]){
+        el.textContent = I18N_EN_REVERSE[txt];
+      }
+    }
+  });
+}
 
 /* ============ ONE-HANDED HORIZONTAL SWIPE GESTURES ============ */
 function bindHorizontalSwipe(el, onSwipeLeft, onSwipeRight){
@@ -14161,10 +15959,14 @@ function initSwipeGestures(){
 
 window.onload = function(){
   load();
+  ensureAthleteProfile();
+  applyAppLanguage();
   syncViewModeUI();
   updateTimerUI('adjust');
   calc1RM(); calcPyramid(); calcPlates();
   refreshUnitUI();
+  updateGymJourneyBanner();
+  renderWeightProgressChart();
   initSwipeGestures();
 };
 </script>
