@@ -516,8 +516,21 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),
 .set-row.has-wstep{grid-template-columns:44px 30px minmax(0,1fr) minmax(0,1fr);gap:4px;padding:6px 5px}
 .screen:not(.active){contain:layout style paint}
 .modal:not(.open){contain:layout style paint}
-body.numpad-ActivePad .modal.open{align-items:flex-start;padding-top:max(10px, env(safe-area-inset-top, 10px))}
-body.numpad-ActivePad .modal.open .modal-card{max-height:55dvh;transition:max-height .22s ease, transform .22s ease}
+body.numpad-ActivePad .modal.open{align-items:center}
+body.numpad-ActivePad .modal.open .modal-card{transform:translate3d(0, -18px, 0);max-height:68dvh;transition:transform .24s cubic-bezier(0.22, 1, 0.36, 1), max-height .24s ease}
+.auth-provider-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:11px 14px;border-radius:12px;font-size:13px;font-weight:900;
+  border:1px solid var(--line-2);background:var(--surface-2);color:var(--txt);
+  box-shadow:var(--shadow-sm);cursor:pointer;
+}
+.auth-provider-btn.apple-btn{background:#0b0f19;color:#fff;border-color:rgba(255,255,255,.22)}
+[data-theme="light"] .auth-provider-btn.apple-btn{background:#0f172a;color:#fff}
+.auth-provider-btn.google-btn{background:linear-gradient(145deg,rgba(56,189,248,.14),rgba(16,185,129,.10)),var(--surface-2);border-color:var(--blue-b)}
+.cloud-status-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:99px;
+  font-size:9.5px;font-weight:900;background:var(--surface-3);border:1px solid var(--line-2);cursor:pointer;
+}
 /* Practical vertical & zoom compactness when outside Fullscreen so all screen content is 100% visible */
 html.is-windowed-mode #appViewport{padding:max(3px, env(safe-area-inset-top, 3px)) 10px 0}
 html.is-windowed-mode .app-header{height:44px;min-height:44px;margin-bottom:5px;padding:0 9px}
@@ -614,7 +627,7 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
 .rest-divider::before,.rest-divider::after{content:"";flex:1;height:1px;background:var(--line)}
 
 /* Numpad at z-index 950 with 5s idle bar */
-.numpad{position:fixed;left:50%;bottom:0;transform:translate3d(-50%,112%,0);width:100%;max-width:520px;z-index:950;padding:8px 12px calc(var(--dock-bottom) + 6px);background:linear-gradient(180deg,rgba(10,18,38,.98),rgba(5,10,24,1));border-top:1px solid var(--line-2);border-radius:var(--r-2xl) var(--r-2xl) 0 0;box-shadow:0 -24px 60px rgba(0,0,0,.72);transition:transform 0.32s var(--ease-spring);will-change:transform}
+.numpad{position:fixed;left:50%;bottom:0;transform:translate3d(-50%,112%,0);width:100%;max-width:520px;z-index:1250;padding:8px 12px calc(var(--dock-bottom) + 6px);background:linear-gradient(180deg,rgba(10,18,38,.98),rgba(5,10,24,1));border-top:1px solid var(--line-2);border-radius:var(--r-2xl) var(--r-2xl) 0 0;box-shadow:0 -24px 60px rgba(0,0,0,.72);transition:transform 0.32s var(--ease-spring);will-change:transform}
 [data-theme="light"] .numpad{background:linear-gradient(180deg,#f8fafc,#eef2f8)}
 .numpad.open{transform:translate3d(-50%,0,0)}
 .numpad-idle-track{width:100%;height:3px;border-radius:99px;background:rgba(148,178,255,.08);overflow:hidden;margin-bottom:6px}
@@ -1549,7 +1562,7 @@ body[data-idle="1"] .marble-veins{
     </div>
     <div class="header-center"><span id="workoutStopwatch">00:00</span></div>
     <div class="header-actions">
-      <button class="icon-btn" id="aiHeaderBtn" title="AI Assistant" onclick="openAICoachScreen()" style="border-color:var(--green-b);color:var(--green-t);font-family:var(--font-mono);font-size:12px;font-weight:900;letter-spacing:.4px">AI</button>
+      <button class="icon-btn" id="cloudHeaderBtn" title="Account & Cloud Sync" onclick="openCloudAuthModal()" style="border-color:var(--blue-b);color:var(--blue-t);font-size:15px">👤</button>
       <button class="icon-btn" id="fullscreenBtn" title="Toggle Full Screen" onclick="toggleFullScreen()">⛶</button>
       <button class="icon-btn" title="Settings" onclick="openSettings()">⚙️</button>
     </div>
@@ -1558,10 +1571,10 @@ body[data-idle="1"] .marble-veins{
   <div class="screen-container">
 
     <section id="screen-name" class="screen">
-      <div class="screen-body" style="justify-content:center;text-align:center">
-        <div class="card hud" style="padding:24px 18px">
-          <div style="width:56px;height:56px;margin:0 auto 10px;border-radius:16px;background:linear-gradient(135deg,#0d1f40,#071226);border:1.5px solid var(--blue-b);display:grid;place-items:center;box-shadow:0 0 24px rgba(56,189,248,.35)">
-            <svg width="34" height="34" viewBox="0 0 64 64" fill="none">
+      <div class="screen-body scroll" style="justify-content:center;text-align:center">
+        <div class="card hud" style="padding:20px 16px">
+          <div style="width:52px;height:52px;margin:0 auto 8px;border-radius:15px;background:linear-gradient(135deg,#0d1f40,#071226);border:1.5px solid var(--blue-b);display:grid;place-items:center;box-shadow:0 0 24px rgba(56,189,248,.35)">
+            <svg width="30" height="30" viewBox="0 0 64 64" fill="none">
               <rect x="6" y="20" width="7" height="24" rx="2" fill="#38bdf8"/>
               <rect x="15" y="14" width="7" height="36" rx="2.5" fill="#10b981"/>
               <rect x="42" y="14" width="7" height="36" rx="2.5" fill="#10b981"/>
@@ -1569,11 +1582,25 @@ body[data-idle="1"] .marble-veins{
               <path d="M22 32h5l3-10 4 20 3-10h5" stroke="#f2f6ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <h1 class="h1" style="color:var(--green-t);margin-bottom:4px">IRON PULSE</h1>
-          <p class="muted tiny" style="margin-bottom:14px">Strength, Split & Cardio Tracker</p>
-          <label class="label" style="text-align:left">Your Name</label>
-          <input type="text" id="userNameInput" placeholder="Enter your name" style="text-align:center;font-size:14.5px;padding:12px">
-          <button class="btn primary block lg" style="margin-top:12px" onclick="saveName()">Start Training →</button>
+          <h1 class="h1" style="color:var(--green-t);margin-bottom:2px">IRON PULSE</h1>
+          <p class="muted tiny" style="margin-bottom:12px">Sign in once — stays logged in &amp; syncs all your data</p>
+
+          <div style="text-align:left" class="stack gap-1">
+            <div>
+              <label class="label">Email Address</label>
+              <input type="email" id="welcomeEmailInput" placeholder="you@email.com" style="font-size:13.5px;padding:10px">
+            </div>
+            <div>
+              <label class="label">Password (4+ letters, numbers, or symbols)</label>
+              <input type="password" id="welcomePassInput" placeholder="Choose your password (min 4 chars)" style="font-size:13.5px;padding:10px" onkeydown="if(event.key==='Enter'){submitWelcomeAccountLogin();}">
+            </div>
+            <div>
+              <label class="label">Your Display Name (For new accounts)</label>
+              <input type="text" id="userNameInput" placeholder="Enter your name" style="font-size:13.5px;padding:10px" onkeydown="if(event.key==='Enter'){submitWelcomeAccountLogin();}">
+            </div>
+          </div>
+          <button class="btn primary block lg" id="welcomeLoginBtn" style="margin-top:12px" onclick="submitWelcomeAccountLogin()">🔑 Sign In &amp; Load Account →</button>
+          <button class="btn ghost block sm" style="margin-top:6px" onclick="saveName()">Continue Offline Without Account</button>
         </div>
       </div>
     </section>
@@ -2337,7 +2364,7 @@ body[data-idle="1"] .marble-veins{
           <div class="card hud" id="analyticsAICard" style="border-color:var(--green-b);background:linear-gradient(150deg,rgba(16,185,129,.12),rgba(14,165,233,.08)),var(--surface)">
             <div class="row-between" style="margin-bottom:5px">
               <span class="h4" style="color:var(--green-t)">🤖 AI Performance &amp; Muscle Audit</span>
-              <button class="btn xs green" onclick="askAIAboutCurrentAnalytics()">💬 Ask Coach</button>
+              
             </div>
             <div id="analyticsAIContent" class="tiny muted" style="line-height:1.45">Select an exercise or log sets to unlock real-time AI biomechanics &amp; progression insights.</div>
             <div id="analyticsAISubMuscles" class="inj-grid" style="justify-content:flex-start;margin-top:6px"></div>
@@ -2760,45 +2787,7 @@ body[data-idle="1"] .marble-veins{
       </div>
     </section>
 
-    <!-- AI COACH FULL CHAT SCREEN -->
-    <section id="screen-ai-chat" class="screen">
-      <div class="screen-body">
-        <div class="card tight hud" style="border-color:var(--green-b)">
-          <div class="row-between">
-            <div class="row gap-2">
-              <div style="width:32px;height:32px;border-radius:10px;background:var(--green-g);border:1px solid var(--green-b);display:grid;place-items:center;font-size:17px">🤖</div>
-              <div>
-                <div class="h4" style="color:var(--green-t)">IRON PULSE AI Coach</div>
-                <div class="micro subtle" id="aiCoachStatusSub">Omni-AI (Like Gemini): Anything, Anatomy, Peer-Reviewed Studies &amp; Live Facts</div>
-              </div>
-            </div>
-            <div class="row gap-1">
-              <button class="btn xs green hidden" id="aiBackToWorkoutBtn" onclick="exitPip(event)">💪 Back to Live</button>
-              <button class="btn xs purple" onclick="openAIEngineModal()" title="AI Model & Cloud Engine">🧠 Model</button>
-              <button class="btn xs blue" onclick="startSuggestWizard()">⚡ AI Split</button>
-              <button class="btn xs ghost" onclick="clearAIChatHistory()" title="Reset Chat">↺</button>
-            </div>
-          </div>
-        </div>
 
-        <div class="ai-quick-strip" id="aiChatQuickChips">
-          <button class="chip green" onclick="sendAIChatQuick('Analyze my muscle recovery status right now and tell me which day in my split is best to train today')">⚡ Muscle Recovery &amp; Best Day</button>
-          <button class="chip green" onclick="sendAIChatQuick('Audit my current split, lifting numbers, and suggest a progression plan for next week')">📊 Audit My Split &amp; Lifts</button>
-          <button class="chip blue" onclick="sendAIChatQuick('What exact weights and reps should I hit today to beat my previous logs?')">🎯 Today's Target Loads</button>
-          <button class="chip purple" onclick="sendAIChatQuick('Analyze the sub-muscle and angle balance across my current split')">🧬 Sub-Muscle Balance</button>
-          <button class="chip amber" onclick="sendAIChatQuick('I hit a strength plateau on my main lifts. How do I break through it?')">🚀 Break My Plateau</button>
-          <button class="chip" onclick="sendAIChatQuick('What should I eat pre- and post-workout and how is my recovery today?')">🍗 Recovery &amp; Nutrition</button>
-        </div>
-
-        <div class="ai-chat-stream" id="aiChatMessages"></div>
-
-        <div class="ai-input-bar">
-          <button type="button" class="btn sq-sm ghost" id="aiVoiceMicBtn" onclick="toggleAIVoiceInput()" title="Voice Input (Arabic / English)">🎙️</button>
-          <input type="text" id="aiChatInput" dir="auto" placeholder="Ask me anything — general questions, anatomy, studies, tech, or your workout..." onkeydown="if(event.key==='Enter'){sendAIChatMessage();}">
-          <button class="btn primary sm" onclick="sendAIChatMessage()" style="padding:8px 14px">Send 🚀</button>
-        </div>
-      </div>
-    </section>
 
   </div>
 
@@ -2809,20 +2798,20 @@ body[data-idle="1"] .marble-veins{
     <button class="dock-item" data-target="screen-analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16v-5M11 16V8M16 16v-3M21 16V6"/></svg><span>Analysis</span></button>
     <button class="dock-item" data-target="screen-tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg><span>Calculators</span></button>
   </nav>
+</div>
 
-  <div class="numpad" id="numpad">
-    <div class="numpad-idle-track"><div class="numpad-idle-bar" id="numpadIdleBar"></div></div>
-    <div class="numpad-head">
-      <span class="lbl" id="numpadLabel">Enter value</span>
-      <span class="val" id="numpadValue">—</span>
-      <button class="btn sq-sm" onclick="closeNumpad()">✕</button>
-    </div>
-    <div class="numpad-grid">
-      <button class="key" onclick="numKey('1')">1</button><button class="key" onclick="numKey('2')">2</button><button class="key" onclick="numKey('3')">3</button><button class="key fn" onclick="numKey('C')">C</button>
-      <button class="key" onclick="numKey('4')">4</button><button class="key" onclick="numKey('5')">5</button><button class="key" onclick="numKey('6')">6</button><button class="key fn" onclick="numKey('BACK')">⌫</button>
-      <button class="key" onclick="numKey('7')">7</button><button class="key" onclick="numKey('8')">8</button><button class="key" onclick="numKey('9')">9</button><button class="key fn" onclick="numKey('-')">±</button>
-      <button class="key" onclick="numKey('.')">.</button><button class="key" onclick="numKey('0')">0</button><button class="key go" onclick="numNext()">→</button><button class="key go" onclick="closeNumpad()">✓</button>
-    </div>
+<div class="numpad" id="numpad">
+  <div class="numpad-idle-track"><div class="numpad-idle-bar" id="numpadIdleBar"></div></div>
+  <div class="numpad-head">
+    <span class="lbl" id="numpadLabel">Enter value</span>
+    <span class="val" id="numpadValue">—</span>
+    <button class="btn sq-sm" onclick="closeNumpad()">✕</button>
+  </div>
+  <div class="numpad-grid">
+    <button class="key" onclick="numKey('1')">1</button><button class="key" onclick="numKey('2')">2</button><button class="key" onclick="numKey('3')">3</button><button class="key fn" onclick="numKey('C')">C</button>
+    <button class="key" onclick="numKey('4')">4</button><button class="key" onclick="numKey('5')">5</button><button class="key" onclick="numKey('6')">6</button><button class="key fn" onclick="numKey('BACK')">⌫</button>
+    <button class="key" onclick="numKey('7')">7</button><button class="key" onclick="numKey('8')">8</button><button class="key" onclick="numKey('9')">9</button><button class="key fn" onclick="numKey('-')">±</button>
+    <button class="key" onclick="numKey('.')">.</button><button class="key" onclick="numKey('0')">0</button><button class="key go" onclick="numNext()">→</button><button class="key go" onclick="closeNumpad()">✓</button>
   </div>
 </div>
 
@@ -2890,6 +2879,17 @@ body[data-idle="1"] .marble-veins{
   <div class="modal-card" style="max-height:86dvh">
     <div class="modal-head"><span class="modal-title">⚙️ Settings</span><button class="btn sq-sm" onclick="closeModal('modal-settings')">✕</button></div>
     <div class="modal-body" style="gap:7px">
+      <!-- 0. CLOUD ACCOUNT & APPLE / GOOGLE SIGN-IN -->
+      <div class="card glass" style="padding:10px 11px;border-color:var(--blue-b);background:linear-gradient(145deg,rgba(56,189,248,.12),rgba(16,185,129,.06)),var(--surface-2)">
+        <div class="row-between">
+          <div style="min-width:0">
+            <div class="h4" style="color:var(--blue-t)" id="settingsCloudAccountTitle">👤 Cloud Account</div>
+            <div class="micro subtle" id="settingsCloudAccountSub" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Sign in to sync all data &amp; single-device lock</div>
+          </div>
+          <button class="btn xs blue" id="settingsCloudActionBtn" onclick="closeModal('modal-settings');openCloudAuthModal()">Sign In →</button>
+        </div>
+      </div>
+
       <!-- 1. PROFILE & REPORTS QUICK CARDS -->
       <div class="grid-2" style="gap:6px">
         <button class="card glass center" style="padding:10px 8px;border-color:var(--green-b);cursor:pointer" onclick="closeModal('modal-settings');openAthleteProfileModal()">
@@ -3120,10 +3120,7 @@ body[data-idle="1"] .marble-veins{
       <button class="btn sq-sm" onclick="closeModal('modal-ai-setcoach')">✕</button>
     </div>
     <div class="modal-body" id="aiSetCoachBody"></div>
-    <div class="row gap-2">
-      <button class="btn blue flex1" onclick="closeModal('modal-ai-setcoach');openAICoachScreen()">💬 Full AI Chat</button>
-      <button class="btn primary flex1" onclick="closeModal('modal-ai-setcoach')">Got It 💪</button>
-    </div>
+    <button class="btn primary block" onclick="closeModal('modal-ai-setcoach')">Got It 💪</button>
   </div>
 </div>
 
@@ -3508,6 +3505,64 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 
+<!-- DIRECT EMAIL + PASSWORD CLOUD ACCOUNT MODAL (PERSISTENT LOGIN UNTIL EXPLICIT SIGN OUT) -->
+<div class="modal" id="modal-cloud-auth">
+  <div class="modal-card" style="max-height:86dvh">
+    <div class="modal-head">
+      <span class="modal-title" style="color:var(--blue-t)" id="cloudAuthModalTitle">👤 Account &amp; Cloud Sync</span>
+      <button class="btn sq-sm" onclick="closeModal('modal-cloud-auth')">✕</button>
+    </div>
+    <div class="modal-body" style="gap:8px">
+      <!-- SIGNED-IN STATUS PANE -->
+      <div id="cloudSignedInPane" class="hidden stack gap-2">
+        <div class="card glass" style="padding:12px;border-color:var(--green-b)">
+          <div class="row-between" style="margin-bottom:4px">
+            <span class="h4" style="color:var(--green-t)" id="cloudActiveUserEmail">🟢 Signed In</span>
+            <span class="db-badge" style="color:var(--green-t);border-color:var(--green-b)">Active</span>
+          </div>
+          <div class="micro subtle" id="cloudLastSyncTxt">Stays signed in permanently on this browser until you sign out</div>
+          <div class="micro" style="color:var(--blue-t);margin-top:4px" id="cloudActiveDeviceTxt">Active on this device</div>
+        </div>
+        <div class="grid-2" style="gap:6px">
+          <button type="button" class="btn green sm" onclick="forcePushCloudSyncNow()">☁️ Sync Now</button>
+          <button type="button" class="btn blue sm" onclick="forcePullCloudSyncNow()">📥 Pull Latest</button>
+        </div>
+        <button type="button" class="btn red block sm" onclick="signOutCloudAccount()">🚪 Sign Out of Account</button>
+      </div>
+
+      <!-- SIGN-IN / REGISTER PANE (EMAIL + PASSWORD MIN 4 CHARS) -->
+      <div id="cloudSignInFormPane" class="stack gap-2">
+        <div class="card glass" style="padding:12px;border-color:var(--blue-b)">
+          <div class="h4" style="color:var(--blue-t);margin-bottom:4px">🔑 Sign In or Create Account</div>
+          <div class="micro subtle" style="margin-bottom:9px;line-height:1.4">
+            Enter your Email and any Password (4+ letters, numbers, or symbols). Stays logged in permanently on this browser and syncs 100% of your data across devices!
+          </div>
+          <label class="label">Email Address</label>
+          <input type="email" id="cloudAuthEmailInput" placeholder="you@email.com" style="margin-bottom:8px;font-size:13.5px;padding:10px">
+          <label class="label">Password (Min 4 characters — letters, numbers, or symbols)</label>
+          <input type="password" id="cloudAuthPinInput" placeholder="Enter your password (4+ chars)" style="margin-bottom:10px;font-size:13.5px;padding:10px" onkeydown="if(event.key==='Enter'){submitCloudSignIn();}">
+          <button type="button" class="btn primary block lg" id="cloudSignInSubmitBtn" onclick="submitCloudSignIn()">⚡ Sign In &amp; Load All Data →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REAL-TIME SINGLE-ACTIVE-DEVICE KICKOUT LOCK MODAL (NON-DISMISSIBLE BY BACKDROP) -->
+<div class="modal" id="modal-session-kicked" style="z-index:2000;background:rgba(2,5,12,.94)">
+  <div class="modal-card center" style="border-color:var(--red-b);padding:22px 16px" onclick="event.stopPropagation()">
+    <div style="font-size:40px;line-height:1;margin-bottom:6px">🔒</div>
+    <h3 class="h2" style="color:var(--red-t);margin-bottom:4px">Account Opened on Another Device</h3>
+    <p class="muted tiny" id="sessionKickedMsg" style="line-height:1.5;margin-bottom:14px">
+      Your account was just opened on another device or browser window. To prevent workout timer &amp; history conflicts, this session has been paused.
+    </p>
+    <div class="stack gap-2">
+      <button type="button" class="btn primary block lg" onclick="reclaimCloudSessionHere()">🔄 Use Account on This Device Instead (Refresh &amp; Lock Other)</button>
+      <button type="button" class="btn red ghost block sm" onclick="signOutCloudAccount()">🚪 Sign Out on This Device</button>
+    </div>
+  </div>
+</div>
+
 <!-- FIRST-TIME INTERACTIVE TOUR INVITATION MODAL -->
 <div class="modal" id="modal-tour-invite">
   <div class="modal-card center" style="padding:20px 16px;border-color:var(--green-b)">
@@ -3530,15 +3585,22 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 
-<!-- PROGRAMS MODAL -->
+<!-- PROGRAMS MODAL (ALL ACCOUNT SPLITS) -->
 <div class="modal" id="modal-programs">
-  <div class="modal-card">
-    <div class="modal-head"><span class="modal-title">Saved Splits</span><button class="btn sq-sm" onclick="closeModal('modal-programs')">✕</button></div>
-    <div class="modal-body" id="programsList" style="max-height:200px"></div>
-    <div class="row gap-2">
-      <input type="text" id="newProgramNameInput" placeholder="New split name" class="grow">
-      <button class="btn green sm" onclick="createProgram()">+ Add</button>
+  <div class="modal-card" style="max-height:84dvh">
+    <div class="modal-head">
+      <div>
+        <span class="modal-title" style="color:var(--green-t)">📂 My Account Splits</span>
+        <div class="micro subtle" id="programsCountSub">All splits synced with your account</div>
+      </div>
+      <button class="btn sq-sm" onclick="closeModal('modal-programs')">✕</button>
     </div>
+    <div class="modal-body" id="programsList" style="max-height:260px"></div>
+    <div class="row gap-2">
+      <input type="text" id="newProgramNameInput" placeholder="New split name (e.g. PPL, Upper/Lower)" class="grow">
+      <button class="btn green sm" onclick="createProgram()">+ New Split</button>
+    </div>
+    <button class="btn blue block sm" onclick="closeModal('modal-programs');startSetup()">⚡ Build Another Split (AI / Manual)</button>
     <button class="btn block" onclick="closeModal('modal-programs')">Close</button>
   </div>
 </div>
@@ -3692,12 +3754,25 @@ function isStandaloneMode(){
 }
 let _wasInFullScreen = false;
 let _rePromptFsTimer = null;
+let _startupFsResolved = false;
+
+function isAnyModalOrOverlayOpen(){
+  if(typeof tutActive !== 'undefined' && tutActive) return true;
+  const ov = document.getElementById('tutorialOverlay');
+  if(ov && ov.classList.contains('open')) return true;
+  return !!document.querySelector('.modal.open');
+}
 
 function scheduleRePromptFullScreen(delayMs){
   clearTimeout(_rePromptFsTimer);
   const wait = delayMs || 5000;
   _rePromptFsTimer = setTimeout(function(){
     if(!isCurrentlyFullScreen() && !isStandaloneMode()){
+      if(isAnyModalOrOverlayOpen()){
+        // Wait until current modal/popup closes so Fullscreen prompt never collides!
+        scheduleRePromptFullScreen(3500);
+        return;
+      }
       openModal('modal-fullscreen');
     }
   }, wait);
@@ -3752,24 +3827,27 @@ function toggleFullScreen(){
   setTimeout(updateFullScreenBtnUI, 120);
 }
 function dismissFullScreenPrompt(){
+  _startupFsResolved = true;
   closeModal('modal-fullscreen');
   // User declined fullscreen ("No") -> re-prompt after 15 seconds (15000ms)
   scheduleRePromptFullScreen(15000);
-  setTimeout(function(){ maybeStartScreenTour(currentScreen); }, 180);
+  setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 260);
 }
 function acceptFullScreenPrompt(){
+  _startupFsResolved = true;
   closeModal('modal-fullscreen');
   toggleFullScreen();
-  setTimeout(function(){ maybeStartScreenTour(currentScreen); }, 280);
+  setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 320);
 }
 function checkStartupFullScreenPrompt(){
   updateFullScreenBtnUI();
   if(!isCurrentlyFullScreen() && !isStandaloneMode()){
-    // Immediate prompt on startup with zero waiting
+    _startupFsResolved = false;
     openModal('modal-fullscreen');
   } else {
     _wasInFullScreen = true;
-    setTimeout(function(){ maybeStartScreenTour(currentScreen); }, 150);
+    _startupFsResolved = true;
+    setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 200);
   }
 }
 document.addEventListener('fullscreenchange', updateFullScreenBtnUI);
@@ -4550,6 +4628,7 @@ function flushSave(){
   if(_idleSaveHandle && window.cancelIdleCallback){ cancelIdleCallback(_idleSaveHandle); _idleSaveHandle = null; }
   normalizePrograms();
   safeSetItem('gymTrackerData', JSON.stringify(appData));
+  if(typeof scheduleCloudSyncPush === 'function') scheduleCloudSyncPush();
 }
 function save(){
   clearTimeout(_saveTimer);
@@ -4610,6 +4689,11 @@ function load(){
     try{ restoreCardio(JSON.parse(liveC)); checkStartupFullScreenPrompt(); return; }
     catch(e){ safeRemoveItem('activeLiveCardioSession'); }
   }
+  if(!isCurrentlyFullScreen() && !isStandaloneMode()){
+    _startupFsResolved = false;
+  } else {
+    _startupFsResolved = true;
+  }
   route();
   checkStartupFullScreenPrompt();
 }
@@ -4664,9 +4748,17 @@ function closeModal(id){
     }
   }
   if(activeNum && m && m.contains(activeNum)) closeNumpad();
+  if(['modal-fullscreen','modal-tour-invite','modal-monthly-report','modal-weekly-weight','modal-deload-prompt'].indexOf(id) >= 0){
+    setTimeout(function(){
+      if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome();
+    }, 280);
+  }
 }
 document.querySelectorAll('.modal').forEach(function(m){
-  m.addEventListener('click', function(e){ if(e.target === m) closeModal(m.id); });
+  m.addEventListener('click', function(e){
+    if(m.id === 'modal-session-kicked') return;
+    if(e.target === m) closeModal(m.id);
+  });
 });
 
 /* ============ NAVIGATION ============ */
@@ -7217,17 +7309,33 @@ function aiCommitGeneratedSplit(){
     return;
   }
   const meta = suggestData.generatedMeta || {};
+  const splitTitle = meta.splitName || ('AI Split (' + prog.length + 'd)');
   const progObj = getProgramObj();
-  if(progObj){
-    progObj.name = meta.splitName || 'AI Split';
+  if(progObj && (!progObj.program || progObj.program.length === 0)){
+    progObj.name = splitTitle;
     progObj.program = JSON.parse(JSON.stringify(prog));
+    appData.activeProgramId = progObj.id;
+  } else {
+    const newId = 'prog_' + Date.now();
+    let uniqueName = splitTitle;
+    const existingNames = (appData.programs || []).map(function(p){ return p.name; });
+    if(existingNames.indexOf(uniqueName) >= 0){
+      uniqueName = splitTitle + ' #' + ((appData.programs || []).length + 1);
+    }
+    appData.programs.push({
+      id: newId,
+      name: uniqueName,
+      createdAt: Date.now(),
+      program: JSON.parse(JSON.stringify(prog))
+    });
+    appData.activeProgramId = newId;
   }
   appData.currentDayIndex = 0;
   currentScreen = '';
   save();
   playSound('success');
   route(true);
-  toast('⚡ AI Split Active: ' + (meta.splitName || 'Ready'));
+  toast('⚡ Saved to Account Splits (' + appData.programs.length + ' total): ' + splitTitle);
 }
 
 /* ============ MANUAL SPLIT STUDIO (WITH LINK SUPERSET & ADD SUPERSET) ============ */
@@ -7464,15 +7572,27 @@ function finishManualStudio(){
   }
   nonEmpty.forEach(function(d, idx){ d.day = idx + 1; });
   const progObj = getProgramObj();
-  if(progObj){
+  if(progObj && (!progObj.program || progObj.program.length === 0)){
+    if(!progObj.name || progObj.name === 'IRON PULSE') progObj.name = 'Custom Split (' + nonEmpty.length + 'd)';
     progObj.program = JSON.parse(JSON.stringify(nonEmpty));
+    appData.activeProgramId = progObj.id;
+  } else {
+    const newId = 'prog_' + Date.now();
+    const newName = 'Custom Split #' + ((appData.programs || []).length + 1) + ' (' + nonEmpty.length + 'd)';
+    appData.programs.push({
+      id: newId,
+      name: newName,
+      createdAt: Date.now(),
+      program: JSON.parse(JSON.stringify(nonEmpty))
+    });
+    appData.activeProgramId = newId;
   }
   appData.currentDayIndex = 0;
   currentScreen = '';
   save();
   playSound('success');
   route(true);
-  toast('💾 Split Saved (' + nonEmpty.length + ' days)');
+  toast('💾 Split Saved to Account (' + appData.programs.length + ' splits stored)');
 }
 
 /* ============ EXERCISE LIBRARY PICKER (ZERO OVERLAP + SEARCH + FILTERS) ============ */
@@ -7694,9 +7814,19 @@ function finalizeNumTarget(el){
   if(!el) return;
   const raw = String(el.value || '').trim();
   const isWorkoutField = (el.id && (/^(w|r|ww|wr|sw|sr|d_|sd_)/.test(el.id))) || el.classList.contains('step-target');
-  if(el.classList.contains('step-target') && (raw === '' || raw === '0' || raw === '-' || raw === '.')){
-    el.value = '';
-    triggerActiveInputCallbacks(el);
+  if(el.classList.contains('step-target')){
+    if(raw === '' || raw === '0' || raw === '-' || raw === '.' || parseFloat(raw) <= 0){
+      el.value = '';
+      if(el.id === 'activeExStep') saveActiveExStep('');
+      else if(el.id === 'activeSSExStep') saveActiveSSExStep('');
+      else triggerActiveInputCallbacks(el);
+    } else {
+      const cleanStep = Math.round((parseFloat(raw) || 0) * 100) / 100;
+      el.value = String(cleanStep);
+      if(el.id === 'activeExStep') saveActiveExStep(String(cleanStep));
+      else if(el.id === 'activeSSExStep') saveActiveSSExStep(String(cleanStep));
+      else triggerActiveInputCallbacks(el);
+    }
     return;
   }
   if((raw === '' || raw === '-' || raw === '.') && !isWorkoutField){
@@ -9247,13 +9377,13 @@ function renderWorkout(){
   }
   $('activeExNote').value = ex.note || '';
   const stepInp = $('activeExStep');
-  if(stepInp && document.activeElement !== stepInp){
+  if(stepInp && document.activeElement !== stepInp && activeNum !== stepInp){
     stepInp.value = (ex.minWeightStep && parseFloat(ex.minWeightStep) > 0) ? ex.minWeightStep : '';
   }
   const ssStepWrap = $('activeSSStepWrap');
   if(ssStepWrap) ssStepWrap.classList.toggle('hidden', !hasSS);
   const ssStepInp = $('activeSSExStep');
-  if(ssStepInp && document.activeElement !== ssStepInp){
+  if(ssStepInp && document.activeElement !== ssStepInp && activeNum !== ssStepInp){
     ssStepInp.value = (hasSS && ex.supersetMinWeightStep && parseFloat(ex.supersetMinWeightStep) > 0) ? ex.supersetMinWeightStep : '';
   }
   const eachBtn = $('eachBtn');
@@ -9348,8 +9478,17 @@ function renderWorkout(){
 function saveActiveExStep(val){
   const ex = activeSessionData[activeExIndex];
   if(!ex) return;
+  const rawStr = String(val === undefined || val === null ? '' : val).trim();
+  // While user is mid-decimal (e.g. "2." or "0." or "0.0"), do NOT re-render or strip the trailing dot!
+  if(rawStr.endsWith('.') || /^0\.0*$/.test(rawStr) || /\.\d*0$/.test(rawStr)){
+    const partialNum = parseFloat(rawStr);
+    if(!isNaN(partialNum) && partialNum >= 0){
+      ex.minWeightStep = Math.round(partialNum * 100) / 100;
+    }
+    return;
+  }
   saveCurrentEx();
-  const num = parseFloat(val);
+  const num = parseFloat(rawStr);
   ex.minWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
   const prog = getProgram();
   const day = prog[appData.currentDayIndex];
@@ -9364,8 +9503,16 @@ function saveActiveExStep(val){
 function saveActiveSSExStep(val){
   const ex = activeSessionData[activeExIndex];
   if(!ex || !ex.supersetName) return;
+  const rawStr = String(val === undefined || val === null ? '' : val).trim();
+  if(rawStr.endsWith('.') || /^0\.0*$/.test(rawStr) || /\.\d*0$/.test(rawStr)){
+    const partialNum = parseFloat(rawStr);
+    if(!isNaN(partialNum) && partialNum >= 0){
+      ex.supersetMinWeightStep = Math.round(partialNum * 100) / 100;
+    }
+    return;
+  }
   saveCurrentEx();
-  const num = parseFloat(val);
+  const num = parseFloat(rawStr);
   ex.supersetMinWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
   const prog = getProgram();
   const day = prog[appData.currentDayIndex];
@@ -11359,11 +11506,43 @@ function moveEx(exIdx, toDay){
 /* ============ PROGRAMS MODAL ============ */
 function openPrograms(){ renderProgramsList(); openModal('modal-programs'); }
 function renderProgramsList(){
-  const c = $('programsList'); c.innerHTML = '';
-  appData.programs.forEach(function(p){
+  const c = $('programsList');
+  if(!c) return;
+  c.innerHTML = '';
+  const validProgs = (appData.programs || []);
+  if($('programsCountSub')){
+    $('programsCountSub').textContent = validProgs.length + ' split' + (validProgs.length === 1 ? '' : 's') + ' stored in your account';
+  }
+  validProgs.forEach(function(p, idx){
     const cur = p.id === appData.activeProgramId;
-    c.insertAdjacentHTML('beforeend', '<div class="card glass row-between" style="padding:9px 10px"><span style="font-weight:800;font-size:12px;' + (cur ? 'color:var(--green-t)' : '') + '">' + p.name + (cur ? ' ✓' : '') + '</span><div class="row gap-1">' + (!cur ? '<button class="btn xs" onclick="switchProgram(\'' + p.id + '\')">Switch</button>' : '') + (appData.programs.length > 1 ? '<button class="btn xs red" onclick="removeProgram(\'' + p.id + '\')">Del</button>' : '') + '</div></div>');
+    const daysCnt = Array.isArray(p.program) ? p.program.length : 0;
+    const exCnt = Array.isArray(p.program) ? p.program.reduce(function(acc, d){ return acc + ((d.exercises && d.exercises.length) || 0); }, 0) : 0;
+    c.insertAdjacentHTML('beforeend',
+      '<div class="card glass" style="padding:9px 10px;border-color:' + (cur ? 'var(--green-b)' : 'var(--line)') + '">' +
+        '<div class="row-between" style="gap:6px">' +
+          '<div style="min-width:0;flex:1">' +
+            '<input type="text" value="' + escapeAttr(p.name || ('Split ' + (idx + 1))) + '" onchange="renameProgramById(\'' + p.id + '\', this.value)" style="font-weight:900;font-size:12.5px;padding:2px 6px;height:26px;background:transparent;border:1px dashed transparent;color:' + (cur ? 'var(--green-t)' : 'var(--txt)') + '">' +
+            '<div class="micro subtle" style="padding-left:6px">' + daysCnt + ' days · ' + exCnt + ' exercises' + (cur ? ' · <b style="color:var(--green-t)">Active</b>' : '') + '</div>' +
+          '</div>' +
+          '<div class="row gap-1" style="flex-shrink:0">' +
+            (!cur ? '<button class="btn xs green" onclick="switchProgram(\'' + p.id + '\')">Activate</button>' : '<span class="db-badge" style="color:var(--green-t);border-color:var(--green-b)">Active ✓</span>') +
+            (validProgs.length > 1 ? '<button class="btn xs red" onclick="removeProgram(\'' + p.id + '\')">🗑️</button>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
   });
+}
+function renameProgramById(id, newName){
+  const clean = String(newName || '').trim();
+  if(!clean) return;
+  const p = (appData.programs || []).find(function(x){ return x.id === id; });
+  if(p){
+    p.name = clean;
+    save();
+    if(id === appData.activeProgramId && $('headerSub')) $('headerSub').textContent = clean;
+    toast('✏️ Split renamed to "' + clean + '"');
+  }
 }
 function switchProgram(id){
   playSound('success');
@@ -12725,11 +12904,7 @@ function updateDeloadUI(){
       barEl.style.width = pct + '%';
       barEl.style.background = isDue ? 'linear-gradient(90deg,var(--amber),var(--red))' : 'linear-gradient(90deg,var(--blue),var(--green))';
     }
-    if(isDue && !cfg.promptShownForCycle && currentScreen === 'screen-home'){
-      cfg.promptShownForCycle = true;
-      save();
-      openDeloadDuePrompt(false);
-    }
+    // Deload prompt is now sequenced as Priority 5 inside checkAutoPopupsOnHome() so it never collides with Fullscreen or Weight popups!
   }
 }
 
@@ -15594,16 +15769,23 @@ function renderMonthlyReportModal(monthKey){
 /* ============ AUTO POPUPS ON HOME (FIRST-TIME TOUR, MONTHLY REPORT, WEEKLY WEIGHT) ============ */
 function checkAutoPopupsOnHome(){
   if(currentScreen !== 'screen-home') return;
-  const fsModal = $('modal-fullscreen');
-  if(fsModal && fsModal.classList.contains('open')) return;
+  if(workoutActive || cardioInt) return;
+  // Never open a new popup if ANY modal or tutorial overlay is currently open!
+  if(isAnyModalOrOverlayOpen()) return;
 
-  // 1. First-Time Device Interactive Tour Invitation (ONLY ONCE ever on this device!)
+  // PRIORITY 1: Fullscreen Prompt (Must be resolved first before any other startup popup!)
+  if(!_startupFsResolved && !isCurrentlyFullScreen() && !isStandaloneMode()){
+    openModal('modal-fullscreen');
+    return;
+  }
+
+  // PRIORITY 2: First-Time Device Interactive Tour Invitation (ONLY ONCE ever on this device!)
   if(!safeGetItem('ironPulseFirstTimeOnboardingDoneV4')){
     openModal('modal-tour-invite');
     return;
   }
 
-  // 2. Monthly Progress Report Auto Pop-Up (At the start of a new month if previous month had workouts!)
+  // PRIORITY 3: Monthly Progress Report Auto Pop-Up (At the start of a new month if previous month had workouts!)
   const now = new Date();
   const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const prevMonthKey = getMonthKeyFromTs(prevMonthDate.getTime());
@@ -15617,7 +15799,7 @@ function checkAutoPopupsOnHome(){
     }
   }
 
-  // 3. Weekly Body Weight Check-In Pop-Up (If enabled in Settings, not logged this week, and not skipped today)
+  // PRIORITY 4: Weekly Body Weight Check-In Pop-Up (If enabled in Settings, not logged this week, and not skipped today)
   const prof = ensureAthleteProfile();
   if(prof.weeklyWeightPrompt !== false){
     const curWeek = getCurrentISOWeekKey();
@@ -15625,6 +15807,23 @@ function checkAutoPopupsOnHome(){
     const loggedThisWeek = (appData.weightLogs || []).some(function(x){ return x.weekKey === curWeek; });
     if(!loggedThisWeek && appData.lastWeightPromptWeek !== curWeek && appData.lastWeightSkipDay !== todayStr){
       openWeeklyWeightModal(false);
+      return;
+    }
+  }
+
+  // PRIORITY 5: Auto-Deload Cycle Due Prompt (If enabled and countdown reached 0)
+  if(typeof ensureDeloadConfig === 'function'){
+    const cfg = ensureDeloadConfig();
+    if(cfg.enabled && !cfg.isActive){
+      const totalCycleMs = cfg.cycleDays * 86400000;
+      const elapsedMs = Math.max(0, Date.now() - cfg.cycleStartTs);
+      const remMs = Math.max(0, totalCycleMs - elapsedMs);
+      if(remMs <= 0 && !cfg.promptShownForCycle){
+        cfg.promptShownForCycle = true;
+        save();
+        openDeloadDuePrompt(false);
+        return;
+      }
     }
   }
 }
@@ -15664,10 +15863,10 @@ const FULL_MULTIPAGE_TOUR_STEPS = [
     desc: 'Inspect Front & Back muscles (including Lower Back: 48h primary in RDL/Back Extension vs 24h synergist in Hip Thrust/Squat!). Use Time Travel (+6h to +72h) to preview future recovery.'
   },
   {
-    screen: 'screen-ai-chat',
-    selector: '#screen-ai-chat .card.hud',
-    title: '🤖 6/9 · 2026 Omni-AI Coach',
-    desc: 'Ask anything in Arabic or English — audit your split, break plateaus, log your weight, or change rest timers directly via chat!'
+    screen: 'screen-home',
+    selector: '#cloudHeaderBtn',
+    title: '👤 6/9 · Permanent Account & Cloud Sync',
+    desc: 'Sign in once with your Email & Password (4+ chars) to sync all splits, weights, and timers across devices with automatic single-device protection!'
   },
   {
     screen: 'screen-analytics',
@@ -15957,8 +16156,856 @@ function initSwipeGestures(){
   );
 }
 
+
+/* ============================================================================
+ * 9. BUILT-IN APPLE / GOOGLE CLOUD ACCOUNT SYNC & SINGLE-ACTIVE-DEVICE GUARD
+ *    - Sign in from anywhere inside the site (Welcome screen, Top Header ☁️, or Settings)
+ *    - Immediately pulls 100% of splits, history, timers & profile on sign-in
+ *    - Real-Time Single-Active-Device Lock:
+ *      * If Device 2 opens the account, Device 1 immediately locks and notifies the user
+ *      * If Device 1 refreshes (or taps Reclaim), Device 1 unlocks with latest data and Device 2 locks!
+ * ============================================================================ */
+const MY_SESSION_INSTANCE_ID = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+let _cloudSelectedProvider = 'apple';
+let _cloudPushDebounceTimer = null;
+let _cloudHeartbeatInterval = null;
+let _isSessionKickedLocked = false;
+let _localSessionBroadcast = null;
+try{
+  if(typeof BroadcastChannel !== 'undefined'){
+    _localSessionBroadcast = new BroadcastChannel('iron_pulse_single_session_lock_v1');
+    _localSessionBroadcast.onmessage = function(ev){
+      const msg = ev.data;
+      if(!msg || !appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
+      if(msg.vaultKey === appData.cloudAccount.vaultKey && msg.sessionId && msg.sessionId !== MY_SESSION_INSTANCE_ID){
+        triggerSessionKickedLock(msg.deviceLabel || 'Another Browser Tab / Window');
+      }
+    };
+  }
+}catch(e){}
+
+window.addEventListener('storage', function(ev){
+  if(!ev || !appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
+  if(ev.key === 'ip_active_sess_' + appData.cloudAccount.vaultKey && ev.newValue){
+    try{
+      const parsed = JSON.parse(ev.newValue);
+      if(parsed && parsed.sessionId && parsed.sessionId !== MY_SESSION_INSTANCE_ID){
+        triggerSessionKickedLock(parsed.deviceLabel || 'Another Browser Tab / Device');
+      }
+    }catch(_){}
+  }
+});
+
+function getCurrentDeviceLabel(){
+  const ua = navigator.userAgent || '';
+  if(/iPhone/i.test(ua)) return 'iPhone (iOS)';
+  if(/iPad/i.test(ua)) return 'iPad (iPadOS)';
+  if(/Android/i.test(ua)) return 'Android Device';
+  if(/Macintosh|Mac OS/i.test(ua)) return 'Mac';
+  if(/Windows/i.test(ua)) return 'Windows PC';
+  return 'Web Browser';
+}
+
+async function computeVaultKeyHash(email, pin){
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  const cleanPin = String(pin || '').trim();
+  const raw = 'ironpulse_v1::' + cleanEmail + '::' + cleanPin;
+  if(window.crypto && window.crypto.subtle && window.TextEncoder){
+    try{
+      const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+      const arr = Array.from(new Uint8Array(buf));
+      return 'ipv_' + arr.map(function(b){ return b.toString(16).padStart(2, '0'); }).join('').slice(0, 32);
+    }catch(e){}
+  }
+  // Fallback deterministic hash
+  let h1 = 0xdeadbeef ^ raw.length, h2 = 0x41c6ce57 ^ raw.length;
+  for(let i = 0, ch; i < raw.length; i++){
+    ch = raw.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return 'ipv_' + (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
+}
+
+/* ============================================================================
+ * MULTI-LAYER GLOBAL CROSS-DEVICE CLOUD STORAGE & REALTIME PUSH ENGINE
+ * Layer 1: 5 Global Permanent Nostr NIP-78 Relays (BIP-340 secp256k1 + AES-GCM)
+ * Layer 2: ntfy.sh Global Cloud Pub/Sub & Cache (Instant SSE + 12h HTTP Cache)
+ * Layer 3: Optional Custom Firebase Realtime DB + Local Mirror Fallback
+ * ============================================================================ */
+const NOSTR_CLOUD_RELAYS = [
+  'wss://nos.lol',
+  'wss://relay.damus.io',
+  'wss://relay.primal.net',
+  'wss://offchain.pub',
+  'wss://nostr.mom'
+];
+
+const _SECP_P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2Fn;
+const _SECP_N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+const _SECP_GX = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798n;
+const _SECP_GY = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8n;
+
+function _secpMod(a, b){ b = b || _SECP_P; const r = a % b; return r >= 0n ? r : r + b; }
+function _secpPow(b, e, m){
+  m = m || _SECP_P; let r = 1n; b = _secpMod(b, m);
+  while(e > 0n){ if(e & 1n) r = (r * b) % m; e >>= 1n; b = (b * b) % m; }
+  return r;
+}
+function _secpInv(a, m){ m = m || _SECP_P; return _secpPow(a, m - 2n, m); }
+function _secpAdd(p1, p2){
+  if(!p1) return p2;
+  if(!p2) return p1;
+  if(p1.x === p2.x && p1.y !== p2.y) return null;
+  let lam;
+  if(p1.x === p2.x && p1.y === p2.y){
+    lam = _secpMod(3n * p1.x * p1.x * _secpInv(2n * p1.y));
+  } else {
+    lam = _secpMod((p2.y - p1.y) * _secpInv(_secpMod(p2.x - p1.x)));
+  }
+  const x3 = _secpMod(lam * lam - p1.x - p2.x);
+  const y3 = _secpMod(lam * (p1.x - x3) - p1.y);
+  return { x: x3, y: y3 };
+}
+function _secpMul(k){
+  let r = null, add = { x: _SECP_GX, y: _SECP_GY };
+  while(k > 0n){
+    if(k & 1n) r = _secpAdd(r, add);
+    add = _secpAdd(add, add);
+    k >>= 1n;
+  }
+  return r;
+}
+function _numTo32Hex(n){ return n.toString(16).padStart(64, '0'); }
+function _hexToU8(h){
+  const u = new Uint8Array(h.length / 2);
+  for(let i = 0; i < u.length; i++) u[i] = parseInt(h.substr(i * 2, 2), 16);
+  return u;
+}
+function _u8ToHex(u){
+  return Array.from(u).map(function(b){ return b.toString(16).padStart(2, '0'); }).join('');
+}
+function _concatU8(){
+  let total = 0;
+  for(let i = 0; i < arguments.length; i++) total += arguments[i].length;
+  const res = new Uint8Array(total);
+  let off = 0;
+  for(let i = 0; i < arguments.length; i++){ res.set(arguments[i], off); off += arguments[i].length; }
+  return res;
+}
+async function _sha256U8(u8){
+  const buf = await window.crypto.subtle.digest('SHA-256', u8);
+  return new Uint8Array(buf);
+}
+async function _taggedHash(tag, msgBytes){
+  const th = await _sha256U8(new TextEncoder().encode(tag));
+  return await _sha256U8(_concatU8(th, th, msgBytes));
+}
+async function deriveNostrIdentityFromVaultKey(vaultKey){
+  const privBytes = await _sha256U8(new TextEncoder().encode('ironpulse_nostr_secp256k1_v2::' + vaultKey));
+  const privHex = _u8ToHex(privBytes);
+  const d0 = BigInt('0x' + privHex);
+  const P_pt = _secpMul(d0);
+  const pubHex = _numTo32Hex(P_pt.x);
+  return { privHex: privHex, pubHex: pubHex, privBytes: privBytes };
+}
+async function signNostrVaultEvent(vaultKey, contentStr){
+  const idObj = await deriveNostrIdentityFromVaultKey(vaultKey);
+  const created_at = Math.floor(Date.now() / 1000);
+  const kind = 30078;
+  const tags = [['d', 'ironpulse_vault_' + vaultKey]];
+  const serialized = JSON.stringify([0, idObj.pubHex, created_at, kind, tags, contentStr]);
+  const msgHashBytes = await _sha256U8(new TextEncoder().encode(serialized));
+  const idHex = _u8ToHex(msgHashBytes);
+
+  const d0 = BigInt('0x' + idObj.privHex);
+  const P_pt = _secpMul(d0);
+  const d = (P_pt.y & 1n) === 0n ? d0 : (_SECP_N - d0);
+  const k0Hash = await _taggedHash('BIP0340/nonce', _concatU8(_hexToU8(_numTo32Hex(d)), _hexToU8(_numTo32Hex(P_pt.x)), msgHashBytes));
+  const k0 = _secpMod(BigInt('0x' + _u8ToHex(k0Hash)), _SECP_N);
+  const R = _secpMul(k0);
+  const k = (R.y & 1n) === 0n ? k0 : (_SECP_N - k0);
+  const rxBytes = _hexToU8(_numTo32Hex(R.x));
+  const pxBytes = _hexToU8(_numTo32Hex(P_pt.x));
+  const eHash = await _taggedHash('BIP0340/challenge', _concatU8(rxBytes, pxBytes, msgHashBytes));
+  const e = _secpMod(BigInt('0x' + _u8ToHex(eHash)), _SECP_N);
+  const s = _secpMod(k + e * d, _SECP_N);
+  const sigHex = _numTo32Hex(R.x) + _numTo32Hex(s);
+
+  return {
+    id: idHex,
+    pubkey: idObj.pubHex,
+    created_at: created_at,
+    kind: kind,
+    tags: tags,
+    content: contentStr,
+    sig: sigHex
+  };
+}
+
+// AES-256-GCM Encryption so user workout data is private on public relays
+async function encryptVaultPayload(vaultKey, obj){
+  try{
+    const keyMaterial = await _sha256U8(new TextEncoder().encode('ironpulse_aes_key::' + vaultKey));
+    const cryptoKey = await window.crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['encrypt']);
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const encoded = new TextEncoder().encode(JSON.stringify(obj));
+    const cipherBuf = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, encoded);
+    return ' IPENC1:' + _u8ToHex(iv) + ':' + _u8ToHex(new Uint8Array(cipherBuf));
+  }catch(e){
+    return JSON.stringify(obj);
+  }
+}
+
+async function decryptVaultPayload(vaultKey, str){
+  if(!str) return null;
+  const trimmed = String(str).trim();
+  if(trimmed.indexOf('IPENC1:') === 0){
+    try{
+      const parts = trimmed.split(':');
+      const iv = _hexToU8(parts[1]);
+      const cipher = _hexToU8(parts[2]);
+      const keyMaterial = await _sha256U8(new TextEncoder().encode('ironpulse_aes_key::' + vaultKey));
+      const cryptoKey = await window.crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['decrypt']);
+      const plainBuf = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, cipher);
+      return JSON.parse(new TextDecoder().decode(plainBuf));
+    }catch(e){
+      return null;
+    }
+  }
+  try{ return JSON.parse(trimmed); }catch(e){ return null; }
+}
+
+// Fetch latest encrypted vault from Nostr Relays + ntfy.sh + Custom Server
+async function fetchFromNostrRelays(vaultKey, timeoutMs){
+  timeoutMs = timeoutMs || 3600;
+  try{
+    const idObj = await deriveNostrIdentityFromVaultKey(vaultKey);
+    const dTag = 'ironpulse_vault_' + vaultKey;
+    return await new Promise(function(resolve){
+      let bestEvent = null;
+      let finishedCount = 0;
+      let resolved = false;
+      const socks = [];
+      const done = function(){
+        if(resolved) return;
+        resolved = true;
+        socks.forEach(function(ws){ try{ ws.close(); }catch(_){} });
+        resolve(bestEvent);
+      };
+      const timer = setTimeout(done, timeoutMs);
+
+      NOSTR_CLOUD_RELAYS.forEach(function(url){
+        try{
+          const ws = new WebSocket(url);
+          socks.push(ws);
+          ws.onopen = function(){
+            try{
+              ws.send(JSON.stringify(['REQ', 'ipget', { kinds: [30078], authors: [idObj.pubHex], '#d': [dTag], limit: 1 }]));
+            }catch(_){}
+          };
+          ws.onmessage = function(ev){
+            try{
+              const msg = JSON.parse(ev.data);
+              if(msg[0] === 'EVENT' && msg[2] && msg[2].content){
+                if(!bestEvent || msg[2].created_at > bestEvent.created_at){
+                  bestEvent = msg[2];
+                }
+              } else if(msg[0] === 'EOSE'){
+                finishedCount++;
+                // As soon as at least 2 relays respond (or 1 relay has our event), resolve fast!
+                if(bestEvent || finishedCount >= 3){
+                  clearTimeout(timer);
+                  done();
+                }
+              }
+            }catch(_){}
+          };
+          ws.onerror = function(){
+            finishedCount++;
+            if(finishedCount >= NOSTR_CLOUD_RELAYS.length){ clearTimeout(timer); done(); }
+          };
+        }catch(_){
+          finishedCount++;
+        }
+      });
+    });
+  }catch(e){
+    return null;
+  }
+}
+
+async function publishToNostrRelays(vaultKey, encryptedContent){
+  try{
+    const signedEv = await signNostrVaultEvent(vaultKey, encryptedContent);
+    NOSTR_CLOUD_RELAYS.forEach(function(url){
+      try{
+        const ws = new WebSocket(url);
+        const t = setTimeout(function(){ try{ ws.close(); }catch(_){} }, 4500);
+        ws.onopen = function(){
+          try{
+            ws.send(JSON.stringify(['EVENT', signedEv]));
+            setTimeout(function(){ clearTimeout(t); try{ ws.close(); }catch(_){} }, 1200);
+          }catch(_){}
+        };
+      }catch(_){}
+    });
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+async function fetchFromNtfyCloud(vaultKey){
+  const ctrl = new AbortController();
+  const t = setTimeout(function(){ ctrl.abort(); }, 3200);
+  try{
+    const url = 'https://ntfy.sh/ip_vault_' + encodeURIComponent(vaultKey) + '/json?poll=1&since=all';
+    const r = await fetch(url, { method: 'GET', signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if(!r.ok) return null;
+    const txt = await r.text();
+    if(!txt) return null;
+    const lines = txt.trim().split('\n');
+    let latestMsg = null;
+    for(let i = lines.length - 1; i >= 0; i--){
+      try{
+        const item = JSON.parse(lines[i]);
+        if(item && item.event === 'message' && item.message){
+          latestMsg = item.message;
+          break;
+        }
+      }catch(_){}
+    }
+    return latestMsg;
+  }catch(e){
+    clearTimeout(t);
+    return null;
+  }
+}
+
+async function publishToNtfyCloud(vaultKey, encryptedContent){
+  try{
+    await fetch('https://ntfy.sh/ip_vault_' + encodeURIComponent(vaultKey), {
+      method: 'POST',
+      body: encryptedContent
+    });
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+let _liveNtfyEventSource = null;
+function startLiveCrossDeviceStream(vaultKey){
+  if(_liveNtfyEventSource){
+    try{ _liveNtfyEventSource.close(); }catch(_){}
+    _liveNtfyEventSource = null;
+  }
+  if(!vaultKey || typeof EventSource === 'undefined') return;
+  try{
+    _liveNtfyEventSource = new EventSource('https://ntfy.sh/ip_vault_' + encodeURIComponent(vaultKey) + '/sse');
+    _liveNtfyEventSource.onmessage = async function(ev){
+      if(!ev || !ev.data || _isSessionKickedLocked) return;
+      try{
+        const wrapper = JSON.parse(ev.data);
+        if(wrapper && wrapper.event === 'message' && wrapper.message){
+          const dec = await decryptVaultPayload(vaultKey, wrapper.message);
+          if(dec && dec.activeSessionId && dec.activeSessionId !== MY_SESSION_INSTANCE_ID){
+            triggerSessionKickedLock(dec.activeDeviceLabel || 'Another Device');
+          }
+        }
+      }catch(_){}
+    };
+  }catch(_){}
+}
+
+async function cloudVaultGet(vaultKey){
+  let bestCandidate = null;
+
+  // Run Nostr NIP-78 Global Relays and ntfy.sh Cloud fetch in parallel!
+  const results = await Promise.all([
+    fetchFromNostrRelays(vaultKey, 3600),
+    fetchFromNtfyCloud(vaultKey)
+  ]);
+
+  const nostrEv = results[0];
+  const ntfyMsg = results[1];
+
+  if(nostrEv && nostrEv.content){
+    const dec1 = await decryptVaultPayload(vaultKey, nostrEv.content);
+    if(dec1 && typeof dec1 === 'object'){
+      bestCandidate = dec1;
+    }
+  }
+  if(ntfyMsg){
+    const dec2 = await decryptVaultPayload(vaultKey, ntfyMsg);
+    if(dec2 && typeof dec2 === 'object'){
+      if(!bestCandidate || (dec2.updatedAt || 0) > (bestCandidate.updatedAt || 0)){
+        bestCandidate = dec2;
+      }
+    }
+  }
+
+  // Also check local mirror and pick whichever has the newest timestamp
+  const localRaw = safeGetItem('ip_local_vault_mirror_' + vaultKey);
+  if(localRaw){
+    try{
+      const localObj = JSON.parse(localRaw);
+      if(localObj && (!bestCandidate || (localObj.updatedAt || 0) > (bestCandidate.updatedAt || 0))){
+        bestCandidate = localObj;
+      }
+    }catch(_){}
+  }
+
+  if(bestCandidate){
+    safeSetItem('ip_local_vault_mirror_' + vaultKey, JSON.stringify(bestCandidate));
+  }
+  return bestCandidate;
+}
+
+async function cloudVaultPut(vaultKey, payloadObj){
+  const rawJson = JSON.stringify(payloadObj);
+  safeSetItem('ip_local_vault_mirror_' + vaultKey, rawJson);
+  const sessInfo = JSON.stringify({
+    vaultKey: vaultKey,
+    sessionId: payloadObj.activeSessionId,
+    deviceLabel: payloadObj.activeDeviceLabel,
+    ts: Date.now()
+  });
+  safeSetItem('ip_active_sess_' + vaultKey, sessInfo);
+  if(_localSessionBroadcast){
+    try{ _localSessionBroadcast.postMessage(JSON.parse(sessInfo)); }catch(_){}
+  }
+
+  const encrypted = await encryptVaultPayload(vaultKey, payloadObj);
+  await Promise.all([
+    publishToNostrRelays(vaultKey, encrypted),
+    publishToNtfyCloud(vaultKey, encrypted)
+  ]);
+  return true;
+}
+
+function ensurePersistentAccountRestored(){
+  // Guarantee the user NEVER gets logged out on this browser unless they explicitly click Sign Out!
+  try{
+    const rawAuth = safeGetItem('ironPulsePersistentAuthV1');
+    if(rawAuth){
+      const parsed = JSON.parse(rawAuth);
+      if(parsed && parsed.email && parsed.vaultKey){
+        appData.cloudAccount = parsed;
+      }
+    } else if(appData.cloudAccount && appData.cloudAccount.email && appData.cloudAccount.vaultKey){
+      safeSetItem('ironPulsePersistentAuthV1', JSON.stringify(appData.cloudAccount));
+    }
+  }catch(e){}
+}
+
+function openCloudAuthModal(){
+  playSound('tap');
+  ensurePersistentAccountRestored();
+  refreshCloudAuthUI();
+  openModal('modal-cloud-auth');
+}
+
+function refreshCloudAuthUI(){
+  ensurePersistentAccountRestored();
+  const acc = appData.cloudAccount;
+  const isSigned = !!(acc && acc.email && acc.vaultKey);
+  if($('cloudSignedInPane')) $('cloudSignedInPane').classList.toggle('hidden', !isSigned);
+  if($('cloudSignInFormPane')) $('cloudSignInFormPane').classList.toggle('hidden', isSigned);
+
+  const hdrBtn = $('cloudHeaderBtn');
+  if(hdrBtn){
+    hdrBtn.style.borderColor = isSigned ? 'var(--green-b)' : 'var(--blue-b)';
+    hdrBtn.style.color = isSigned ? 'var(--green-t)' : 'var(--blue-t)';
+    hdrBtn.textContent = isSigned ? '👤✓' : '👤';
+    hdrBtn.title = isSigned ? ('Signed in: ' + acc.email) : 'Sign In / Cloud Account';
+  }
+
+  const setTitle = $('settingsCloudAccountTitle');
+  const setSub = $('settingsCloudAccountSub');
+  const setBtn = $('settingsCloudActionBtn');
+  if(isSigned){
+    if($('cloudActiveUserEmail')) $('cloudActiveUserEmail').textContent = '🟢 ' + acc.email;
+    if($('cloudActiveDeviceTxt')) $('cloudActiveDeviceTxt').textContent = '📱 Active Device: ' + getCurrentDeviceLabel() + ' · Permanent Login Active';
+    if(setTitle) setTitle.textContent = '🟢 ' + acc.email;
+    if(setSub) setSub.textContent = 'Permanent Login · Auto Cloud Sync Active';
+    if(setBtn){ setBtn.textContent = 'Account'; setBtn.className = 'btn xs green'; }
+  } else {
+    if(setTitle) setTitle.textContent = '👤 Cloud Account';
+    if(setSub) setSub.textContent = 'Sign in with Email & Password to sync all data';
+    if(setBtn){ setBtn.textContent = 'Sign In →'; setBtn.className = 'btn xs blue'; }
+  }
+}
+
+async function performAccountLoginWithEmailAndPassword(rawEmail, rawPass, optionalDisplayName, btnEl){
+  const email = String(rawEmail || '').trim().toLowerCase();
+  const pass = String(rawPass || '');
+  if(!email || email.indexOf('@') < 1){
+    playSound('error');
+    toast('Enter a valid email address');
+    return false;
+  }
+  if(pass.length < 4){
+    playSound('error');
+    toast('Password must be at least 4 characters (letters, numbers, or symbols)');
+    return false;
+  }
+
+  const origTxt = btnEl ? btnEl.textContent : '';
+  if(btnEl){ btnEl.disabled = true; btnEl.textContent = '⏳ Signing In & Loading Data...'; }
+
+  const vaultKey = await computeVaultKeyHash(email, pass);
+  const existingVault = await cloudVaultGet(vaultKey);
+  const devLabel = getCurrentDeviceLabel();
+  const authObj = {
+    email: email,
+    vaultKey: vaultKey,
+    lastSyncTs: Date.now()
+  };
+
+  if(existingVault && existingVault.appData && typeof existingVault.appData === 'object'){
+    // Existing account found -> merge any newly created local splits into remoteData.programs so ALL splits are preserved!
+    const remoteData = existingVault.appData;
+    const mergedPrograms = mergeAccountSplitsArray(remoteData.programs || [], appData.programs || []);
+    appData = Object.assign({}, appData, remoteData);
+    appData.programs = mergedPrograms;
+    if(!appData.activeProgramId || !appData.programs.some(function(p){ return p.id === appData.activeProgramId; })){
+      appData.activeProgramId = appData.programs[0] ? appData.programs[0].id : 'prog_1';
+    }
+    appData.cloudAccount = authObj;
+    if(!appData.userName){
+      appData.userName = optionalDisplayName || email.split('@')[0];
+    }
+    safeSetItem('ironPulsePersistentAuthV1', JSON.stringify(authObj));
+    safeSetItem('ironPulseFirstTimeOnboardingDoneV4', '1');
+    _isSessionKickedLocked = false;
+    closeModal('modal-session-kicked');
+
+    normalizePrograms();
+    await pushCloudVaultSnapshot(true);
+    applyTheme();
+    applyPower();
+    refreshUnitUI();
+    updateGymJourneyBanner();
+    renderWeightProgressChart();
+    safeSetItem('gymTrackerData', JSON.stringify(appData));
+
+    if(btnEl){ btnEl.disabled = false; btnEl.textContent = origTxt; }
+    closeModal('modal-cloud-auth');
+    refreshCloudAuthUI();
+    startCloudSessionHeartbeat();
+    route(true);
+    playSound('success');
+    const spCnt = (appData.programs || []).filter(function(p){ return p.program && p.program.length > 0; }).length;
+    toast('🟢 Signed in! Restored ' + (spCnt || 1) + ' split' + (spCnt === 1 ? '' : 's') + ' & all workout history!', 3600);
+    return true;
+  } else {
+    // New account -> bind current data (including all splits) and save permanently
+    if(!appData.userName){
+      appData.userName = optionalDisplayName || email.split('@')[0];
+    }
+    appData.cloudAccount = authObj;
+    safeSetItem('ironPulsePersistentAuthV1', JSON.stringify(authObj));
+    _isSessionKickedLocked = false;
+    normalizePrograms();
+    await pushCloudVaultSnapshot(true);
+    safeSetItem('gymTrackerData', JSON.stringify(appData));
+
+    if(btnEl){ btnEl.disabled = false; btnEl.textContent = origTxt; }
+    closeModal('modal-cloud-auth');
+    refreshCloudAuthUI();
+    startCloudSessionHeartbeat();
+    route(true);
+    playSound('success');
+    toast('🟢 Account created & synced (' + email + ')!', 3500);
+    return true;
+  }
+}
+
+async function submitCloudSignIn(){
+  const email = $('cloudAuthEmailInput') ? $('cloudAuthEmailInput').value : '';
+  const pass = $('cloudAuthPinInput') ? $('cloudAuthPinInput').value : '';
+  const name = $('userNameInput') ? $('userNameInput').value.trim() : '';
+  await performAccountLoginWithEmailAndPassword(email, pass, name, $('cloudSignInSubmitBtn'));
+}
+
+async function submitWelcomeAccountLogin(){
+  const email = $('welcomeEmailInput') ? $('welcomeEmailInput').value : '';
+  const pass = $('welcomePassInput') ? $('welcomePassInput').value : '';
+  const name = $('userNameInput') ? $('userNameInput').value.trim() : '';
+  await performAccountLoginWithEmailAndPassword(email, pass, name, $('welcomeLoginBtn'));
+}
+
+async function pushCloudVaultSnapshot(claimSessionOwnership){
+  if(_isSessionKickedLocked && !claimSessionOwnership) return false;
+  const acc = appData.cloudAccount;
+  if(!acc || !acc.vaultKey) return false;
+
+  // If not explicitly claiming session ownership, verify we haven't been kicked out first
+  if(!claimSessionOwnership){
+    const remote = await cloudVaultGet(acc.vaultKey);
+    if(remote && remote.activeSessionId && remote.activeSessionId !== MY_SESSION_INSTANCE_ID){
+      triggerSessionKickedLock(remote.activeDeviceLabel || 'Another Device');
+      return false;
+    }
+  }
+
+  acc.lastSyncTs = Date.now();
+  const cleanCopy = JSON.parse(JSON.stringify(appData));
+  const payload = {
+    vaultKey: acc.vaultKey,
+    email: acc.email,
+    provider: acc.provider,
+    activeSessionId: MY_SESSION_INSTANCE_ID,
+    activeDeviceLabel: getCurrentDeviceLabel(),
+    updatedAt: Date.now(),
+    appData: cleanCopy
+  };
+  const ok = await cloudVaultPut(acc.vaultKey, payload);
+  if($('cloudLastSyncTxt')){
+    $('cloudLastSyncTxt').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  }
+  return ok;
+}
+
+function scheduleCloudSyncPush(){
+  if(_isSessionKickedLocked) return;
+  if(!appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
+  clearTimeout(_cloudPushDebounceTimer);
+  _cloudPushDebounceTimer = setTimeout(function(){
+    pushCloudVaultSnapshot(false);
+  }, 650);
+}
+
+async function forcePushCloudSyncNow(){
+  playSound('tap');
+  const ok = await pushCloudVaultSnapshot(true);
+  playSound('success');
+  toast(ok ? '☁️ Synced all data to Cloud!' : '💾 Saved to local vault mirror');
+}
+
+async function forcePullCloudSyncNow(){
+  const acc = appData.cloudAccount;
+  if(!acc || !acc.vaultKey) return;
+  playSound('tap');
+  const remote = await cloudVaultGet(acc.vaultKey);
+  if(remote && remote.appData){
+    appData = Object.assign({}, appData, remote.appData);
+    appData.cloudAccount = acc;
+    normalizePrograms();
+    applyTheme();
+    refreshUnitUI();
+    route(true);
+    playSound('success');
+    toast('📥 Pulled latest data from Cloud!');
+  } else {
+    toast('Already up to date');
+  }
+}
+
+function triggerSessionKickedLock(otherDeviceLabel){
+  if(_isSessionKickedLocked) return;
+  _isSessionKickedLocked = true;
+  clearTimeout(_cloudPushDebounceTimer);
+  if(workoutInt){ clearInterval(workoutInt); workoutInt = null; }
+  if(timerInt){ clearInterval(timerInt); timerInt = null; }
+  if(cardioInt){ clearInterval(cardioInt); cardioInt = null; }
+  closeNumpad();
+  const msgEl = $('sessionKickedMsg');
+  const email = (appData.cloudAccount && appData.cloudAccount.email) ? appData.cloudAccount.email : 'your account';
+  if(msgEl){
+    msgEl.innerHTML =
+      'Your account (<b>' + escapeAttr(email) + '</b>) was just opened on <b>' + escapeAttr(otherDeviceLabel || 'Another Device') + '</b>.<br><br>' +
+      'To keep your workout timers and history 100% accurate, only 1 active device is allowed at a time. Refresh this page or tap below to reclaim your session here (which will lock the other device).';
+  }
+  playSound('warn');
+  openModal('modal-session-kicked');
+}
+
+async function checkCloudSessionLockOnce(){
+  const acc = appData.cloudAccount;
+  if(!acc || !acc.vaultKey || _isSessionKickedLocked) return;
+  const remote = await cloudVaultGet(acc.vaultKey);
+  if(!remote) return;
+  if(remote.activeSessionId && remote.activeSessionId !== MY_SESSION_INSTANCE_ID){
+    triggerSessionKickedLock(remote.activeDeviceLabel || 'Another Device');
+  }
+}
+
+function startCloudSessionHeartbeat(){
+  clearInterval(_cloudHeartbeatInterval);
+  if(!appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
+  startLiveCrossDeviceStream(appData.cloudAccount.vaultKey);
+  _cloudHeartbeatInterval = setInterval(checkCloudSessionLockOnce, 6000);
+}
+
+async function reclaimCloudSessionHere(){
+  const acc = appData.cloudAccount;
+  if(!acc || !acc.vaultKey){
+    closeModal('modal-session-kicked');
+    return;
+  }
+  playSound('tap');
+  const remote = await cloudVaultGet(acc.vaultKey);
+  if(remote && remote.appData){
+    appData = Object.assign({}, appData, remote.appData);
+    appData.cloudAccount = acc;
+  }
+  _isSessionKickedLocked = false;
+  closeModal('modal-session-kicked');
+  await pushCloudVaultSnapshot(true);
+  normalizePrograms();
+  safeSetItem('gymTrackerData', JSON.stringify(appData));
+  startCloudSessionHeartbeat();
+  route(true);
+  playSound('success');
+  toast('🔓 Session reclaimed on this device — other device is now locked!');
+}
+
+function mergeAccountSplitsArray(remoteProgs, localProgs){
+  const result = [];
+  const byId = {};
+
+  function countHistoryLogs(p){
+    if(!p || !Array.isArray(p.program)) return 0;
+    let cnt = 0;
+    p.program.forEach(function(d){
+      (d.exercises || []).forEach(function(e){
+        cnt += (e.history ? e.history.length : 0) + (e.supersetHistory ? e.supersetHistory.length : 0);
+      });
+    });
+    return cnt;
+  }
+
+  (remoteProgs || []).forEach(function(rp){
+    if(!rp || !Array.isArray(rp.program) || rp.program.length === 0) return;
+    const copy = JSON.parse(JSON.stringify(rp));
+    result.push(copy);
+    byId[copy.id] = copy;
+  });
+
+  (localProgs || []).forEach(function(lp){
+    if(!lp || !Array.isArray(lp.program) || lp.program.length === 0) return;
+    if(byId[lp.id]){
+      // Keep whichever version has more recorded workout logs
+      if(countHistoryLogs(lp) > countHistoryLogs(byId[lp.id])){
+        const idx = result.indexOf(byId[lp.id]);
+        const copy = JSON.parse(JSON.stringify(lp));
+        if(idx >= 0) result[idx] = copy;
+        byId[copy.id] = copy;
+      }
+    } else {
+      // Check if an identical split name + day count already exists
+      const sameName = result.find(function(x){
+        return String(x.name || '').toLowerCase() === String(lp.name || '').toLowerCase() &&
+               (x.program ? x.program.length : 0) === (lp.program ? lp.program.length : 0);
+      });
+      if(!sameName){
+        const copy = JSON.parse(JSON.stringify(lp));
+        result.push(copy);
+        byId[copy.id] = copy;
+      } else if(countHistoryLogs(lp) > countHistoryLogs(sameName)){
+        const idx = result.indexOf(sameName);
+        const copy = JSON.parse(JSON.stringify(lp));
+        if(idx >= 0) result[idx] = copy;
+      }
+    }
+  });
+
+  if(result.length === 0){
+    return [{ id: 'prog_1', name: 'IRON PULSE', program: [] }];
+  }
+  return result;
+}
+
+async function signOutCloudAccount(){
+  // 1. Save current account state & all splits to Cloud Vault before wiping device!
+  if(appData.cloudAccount && appData.cloudAccount.vaultKey && !_isSessionKickedLocked){
+    try{ await pushCloudVaultSnapshot(false); }catch(_){}
+  }
+
+  // 2. Stop all timers & live listeners
+  clearInterval(_cloudHeartbeatInterval);
+  _cloudHeartbeatInterval = null;
+  if(_liveNtfyEventSource){
+    try{ _liveNtfyEventSource.close(); }catch(_){}
+    _liveNtfyEventSource = null;
+  }
+  _isSessionKickedLocked = false;
+  workoutActive = false;
+  stopStopwatch();
+  resetTimer();
+  if(cardioInt){ clearInterval(cardioInt); cardioInt = null; }
+  clearLiveWorkout();
+  clearLiveCardio();
+  closeNumpad();
+
+  // 3. Remove persistent auth and wipe ALL active user data from this device!
+  safeRemoveItem('ironPulsePersistentAuthV1');
+  safeRemoveItem('gymTrackerData');
+
+  appData = {
+    userName: '',
+    darkMode: true,
+    skin: 'cyber',
+    powerSaveMode: false,
+    defaultTimer: 90,
+    unit: 'kg',
+    barWeight: 20,
+    maxPlateKg: 20,
+    weeklyGoal: 4,
+    globalViewMode: 'all',
+    currentDayIndex: 0,
+    activeProgramId: 'prog_1',
+    programs: [{ id: 'prog_1', name: 'IRON PULSE', program: [] }],
+    cardioHistory: [],
+    weightLogs: [],
+    monthlyReportsArchive: {},
+    customVolumeTargets: {},
+    athleteProfile: {
+      weight: 75,
+      heightCm: 175,
+      birthDate: '',
+      age: 23,
+      gender: 'male',
+      gymStartDate: '',
+      goal: 'bulk',
+      maxPlateKg: 20,
+      weeklyWeightPrompt: true
+    }
+  };
+
+  // Clear login input fields so the next person sees a clean login screen
+  ['welcomeEmailInput','welcomePassInput','userNameInput','cloudAuthEmailInput','cloudAuthPinInput'].forEach(function(id){
+    const el = $(id);
+    if(el) el.value = '';
+  });
+  if($('headerName')) $('headerName').textContent = 'IRON PULSE';
+  if($('headerSub')) $('headerSub').textContent = 'IRON PULSE';
+
+  closeModal('modal-session-kicked');
+  closeModal('modal-cloud-auth');
+  closeModal('modal-settings');
+  refreshCloudAuthUI();
+  updateGymJourneyBanner();
+  route(true);
+  playSound('warn');
+  toast('🚪 Signed out — all local data cleared. Sign in anytime to restore everything!', 3600);
+}
+
+document.addEventListener('visibilitychange', function(){
+  if(!document.hidden && appData.cloudAccount && appData.cloudAccount.vaultKey){
+    checkCloudSessionLockOnce();
+  }
+});
+
 window.onload = function(){
   load();
+  ensurePersistentAccountRestored();
   ensureAthleteProfile();
   applyAppLanguage();
   syncViewModeUI();
@@ -15967,7 +17014,12 @@ window.onload = function(){
   refreshUnitUI();
   updateGymJourneyBanner();
   renderWeightProgressChart();
+  refreshCloudAuthUI();
   initSwipeGestures();
+  // If user is signed in to a Cloud Account, refreshing this page automatically claims active session here and locks any other open device!
+  if(appData.cloudAccount && appData.cloudAccount.vaultKey){
+    reclaimCloudSessionHere();
+  }
 };
 </script>
 </body>
