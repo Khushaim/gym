@@ -389,12 +389,12 @@ body.modal-open .hm-region.hm-fatigued-pulse{
 
 /* Seat Setup Pill & Trend Badges */
 .seat-setup-pill{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:2px 8px;height:25px;border-radius:8px;
-  font-size:9.5px;font-weight:800;white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;gap:3px;
+  padding:2px 6px;height:26px;max-height:26px;border-radius:7px;
+  font-size:9px;font-weight:800;white-space:nowrap;
   background:rgba(56,189,248,.10);border:1px solid rgba(56,189,248,.32);
   color:var(--blue-t);cursor:pointer;flex-shrink:0;
-  max-width:155px;overflow:hidden;text-overflow:ellipsis;
+  max-width:94px;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;
 }
 .seat-setup-pill.has-setup{
   background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(56,189,248,.14));
@@ -1230,7 +1230,7 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
 .w-title-lib-btn{width:36px !important;height:42px !important;border-radius:11px !important;font-size:14px !important;flex-shrink:0}
 .w-title-each-chip{height:42px !important;padding:0 9px !important;font-size:10px !important;border-radius:11px !important;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .w-compact-chip{height:27px;padding:0 8px;font-size:9.5px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.w-note-input{text-align:center;font-size:10.5px;padding:3px 7px;height:25px;border-radius:7px;flex:1;min-width:0}
+.w-note-input{text-align:center;font-size:11px;font-weight:700;padding:2px 6px;height:26px !important;max-height:26px !important;min-height:26px !important;border-radius:7px;flex:1 1 0%;min-width:95px;overflow:hidden;box-sizing:border-box}
 
 /* PR Pulse */
 .set-row.pr-glow{
@@ -2436,19 +2436,19 @@ body[data-idle="1"] .marble-veins{
             <input type="text" id="activeSSExName" class="grow ss-name-input auto-fit-name" data-max-font="12.5" data-min-font="8" oninput="fitActiveExNameFontSize(this)" onchange="changeActiveSSExName(this.value)" placeholder="Superset exercise name">
             <button class="chip purple w-compact-chip w-ss-each-chip" id="ssEachBtn" onclick="toggleSSEach()">Each: OFF</button>
           </div>
-          <div class="w-row">
-            <button type="button" class="seat-setup-pill" id="workoutSeatSetupBtn" onclick="openSeatSetupModal('main')" title="Machine Seat, Pad & Grip Setup">🪑 Setup</button>
-            <button type="button" class="seat-setup-pill hidden" id="workoutSSSeatSetupBtn" onclick="openSeatSetupModal('super')" title="Superset Seat & Grip Setup" style="border-color:var(--purple-b);color:var(--purple-t)">⚡🪑 SS</button>
-            <input type="text" id="activeExNote" class="w-note-input" placeholder="📌 Notes" onchange="saveNote()">
-            <div class="w-step-box" title="Main Exercise Minimum Weight Increment (adds − / + buttons next to Weight)">
-              <span class="micro" style="color:var(--green-t);font-size:8px">±Step</span>
-              <input type="text" readonly inputmode="none" id="activeExStep" class="num-target step-target" data-label="Main Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveExStep(this.value)">
+          <div class="w-row" style="gap:3.5px">
+            <button type="button" class="seat-setup-pill auto-fit-name" data-max-font="9" data-min-font="6.8" id="workoutSeatSetupBtn" onclick="openSeatSetupModal('main')" title="Machine Seat, Pulley, Pad & Grip Setup">🪑 Setup</button>
+            <button type="button" class="seat-setup-pill auto-fit-name hidden" data-max-font="8.5" data-min-font="6.5" id="workoutSSSeatSetupBtn" onclick="openSeatSetupModal('super')" title="Superset Seat & Grip Setup" style="border-color:var(--purple-b);color:var(--purple-t)">⚡🪑 SS</button>
+            <input type="text" id="activeExNote" class="w-note-input auto-fit-name" data-max-font="11" data-min-font="6.8" placeholder="📌 Notes" oninput="autoFitElementFont(this,11,6.8);saveNote()" onchange="saveNote()">
+            <div class="w-step-box" style="padding:1px 4px;gap:2px;height:26px" title="Main Exercise Minimum Weight Increment (adds − / + buttons next to Weight)">
+              <span class="micro" style="color:var(--green-t);font-size:7.5px">±Step</span>
+              <input type="text" readonly inputmode="none" id="activeExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Main Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveExStep(this.value)">
             </div>
-            <div class="w-step-box hidden" id="activeSSStepWrap" style="border-color:var(--purple-b);background:rgba(168,85,247,.10)" title="Superset Exercise Minimum Weight Increment (adds − / + buttons next to Superset Weight)">
-              <span class="micro" style="color:var(--purple-t);font-size:8px">⚡±SS</span>
-              <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
+            <div class="w-step-box hidden" id="activeSSStepWrap" style="padding:1px 4px;gap:2px;height:26px;border-color:var(--purple-b);background:rgba(168,85,247,.10)" title="Superset Exercise Minimum Weight Increment (adds − / + buttons next to Superset Weight)">
+              <span class="micro" style="color:var(--purple-t);font-size:7.5px">⚡±SS</span>
+              <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
             </div>
-            <button class="chip purple w-compact-chip" style="height:25px;font-size:9px" id="techChangedBtn" onclick="toggleTechChanged()" title="Different machine or grip? Pauses strict PR comparison">Tech Changed</button>
+            <button class="chip purple w-compact-chip" style="height:26px;padding:0 6px;font-size:8.5px" id="techChangedBtn" onclick="toggleTechChanged()" title="Different machine or grip? Pauses strict PR comparison">🔄 Tech</button>
           </div>
           <div class="workout-controls">
             <button class="btn micro-btn amber" onclick="addWarmup()">+Warm</button>
@@ -3999,21 +3999,29 @@ body[data-idle="1"] .marble-veins{
 
 <!-- MACHINE & SEAT SETUP NOTES MODAL -->
 <div class="modal" id="modal-seat-setup">
-  <div class="modal-card" style="max-height:88dvh;gap:7px">
+  <div class="modal-card" style="max-height:90dvh;gap:7px">
     <div class="modal-head">
       <div>
-        <span class="modal-title" style="color:var(--green-t)">🪑 Machine &amp; Seat Setup</span>
-        <div class="micro subtle" id="seatSetupExTitle">Pin your exact seat, pad &amp; grip settings</div>
+        <span class="modal-title" style="color:var(--green-t)">🪑 Machine, Pulley &amp; Seat Setup</span>
+        <div class="micro subtle" id="seatSetupExTitle">Pin your exact seat, cable pulley, pad &amp; grip settings</div>
       </div>
       <button class="btn sq-sm" onclick="closeModal('modal-seat-setup')">✕</button>
     </div>
-    <div class="modal-body" style="gap:8px">
+    <div class="modal-body" style="gap:7px">
       <div class="card tight glass">
         <div class="row-between" style="margin-bottom:5px">
           <span class="micro" style="color:var(--blue-t)">🪑 SEAT HEIGHT NUMBER</span>
           <span class="mono" id="seatHeightValLbl" style="font-size:12px;font-weight:900;color:var(--green-t)">—</span>
         </div>
         <div class="setup-chip-grid" id="seatHeightChips"></div>
+      </div>
+
+      <div class="card tight glass">
+        <div class="row-between" style="margin-bottom:5px">
+          <span class="micro" style="color:var(--green-t)">🎚️ CABLE PULLEY HEIGHT (LEVEL / NOTCH #)</span>
+          <span class="mono" id="seatPulleyValLbl" style="font-size:12px;font-weight:900;color:var(--green-t)">—</span>
+        </div>
+        <div class="setup-chip-grid" id="seatPulleyChips"></div>
       </div>
 
       <div class="card tight glass">
@@ -4034,20 +4042,20 @@ body[data-idle="1"] .marble-veins{
 
       <div class="card tight glass">
         <div class="row-between" style="margin-bottom:5px">
-          <span class="micro" style="color:var(--blue-t)">🔗 CABLE PULLEY / GRIP</span>
+          <span class="micro" style="color:var(--blue-t)">🔗 HANDLE / GRIP ATTACHMENT</span>
           <span class="mono" id="seatGripValLbl" style="font-size:12px;font-weight:900;color:var(--blue-t)">—</span>
         </div>
         <div class="setup-chip-grid" id="seatGripChips"></div>
       </div>
 
       <div>
-        <label class="label">Custom Setup Note (Optional)</label>
-        <input type="text" id="seatCustomNoteInput" placeholder="e.g. Footplate #2 · Elbows 45° · Pause 1s">
+        <label class="label">Custom Setup Note (Auto-Fits Text)</label>
+        <input type="text" id="seatCustomNoteInput" class="auto-fit-name" data-max-font="11.5" data-min-font="7.0" style="height:36px;max-height:36px;overflow:hidden" oninput="autoFitElementFont(this,11.5,7.0)" placeholder="e.g. Footplate #2 · Elbows 45° · Pause 1s">
       </div>
     </div>
-    <div class="row gap-2">
-      <button class="btn red sm" onclick="clearSeatSetupNote()">🗑️ Clear</button>
-      <button class="btn green block sm" onclick="saveSeatSetupNote()">💾 Save Setup</button>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:8px;width:100%;box-sizing:border-box">
+      <button type="button" class="btn red sm" style="padding:0 14px" onclick="clearSeatSetupNote()">🗑️ Clear</button>
+      <button type="button" class="btn green sm" style="width:100%;min-width:0" onclick="saveSeatSetupNote()">💾 Save Setup</button>
     </div>
   </div>
 </div>
@@ -16047,7 +16055,7 @@ function switchAnalyticsSubPage(tab){
 
 /* ============ 1. MACHINE & SEAT SETUP NOTES ENGINE ============ */
 let _seatSetupContext = { mode: 'workout', target: 'main', editorIdx: 0 };
-let _seatTempState = { height: '', pad: '', angle: '', grip: '', custom: '' };
+let _seatTempState = { height: '', pulley: '', pad: '', angle: '', grip: '', custom: '' };
 
 function normSeatExKey(name){
   return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
@@ -16064,19 +16072,29 @@ function getExerciseSeatNote(exName, exObj){
 function getCompactSeatLabel(exName, exObj){
   const raw = getExerciseSeatNote(exName, exObj);
   if(!raw) return '🪑 Setup';
-  return '🪑 ' + (raw.length > 18 ? raw.slice(0, 17) + '…' : raw);
+  const st = parseSeatNoteToState(raw);
+  const shortParts = [];
+  if(st.height) shortParts.push('S' + st.height);
+  if(st.pulley) shortParts.push('P:' + st.pulley);
+  if(st.pad) shortParts.push('Pad' + st.pad);
+  if(st.angle) shortParts.push(st.angle.replace(' Flat', ''));
+  if(st.grip) shortParts.push(st.grip);
+  if(st.custom && !shortParts.length) shortParts.push(st.custom);
+  const compact = shortParts.join('·') || raw;
+  return '🪑 ' + compact;
 }
 
 function parseSeatNoteToState(str){
-  const st = { height: '', pad: '', angle: '', grip: '', custom: '' };
+  const st = { height: '', pulley: '', pad: '', angle: '', grip: '', custom: '' };
   if(!str) return st;
   const parts = String(str).split('·').map(function(s){ return s.trim(); }).filter(Boolean);
   const customParts = [];
   parts.forEach(function(p){
     if(/^Seat\s+/i.test(p)) st.height = p.replace(/^Seat\s+/i, '').trim();
+    else if(/^Pulley\s+/i.test(p)) st.pulley = p.replace(/^Pulley\s+/i, '').trim();
     else if(/^Pad\s+/i.test(p)) st.pad = p.replace(/^Pad\s+/i, '').trim();
     else if(/^Angle\s+/i.test(p)) st.angle = p.replace(/^Angle\s+/i, '').trim();
-    else if(/^(Grip|Cable)\s+/i.test(p)) st.grip = p.replace(/^(Grip|Cable)\s+/i, '').trim();
+    else if(/^Grip\s+/i.test(p)) st.grip = p.replace(/^Grip\s+/i, '').trim();
     else customParts.push(p);
   });
   st.custom = customParts.join(' · ');
@@ -16086,6 +16104,7 @@ function parseSeatNoteToState(str){
 function formatSeatStateToString(st){
   const arr = [];
   if(st.height) arr.push('Seat ' + st.height);
+  if(st.pulley) arr.push('Pulley ' + st.pulley);
   if(st.pad) arr.push('Pad ' + st.pad);
   if(st.angle) arr.push('Angle ' + st.angle);
   if(st.grip) arr.push('Grip ' + st.grip);
@@ -16095,9 +16114,10 @@ function formatSeatStateToString(st){
 
 function renderSeatSetupChipsUI(){
   const heights = ['1','2','3','4','5','6','7','8','9','10'];
+  const pulleys = ['Top','High','Shoulder','Chest','Mid','Hip','Knee','Bottom','#1','#2','#3','#4','#5','#6','#7','#8','#9','#10','#11','#12','#13','#14','#15','#16'];
   const pads = ['1','2','3','4','5','6','7','8'];
   const angles = ['0° Flat','15°','30°','45°','60°','75°','85°'];
-  const grips = ['Standard','Neutral','Wide','Close','Rope','D-Handle','EZ-Bar','Low Cable','High Cable','Cuff'];
+  const grips = ['Standard','Neutral','Wide','Close','Rope','D-Handle','V-Bar','EZ-Bar','Straight Bar','Cuff'];
 
   const hBox = $('seatHeightChips');
   if(hBox){
@@ -16106,6 +16126,14 @@ function renderSeatSetupChipsUI(){
     }).join('');
   }
   if($('seatHeightValLbl')) $('seatHeightValLbl').textContent = _seatTempState.height ? ('#' + _seatTempState.height) : '—';
+
+  const pulBox = $('seatPulleyChips');
+  if(pulBox){
+    pulBox.innerHTML = pulleys.map(function(v){
+      return '<button type="button" class="setup-chip' + (_seatTempState.pulley === v ? ' on' : '') + '" onclick="selectSeatChip(\'pulley\',\'' + v + '\')">' + v + '</button>';
+    }).join('');
+  }
+  if($('seatPulleyValLbl')) $('seatPulleyValLbl').textContent = _seatTempState.pulley || '—';
 
   const pBox = $('seatPadChips');
   if(pBox){
@@ -16132,7 +16160,10 @@ function renderSeatSetupChipsUI(){
   if($('seatGripValLbl')) $('seatGripValLbl').textContent = _seatTempState.grip || '—';
 
   const cInp = $('seatCustomNoteInput');
-  if(cInp && document.activeElement !== cInp) cInp.value = _seatTempState.custom || '';
+  if(cInp && document.activeElement !== cInp){
+    cInp.value = _seatTempState.custom || '';
+    autoFitElementFont(cInp, 11.5, 7.0);
+  }
 }
 
 function selectSeatChip(field, val){
@@ -16224,7 +16255,7 @@ function saveSeatSetupNote(){
 
 function clearSeatSetupNote(){
   playSound('warn');
-  _seatTempState = { height: '', pad: '', angle: '', grip: '', custom: '' };
+  _seatTempState = { height: '', pulley: '', pad: '', angle: '', grip: '', custom: '' };
   applySeatNoteToTarget('');
   closeModal('modal-seat-setup');
   toast('🪑 Machine setup cleared');
@@ -16336,6 +16367,13 @@ function refreshWorkoutSeatAndTrendUI(ex){
     const sNote = getExerciseSeatNote(ex.name, ex);
     seatBtn.textContent = getCompactSeatLabel(ex.name, ex);
     seatBtn.classList.toggle('has-setup', !!sNote);
+    seatBtn._lastFitCacheKey = '';
+    autoFitElementFont(seatBtn, 9, 6.8);
+  }
+  const noteInp = $('activeExNote');
+  if(noteInp){
+    noteInp._lastFitCacheKey = '';
+    autoFitElementFont(noteInp, 11, 6.8);
   }
   const ssSeatBtn = $('workoutSSSeatSetupBtn');
   const hasSS = !!(ex.supersetName && String(ex.supersetName).trim());
