@@ -269,7 +269,7 @@ body[data-idle="1"] .blob {
 
 /* 3D Animated Barbell Plate Visualizer */
 .barbell-stage{
-  width:100%;height:76px;border-radius:14px;
+  width:100%;height:54px;border-radius:12px;
   background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.05) 0%,rgba(0,0,0,.32) 100%);
   border:1px solid var(--line);
   display:flex;align-items:center;justify-content:center;
@@ -622,7 +622,7 @@ body.numpad-ActivePad .modal-body {
 .seg-btn{padding:5px 10px;border-radius:9px;font-size:10px;font-weight:800;color:var(--txt-2);display:inline-flex;align-items:center;justify-content:center;min-width:54px;height:24px;cursor:pointer;user-select:none}
 .seg-btn.on{background:var(--blue-g);color:var(--blue-t);box-shadow:inset 0 0 0 1px var(--blue-b)}
 
-input[type=text],input[type=number],input[type=password],select,textarea{width:100%;padding:8px 11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--txt);font-size:12px;font-weight:700;outline:none}
+input[type=text],input[type=email],input[type=date],input[type=number],input[type=password],select,textarea{width:100%;padding:8px 11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--txt);font-size:12px;font-weight:700;outline:none;color-scheme:dark}
 input.num-target{cursor:pointer;font-family:var(--font-mono);font-weight:800}
 select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),linear-gradient(135deg,var(--txt-2) 50%,transparent 50%);background-position:calc(100% - 15px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:28px}
 .label{font-size:9.5px;font-weight:800;color:var(--txt-3);letter-spacing:.4px;text-transform:uppercase;display:block;margin-bottom:4px}
@@ -2337,25 +2337,21 @@ body[data-idle="1"] .marble-veins{
 
         <div class="card timer-card">
           <div class="row-between" style="margin-bottom:2px;gap:4px">
-            <button class="btn xs ghost" onclick="resetTimer()" style="padding:3px 7px">↺ Reset</button>
+            <button class="btn xs ghost" onclick="resetTimer()" style="padding:2px 7px">↺ Reset</button>
             <span class="micro subtle" id="timerNextSetPreview" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">REST TIMER</span>
-            <button class="btn xs blue" onclick="openWorkoutCustomRestModal()" style="padding:3px 7px" title="Set custom rest in minutes or seconds">⏱️ Custom</button>
+            <button class="btn xs blue" onclick="openWorkoutCustomRestModal()" style="padding:2px 7px" title="Set custom rest in minutes or seconds">⏱️ Custom</button>
           </div>
-          <div class="timer-rect" onclick="openWorkoutCustomRestModal()" style="cursor:pointer" title="Tap to set custom rest (min / sec)">
-            <div class="timer-ring-wrap">
-              <svg class="timer-svg-ring" viewBox="0 0 40 40">
-                <circle class="ring-bg" cx="20" cy="20" r="16"></circle>
-                <circle class="ring-fg" id="timerSvgCircle" cx="20" cy="20" r="16" stroke-dasharray="100.53" stroke-dashoffset="0"></circle>
-              </svg>
+          <div class="timer-rect">
+            <div class="row" style="justify-content:center;align-items:center;gap:6px">
               <div class="timer-rect-time" id="timerDisplay">01:30</div>
               <span class="timer-cd-badge hidden" id="timerFinalCountdownBadge">READY</span>
             </div>
             <div class="bar" style="height:4px"><div class="timer-rect-fill" id="linearTimerFill"></div></div>
           </div>
           <div class="timer-controls">
-            <button class="btn amber" onclick="adjustTimer(-15)">−15s</button>
+            <button class="btn amber" onclick="adjustTimer(-30)">−30s</button>
             <button class="btn green" id="timerBtn" onclick="toggleTimer()">START</button>
-            <button class="btn amber" onclick="adjustTimer(15)">+15s</button>
+            <button class="btn amber" onclick="adjustTimer(30)">+30s</button>
           </div>
         </div>
 
@@ -3060,7 +3056,7 @@ body[data-idle="1"] .marble-veins{
 
 <!-- SETTINGS MODAL (CRISP, COMMERCIAL-GRADE, ZERO FILLER) -->
 <div class="modal" id="modal-settings">
-  <div class="modal-card" style="max-height:86dvh">
+  <div class="modal-card" style="max-height:92dvh;padding:11px 12px;gap:6px">
     <div class="modal-head"><span class="modal-title">⚙️ Settings</span><button class="btn sq-sm" onclick="closeModal('modal-settings')">✕</button></div>
     <div class="modal-body" style="gap:7px">
       <!-- 0. ACCOUNT -->
@@ -3156,7 +3152,7 @@ body[data-idle="1"] .marble-veins{
       </div>
 
       <!-- 5. DATA & SPLITS -->
-      <button class="tour-cta-hero-btn" style="padding:10px 12px;font-size:12px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
+      <button class="tour-cta-hero-btn" style="padding:10px 12px;font-size:12px;flex-shrink:0;min-height:38px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
       <div class="grid-2" style="gap:6px">
         <button class="btn sm" onclick="closeModal('modal-settings');openPrograms()">📂 Splits</button>
         <button class="btn sm" onclick="closeModal('modal-settings');changeName()">👤 Name</button>
@@ -3267,7 +3263,7 @@ body[data-idle="1"] .marble-veins{
 
 <!-- 3. SEPARATE QUICK PLATES CALCULATOR POPUP (ON-DEMAND ONLY + MAX 20/25 OPTION) -->
 <div class="modal" id="modal-quickplates">
-  <div class="modal-card center">
+  <div class="modal-card center" style="max-height:86dvh;overflow-y:auto">
     <div class="modal-head"><span class="modal-title" style="color:var(--amber-t)">💿 Plate Calculator</span><button class="btn sq-sm" onclick="closeModal('modal-quickplates')">✕</button></div>
     <div class="micro subtle">Target Total Weight (<span class="unit-txt">kg</span>)</div>
     <div class="row gap-2 num-target-proxy" style="justify-content:center">
@@ -4058,9 +4054,7 @@ function updateFullScreenBtnUI(){
     clearTimeout(_rePromptFsTimer);
     closeModal('modal-fullscreen');
   } else if(_wasInFullScreen){
-    // User exited fullscreen -> re-prompt after 5 seconds (5000ms)
     _wasInFullScreen = false;
-    scheduleRePromptFullScreen(5000);
   }
 }
 function toggleFullScreen(){
@@ -4092,27 +4086,24 @@ function toggleFullScreen(){
 }
 function dismissFullScreenPrompt(){
   _startupFsResolved = true;
+  clearTimeout(_rePromptFsTimer);
   closeModal('modal-fullscreen');
-  // User declined fullscreen ("No") -> re-prompt after 15 seconds (15000ms)
-  scheduleRePromptFullScreen(15000);
   setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 260);
 }
 function acceptFullScreenPrompt(){
   _startupFsResolved = true;
+  clearTimeout(_rePromptFsTimer);
   closeModal('modal-fullscreen');
   toggleFullScreen();
   setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 320);
 }
 function checkStartupFullScreenPrompt(){
   updateFullScreenBtnUI();
-  if(!isCurrentlyFullScreen() && !isStandaloneMode()){
-    _startupFsResolved = false;
-    openModal('modal-fullscreen');
-  } else {
+  if(isCurrentlyFullScreen() || isStandaloneMode()){
     _wasInFullScreen = true;
     _startupFsResolved = true;
-    setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 200);
   }
+  setTimeout(function(){ if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome(); }, 220);
 }
 document.addEventListener('fullscreenchange', updateFullScreenBtnUI);
 document.addEventListener('webkitfullscreenchange', updateFullScreenBtnUI);
@@ -5010,6 +5001,17 @@ const _RECYCLABLE_MODAL_LISTS = {
   'modal-cardiohist': 'cardioHistList'
 };
 function closeModal(id){
+  if(id === 'modal-fullscreen'){
+    _startupFsResolved = true;
+    clearTimeout(_rePromptFsTimer);
+  } else if(id === 'modal-tour-invite'){
+    safeSetItem('ironPulseFirstTimeOnboardingDoneV4', '1');
+  } else if(id === 'modal-weekly-weight'){
+    appData.lastWeightSkipDay = new Date().toDateString();
+  } else if(id === 'modal-deload-prompt' && typeof ensureDeloadConfig === 'function'){
+    const cfg = ensureDeloadConfig();
+    cfg.promptShownForCycle = true;
+  }
   const m = $(id);
   if(m){
     m.classList.remove('open');
@@ -7343,6 +7345,8 @@ function buildAISplitPreview(allowAutoCompleteMissing){
     });
   });
 
+  if(!rules.recoveryNotesEn) rules.recoveryNotesEn = [];
+  if(!rules.recoveryNotesAr) rules.recoveryNotesAr = [];
   if(consecutiveRecoveryGapApplied){
     rules.recoveryNotesEn.push('Smart 48h Recovery Spacing: Because the same muscle group appears on consecutive days, the AI automatically alternated sub-muscles (e.g. Quads on one day → Hamstrings, Glutes & Calves the next day) so you never overtrain the exact same fibers two days in a row.');
     rules.recoveryNotesAr.push('توزيع الاستشفاء الذكي (48 ساعة): لأن نفس المجموعة العضلية تكررت في أيام متتالية، قام الذكاء الاصطناعي بفصل الزوايا تلقائياً (مثلاً: أفخاذ أمامية Quads في يوم ← ثم أفخاذ خلفية وقلوتس وسمانة في اليوم التالي) حتى تأخذ كل عضلة فرعية راحة كافية ولا تتعارض في يومين متتاليين.');
@@ -10029,8 +10033,7 @@ function stepWeight(i, type, delta, pw, pr, dropIdx){
   const w = $(p + 'w_' + i);
   if(!w) return;
   let v = parseFloat(w.value) || 0;
-  const minStep = Math.max(0.5, Math.abs(parseFloat(delta) || 0.5));
-  v = Math.max(minStep, Math.round((v + delta) * 100) / 100);
+  v = Math.max(0, Math.round((v + delta) * 100) / 100);
   w.value = v;
   paintRow(i, type, pw, pr, dropIdx);
   liveRM(i, type, dropIdx);
@@ -16744,7 +16747,19 @@ function initSwipeGestures(){
  *      * If Device 2 opens the account, Device 1 immediately locks and notifies the user
  *      * If Device 1 refreshes (or taps Reclaim), Device 1 unlocks with latest data and Device 2 locks!
  * ============================================================================ */
-const MY_SESSION_INSTANCE_ID = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+const MY_SESSION_INSTANCE_ID = (function(){
+  try{
+    let id = sessionStorage.getItem('ironPulseTabSessionIdV1') || localStorage.getItem('ironPulseDeviceSessionIdV1');
+    if(!id){
+      id = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+      localStorage.setItem('ironPulseDeviceSessionIdV1', id);
+    }
+    sessionStorage.setItem('ironPulseTabSessionIdV1', id);
+    return id;
+  }catch(e){
+    return 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+  }
+})();
 let _cloudSelectedProvider = 'apple';
 let _cloudPushDebounceTimer = null;
 let _cloudHeartbeatInterval = null;
@@ -16877,6 +16892,10 @@ function _concatU8(){
 async function _sha256U8(u8){
   const buf = await window.crypto.subtle.digest('SHA-256', u8);
   return new Uint8Array(buf);
+}
+async function _sha256Hex(str){
+  const bytes = await _sha256U8(new TextEncoder().encode(String(str || '')));
+  return _u8ToHex(bytes);
 }
 async function _taggedHash(tag, msgBytes){
   const th = await _sha256U8(new TextEncoder().encode(tag));
@@ -17329,21 +17348,12 @@ async function pushCloudVaultSnapshot(claimSessionOwnership){
   const acc = appData.cloudAccount;
   if(!acc || !acc.vaultKey) return false;
 
-  // If not explicitly claiming session ownership, verify we haven't been kicked out first
-  if(!claimSessionOwnership){
-    const remote = await cloudVaultGet(acc.vaultKey);
-    if(remote && remote.activeSessionId && remote.activeSessionId !== MY_SESSION_INSTANCE_ID){
-      triggerSessionKickedLock(remote.activeDeviceLabel || 'Another Device');
-      return false;
-    }
-  }
-
   acc.lastSyncTs = Date.now();
-  const cleanCopy = JSON.parse(JSON.stringify(appData));
   if(!acc.ownerRecoveryKey){
     acc.ownerRecoveryKey = String(Math.floor(100000 + Math.random() * 900000));
     safeSetItem('ironPulsePersistentAuthV1', JSON.stringify(acc));
   }
+  const cleanCopy = JSON.parse(JSON.stringify(appData));
   const payload = {
     vaultKey: acc.vaultKey,
     email: acc.email,
@@ -17354,15 +17364,18 @@ async function pushCloudVaultSnapshot(claimSessionOwnership){
     appData: cleanCopy
   };
   const ok = await cloudVaultPut(acc.vaultKey, payload);
-  // Also publish encrypted Email Recovery Index so owner can reset password if forgotten!
+  // Also save encrypted Email Recovery Index locally & to Nostr relays
   try{
     const emailRecKey = await computeEmailRecoveryIndexKey(acc.email);
-    await cloudVaultPut(emailRecKey, {
+    const recPayload = {
       email: acc.email,
       ownerRecoveryKey: acc.ownerRecoveryKey,
       updatedAt: Date.now(),
       appData: cleanCopy
-    });
+    };
+    safeSetItem('ip_local_vault_mirror_' + emailRecKey, JSON.stringify(recPayload));
+    const encRec = await encryptVaultPayload(emailRecKey, recPayload);
+    publishToNostrRelays(emailRecKey, encRec);
   }catch(_){}
   if($('cloudLastSyncTxt')){
     $('cloudLastSyncTxt').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
@@ -17438,30 +17451,38 @@ function startCloudSessionHeartbeat(){
   clearInterval(_cloudHeartbeatInterval);
   if(!appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
   startLiveCrossDeviceStream(appData.cloudAccount.vaultKey);
-  _cloudHeartbeatInterval = setInterval(checkCloudSessionLockOnce, 6000);
+  // Passive check every 60s (only when page is visible) to avoid WebSocket storms and battery drain
+  _cloudHeartbeatInterval = setInterval(function(){
+    if(!document.hidden) checkCloudSessionLockOnce();
+  }, 60000);
 }
 
-async function reclaimCloudSessionHere(){
+async function reclaimCloudSessionHere(silentOnStartup){
   const acc = appData.cloudAccount;
   if(!acc || !acc.vaultKey){
     closeModal('modal-session-kicked');
     return;
   }
-  playSound('tap');
-  const remote = await cloudVaultGet(acc.vaultKey);
-  if(remote && remote.appData){
-    appData = Object.assign({}, appData, remote.appData);
-    appData.cloudAccount = acc;
-  }
+  if(!silentOnStartup) playSound('tap');
   _isSessionKickedLocked = false;
   closeModal('modal-session-kicked');
+
+  if(!silentOnStartup){
+    const remote = await cloudVaultGet(acc.vaultKey);
+    if(remote && remote.appData){
+      const mergedProgs = mergeAccountSplitsArray(remote.appData.programs || [], appData.programs || []);
+      appData = Object.assign({}, appData, remote.appData);
+      appData.programs = mergedProgs;
+      appData.cloudAccount = acc;
+    }
+    normalizePrograms();
+    safeSetItem('gymTrackerData', JSON.stringify(appData));
+    route(true);
+    playSound('success');
+    toast('🔓 Session active on this device!');
+  }
   await pushCloudVaultSnapshot(true);
-  normalizePrograms();
-  safeSetItem('gymTrackerData', JSON.stringify(appData));
   startCloudSessionHeartbeat();
-  route(true);
-  playSound('success');
-  toast('🔓 Session reclaimed on this device — other device is now locked!');
 }
 
 function mergeAccountSplitsArray(remoteProgs, localProgs){
@@ -17853,7 +17874,7 @@ window.onload = function(){
   initSwipeGestures();
   // If user is signed in to a Cloud Account, refreshing this page automatically claims active session here and locks any other open device!
   if(appData.cloudAccount && appData.cloudAccount.vaultKey){
-    reclaimCloudSessionHere();
+    reclaimCloudSessionHere(true);
   }
 };
 </script>
