@@ -54,177 +54,156 @@
   opacity:0.01 !important;
 }
 /* ============================================================================
-   5 DISTINCT ARCHITECTURAL DESIGN SKINS × INDEPENDENT DARK & LIGHT MODES
+   5 HIGH-CONTRAST ARCHITECTURAL THEMES × INDEPENDENT DARK & LIGHT MODES
+   (Neutral deep surfaces + harmonious semantic buttons = 10/10 Cyber-grade contrast)
    ============================================================================ */
 
-/* BASE LIGHT MODE (Applies to Cyber & acts as foundation for Light skins) */
+/* BASE LIGHT MODE (Crisp neutral studio alabaster & high-contrast slate typography) */
 [data-theme="light"]{
-  --bg:#eef2f9;--surface:rgba(255,255,255,.88);--surface-2:rgba(244,248,254,.95);--surface-3:rgba(232,239,250,.90);
-  --line:rgba(15,23,42,.09);--line-2:rgba(15,23,42,.17);
-  --spec:inset 0 1px 0 rgba(255,255,255,.98);--spec-strong:inset 0 1px 0 #fff;
-  --shadow-xs:0 2px 6px rgba(15,23,42,.05);--shadow-sm:0 6px 16px rgba(15,23,42,.08);--shadow:0 14px 32px rgba(15,23,42,.11);--shadow-lg:0 24px 60px rgba(15,23,42,.18);
-  --txt:#0b1324;--txt-2:#475569;--txt-3:#7e8da8;
-  --green:#059669;--green-t:#047857;--green-g:rgba(16,185,129,.14);--green-b:rgba(16,185,129,.35);
-  --blue:#0284c7;--blue-t:#0369a1;--blue-g:rgba(14,165,233,.14);--blue-b:rgba(14,165,233,.35);
-  --red:#e11d48;--red-t:#be123c;--red-g:rgba(244,63,94,.12);--red-b:rgba(244,63,94,.32);
-  --amber:#d97706;--amber-t:#b45309;--amber-g:rgba(245,158,11,.16);--amber-b:rgba(245,158,11,.40);
-  --purple:#7c3aed;--purple-t:#6d28d9;--purple-g:rgba(168,85,247,.14);--purple-b:rgba(168,85,247,.34);
+  --bg:#eef2f8;
+  --surface:rgba(255,255,255,.92);
+  --surface-2:rgba(245,248,253,.96);
+  --surface-3:rgba(234,240,249,.94);
+  --line:rgba(15,23,42,.09);
+  --line-2:rgba(15,23,42,.16);
+  --spec:inset 0 1px 0 rgba(255,255,255,.98);
+  --spec-strong:inset 0 1px 0 #ffffff;
+  --shadow-xs:0 2px 6px rgba(15,23,42,.05);
+  --shadow-sm:0 6px 16px rgba(15,23,42,.07);
+  --shadow:0 14px 32px rgba(15,23,42,.10);
+  --shadow-lg:0 24px 60px rgba(15,23,42,.16);
+  --txt:#0f172a;
+  --txt-2:#475569;
+  --txt-3:#64748b;
+  --green:#10b981;--green-t:#047857;--green-g:rgba(16,185,129,.13);--green-b:rgba(16,185,129,.34);
+  --blue:#0284c7;--blue-t:#0369a1;--blue-g:rgba(14,165,233,.13);--blue-b:rgba(14,165,233,.34);
+  --red:#f43f5e;--red-t:#be123c;--red-g:rgba(244,63,94,.12);--red-b:rgba(244,63,94,.32);
+  --amber:#f59e0b;--amber-t:#b45309;--amber-g:rgba(245,158,11,.14);--amber-b:rgba(245,158,11,.36);
+  --purple:#8b5cf6;--purple-t:#6d28d9;--purple-g:rgba(139,92,246,.13);--purple-b:rgba(139,92,246,.34);
+  --accent-grad:linear-gradient(135deg,#10b981 0%,#0ea5e9 100%);
 }
 
-/* 2. ROYAL LUXE (SWISS HOROLOGY — Sharp Bevels, Brushed Gold Rim & Matte Onyx / Ivory Alabaster) */
-[data-skin="royal"]{
-  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:10px;--r-xl:14px;--r-2xl:18px;
-}
+/* 2. LUXE GOLD (Neutral Deep Obsidian-Slate Surfaces + Refined Champagne Gold Accent) */
 [data-skin="royal"][data-theme="dark"]{
-  --bg:#090806;
-  --surface:rgba(20,17,13,.92);
-  --surface-2:rgba(30,25,18,.90);
-  --surface-3:rgba(44,36,25,.85);
-  --line:rgba(212,175,55,.20);
-  --line-2:rgba(212,175,55,.42);
-  --spec:inset 0 1px 0 rgba(254,240,138,.22), inset 0 -1px 0 rgba(180,130,30,.15);
-  --spec-strong:inset 0 1.5px 0 rgba(254,240,138,.38), inset 0 0 24px rgba(212,175,55,.08);
-  --txt:#fcf8f0;--txt-2:#d4c3a3;--txt-3:#8c7a5b;
-  --blue:#d4af37;--blue-t:#fde047;--blue-g:rgba(212,175,55,.18);--blue-b:rgba(234,179,8,.48);
-  --green:#10b981;--green-t:#34d399;--green-g:rgba(16,185,129,.16);--green-b:rgba(52,211,153,.40);
-  --amber:#f59e0b;--amber-t:#fbbf24;--amber-g:rgba(245,158,11,.17);--amber-b:rgba(251,191,36,.44);
-  --purple:#c084fc;--purple-t:#e9d5ff;--purple-g:rgba(192,132,252,.15);--purple-b:rgba(216,180,254,.38);
-  --accent-grad:linear-gradient(135deg,#d4af37 0%,#f59e0b 50%,#b45309 100%);
+  --bg:#07080c;
+  --surface:rgba(15,17,24,.88);
+  --surface-2:rgba(22,25,35,.86);
+  --surface-3:rgba(31,35,48,.82);
+  --line:rgba(234,179,8,.14);
+  --line-2:rgba(234,179,8,.28);
+  --spec:inset 0 1px 0 rgba(254,240,138,.12), inset 0 0 20px rgba(234,179,8,.03);
+  --spec-strong:inset 0 1px 0 rgba(254,240,138,.22), inset 0 0 26px rgba(234,179,8,.05);
+  --txt:#f8fafc;
+  --txt-2:#cbd5e1;
+  --txt-3:#64748b;
+  --blue:#eab308;--blue-t:#facc15;--blue-g:rgba(234,179,8,.14);--blue-b:rgba(250,204,21,.36);
+  --green:#10b981;--green-t:#34d399;--green-g:rgba(16,185,129,.15);--green-b:rgba(52,211,153,.36);
+  --amber:#f59e0b;--amber-t:#fbbf24;--amber-g:rgba(245,158,11,.15);--amber-b:rgba(251,191,36,.36);
+  --purple:#a855f7;--purple-t:#c084fc;--purple-g:rgba(168,85,247,.15);--purple-b:rgba(192,132,252,.36);
+  --accent-grad:linear-gradient(135deg,#eab308 0%,#10b981 100%);
 }
 [data-skin="royal"][data-theme="light"]{
-  --bg:#f6f1e7;
-  --surface:rgba(255,252,245,.94);
-  --surface-2:rgba(248,242,230,.96);
-  --surface-3:rgba(238,229,212,.92);
-  --line:rgba(161,120,34,.18);
-  --line-2:rgba(161,120,34,.36);
-  --spec:inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(180,135,40,.14);
-  --txt:#1f1910;--txt-2:#5c4d35;--txt-3:#8c7858;
-  --blue:#b47b12;--blue-t:#92600a;--blue-g:rgba(212,175,55,.16);--blue-b:rgba(180,123,18,.42);
-  --green:#047857;--green-t:#065f46;--green-g:rgba(16,185,129,.14);--green-b:rgba(5,150,105,.36);
-  --accent-grad:linear-gradient(135deg,#b47b12 0%,#d97706 100%);
-}
-[data-skin="royal"] .card,
-[data-skin="royal"] .app-header,
-[data-skin="royal"] .dock{
-  background-image:repeating-linear-gradient(135deg, rgba(212,175,55,.03) 0px, rgba(212,175,55,.03) 1px, transparent 1px, transparent 6px) !important;
-  border-top:1.5px solid var(--blue-b) !important;
+  --bg:#f4f3ef;
+  --surface:rgba(255,255,255,.94);
+  --surface-2:rgba(249,248,245,.97);
+  --surface-3:rgba(239,237,231,.94);
+  --line:rgba(180,130,20,.14);
+  --line-2:rgba(180,130,20,.26);
+  --txt:#0f172a;--txt-2:#475569;--txt-3:#64748b;
+  --blue:#ca8a04;--blue-t:#a16207;--blue-g:rgba(234,179,8,.14);--blue-b:rgba(202,138,4,.36);
+  --green:#059669;--green-t:#047857;--green-g:rgba(16,185,129,.13);--green-b:rgba(5,150,105,.34);
+  --accent-grad:linear-gradient(135deg,#eab308 0%,#10b981 100%);
 }
 
-/* 3. HYPER SYNTH (CYBERPUNK HOLO-DECK — Perspective Neon Grid + Dual Laser Top Border) */
-[data-skin="hyper"]{
-  --r-xs:10px;--r-sm:13px;--r-md:16px;--r-lg:22px;--r-xl:28px;
-}
+/* 3. SYNTH INDIGO (Neutral Midnight-Slate Surfaces + Harmonious Indigo-Violet & Cyan) */
 [data-skin="hyper"][data-theme="dark"]{
-  --bg:#060312;
-  --surface:rgba(16,9,36,.88);
-  --surface-2:rgba(26,15,54,.86);
-  --surface-3:rgba(38,22,76,.80);
-  --line:rgba(217,70,239,.20);
-  --line-2:rgba(34,211,238,.40);
-  --spec:inset 0 1.5px 0 rgba(240,171,252,.28), inset 0 -1px 0 rgba(34,211,238,.22);
-  --spec-strong:inset 0 2px 0 rgba(240,171,252,.42), 0 0 22px rgba(217,70,239,.16);
-  --txt:#fdf4ff;--txt-2:#d8b4fe;--txt-3:#8b6fc4;
-  --blue:#22d3ee;--blue-t:#67e8f9;--blue-g:rgba(34,211,238,.17);--blue-b:rgba(103,232,249,.46);
-  --green:#e879f9;--green-t:#f0abfc;--green-g:rgba(232,121,249,.18);--green-b:rgba(240,171,252,.46);
-  --purple:#a855f7;--purple-t:#d8b4fe;--purple-g:rgba(168,85,247,.18);--purple-b:rgba(192,132,252,.45);
-  --accent-grad:linear-gradient(135deg,#22d3ee 0%,#a855f7 52%,#ec4899 100%);
+  --bg:#060714;
+  --surface:rgba(14,16,34,.86);
+  --surface-2:rgba(21,24,48,.84);
+  --surface-3:rgba(30,34,66,.78);
+  --line:rgba(129,140,248,.14);
+  --line-2:rgba(129,140,248,.28);
+  --spec:inset 0 1px 0 rgba(224,231,255,.12), inset 0 0 22px rgba(99,102,241,.04);
+  --spec-strong:inset 0 1px 0 rgba(224,231,255,.22), inset 0 0 28px rgba(99,102,241,.07);
+  --txt:#f8fafc;
+  --txt-2:#cbd5e1;
+  --txt-3:#64748b;
+  --blue:#6366f1;--blue-t:#818cf8;--blue-g:rgba(99,102,241,.16);--blue-b:rgba(129,140,248,.40);
+  --green:#10b981;--green-t:#34d399;--green-g:rgba(16,185,129,.15);--green-b:rgba(52,211,153,.36);
+  --purple:#a855f7;--purple-t:#c084fc;--purple-g:rgba(168,85,247,.16);--purple-b:rgba(192,132,252,.38);
+  --accent-grad:linear-gradient(135deg,#6366f1 0%,#0ea5e9 55%,#10b981 100%);
 }
 [data-skin="hyper"][data-theme="light"]{
-  --bg:#f2edfc;
-  --surface:rgba(255,252,255,.92);
-  --surface-2:rgba(246,240,255,.95);
-  --surface-3:rgba(235,225,252,.90);
-  --line:rgba(147,51,234,.15);
-  --line-2:rgba(6,182,212,.35);
-  --txt:#1a0b36;--txt-2:#5b3e85;--txt-3:#866eb0;
-  --blue:#0891b2;--blue-t:#0e7490;--blue-g:rgba(6,182,212,.15);--blue-b:rgba(8,145,178,.40);
-  --green:#c026d3;--green-t:#a21caf;--green-g:rgba(217,70,239,.15);--green-b:rgba(192,38,211,.38);
-  --accent-grad:linear-gradient(135deg,#0891b2 0%,#9333ea 52%,#db2777 100%);
-}
-[data-skin="hyper"] body{
-  background-image:
-    linear-gradient(rgba(168,85,247,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,.06) 1px, transparent 1px) !important;
-  background-size: 28px 28px !important;
-}
-[data-skin="hyper"] .card{
-  box-shadow: 0 -1.5px 0 var(--green-b), var(--shadow-sm) !important;
+  --bg:#eff1fa;
+  --surface:rgba(255,255,255,.94);
+  --surface-2:rgba(245,246,253,.97);
+  --surface-3:rgba(235,237,250,.94);
+  --line:rgba(99,102,241,.13);
+  --line-2:rgba(99,102,241,.25);
+  --txt:#0f172a;--txt-2:#475569;--txt-3:#64748b;
+  --blue:#4f46e5;--blue-t:#4338ca;--blue-g:rgba(99,102,241,.13);--blue-b:rgba(79,70,229,.35);
+  --green:#059669;--green-t:#047857;--green-g:rgba(16,185,129,.13);--green-b:rgba(5,150,105,.34);
+  --accent-grad:linear-gradient(135deg,#4f46e5 0%,#0ea5e9 100%);
 }
 
-/* 4. EMERALD BIO-LAB (TACTICAL HUD — Technical Dot Matrix + Left Telemetry Accent Bar) */
-[data-skin="emerald"]{
-  --r-xs:5px;--r-sm:7px;--r-md:9px;--r-lg:11px;--r-xl:15px;
-}
+/* 4. STEALTH OLED / BIO-HUD (Pure Neutral Carbon-Black Surfaces + Crisp Mint-Cyan) */
 [data-skin="emerald"][data-theme="dark"]{
-  --bg:#040c09;
-  --surface:rgba(8,24,18,.90);
-  --surface-2:rgba(13,36,27,.88);
-  --surface-3:rgba(20,50,38,.82);
-  --line:rgba(16,185,129,.18);
-  --line-2:rgba(52,211,153,.38);
-  --spec:inset 0 1px 0 rgba(167,243,208,.18);
-  --spec-strong:inset 0 1px 0 rgba(167,243,208,.30), 0 0 20px rgba(16,185,129,.12);
-  --txt:#ecfdf5;--txt-2:#86efac;--txt-3:#4d8b6e;
-  --blue:#10b981;--blue-t:#34d399;--blue-g:rgba(16,185,129,.18);--blue-b:rgba(52,211,153,.45);
-  --green:#2dd4bf;--green-t:#5eead4;--green-g:rgba(45,212,191,.18);--green-b:rgba(94,234,212,.45);
-  --accent-grad:linear-gradient(135deg,#10b981 0%,#0d9488 100%);
+  --bg:#030708;
+  --surface:rgba(11,17,20,.90);
+  --surface-2:rgba(17,25,30,.88);
+  --surface-3:rgba(25,36,43,.82);
+  --line:rgba(45,212,191,.13);
+  --line-2:rgba(45,212,191,.26);
+  --spec:inset 0 1px 0 rgba(255,255,255,.10), inset 0 0 22px rgba(20,184,166,.04);
+  --spec-strong:inset 0 1px 0 rgba(255,255,255,.20), inset 0 0 28px rgba(20,184,166,.07);
+  --txt:#f8fafc;
+  --txt-2:#cbd5e1;
+  --txt-3:#64748b;
+  --blue:#14b8a6;--blue-t:#2dd4bf;--blue-g:rgba(20,184,166,.15);--blue-b:rgba(45,212,191,.38);
+  --green:#10b981;--green-t:#34d399;--green-g:rgba(16,185,129,.16);--green-b:rgba(52,211,153,.38);
+  --accent-grad:linear-gradient(135deg,#10b981 0%,#14b8a6 55%,#0ea5e9 100%);
 }
 [data-skin="emerald"][data-theme="light"]{
-  --bg:#eaf5f0;
-  --surface:rgba(252,255,253,.94);
-  --surface-2:rgba(240,250,245,.96);
-  --surface-3:rgba(224,242,233,.92);
-  --line:rgba(5,150,105,.15);
-  --line-2:rgba(5,150,105,.32);
-  --txt:#062419;--txt-2:#2d614d;--txt-3:#5e8c79;
-  --blue:#059669;--blue-t:#047857;--blue-g:rgba(16,185,129,.15);--blue-b:rgba(5,150,105,.40);
-  --green:#0d9488;--green-t:#0f766e;--green-g:rgba(20,184,166,.15);--green-b:rgba(13,148,136,.38);
+  --bg:#edf4f4;
+  --surface:rgba(255,255,255,.94);
+  --surface-2:rgba(244,250,250,.97);
+  --surface-3:rgba(232,243,243,.94);
+  --line:rgba(13,148,136,.13);
+  --line-2:rgba(13,148,136,.25);
+  --txt:#0f172a;--txt-2:#475569;--txt-3:#64748b;
+  --blue:#0d9488;--blue-t:#0f766e;--blue-g:rgba(20,184,166,.13);--blue-b:rgba(13,148,136,.35);
+  --green:#059669;--green-t:#047857;--green-g:rgba(16,185,129,.13);--green-b:rgba(5,150,105,.34);
   --accent-grad:linear-gradient(135deg,#059669 0%,#0d9488 100%);
 }
-[data-skin="emerald"] body{
-  background-image:radial-gradient(rgba(16,185,129,.14) 1px, transparent 1px) !important;
-  background-size:18px 18px !important;
-}
-[data-skin="emerald"] .card{
-  border-left:3px solid var(--blue-b) !important;
-}
 
-/* 5. CRIMSON GT CARBON (MOTORSPORT TELEMETRY — Diagonal Carbon-Weave + Racing Stripe) */
-[data-skin="crimson"]{
-  --r-xs:6px;--r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:16px;
-}
+/* 5. GT CARBON (Neutral Gunmetal-Titanium Surfaces + Crisp Performance Crimson-Sky) */
 [data-skin="crimson"][data-theme="dark"]{
-  --bg:#0a0507;
-  --surface:rgba(24,11,15,.92);
-  --surface-2:rgba(36,16,22,.88);
-  --surface-3:rgba(52,22,31,.82);
-  --line:rgba(244,63,94,.20);
-  --line-2:rgba(251,113,133,.40);
-  --spec:inset 0 1px 0 rgba(254,205,211,.18);
-  --spec-strong:inset 0 1.5px 0 rgba(254,205,211,.30), 0 0 22px rgba(244,63,94,.14);
-  --txt:#fff1f2;--txt-2:#fda4af;--txt-3:#9f5864;
-  --blue:#f43f5e;--blue-t:#fb7185;--blue-g:rgba(244,63,94,.19);--blue-b:rgba(251,113,133,.48);
-  --green:#fb923c;--green-t:#fdba74;--green-g:rgba(251,146,60,.18);--green-b:rgba(253,186,116,.45);
-  --accent-grad:linear-gradient(135deg,#e11d48 0%,#f43f5e 55%,#f97316 100%);
+  --bg:#07080c;
+  --surface:rgba(15,17,24,.90);
+  --surface-2:rgba(22,25,35,.88);
+  --surface-3:rgba(32,36,49,.82);
+  --line:rgba(244,63,94,.14);
+  --line-2:rgba(244,63,94,.28);
+  --spec:inset 0 1px 0 rgba(255,255,255,.11), inset 0 0 22px rgba(244,63,94,.04);
+  --spec-strong:inset 0 1px 0 rgba(255,255,255,.20), inset 0 0 28px rgba(244,63,94,.07);
+  --txt:#f8fafc;
+  --txt-2:#cbd5e1;
+  --txt-3:#64748b;
+  --blue:#f43f5e;--blue-t:#fb7185;--blue-g:rgba(244,63,94,.15);--blue-b:rgba(251,113,133,.38);
+  --green:#10b981;--green-t:#34d399;--green-g:rgba(16,185,129,.15);--green-b:rgba(52,211,153,.36);
+  --accent-grad:linear-gradient(135deg,#f43f5e 0%,#f59e0b 100%);
 }
 [data-skin="crimson"][data-theme="light"]{
-  --bg:#f5eef0;
-  --surface:rgba(255,252,253,.94);
-  --surface-2:rgba(249,241,243,.96);
-  --surface-3:rgba(240,228,231,.92);
-  --line:rgba(225,29,72,.15);
-  --line-2:rgba(225,29,72,.32);
-  --txt:#24080e;--txt-2:#6e3340;--txt-3:#9c6570;
-  --blue:#e11d48;--blue-t:#be123c;--blue-g:rgba(244,63,94,.15);--blue-b:rgba(225,29,72,.40);
-  --green:#ea580c;--green-t:#c2410c;--green-g:rgba(249,115,22,.15);--green-b:rgba(234,88,12,.38);
-  --accent-grad:linear-gradient(135deg,#e11d48 0%,#ea580c 100%);
-}
-[data-skin="crimson"] .card,
-[data-skin="crimson"] .app-header,
-[data-skin="crimson"] .dock{
-  background-image:repeating-linear-gradient(45deg, rgba(244,63,94,.035) 0px, rgba(244,63,94,.035) 2px, transparent 2px, transparent 6px) !important;
-  border-right:2.5px solid var(--blue-b) !important;
+  --bg:#f3f1f3;
+  --surface:rgba(255,255,255,.94);
+  --surface-2:rgba(249,246,248,.97);
+  --surface-3:rgba(240,235,238,.94);
+  --line:rgba(225,29,72,.13);
+  --line-2:rgba(225,29,72,.25);
+  --txt:#0f172a;--txt-2:#475569;--txt-3:#64748b;
+  --blue:#e11d48;--blue-t:#be123c;--blue-g:rgba(244,63,94,.13);--blue-b:rgba(225,29,72,.35);
+  --green:#059669;--green-t:#047857;--green-g:rgba(16,185,129,.13);--green-b:rgba(5,150,105,.34);
+  --accent-grad:linear-gradient(135deg,#e11d48 0%,#f59e0b 100%);
 }
 
 /* Step-by-Step A2HS Visual Browser Mockups */
@@ -348,31 +327,7 @@ input:focus, select:focus, textarea:focus, input.num-active {
 @keyframes driftC{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(20%,-12%,0) scale(1.1)}66%{transform:translate3d(-15%,-20%,0) scale(1.05)}}
 /* Only pause background blobs when idle — NEVER pause progress/timer bar white shimmer! */
 
-/* Theme-adaptive header, dock & brand badge */
-[data-skin="royal"][data-theme="dark"] .app-header,
-[data-skin="royal"][data-theme="dark"] .dock{
-  background:linear-gradient(145deg,rgba(250,204,21,.09),rgba(245,158,11,.02)),var(--surface);
-}
-[data-skin="royal"][data-theme="dark"] .brand-badge{
-  background:linear-gradient(135deg,#292011,#120e07);
-  border-color:var(--blue-b);
-  box-shadow:0 0 16px rgba(234,179,8,.35), inset 0 1px 0 rgba(254,240,138,.30);
-}
-[data-skin="hyper"][data-theme="dark"] .app-header,
-[data-skin="hyper"][data-theme="dark"] .dock{
-  background:linear-gradient(145deg,rgba(192,132,252,.10),rgba(236,72,153,.025)),var(--surface);
-}
-[data-skin="hyper"][data-theme="dark"] .brand-badge{
-  background:linear-gradient(135deg,#23133d,#0e071c);
-  border-color:var(--blue-b);
-  box-shadow:0 0 16px rgba(168,85,247,.38), inset 0 1px 0 rgba(243,232,255,.30);
-}
-[data-skin="emerald"][data-theme="dark"] .brand-badge{
-  background:linear-gradient(135deg,#0d2e22,#05140e);
-}
-[data-skin="crimson"][data-theme="dark"] .brand-badge{
-  background:linear-gradient(135deg,#331018,#140508);
-}
+/* Clean neutral header & dock across all themes */
 
 /* Pause background blobs when any modal is open or page is idle/hidden for maximum battery savings */
 body.modal-open .blob,
@@ -4485,7 +4440,6 @@ function isAnyModalOrOverlayOpen(){
 
 function scheduleRePromptFullScreen(delayMs){
   clearTimeout(_rePromptFsTimer);
-  if(!isNativeFullScreenSupported()) return;
   const wait = delayMs || 3000;
   _rePromptFsTimer = setTimeout(function(){
     if(!isCurrentlyFullScreen() && !isStandaloneMode()){
@@ -18199,15 +18153,15 @@ function checkAutoPopupsOnHome(){
   // Never open a new popup if ANY modal or tutorial overlay is currently open!
   if(isAnyModalOrOverlayOpen()) return;
 
-  // PRIORITY 0: First-Time Device "Add to Home Screen" Visual Step-by-Step Guide (Once per device across ALL devices!)
-  if(!isStandaloneMode() && !safeGetItem('ironPulseA2HSGuideDoneV1')){
-    openA2HSGuideModal(false);
+  // PRIORITY 1: Fullscreen Prompt (Always appears first if not already in Fullscreen or Standalone!)
+  if(!_startupFsResolved && !isCurrentlyFullScreen() && !isStandaloneMode()){
+    openModal('modal-fullscreen');
     return;
   }
 
-  // PRIORITY 1: Fullscreen Prompt (For browsers supporting native Fullscreen API)
-  if(!_startupFsResolved && isNativeFullScreenSupported() && !isCurrentlyFullScreen() && !isStandaloneMode()){
-    openModal('modal-fullscreen');
+  // PRIORITY 2: First-Time Device "Add to Home Screen" Visual Step-by-Step Guide (Once per device across ALL devices!)
+  if(!isStandaloneMode() && !safeGetItem('ironPulseA2HSGuideDoneV1')){
+    openA2HSGuideModal(false);
     return;
   }
 
