@@ -53,81 +53,195 @@
   height:20px !important;
   opacity:0.01 !important;
 }
-/* IMPERIAL 24K OBSIDIAN GOLD THEME — Luxury Champagne Gold & Carbon Obsidian */
-[data-skin="royal"][data-theme="dark"]{
-  --bg:#080604;
-  --surface:rgba(20,16,11,.88);
-  --surface-2:rgba(30,24,16,.84);
-  --surface-3:rgba(44,35,22,.78);
-  --line:rgba(245,196,81,.16);
-  --line-2:rgba(245,196,81,.34);
-  --spec:inset 0 1px 0 rgba(254,240,138,.16), inset 0 0 24px rgba(234,179,8,.06);
-  --spec-strong:inset 0 1px 0 rgba(254,240,138,.28), inset 0 0 30px rgba(234,179,8,.10);
-  --txt:#fffbeb;--txt-2:#d6c49e;--txt-3:#8f7c56;
-  --blue:#eab308;--blue-t:#fde047;--blue-g:rgba(234,179,8,.17);--blue-b:rgba(250,204,21,.45);
-  --green:#f59e0b;--green-t:#fbbf24;--green-g:rgba(245,158,11,.18);--green-b:rgba(251,191,36,.46);
-  --amber:#fb923c;--amber-t:#fdba74;--amber-g:rgba(251,146,60,.16);--amber-b:rgba(253,186,116,.42);
-  --purple:#d97706;--purple-t:#fcd34d;--purple-g:rgba(217,119,6,.16);--purple-b:rgba(252,211,77,.38);
-  --accent-grad:linear-gradient(135deg,#f59e0b 0%,#eab308 52%,#ca8a04 100%);
-}
-/* NEBULA AMETHYST VIOLET THEME — Deep Space Velvet & Electric Violet-Rose */
-[data-skin="hyper"][data-theme="dark"]{
-  --bg:#070410;
-  --surface:rgba(17,11,32,.88);
-  --surface-2:rgba(27,18,48,.84);
-  --surface-3:rgba(39,26,68,.78);
-  --line:rgba(192,132,252,.17);
-  --line-2:rgba(216,180,254,.34);
-  --spec:inset 0 1px 0 rgba(233,213,255,.16), inset 0 0 24px rgba(168,85,247,.07);
-  --spec-strong:inset 0 1px 0 rgba(243,232,255,.26), inset 0 0 30px rgba(217,70,239,.11);
-  --txt:#faf5ff;--txt-2:#c4b5fd;--txt-3:#7e6ca8;
-  --blue:#8b5cf6;--blue-t:#c4b5fd;--blue-g:rgba(139,92,246,.18);--blue-b:rgba(196,181,253,.44);
-  --green:#ec4899;--green-t:#f472b6;--green-g:rgba(236,72,153,.17);--green-b:rgba(244,114,182,.44);
-  --purple:#d946ef;--purple-t:#f0abfc;--purple-g:rgba(217,70,239,.17);--purple-b:rgba(240,171,252,.42);
-  --amber:#f59e0b;--amber-t:#fde047;--amber-g:rgba(245,158,11,.16);--amber-b:rgba(253,224,71,.38);
-  --accent-grad:linear-gradient(135deg,#8b5cf6 0%,#d946ef 55%,#ec4899 100%);
-}
-/* TITANIUM EMERALD THEME — Stealth Carbon & Neon Matrix Mint */
-[data-skin="emerald"][data-theme="dark"]{
-  --bg:#040c09;
-  --surface:rgba(9,24,18,.88);
-  --surface-2:rgba(14,35,27,.84);
-  --surface-3:rgba(21,50,38,.78);
-  --line:rgba(52,211,153,.16);
-  --line-2:rgba(52,211,153,.32);
-  --spec:inset 0 1px 0 rgba(167,243,208,.15), inset 0 0 24px rgba(16,185,129,.06);
-  --spec-strong:inset 0 1px 0 rgba(167,243,208,.25), inset 0 0 30px rgba(16,185,129,.10);
-  --txt:#ecfdf5;--txt-2:#86efac;--txt-3:#4d8b6e;
-  --blue:#10b981;--blue-t:#34d399;--blue-g:rgba(16,185,129,.17);--blue-b:rgba(52,211,153,.44);
-  --green:#14b8a6;--green-t:#2dd4bf;--green-g:rgba(20,184,166,.18);--green-b:rgba(45,212,191,.44);
-  --accent-grad:linear-gradient(135deg,#10b981 0%,#059669 50%,#0d9488 100%);
-}
-/* CRIMSON OBSIDIAN THEME — Pitch Carbon & Ruby Laser Red */
-[data-skin="crimson"][data-theme="dark"]{
-  --bg:#0b0406;
-  --surface:rgba(26,10,14,.88);
-  --surface-2:rgba(38,15,21,.84);
-  --surface-3:rgba(54,22,30,.78);
-  --line:rgba(251,113,133,.16);
-  --line-2:rgba(251,113,133,.34);
-  --spec:inset 0 1px 0 rgba(254,205,211,.15), inset 0 0 24px rgba(244,63,94,.06);
-  --spec-strong:inset 0 1px 0 rgba(254,205,211,.25), inset 0 0 30px rgba(244,63,94,.11);
-  --txt:#fff1f2;--txt-2:#fda4af;--txt-3:#9f5864;
-  --blue:#f43f5e;--blue-t:#fb7185;--blue-g:rgba(244,63,94,.18);--blue-b:rgba(251,113,133,.45);
-  --green:#fb923c;--green-t:#fdba74;--green-g:rgba(251,146,60,.17);--green-b:rgba(253,186,116,.44);
-  --accent-grad:linear-gradient(135deg,#e11d48 0%,#f43f5e 55%,#fb923c 100%);
-}
+/* ============================================================================
+   5 DISTINCT ARCHITECTURAL DESIGN SKINS × INDEPENDENT DARK & LIGHT MODES
+   ============================================================================ */
+
+/* BASE LIGHT MODE (Applies to Cyber & acts as foundation for Light skins) */
 [data-theme="light"]{
-  --bg:#eef2f9;--surface:rgba(255,255,255,.88);--surface-2:rgba(246,249,254,.95);--surface-3:rgba(235,241,250,.88);
-  --line:rgba(15,23,42,.08);--line-2:rgba(15,23,42,.15);
+  --bg:#eef2f9;--surface:rgba(255,255,255,.88);--surface-2:rgba(244,248,254,.95);--surface-3:rgba(232,239,250,.90);
+  --line:rgba(15,23,42,.09);--line-2:rgba(15,23,42,.17);
   --spec:inset 0 1px 0 rgba(255,255,255,.98);--spec-strong:inset 0 1px 0 #fff;
   --shadow-xs:0 2px 6px rgba(15,23,42,.05);--shadow-sm:0 6px 16px rgba(15,23,42,.08);--shadow:0 14px 32px rgba(15,23,42,.11);--shadow-lg:0 24px 60px rgba(15,23,42,.18);
   --txt:#0b1324;--txt-2:#475569;--txt-3:#7e8da8;
-  --green-t:#047857;--green-g:rgba(16,185,129,.14);--green-b:rgba(16,185,129,.35);
-  --blue-t:#0369a1;--blue-g:rgba(14,165,233,.14);--blue-b:rgba(14,165,233,.35);
-  --red-t:#be123c;--red-g:rgba(244,63,94,.12);--red-b:rgba(244,63,94,.32);
-  --amber-t:#b45309;--amber-g:rgba(245,158,11,.16);--amber-b:rgba(245,158,11,.40);
-  --purple-t:#6d28d9;--purple-g:rgba(168,85,247,.14);--purple-b:rgba(168,85,247,.34);
+  --green:#059669;--green-t:#047857;--green-g:rgba(16,185,129,.14);--green-b:rgba(16,185,129,.35);
+  --blue:#0284c7;--blue-t:#0369a1;--blue-g:rgba(14,165,233,.14);--blue-b:rgba(14,165,233,.35);
+  --red:#e11d48;--red-t:#be123c;--red-g:rgba(244,63,94,.12);--red-b:rgba(244,63,94,.32);
+  --amber:#d97706;--amber-t:#b45309;--amber-g:rgba(245,158,11,.16);--amber-b:rgba(245,158,11,.40);
+  --purple:#7c3aed;--purple-t:#6d28d9;--purple-g:rgba(168,85,247,.14);--purple-b:rgba(168,85,247,.34);
+}
+
+/* 2. ROYAL LUXE (SWISS HOROLOGY — Sharp Bevels, Brushed Gold Rim & Matte Onyx / Ivory Alabaster) */
+[data-skin="royal"]{
+  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:10px;--r-xl:14px;--r-2xl:18px;
+}
+[data-skin="royal"][data-theme="dark"]{
+  --bg:#090806;
+  --surface:rgba(20,17,13,.92);
+  --surface-2:rgba(30,25,18,.90);
+  --surface-3:rgba(44,36,25,.85);
+  --line:rgba(212,175,55,.20);
+  --line-2:rgba(212,175,55,.42);
+  --spec:inset 0 1px 0 rgba(254,240,138,.22), inset 0 -1px 0 rgba(180,130,30,.15);
+  --spec-strong:inset 0 1.5px 0 rgba(254,240,138,.38), inset 0 0 24px rgba(212,175,55,.08);
+  --txt:#fcf8f0;--txt-2:#d4c3a3;--txt-3:#8c7a5b;
+  --blue:#d4af37;--blue-t:#fde047;--blue-g:rgba(212,175,55,.18);--blue-b:rgba(234,179,8,.48);
+  --green:#10b981;--green-t:#34d399;--green-g:rgba(16,185,129,.16);--green-b:rgba(52,211,153,.40);
+  --amber:#f59e0b;--amber-t:#fbbf24;--amber-g:rgba(245,158,11,.17);--amber-b:rgba(251,191,36,.44);
+  --purple:#c084fc;--purple-t:#e9d5ff;--purple-g:rgba(192,132,252,.15);--purple-b:rgba(216,180,254,.38);
+  --accent-grad:linear-gradient(135deg,#d4af37 0%,#f59e0b 50%,#b45309 100%);
+}
+[data-skin="royal"][data-theme="light"]{
+  --bg:#f6f1e7;
+  --surface:rgba(255,252,245,.94);
+  --surface-2:rgba(248,242,230,.96);
+  --surface-3:rgba(238,229,212,.92);
+  --line:rgba(161,120,34,.18);
+  --line-2:rgba(161,120,34,.36);
+  --spec:inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(180,135,40,.14);
+  --txt:#1f1910;--txt-2:#5c4d35;--txt-3:#8c7858;
+  --blue:#b47b12;--blue-t:#92600a;--blue-g:rgba(212,175,55,.16);--blue-b:rgba(180,123,18,.42);
+  --green:#047857;--green-t:#065f46;--green-g:rgba(16,185,129,.14);--green-b:rgba(5,150,105,.36);
+  --accent-grad:linear-gradient(135deg,#b47b12 0%,#d97706 100%);
+}
+[data-skin="royal"] .card,
+[data-skin="royal"] .app-header,
+[data-skin="royal"] .dock{
+  background-image:repeating-linear-gradient(135deg, rgba(212,175,55,.03) 0px, rgba(212,175,55,.03) 1px, transparent 1px, transparent 6px) !important;
+  border-top:1.5px solid var(--blue-b) !important;
+}
+
+/* 3. HYPER SYNTH (CYBERPUNK HOLO-DECK — Perspective Neon Grid + Dual Laser Top Border) */
+[data-skin="hyper"]{
+  --r-xs:10px;--r-sm:13px;--r-md:16px;--r-lg:22px;--r-xl:28px;
+}
+[data-skin="hyper"][data-theme="dark"]{
+  --bg:#060312;
+  --surface:rgba(16,9,36,.88);
+  --surface-2:rgba(26,15,54,.86);
+  --surface-3:rgba(38,22,76,.80);
+  --line:rgba(217,70,239,.20);
+  --line-2:rgba(34,211,238,.40);
+  --spec:inset 0 1.5px 0 rgba(240,171,252,.28), inset 0 -1px 0 rgba(34,211,238,.22);
+  --spec-strong:inset 0 2px 0 rgba(240,171,252,.42), 0 0 22px rgba(217,70,239,.16);
+  --txt:#fdf4ff;--txt-2:#d8b4fe;--txt-3:#8b6fc4;
+  --blue:#22d3ee;--blue-t:#67e8f9;--blue-g:rgba(34,211,238,.17);--blue-b:rgba(103,232,249,.46);
+  --green:#e879f9;--green-t:#f0abfc;--green-g:rgba(232,121,249,.18);--green-b:rgba(240,171,252,.46);
+  --purple:#a855f7;--purple-t:#d8b4fe;--purple-g:rgba(168,85,247,.18);--purple-b:rgba(192,132,252,.45);
+  --accent-grad:linear-gradient(135deg,#22d3ee 0%,#a855f7 52%,#ec4899 100%);
+}
+[data-skin="hyper"][data-theme="light"]{
+  --bg:#f2edfc;
+  --surface:rgba(255,252,255,.92);
+  --surface-2:rgba(246,240,255,.95);
+  --surface-3:rgba(235,225,252,.90);
+  --line:rgba(147,51,234,.15);
+  --line-2:rgba(6,182,212,.35);
+  --txt:#1a0b36;--txt-2:#5b3e85;--txt-3:#866eb0;
+  --blue:#0891b2;--blue-t:#0e7490;--blue-g:rgba(6,182,212,.15);--blue-b:rgba(8,145,178,.40);
+  --green:#c026d3;--green-t:#a21caf;--green-g:rgba(217,70,239,.15);--green-b:rgba(192,38,211,.38);
+  --accent-grad:linear-gradient(135deg,#0891b2 0%,#9333ea 52%,#db2777 100%);
+}
+[data-skin="hyper"] body{
+  background-image:
+    linear-gradient(rgba(168,85,247,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,.06) 1px, transparent 1px) !important;
+  background-size: 28px 28px !important;
+}
+[data-skin="hyper"] .card{
+  box-shadow: 0 -1.5px 0 var(--green-b), var(--shadow-sm) !important;
+}
+
+/* 4. EMERALD BIO-LAB (TACTICAL HUD — Technical Dot Matrix + Left Telemetry Accent Bar) */
+[data-skin="emerald"]{
+  --r-xs:5px;--r-sm:7px;--r-md:9px;--r-lg:11px;--r-xl:15px;
+}
+[data-skin="emerald"][data-theme="dark"]{
+  --bg:#040c09;
+  --surface:rgba(8,24,18,.90);
+  --surface-2:rgba(13,36,27,.88);
+  --surface-3:rgba(20,50,38,.82);
+  --line:rgba(16,185,129,.18);
+  --line-2:rgba(52,211,153,.38);
+  --spec:inset 0 1px 0 rgba(167,243,208,.18);
+  --spec-strong:inset 0 1px 0 rgba(167,243,208,.30), 0 0 20px rgba(16,185,129,.12);
+  --txt:#ecfdf5;--txt-2:#86efac;--txt-3:#4d8b6e;
+  --blue:#10b981;--blue-t:#34d399;--blue-g:rgba(16,185,129,.18);--blue-b:rgba(52,211,153,.45);
+  --green:#2dd4bf;--green-t:#5eead4;--green-g:rgba(45,212,191,.18);--green-b:rgba(94,234,212,.45);
+  --accent-grad:linear-gradient(135deg,#10b981 0%,#0d9488 100%);
+}
+[data-skin="emerald"][data-theme="light"]{
+  --bg:#eaf5f0;
+  --surface:rgba(252,255,253,.94);
+  --surface-2:rgba(240,250,245,.96);
+  --surface-3:rgba(224,242,233,.92);
+  --line:rgba(5,150,105,.15);
+  --line-2:rgba(5,150,105,.32);
+  --txt:#062419;--txt-2:#2d614d;--txt-3:#5e8c79;
+  --blue:#059669;--blue-t:#047857;--blue-g:rgba(16,185,129,.15);--blue-b:rgba(5,150,105,.40);
+  --green:#0d9488;--green-t:#0f766e;--green-g:rgba(20,184,166,.15);--green-b:rgba(13,148,136,.38);
+  --accent-grad:linear-gradient(135deg,#059669 0%,#0d9488 100%);
+}
+[data-skin="emerald"] body{
+  background-image:radial-gradient(rgba(16,185,129,.14) 1px, transparent 1px) !important;
+  background-size:18px 18px !important;
+}
+[data-skin="emerald"] .card{
+  border-left:3px solid var(--blue-b) !important;
+}
+
+/* 5. CRIMSON GT CARBON (MOTORSPORT TELEMETRY — Diagonal Carbon-Weave + Racing Stripe) */
+[data-skin="crimson"]{
+  --r-xs:6px;--r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:16px;
+}
+[data-skin="crimson"][data-theme="dark"]{
+  --bg:#0a0507;
+  --surface:rgba(24,11,15,.92);
+  --surface-2:rgba(36,16,22,.88);
+  --surface-3:rgba(52,22,31,.82);
+  --line:rgba(244,63,94,.20);
+  --line-2:rgba(251,113,133,.40);
+  --spec:inset 0 1px 0 rgba(254,205,211,.18);
+  --spec-strong:inset 0 1.5px 0 rgba(254,205,211,.30), 0 0 22px rgba(244,63,94,.14);
+  --txt:#fff1f2;--txt-2:#fda4af;--txt-3:#9f5864;
+  --blue:#f43f5e;--blue-t:#fb7185;--blue-g:rgba(244,63,94,.19);--blue-b:rgba(251,113,133,.48);
+  --green:#fb923c;--green-t:#fdba74;--green-g:rgba(251,146,60,.18);--green-b:rgba(253,186,116,.45);
+  --accent-grad:linear-gradient(135deg,#e11d48 0%,#f43f5e 55%,#f97316 100%);
+}
+[data-skin="crimson"][data-theme="light"]{
+  --bg:#f5eef0;
+  --surface:rgba(255,252,253,.94);
+  --surface-2:rgba(249,241,243,.96);
+  --surface-3:rgba(240,228,231,.92);
+  --line:rgba(225,29,72,.15);
+  --line-2:rgba(225,29,72,.32);
+  --txt:#24080e;--txt-2:#6e3340;--txt-3:#9c6570;
+  --blue:#e11d48;--blue-t:#be123c;--blue-g:rgba(244,63,94,.15);--blue-b:rgba(225,29,72,.40);
+  --green:#ea580c;--green-t:#c2410c;--green-g:rgba(249,115,22,.15);--green-b:rgba(234,88,12,.38);
+  --accent-grad:linear-gradient(135deg,#e11d48 0%,#ea580c 100%);
+}
+[data-skin="crimson"] .card,
+[data-skin="crimson"] .app-header,
+[data-skin="crimson"] .dock{
+  background-image:repeating-linear-gradient(45deg, rgba(244,63,94,.035) 0px, rgba(244,63,94,.035) 2px, transparent 2px, transparent 6px) !important;
+  border-right:2.5px solid var(--blue-b) !important;
+}
+
+/* Step-by-Step A2HS Visual Browser Mockups */
+.a2hs-visual-box{
+  width:100%;border-radius:14px;padding:12px;
+  background:linear-gradient(160deg,rgba(15,23,42,.92),rgba(7,12,24,.96));
+  border:1px solid var(--blue-b);
+  box-shadow:0 10px 28px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.14);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  position:relative;overflow:hidden;
+}
+.a2hs-pulse-ring{
+  animation:a2hsSpotPulse 1.6s ease-in-out infinite;
+}
+@keyframes a2hsSpotPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #38bdf8)}
+  50%{transform:scale(1.08);filter:drop-shadow(0 0 14px #10b981)}
 }
 [data-powersave="true"]{
   --bg:#000000;--surface:#060608;--surface-2:#0c0c10;--surface-3:#131319;
@@ -736,9 +850,40 @@ body.numpad-ActivePad .modal-body {
 .chip.purple.on{background:var(--purple-g);border-color:var(--purple-b);color:var(--purple-t)}
 .chip-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
 
-.seg{display:inline-flex;padding:2.5px;gap:2px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line);box-shadow:var(--spec)}
-.seg-btn{padding:5px 10px;border-radius:9px;font-size:10px;font-weight:800;color:var(--txt-2);display:inline-flex;align-items:center;justify-content:center;min-width:54px;height:24px;cursor:pointer;user-select:none}
-.seg-btn.on{background:var(--blue-g);color:var(--blue-t);box-shadow:inset 0 0 0 1px var(--blue-b)}
+.seg{
+  display:inline-flex;padding:2.5px;gap:2px;border-radius:var(--r-sm);
+  background:var(--surface-2);border:1px solid var(--line-2);box-shadow:var(--spec);
+  position:relative;overflow:hidden;touch-action:pan-y;user-select:none;
+}
+.seg-btn{
+  padding:5px 10px;border-radius:calc(var(--r-sm) - 2px);
+  font-size:10px;font-weight:800;color:var(--txt-2);
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:50px;height:24px;cursor:pointer;user-select:none;
+  position:relative;z-index:2;background:transparent !important;border:1px solid transparent !important;box-shadow:none !important;
+  transition:color .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.seg-btn.on{
+  color:var(--blue-t);
+  text-shadow:0 0 10px rgba(56,189,248,.22);
+}
+.seg-glass-pill{
+  position:absolute;top:2.5px;bottom:2.5px;left:0;width:50%;
+  border-radius:calc(var(--r-sm) - 2px);
+  background:linear-gradient(145deg,rgba(255,255,255,.09) 0%,var(--blue-g) 52%,rgba(16,185,129,.07) 100%);
+  border:1px solid var(--blue-b);
+  box-shadow:0 3px 10px rgba(14,165,233,.14), inset 0 1px 1px rgba(255,255,255,.32);
+  pointer-events:none;z-index:1;
+  transform:translate3d(0,0,0) scale(1);
+  transition:transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), width 0.30s cubic-bezier(0.22, 1, 0.36, 1), background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  will-change:transform,width;
+}
+.seg.scrubbing .seg-glass-pill{
+  transition:transform 0.04s linear, width 0.14s ease !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15) 0%,var(--blue-g) 50%,rgba(16,185,129,.12) 100%);
+  border-color:rgba(255,255,255,.45);
+  box-shadow:0 5px 15px rgba(56,189,248,.24), inset 0 1.5px 1.5px rgba(255,255,255,.48);
+}
 
 input[type=text],input[type=email],input[type=date],input[type=number],input[type=password],select,textarea{width:100%;padding:8px 11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--txt);font-size:12px;font-weight:700;outline:none;color-scheme:dark}
 input.num-target{cursor:pointer;font-family:var(--font-mono);font-weight:800}
@@ -1048,12 +1193,12 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
   box-shadow:var(--shadow-sm),var(--spec-strong);
 }
 .home-big-btn.workout-launch{
-  background:linear-gradient(135deg,rgba(16,185,129,.24) 0%,rgba(14,165,233,.20) 100%),var(--surface);
+  background-image:linear-gradient(135deg,rgba(16,185,129,.22) 0%,rgba(14,165,233,.18) 100%);background-color:var(--surface);
   border-color:var(--green-b);
   box-shadow:0 12px 28px rgba(16,185,129,.18),var(--spec-strong);
 }
 .home-big-btn.cardio-launch{
-  background:linear-gradient(135deg,rgba(14,165,233,.22) 0%,rgba(168,85,247,.16) 100%),var(--surface);
+  background-image:linear-gradient(135deg,rgba(14,165,233,.20) 0%,rgba(168,85,247,.14) 100%);background-color:var(--surface);
   border-color:var(--blue-b);
   box-shadow:0 10px 24px rgba(14,165,233,.15),var(--spec-strong);
 }
@@ -1780,7 +1925,6 @@ body[data-idle="1"] .marble-veins{
   -webkit-backdrop-filter:none !important;
 }
 .modal:not(.open){
-  content-visibility:hidden;
   will-change:auto !important;
   backdrop-filter:none !important;
   -webkit-backdrop-filter:none !important;
@@ -3168,6 +3312,43 @@ body[data-idle="1"] .marble-veins{
   <button class="pip-end" onclick="pipEnd(event)">⏹ End session</button>
 </div>
 
+<!-- INTERACTIVE STEP-BY-STEP ADD TO HOME SCREEN (INSTALL APP) VISUAL WIZARD -->
+<div class="modal" id="modal-a2hs-guide">
+  <div class="modal-card" style="max-height:92dvh;gap:8px;padding:12px">
+    <div class="modal-head">
+      <div>
+        <span class="modal-title" style="color:var(--green-t)">📲 Install IRON PULSE as an App</span>
+        <div class="micro subtle" id="a2hsBrowserDetectedSub">Full-screen native experience · Zero browser bars</div>
+      </div>
+      <button class="btn xs ghost" onclick="skipA2HSGuide()">Skip ✕</button>
+    </div>
+
+    <!-- BROWSER SELECTOR (Auto-selects user's browser, or tap to switch if using another browser!) -->
+    <div class="seg" style="width:100%" id="a2hsBrowserSeg">
+      <div class="seg-btn on" id="a2hsTabSafari" style="flex:1;padding:4px 2px;font-size:9px" onclick="selectA2HSBrowser('ios_safari')">🍎 Safari</div>
+      <div class="seg-btn" id="a2hsTabIosChrome" style="flex:1;padding:4px 2px;font-size:9px" onclick="selectA2HSBrowser('ios_chrome')">🌐 iOS Chrome</div>
+      <div class="seg-btn" id="a2hsTabAndroid" style="flex:1;padding:4px 2px;font-size:9px" onclick="selectA2HSBrowser('android_chrome')">🤖 Android</div>
+      <div class="seg-btn" id="a2hsTabSamsung" style="flex:1;padding:4px 2px;font-size:9px" onclick="selectA2HSBrowser('samsung_other')">🌌 Samsung/PC</div>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="row-between" style="padding:0 2px">
+      <span class="chip blue" id="a2hsStepCountBadge" style="font-size:9.5px">Step 1 of 3</span>
+      <div class="row gap-1" id="a2hsStepDots"></div>
+    </div>
+
+    <!-- VISUAL ILLUSTRATION + STEP INSTRUCTION -->
+    <div id="a2hsStepContentBox" class="stack gap-2"></div>
+
+    <!-- FOOTER CONTROLS: SKIP / BACK / NEXT -->
+    <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px;width:100%;margin-top:2px">
+      <button type="button" class="btn ghost sm" onclick="skipA2HSGuide()">Skip</button>
+      <button type="button" class="btn sm" id="a2hsPrevBtn" onclick="stepA2HSGuide(-1)">◀ Back</button>
+      <button type="button" class="btn green sm" id="a2hsNextBtn" style="width:100%" onclick="stepA2HSGuide(1)">Next Step →</button>
+    </div>
+  </div>
+</div>
+
 <!-- FULLSCREEN PROMPT MODAL (Only appears on startup if not already in Fullscreen) -->
 <div class="modal" id="modal-fullscreen">
   <div class="modal-card center">
@@ -3284,27 +3465,32 @@ body[data-idle="1"] .marble-veins{
         </div>
       </div>
 
-      <!-- 4. APPEARANCE & THEMES -->
-      <div class="card glass" style="padding:8px 11px">
-        <div class="row-between">
-          <span class="h4">🎨 Appearance</span>
-          <div class="row gap-1">
-            <button class="chip" id="themeDarkChip" onclick="setTheme(true)">🌙 Dark</button>
-            <button class="chip" id="themeLightChip" onclick="setTheme(false)">☀️ Light</button>
+      <!-- 4. APPEARANCE: INDEPENDENT DARK/LIGHT MODE + 5 ARCHITECTURAL DESIGNS -->
+      <div class="card glass" style="padding:9px 11px">
+        <div class="row-between" style="margin-bottom:7px">
+          <div>
+            <span class="h4">🎨 Mode &amp; Design</span>
+            <div class="micro subtle">Switch Dark/Light freely inside any design</div>
+          </div>
+          <div class="seg" id="settingsThemeModeSeg">
+            <div class="seg-btn on" id="themeDarkChip" onclick="setTheme(true)">🌙 Dark</div>
+            <div class="seg-btn" id="themeLightChip" onclick="setTheme(false)">☀️ Light</div>
           </div>
         </div>
-        <div class="skin-grid" style="margin-top:6px;grid-template-columns:repeat(3,1fr)">
-          <button class="skin-pill" id="skinCyber" onclick="setSkin('cyber')">⚡ Cyber</button>
-          <button class="skin-pill" id="skinRoyal" onclick="setSkin('royal')">👑 Gold</button>
-          <button class="skin-pill" id="skinHyper" onclick="setSkin('hyper')">🔮 Violet</button>
-          <button class="skin-pill" id="skinEmerald" onclick="setSkin('emerald')">🌿 Emerald</button>
-          <button class="skin-pill" id="skinCrimson" onclick="setSkin('crimson')">🩸 Crimson</button>
-          <button class="skin-pill" id="skinAero" onclick="setTheme(false)">❄️ Light</button>
+        <div class="skin-grid" style="grid-template-columns:repeat(5,1fr);gap:4px">
+          <button class="skin-pill" id="skinCyber" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('cyber')">⚡ Cyber</button>
+          <button class="skin-pill" id="skinRoyal" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('royal')">👑 Luxe</button>
+          <button class="skin-pill" id="skinHyper" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('hyper')">🔮 Synth</button>
+          <button class="skin-pill" id="skinEmerald" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('emerald')">🌿 HUD</button>
+          <button class="skin-pill" id="skinCrimson" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('crimson')">🩸 Carbon</button>
         </div>
       </div>
 
-      <!-- 5. DATA & SPLITS -->
-      <button class="tour-cta-hero-btn" style="padding:10px 12px;font-size:12px;flex-shrink:0;min-height:38px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
+      <!-- 5. GUIDES, DATA & SPLITS -->
+      <div class="grid-2" style="gap:6px;flex-shrink:0">
+        <button class="tour-cta-hero-btn" style="padding:9px 8px;font-size:11px;min-height:36px" onclick="closeModal('modal-settings');openA2HSGuideModal(true)">📲 Install as App</button>
+        <button class="tour-cta-hero-btn" style="padding:9px 8px;font-size:11px;min-height:36px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
+      </div>
       <div class="grid-2" style="gap:6px">
         <button class="btn sm" onclick="closeModal('modal-settings');openPrograms()">📂 Splits</button>
         <button class="btn sm" onclick="closeModal('modal-settings');changeName()">👤 Name</button>
@@ -4300,11 +4486,11 @@ function isAnyModalOrOverlayOpen(){
 function scheduleRePromptFullScreen(delayMs){
   clearTimeout(_rePromptFsTimer);
   if(!isNativeFullScreenSupported()) return;
-  const wait = delayMs || 5000;
+  const wait = delayMs || 3000;
   _rePromptFsTimer = setTimeout(function(){
     if(!isCurrentlyFullScreen() && !isStandaloneMode()){
       if(isAnyModalOrOverlayOpen()){
-        scheduleRePromptFullScreen(3500);
+        scheduleRePromptFullScreen(3000);
         return;
       }
       openModal('modal-fullscreen');
@@ -4329,6 +4515,7 @@ function updateFullScreenBtnUI(){
     closeModal('modal-fullscreen');
   } else if(_wasInFullScreen){
     _wasInFullScreen = false;
+    scheduleRePromptFullScreen(3000);
   }
   if(typeof syncDockGlassPillToActive === 'function'){
     setTimeout(syncDockGlassPillToActive, 60);
@@ -4367,7 +4554,7 @@ function toggleFullScreen(){
         if(p && typeof p.then === 'function') p.then(updateFullScreenBtnUI).catch(function(){});
       }catch(e){}
     }
-    scheduleRePromptFullScreen(5000);
+    scheduleRePromptFullScreen(3000);
   }
   setTimeout(updateFullScreenBtnUI, 120);
 }
@@ -5261,13 +5448,19 @@ function applyTheme(){
     else meta.setAttribute('content', '#050b18');
   }
 }
-function setTheme(dark){ appData.darkMode = dark; applyTheme(); save(); refreshSettingsUI(); }
-function setSkin(skin){
-  appData.skin = skin;
-  appData.darkMode = true;
+function setTheme(dark){
+  playSound('tap');
+  appData.darkMode = !!dark;
   applyTheme(); save(); refreshSettingsUI();
-  const names = {cyber:'⚡ Cyber', royal:'👑 Imperial Gold', hyper:'🔮 Amethyst Violet', emerald:'🌿 Titanium Emerald', crimson:'🩸 Crimson Obsidian'};
-  toast('Theme: ' + (names[skin] || skin));
+  if(typeof syncAllVisibleSegPills === 'function') setTimeout(syncAllVisibleSegPills, 30);
+}
+function setSkin(skin){
+  playSound('tap');
+  appData.skin = skin || 'cyber';
+  applyTheme(); save(); refreshSettingsUI();
+  const modeStr = appData.darkMode ? 'Dark' : 'Light';
+  const names = {cyber:'⚡ Cyber Glass', royal:'👑 Horology Luxe', hyper:'🔮 Synth Holo-Grid', emerald:'🌿 Tactical Bio-HUD', crimson:'🩸 GT Carbon Weave'};
+  toast('Design: ' + (names[skin] || skin) + ' (' + modeStr + ')');
 }
 function applyPower(){ if(appData.powerSaveMode) document.documentElement.setAttribute('data-powersave','true'); else document.documentElement.removeAttribute('data-powersave'); }
 function toggleEco(){ appData.powerSaveMode = !appData.powerSaveMode; applyPower(); save(); }
@@ -5280,6 +5473,10 @@ function openModal(id){
   if(m){
     m.classList.add('open');
     syncModalBodyClass();
+    if(typeof syncAllVisibleSegPills === 'function'){
+      requestAnimationFrame(syncAllVisibleSegPills);
+      setTimeout(syncAllVisibleSegPills, 60);
+    }
   }
 }
 const _RECYCLABLE_MODAL_LISTS = {
@@ -9640,8 +9837,19 @@ function toggleSSEach(){
   const ex = activeSessionData[activeExIndex];
   if(!ex || !ex.supersetName) return;
   playSound('tap');
+  saveCurrentEx();
   ex.supersetIsEach = !ex.supersetIsEach;
   ex._ssSavedEach = ex.supersetIsEach;
+  const prog = getProgram();
+  const day = prog[appData.currentDayIndex];
+  if(day && Array.isArray(day.exercises)){
+    const orig = day.exercises.find(function(o){ return o._id && o._id === ex._id; }) || day.exercises[activeExIndex];
+    if(orig){
+      orig.supersetIsEach = ex.supersetIsEach;
+      orig._ssSavedEach = ex.supersetIsEach;
+    }
+  }
+  save();
   renderWorkout();
   syncWorkout();
 }
@@ -10294,7 +10502,7 @@ function prefix(type, dropIdx){
   return '';
 }
 function rowHTML(i, type, pw, pr, vw, vr, dropIdx, ssName){
-  dropIdx = dropIdx || null;
+  dropIdx = (dropIdx !== undefined && dropIdx !== null && dropIdx !== '') ? Number(dropIdx) : null;
   ssName = ssName || '';
   const p = prefix(type, dropIdx);
   let tag = 'SET ' + (i + 1);
@@ -10363,7 +10571,7 @@ function updateRowDoneCheck(i, type, dropIdx){
 }
 let _prToastTimer = null;
 function liveRM(i, type, dropIdx){
-  dropIdx = dropIdx || null;
+  dropIdx = (dropIdx !== undefined && dropIdx !== null && dropIdx !== '') ? Number(dropIdx) : null;
   const p = prefix(type, dropIdx);
   const w = $(p + 'w_' + i), r = $(p + 'r_' + i), badge = $(p + 'rm_' + i), row = $(p + 'row_' + i);
   if(!w || !r || !badge) return;
@@ -10471,7 +10679,7 @@ function spawnPRGoldenParticles(targetEl){
 }
 
 function stepWeight(i, type, delta, pw, pr, dropIdx){
-  dropIdx = dropIdx || null;
+  dropIdx = (dropIdx !== undefined && dropIdx !== null && dropIdx !== '') ? Number(dropIdx) : null;
   playSound('key');
   const p = prefix(type, dropIdx);
   const w = $(p + 'w_' + i);
@@ -10487,7 +10695,7 @@ function stepWeight(i, type, delta, pw, pr, dropIdx){
 }
 
 function stepReps(i, type, delta, pw, pr, dropIdx){
-  dropIdx = dropIdx || null;
+  dropIdx = (dropIdx !== undefined && dropIdx !== null && dropIdx !== '') ? Number(dropIdx) : null;
   playSound('key');
   const p = prefix(type, dropIdx);
   const r = $(p + 'r_' + i);
@@ -10517,7 +10725,7 @@ function delDrop(i, di, type){
   if(arr[i]){ arr[i].splice(di, 1); renderWorkout(); syncWorkout(); }
 }
 function paintRow(i, type, pw, pr, dropIdx){
-  dropIdx = dropIdx || null;
+  dropIdx = (dropIdx !== undefined && dropIdx !== null && dropIdx !== '') ? Number(dropIdx) : null;
   const p = prefix(type, dropIdx);
   const w = $(p + 'w_' + i), r = $(p + 'r_' + i);
   if(!w || !r) return;
@@ -10563,8 +10771,8 @@ function saveCurrentEx(){
     if(ex.currentEntry && ex.currentEntry.drops && ex.currentEntry.drops[i]){
       ex.currentEntry.drops[i].forEach(function(d, di){
         const a = $('d_' + di + '_w_' + i), b = $('d_' + di + '_r_' + i);
-        if(a) d.w = a.value;
-        if(b) d.r = b.value;
+        if(a) d.w = a.value !== '' ? parseFloat(a.value) : '';
+        if(b) d.r = b.value !== '' ? parseFloat(b.value) : '';
       });
     }
     if(ex.supersetName && i < (ex.supersetSets || ex.sets) && !skip){
@@ -10575,8 +10783,8 @@ function saveCurrentEx(){
     if(ex.supersetName && ex.currentEntry && ex.currentEntry.supersetDrops && ex.currentEntry.supersetDrops[i]){
       ex.currentEntry.supersetDrops[i].forEach(function(d, di){
         const a = $('sd_' + di + '_w_' + i), b = $('sd_' + di + '_r_' + i);
-        if(a) d.w = a.value;
-        if(b) d.r = b.value;
+        if(a) d.w = a.value !== '' ? parseFloat(a.value) : '';
+        if(b) d.r = b.value !== '' ? parseFloat(b.value) : '';
       });
     }
   }
@@ -10611,7 +10819,26 @@ function setView(mode){
   activeSessionData.forEach(function(e){ e.viewMode = mode; });
   syncViewModeUI(); applyViewMode(mode); saveCurrentEx(); updateWorkoutTelemetry(); save(); syncWorkout();
 }
-function toggleEach(){ const ex = activeSessionData[activeExIndex]; if(!ex) return; ex.isEach = !ex.isEach; renderWorkout(); syncWorkout(); }
+function toggleEach(){
+  const ex = activeSessionData[activeExIndex];
+  if(!ex) return;
+  playSound('tap');
+  saveCurrentEx();
+  ex.isEach = !ex.isEach;
+  ex._savedEach = ex.isEach;
+  const prog = getProgram();
+  const day = prog[appData.currentDayIndex];
+  if(day && Array.isArray(day.exercises)){
+    const orig = day.exercises.find(function(o){ return o._id && o._id === ex._id; }) || day.exercises[activeExIndex];
+    if(orig){
+      orig.isEach = ex.isEach;
+      orig._savedEach = ex.isEach;
+    }
+  }
+  save();
+  renderWorkout();
+  syncWorkout();
+}
 function saveNote(){ const ex = activeSessionData[activeExIndex]; if(ex) ex.note = $('activeExNote').value; syncWorkout(); }
 function addSet(){ if(typeof isDeloadModeActive==='function' && isDeloadModeActive()){ notifyDeloadLocked(); return; } playSound('tap'); saveCurrentEx(); const ex = activeSessionData[activeExIndex]; ex.sets++; if(ex.supersetName && ex.supersetSets) ex.supersetSets++; renderWorkout(); syncWorkout(); }
 function removeSet(){ if(typeof isDeloadModeActive==='function' && isDeloadModeActive()){ notifyDeloadLocked(); return; } playSound('warn'); saveCurrentEx(); const ex = activeSessionData[activeExIndex]; if(ex.sets <= 1) return; ex.sets--; if(ex.supersetName && ex.supersetSets > 1) ex.supersetSets--; renderWorkout(); syncWorkout(); }
@@ -12614,13 +12841,14 @@ function refreshSettingsUI(){
   const d = $('themeDarkChip'), l = $('themeLightChip');
   if(d) d.classList.toggle('on', !!appData.darkMode);
   if(l) l.classList.toggle('on', !appData.darkMode);
-  const sCyber = $('skinCyber'), sRoyal = $('skinRoyal'), sHyper = $('skinHyper'), sEmerald = $('skinEmerald'), sCrimson = $('skinCrimson'), sAero = $('skinAero');
-  if(sCyber) sCyber.classList.toggle('on', appData.darkMode && (appData.skin === 'cyber' || !appData.skin));
-  if(sRoyal) sRoyal.classList.toggle('on', appData.darkMode && appData.skin === 'royal');
-  if(sHyper) sHyper.classList.toggle('on', appData.darkMode && appData.skin === 'hyper');
-  if(sEmerald) sEmerald.classList.toggle('on', appData.darkMode && appData.skin === 'emerald');
-  if(sCrimson) sCrimson.classList.toggle('on', appData.darkMode && appData.skin === 'crimson');
-  if(sAero) sAero.classList.toggle('on', !appData.darkMode);
+  const curSkin = appData.skin || 'cyber';
+  const sCyber = $('skinCyber'), sRoyal = $('skinRoyal'), sHyper = $('skinHyper'), sEmerald = $('skinEmerald'), sCrimson = $('skinCrimson');
+  if(sCyber) sCyber.classList.toggle('on', curSkin === 'cyber');
+  if(sRoyal) sRoyal.classList.toggle('on', curSkin === 'royal');
+  if(sHyper) sHyper.classList.toggle('on', curSkin === 'hyper');
+  if(sEmerald) sEmerald.classList.toggle('on', curSkin === 'emerald');
+  if(sCrimson) sCrimson.classList.toggle('on', curSkin === 'crimson');
+  if(typeof syncAllVisibleSegPills === 'function') setTimeout(syncAllVisibleSegPills, 20);
   const wg = $('weeklyGoalInput'); if(wg) wg.value = appData.weeklyGoal || 4;
   const dlBtn = $('settingsDeloadToggleBtn');
   if(dlBtn && typeof ensureDeloadConfig === 'function'){
@@ -16774,6 +17002,438 @@ function importSplitFromCode(){
   }
 }
 
+
+/* ============ 6. UNIVERSAL LIQUID GLASS SWITCHER (.seg) ENGINE ============ */
+function syncSegGlassPill(seg){
+  if(!seg) return;
+  const btns = Array.prototype.slice.call(seg.querySelectorAll(':scope > .seg-btn'));
+  if(!btns.length) return;
+  let pill = seg.querySelector(':scope > .seg-glass-pill');
+  if(!pill){
+    pill = document.createElement('div');
+    pill.className = 'seg-glass-pill';
+    seg.insertBefore(pill, seg.firstChild);
+  }
+  let activeIdx = 0;
+  btns.forEach(function(b, idx){ if(b.classList.contains('on')) activeIdx = idx; });
+  const activeBtn = btns[activeIdx] || btns[0];
+  const sRect = seg.getBoundingClientRect();
+  const bRect = activeBtn.getBoundingClientRect();
+  if(sRect.width > 10 && bRect.width > 4){
+    const offsetLeft = bRect.left - sRect.left;
+    pill.style.width = bRect.width + 'px';
+    pill.style.transform = 'translate3d(' + offsetLeft.toFixed(1) + 'px, 0, 0)';
+  } else {
+    const pctW = 100 / btns.length;
+    pill.style.width = 'calc(' + pctW.toFixed(2) + '% - 4px)';
+    pill.style.transform = 'translate3d(' + (activeIdx * 100) + '%, 0, 0)';
+  }
+}
+
+function syncAllVisibleSegPills(){
+  document.querySelectorAll('.seg').forEach(function(seg){
+    syncSegGlassPill(seg);
+  });
+}
+
+(function initUniversalSegLiquidGlass(){
+  let activeSeg = null;
+  let segRaf = null;
+  let lastTriggeredBtn = null;
+
+  function scrubSegAtX(seg, clientX){
+    const sRect = seg.getBoundingClientRect();
+    if(sRect.width <= 0) return;
+    const btns = Array.prototype.slice.call(seg.querySelectorAll(':scope > .seg-btn'));
+    if(!btns.length) return;
+    let pill = seg.querySelector(':scope > .seg-glass-pill');
+    if(!pill){
+      syncSegGlassPill(seg);
+      pill = seg.querySelector(':scope > .seg-glass-pill');
+    }
+    const relX = clamp(clientX - sRect.left, 0, sRect.width - 1);
+    let targetBtn = btns[0];
+    for(let i = 0; i < btns.length; i++){
+      const r = btns[i].getBoundingClientRect();
+      if(clientX >= r.left && clientX <= r.right){
+        targetBtn = btns[i];
+        break;
+      } else if(clientX > r.right){
+        targetBtn = btns[i];
+      }
+    }
+    const tRect = targetBtn.getBoundingClientRect();
+    const pillW = tRect.width || (sRect.width / btns.length);
+    const pillX = clamp(relX - pillW / 2, 2, Math.max(2, sRect.width - pillW - 2));
+    if(pill){
+      pill.style.width = pillW + 'px';
+      pill.style.transform = 'translate3d(' + pillX.toFixed(1) + 'px, 0, 0) scale(1.03)';
+    }
+    if(targetBtn && targetBtn !== lastTriggeredBtn && !targetBtn.classList.contains('on')){
+      lastTriggeredBtn = targetBtn;
+      targetBtn.click();
+    }
+  }
+
+  document.addEventListener('pointerdown', function(e){
+    const seg = e.target && e.target.closest ? e.target.closest('.seg') : null;
+    if(!seg) return;
+    activeSeg = seg;
+    lastTriggeredBtn = null;
+    seg.classList.add('scrubbing');
+    syncSegGlassPill(seg);
+  }, {passive: true});
+
+  document.addEventListener('pointermove', function(e){
+    if(!activeSeg) return;
+    const cx = e.clientX;
+    const segRef = activeSeg;
+    if(segRaf) cancelAnimationFrame(segRaf);
+    segRaf = requestAnimationFrame(function(){
+      scrubSegAtX(segRef, cx);
+    });
+  }, {passive: true});
+
+  function endSegScrub(){
+    if(!activeSeg) return;
+    const segRef = activeSeg;
+    activeSeg = null;
+    lastTriggeredBtn = null;
+    segRef.classList.remove('scrubbing');
+    requestAnimationFrame(function(){ syncSegGlassPill(segRef); });
+  }
+  document.addEventListener('pointerup', endSegScrub, {passive: true});
+  document.addEventListener('pointercancel', endSegScrub, {passive: true});
+
+  document.addEventListener('click', function(e){
+    const seg = e.target && e.target.closest ? e.target.closest('.seg') : null;
+    if(seg){
+      requestAnimationFrame(function(){ syncSegGlassPill(seg); });
+      setTimeout(function(){ syncSegGlassPill(seg); }, 60);
+    }
+  }, {passive: true});
+
+  window.addEventListener('resize', function(){
+    requestAnimationFrame(syncAllVisibleSegPills);
+  }, {passive: true});
+
+  setTimeout(syncAllVisibleSegPills, 120);
+})();
+
+/* ============ 7. INTERACTIVE ADD-TO-HOME-SCREEN (A2HS) VISUAL WIZARD ENGINE ============ */
+let _a2hsBrowser = 'ios_safari';
+let _a2hsStep = 0;
+
+function detectDefaultA2HSBrowser(){
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if(isIOS){
+    if(/CriOS|FxiOS|EdgiOS/i.test(ua)) return 'ios_chrome';
+    return 'ios_safari';
+  }
+  if(/SamsungBrowser/i.test(ua)) return 'samsung_other';
+  if(/Android/i.test(ua)) return 'android_chrome';
+  return 'ios_safari';
+}
+
+const A2HS_BROWSER_GUIDES = {
+  ios_safari: {
+    name: 'iPhone / iPad Safari',
+    steps: [
+      {
+        title: '1. Tap the Share Button in Safari\'s Bottom Bar',
+        descAr: 'في الشريط السفلي لمتصفح Safari (بجانب الرابط)، اضغط على أيقونة المشاركة (مربع يخرج منه سهم للأعلى ↑) أو افتح قائمة النقاط الثلاث (•••) إذا كان الشريط مصغراً.',
+        descEn: 'Look at the bottom Safari toolbar and tap the Share icon (square with an upward arrow ↑).',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="6" y="8" width="308" height="114" rx="16" fill="#0b1326" stroke="#1e293b" stroke-width="1.5"/>' +
+          '<text x="160" y="28" text-anchor="middle" fill="#64748b" font-size="9.5" font-weight="800">iOS SAFARI BOTTOM ADDRESS BAR</text>' +
+          '<rect x="20" y="42" width="280" height="44" rx="22" fill="#16223d" stroke="#334155" stroke-width="1.2"/>' +
+          '<text x="42" y="68" fill="#94a3b8" font-size="13" font-weight="900">&lt;</text>' +
+          '<text x="68" y="68" fill="#64748b" font-size="13" font-weight="900">&gt;</text>' +
+          '<text x="142" y="67" text-anchor="middle" fill="#e2e8f0" font-size="11" font-weight="800">🔒 khushaim.github.io</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:232px 64px">' +
+            '<circle cx="232" cy="64" r="18" fill="rgba(56,189,248,0.22)" stroke="#38bdf8" stroke-width="2"/>' +
+            '<rect x="225" y="59" width="14" height="13" rx="2.5" fill="none" stroke="#38bdf8" stroke-width="2"/>' +
+            '<path d="M232 51 V66 M228 55 L232 51 L236 55" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '</g>' +
+          '<rect x="266" y="56" width="13" height="13" rx="2" fill="none" stroke="#94a3b8" stroke-width="1.6"/>' +
+          '<text x="232" y="108" text-anchor="middle" fill="#38bdf8" font-size="10.5" font-weight="900">▲ Tap Share Icon Here</text>' +
+        '</svg>'
+      },
+      {
+        title: '2. Scroll Down & Tap "Add to Home Screen"',
+        descAr: 'اسحب قائمة المشاركة للأعلى قليلاً ثم اضغط على خيار "إضافة إلى الشاشة الرئيسية" (Add to Home Screen ⊞).',
+        descEn: 'Scroll down the Safari share sheet and tap "Add to Home Screen" (+ icon inside a square).',
+        svg: '<svg viewBox="0 0 320 135" width="100%" height="130">' +
+          '<rect x="14" y="6" width="292" height="122" rx="16" fill="#111a2e" stroke="#334155" stroke-width="1.5"/>' +
+          '<rect x="26" y="16" width="268" height="28" rx="8" fill="#192540"/>' +
+          '<text x="40" y="34" fill="#94a3b8" font-size="10.5" font-weight="700">Copy Link</text>' +
+          '<text x="276" y="34" text-anchor="end" fill="#94a3b8" font-size="11">📋</text>' +
+          '<rect x="26" y="48" width="268" height="28" rx="8" fill="#192540"/>' +
+          '<text x="40" y="66" fill="#94a3b8" font-size="10.5" font-weight="700">Add Bookmark</text>' +
+          '<text x="276" y="66" text-anchor="end" fill="#94a3b8" font-size="11">📖</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:160px 98px">' +
+            '<rect x="22" y="81" width="276" height="34" rx="10" fill="rgba(16,185,129,0.20)" stroke="#10b981" stroke-width="2"/>' +
+            '<text x="40" y="102" fill="#ecfdf5" font-size="11.5" font-weight="900">Add to Home Screen (إضافة للشاشة الرئيسية)</text>' +
+            '<rect x="266" y="90" width="16" height="16" rx="4" fill="none" stroke="#34d399" stroke-width="2"/>' +
+            '<path d="M274 94 V102 M270 98 H278" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>' +
+          '</g>' +
+        '</svg>'
+      },
+      {
+        title: '3. Tap "Add" at the Top-Right Corner',
+        descAr: 'اضغط على زر "إضافة" (Add) في أعلى اليمين؛ الآن افتح IRON PULSE من شاشة جوالك الرئيسية ليعمل بكامل الشاشة (Fullscreen) كأنه تطبيق أصلي!',
+        descEn: 'Tap "Add" in the top-right corner. Now launch IRON PULSE from your Home Screen for 100% full screen!',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="14" y="8" width="292" height="114" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>' +
+          '<text x="32" y="34" fill="#64748b" font-size="11" font-weight="700">Cancel</text>' +
+          '<text x="160" y="34" text-anchor="middle" fill="#f8fafc" font-size="11.5" font-weight="900">Add to Home Screen</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:272px 30px">' +
+            '<rect x="248" y="18" width="48" height="24" rx="8" fill="rgba(56,189,248,0.25)" stroke="#38bdf8" stroke-width="2"/>' +
+            '<text x="272" y="34" text-anchor="middle" fill="#38bdf8" font-size="11.5" font-weight="900">Add</text>' +
+          '</g>' +
+          '<rect x="32" y="54" width="256" height="52" rx="12" fill="#1e293b"/>' +
+          '<rect x="44" y="62" width="36" height="36" rx="9" fill="#071226" stroke="#38bdf8" stroke-width="1.5"/>' +
+          '<path d="M50 80 H56 L59 72 L63 88 L67 76 L70 80 H74" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round"/>' +
+          '<text x="92" y="78" fill="#f8fafc" font-size="12" font-weight="900">IRON PULSE</text>' +
+          '<text x="92" y="93" fill="#64748b" font-size="9.5">khushaim.github.io</text>' +
+        '</svg>'
+      }
+    ]
+  },
+  ios_chrome: {
+    name: 'iPhone / iPad Chrome',
+    steps: [
+      {
+        title: '1. Tap the Share Icon at the Top-Right URL Bar',
+        descAr: 'في متصفح Chrome على الآيفون، أيقونة المشاركة (مربع بسهم للأعلى ↑) موجودة في الشريط العلوي يمين الرابط مباشرةً.',
+        descEn: 'In Chrome on iPhone, tap the Share icon (square with upward arrow ↑) at the top-right inside the address bar.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="10" y="10" width="300" height="110" rx="16" fill="#0b1326" stroke="#1e293b" stroke-width="1.5"/>' +
+          '<text x="160" y="30" text-anchor="middle" fill="#64748b" font-size="9.5" font-weight="800">iOS CHROME TOP ADDRESS BAR</text>' +
+          '<rect x="24" y="42" width="272" height="42" rx="21" fill="#1e293b" stroke="#334155"/>' +
+          '<text x="44" y="67" fill="#e2e8f0" font-size="11" font-weight="800">🔒 khushaim.github.io</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:268px 63px">' +
+            '<circle cx="268" cy="63" r="17" fill="rgba(56,189,248,0.24)" stroke="#38bdf8" stroke-width="2"/>' +
+            '<rect x="261" y="58" width="14" height="12" rx="2" fill="none" stroke="#38bdf8" stroke-width="2"/>' +
+            '<path d="M268 50 V64 M264 54 L268 50 L272 54" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>' +
+          '</g>' +
+          '<text x="245" y="106" text-anchor="middle" fill="#38bdf8" font-size="10.5" font-weight="900">▲ Tap Top-Right Share Icon</text>' +
+        '</svg>'
+      },
+      {
+        title: '2. Tap "Add to Home Screen" in the Menu',
+        descAr: 'اسحب القائمة للأعلى واضغط على "إضافة إلى الشاشة الرئيسية" (Add to Home Screen ⊞).',
+        descEn: 'Scroll down the Chrome share sheet and tap "Add to Home Screen ⊞".',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="14" y="8" width="292" height="114" rx="16" fill="#111a2e" stroke="#334155" stroke-width="1.5"/>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:160px 65px">' +
+            '<rect x="24" y="46" width="272" height="38" rx="10" fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="2"/>' +
+            '<text x="42" y="69" fill="#ecfdf5" font-size="11.5" font-weight="900">Add to Home Screen (إضافة للشاشة الرئيسية)</text>' +
+            '<text x="278" y="69" text-anchor="end" fill="#34d399" font-size="14" font-weight="900">⊞</text>' +
+          '</g>' +
+        '</svg>'
+      },
+      {
+        title: '3. Tap "Add" to Finish Installation',
+        descAr: 'اضغط "Add" في الزاوية العلوية اليمنى، وافتح التطبيق من شاشتك الرئيسية بدون أي أشرطة متصفح!',
+        descEn: 'Tap "Add" at the top-right corner and launch IRON PULSE directly from your Home Screen.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="14" y="8" width="292" height="114" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>' +
+          '<text x="160" y="36" text-anchor="middle" fill="#f8fafc" font-size="11.5" font-weight="900">Add to Home Screen</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:270px 32px">' +
+            '<rect x="246" y="20" width="48" height="24" rx="8" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="2"/>' +
+            '<text x="270" y="36" text-anchor="middle" fill="#34d399" font-size="11.5" font-weight="900">Add</text>' +
+          '</g>' +
+          '<text x="160" y="82" text-anchor="middle" fill="#94a3b8" font-size="10.5">⚡ Opens in 100% Full-Screen App Mode</text>' +
+        '</svg>'
+      }
+    ]
+  },
+  android_chrome: {
+    name: 'Android Chrome',
+    steps: [
+      {
+        title: '1. Tap the 3-Dots Menu (⋮) at Top-Right',
+        descAr: 'اضغط على قائمة النقاط الثلاث الرأسية (⋮) في أعلى يمين متصفح Chrome.',
+        descEn: 'Tap the three vertical dots menu icon (⋮) in the top-right corner of Android Chrome.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="10" y="10" width="300" height="110" rx="16" fill="#0b1326" stroke="#1e293b" stroke-width="1.5"/>' +
+          '<rect x="22" y="38" width="232" height="38" rx="19" fill="#1e293b"/>' +
+          '<text x="40" y="61" fill="#e2e8f0" font-size="11" font-weight="800">🔒 khushaim.github.io</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:280px 57px">' +
+            '<circle cx="280" cy="57" r="18" fill="rgba(56,189,248,0.24)" stroke="#38bdf8" stroke-width="2"/>' +
+            '<circle cx="280" cy="50" r="2.2" fill="#38bdf8"/>' +
+            '<circle cx="280" cy="57" r="2.2" fill="#38bdf8"/>' +
+            '<circle cx="280" cy="64" r="2.2" fill="#38bdf8"/>' +
+          '</g>' +
+          '<text x="245" y="104" text-anchor="middle" fill="#38bdf8" font-size="10.5" font-weight="900">▲ Tap (⋮) Menu Icon</text>' +
+        '</svg>'
+      },
+      {
+        title: '2. Tap "Add to Home screen" or "Install app"',
+        descAr: 'اختر "تثبيت التطبيق" (Install app) أو "الإضافة إلى الشاشة الرئيسية" (Add to Home screen) من القائمة.',
+        descEn: 'Select "Install app" or "Add to Home screen" from the browser menu.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="34" y="8" width="252" height="114" rx="14" fill="#162038" stroke="#334155" stroke-width="1.5"/>' +
+          '<text x="54" y="34" fill="#94a3b8" font-size="10.5">★ Bookmarks</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:160px 64px">' +
+            '<rect x="44" y="46" width="232" height="36" rx="9" fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="2"/>' +
+            '<text x="58" y="68" fill="#ecfdf5" font-size="11.5" font-weight="900">📲 Add to Home screen / Install app</text>' +
+          '</g>' +
+          '<text x="54" y="104" fill="#94a3b8" font-size="10.5">⚙️ Settings</text>' +
+        '</svg>'
+      },
+      {
+        title: '3. Confirm "Install" on the Popup',
+        descAr: 'اضغط على "تثبيت" (Install) في النافذة المنبثقة ليتم تثبيت IRON PULSE كتطبيق كامل الشاشة على جوالك.',
+        descEn: 'Tap "Install" on the prompt to add IRON PULSE to your Android app drawer & Home Screen.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="30" y="14" width="260" height="102" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>' +
+          '<text x="50" y="42" fill="#f8fafc" font-size="12" font-weight="900">Install IRON PULSE App?</text>' +
+          '<text x="155" y="92" fill="#94a3b8" font-size="11" font-weight="700">Cancel</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:236px 88px">' +
+            '<rect x="202" y="74" width="68" height="28" rx="14" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="2"/>' +
+            '<text x="236" y="92" text-anchor="middle" fill="#34d399" font-size="11.5" font-weight="900">Install</text>' +
+          '</g>' +
+        '</svg>'
+      }
+    ]
+  },
+  samsung_other: {
+    name: 'Samsung Internet / Desktop',
+    steps: [
+      {
+        title: '1. Open Browser Menu (≡) or Address Bar Install Icon',
+        descAr: 'في متصفح Samsung Internet اضغط على القائمة (≡) أسفل اليمين، أو في الكمبيوتر اضغط أيقونة التثبيت (⊕) يمين شريط الرابط.',
+        descEn: 'In Samsung Internet tap Menu (≡) at bottom-right; on Desktop Chrome/Edge click the Install icon (⊕) inside the URL bar.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="10" y="10" width="300" height="110" rx="16" fill="#0b1326" stroke="#1e293b" stroke-width="1.5"/>' +
+          '<rect x="24" y="52" width="272" height="44" rx="14" fill="#16223d"/>' +
+          '<text x="54" y="78" fill="#94a3b8" font-size="11" font-weight="800">🏠</text>' +
+          '<text x="145" y="78" text-anchor="middle" fill="#e2e8f0" font-size="10.5" font-weight="800">IRON PULSE</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:266px 74px">' +
+            '<circle cx="266" cy="74" r="16" fill="rgba(56,189,248,0.24)" stroke="#38bdf8" stroke-width="2"/>' +
+            '<text x="266" y="79" text-anchor="middle" fill="#38bdf8" font-size="15" font-weight="900">≡</text>' +
+          '</g>' +
+        '</svg>'
+      },
+      {
+        title: '2. Tap "+ Add page to" → "Home screen"',
+        descAr: 'اضغط على "+ إضافة الصفحة إلى" (+ Add page to) ثم اختر "الشاشة الرئيسية" (Home screen).',
+        descEn: 'Tap "+ Add page to" and choose "Home screen".',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="20" y="10" width="280" height="110" rx="16" fill="#111a2e" stroke="#334155" stroke-width="1.5"/>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:160px 65px">' +
+            '<rect x="36" y="45" width="248" height="40" rx="10" fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="2"/>' +
+            '<text x="160" y="69" text-anchor="middle" fill="#ecfdf5" font-size="11.5" font-weight="900">＋ Add page to → Home screen</text>' +
+          '</g>' +
+        '</svg>'
+      },
+      {
+        title: '3. Confirm "Add" for Full-Screen App Mode',
+        descAr: 'اضغط على "إضافة" (Add) لتثبيت التطبيق على شاشتك الرئيسية وتشغيله بكامل الشاشة دائماً.',
+        descEn: 'Confirm "Add" to launch IRON PULSE as a standalone app from your Home Screen.',
+        svg: '<svg viewBox="0 0 320 130" width="100%" height="125">' +
+          '<rect x="30" y="16" width="260" height="98" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>' +
+          '<text x="160" y="52" text-anchor="middle" fill="#f8fafc" font-size="12" font-weight="900">Add IRON PULSE to Home screen?</text>' +
+          '<g class="a2hs-pulse-ring" style="transform-origin:160px 84px">' +
+            '<rect x="110" y="68" width="100" height="30" rx="10" fill="rgba(56,189,248,0.25)" stroke="#38bdf8" stroke-width="2"/>' +
+            '<text x="160" y="87" text-anchor="middle" fill="#38bdf8" font-size="11.5" font-weight="900">Add ✓</text>' +
+          '</g>' +
+        '</svg>'
+      }
+    ]
+  }
+};
+
+function renderA2HSGuideStep(){
+  const guide = A2HS_BROWSER_GUIDES[_a2hsBrowser] || A2HS_BROWSER_GUIDES.ios_safari;
+  const total = guide.steps.length;
+  _a2hsStep = clamp(_a2hsStep, 0, total - 1);
+  const st = guide.steps[_a2hsStep];
+
+  const tabMap = {
+    ios_safari: 'a2hsTabSafari',
+    ios_chrome: 'a2hsTabIosChrome',
+    android_chrome: 'a2hsTabAndroid',
+    samsung_other: 'a2hsTabSamsung'
+  };
+  Object.keys(tabMap).forEach(function(k){
+    const el = $(tabMap[k]);
+    if(el) el.classList.toggle('on', k === _a2hsBrowser);
+  });
+  if($('a2hsBrowserSeg')) syncSegGlassPill($('a2hsBrowserSeg'));
+
+  if($('a2hsBrowserDetectedSub')) $('a2hsBrowserDetectedSub').textContent = guide.name + ' · Step-by-Step Visual Guide';
+  if($('a2hsStepCountBadge')) $('a2hsStepCountBadge').textContent = 'Step ' + (_a2hsStep + 1) + ' of ' + total;
+
+  const dots = $('a2hsStepDots');
+  if(dots){
+    dots.innerHTML = guide.steps.map(function(_, idx){
+      const act = idx === _a2hsStep;
+      return '<span style="width:' + (act ? '18px' : '7px') + ';height:7px;border-radius:99px;background:' + (act ? 'var(--green-t)' : 'var(--line-2)') + ';transition:width .25s ease, background .25s ease"></span>';
+    }).join('');
+  }
+
+  const box = $('a2hsStepContentBox');
+  if(box){
+    box.classList.remove('subpage-anim');
+    void box.offsetWidth;
+    box.classList.add('subpage-anim');
+    box.innerHTML =
+      '<div class="a2hs-visual-box">' + st.svg + '</div>' +
+      '<div class="card tight glass" style="padding:10px 12px;border-color:var(--green-b)">' +
+        '<div class="h4" style="color:var(--green-t);margin-bottom:4px">' + st.title + '</div>' +
+        '<div class="tiny" style="color:var(--txt);line-height:1.5;margin-bottom:4px;direction:rtl;text-align:right">' + st.descAr + '</div>' +
+        '<div class="micro subtle" style="line-height:1.4">' + st.descEn + '</div>' +
+      '</div>';
+  }
+
+  const prevBtn = $('a2hsPrevBtn');
+  if(prevBtn) prevBtn.style.visibility = _a2hsStep === 0 ? 'hidden' : 'visible';
+  const nextBtn = $('a2hsNextBtn');
+  if(nextBtn){
+    nextBtn.textContent = (_a2hsStep === total - 1) ? '✓ Got It, Done!' : 'Next Step →';
+  }
+}
+
+function selectA2HSBrowser(bKey){
+  playSound('tap');
+  _a2hsBrowser = bKey;
+  _a2hsStep = 0;
+  renderA2HSGuideStep();
+}
+
+function stepA2HSGuide(delta){
+  playSound('tap');
+  const guide = A2HS_BROWSER_GUIDES[_a2hsBrowser] || A2HS_BROWSER_GUIDES.ios_safari;
+  if(_a2hsStep + delta >= guide.steps.length){
+    skipA2HSGuide();
+    return;
+  }
+  _a2hsStep = clamp(_a2hsStep + delta, 0, guide.steps.length - 1);
+  renderA2HSGuideStep();
+}
+
+function openA2HSGuideModal(manualOpen){
+  if(!manualOpen) playSound('tap');
+  _a2hsBrowser = detectDefaultA2HSBrowser();
+  _a2hsStep = 0;
+  openModal('modal-a2hs-guide');
+  renderA2HSGuideStep();
+  setTimeout(function(){ if($('a2hsBrowserSeg')) syncSegGlassPill($('a2hsBrowserSeg')); }, 50);
+}
+
+function skipA2HSGuide(){
+  playSound('tap');
+  safeSetItem('ironPulseA2HSGuideDoneV1', '1');
+  closeModal('modal-a2hs-guide');
+  setTimeout(function(){
+    if(typeof checkAutoPopupsOnHome === 'function') checkAutoPopupsOnHome();
+  }, 260);
+}
+
 function switchToolsSubPage(tab){
   playSound('tap');
   const isPlates = (tab === 'plates');
@@ -17539,8 +18199,14 @@ function checkAutoPopupsOnHome(){
   // Never open a new popup if ANY modal or tutorial overlay is currently open!
   if(isAnyModalOrOverlayOpen()) return;
 
-  // PRIORITY 1: Fullscreen Prompt (Must be resolved first before any other startup popup!)
-  if(!_startupFsResolved && !isCurrentlyFullScreen() && !isStandaloneMode()){
+  // PRIORITY 0: First-Time Device "Add to Home Screen" Visual Step-by-Step Guide (Once per device across ALL devices!)
+  if(!isStandaloneMode() && !safeGetItem('ironPulseA2HSGuideDoneV1')){
+    openA2HSGuideModal(false);
+    return;
+  }
+
+  // PRIORITY 1: Fullscreen Prompt (For browsers supporting native Fullscreen API)
+  if(!_startupFsResolved && isNativeFullScreenSupported() && !isCurrentlyFullScreen() && !isStandaloneMode()){
     openModal('modal-fullscreen');
     return;
   }
