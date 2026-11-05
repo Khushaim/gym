@@ -431,31 +431,7 @@ body.modal-open .hm-region.hm-fatigued-pulse{
   50%{box-shadow:0 0 14px 2px rgba(244,63,94,.38)}
 }
 
-/* Biomechanical Symmetry Radar */
-.radar-stage{
-  width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:6px 0 2px;position:relative;
-}
-.radar-svg{
-  width:100%;max-width:250px;height:auto;overflow:visible;
-  filter:drop-shadow(0 6px 18px rgba(14,165,233,.16));
-}
-.radar-poly-actual{
-  transform-origin:130px 115px;
-  animation:radarMorphIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@keyframes radarMorphIn{
-  0%{opacity:0;transform:scale(0.35)}
-  100%{opacity:1;transform:scale(1)}
-}
-.radar-ratio-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin-top:6px;
-}
-.radar-ratio-card{
-  padding:7px 6px;border-radius:10px;background:var(--surface-2);
-  border:1px solid var(--line);text-align:center;
-  display:flex;flex-direction:column;gap:2px;
-}
+
 .setup-chip-grid{
   display:flex;flex-wrap:wrap;gap:5px;
 }
@@ -2667,12 +2643,11 @@ body[data-idle="1"] .marble-veins{
           </div>
         </div>
 
-        <!-- 4-TAB SUB-PAGE SWITCHER -->
+        <!-- 3-TAB SUB-PAGE SWITCHER -->
         <div class="seg" style="width:100%">
-          <div class="seg-btn on" id="anSubTabLifts" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('lifts')">📈 Lifts</div>
-          <div class="seg-btn" id="anSubTabRadar" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('radar')">🕸️ Radar &amp; Alerts</div>
-          <div class="seg-btn" id="anSubTabVolume" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('volume')">🎯 Targets</div>
-          <div class="seg-btn" id="anSubTabWeight" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('weight')">⚖️ Weight</div>
+          <div class="seg-btn on" id="anSubTabLifts" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('lifts')">📈 Lifts &amp; 1RM</div>
+          <div class="seg-btn" id="anSubTabVolume" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('volume')">🎯 Muscle Targets</div>
+          <div class="seg-btn" id="anSubTabWeight" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('weight')">⚖️ Weight &amp; Goal</div>
         </div>
 
         <!-- SUB-PAGE 1: LIFTS, 1RM CHART, AI AUDIT & 28-DAY CONSISTENCY -->
@@ -2716,25 +2691,8 @@ body[data-idle="1"] .marble-veins{
             </div>
             <div id="analyticsConsistencyGrid" class="consistency-grid"></div>
           </div>
-        </div>
 
-        <!-- SUB-PAGE: BIOMECHANICAL SYMMETRY RADAR & PLATEAU/REGRESSION WATCHLIST -->
-        <div id="anPageRadar" class="stack gap-2 hidden">
-          <div class="card tight hud" style="border-color:var(--blue-b);background:linear-gradient(155deg,rgba(14,165,233,.10),rgba(16,185,129,.05)),var(--surface)">
-            <div class="row-between" style="margin-bottom:4px">
-              <div>
-                <span class="h4" style="color:var(--blue-t)">🕸️ Biomechanical Symmetry Radar</span>
-                <div class="micro subtle">Joint balance across Push, Pull, Quads, Post. Chain, Delts &amp; Core</div>
-              </div>
-              <span class="chip green" id="radarOverallScoreBadge">100% Balanced</span>
-            </div>
-            <div class="radar-stage">
-              <svg id="symmetryRadarSvg" class="radar-svg" viewBox="0 0 260 230"></svg>
-            </div>
-            <div class="radar-ratio-grid" id="radarJointRatiosGrid"></div>
-            <div class="card glass" id="radarDiagnosticBox" style="margin-top:7px;padding:8px 10px;font-size:11px;line-height:1.45"></div>
-          </div>
-
+          <!-- PLATEAU & REGRESSION WATCHLIST (SAME-MACHINE SELF COMPARISON) -->
           <div class="card tight hud" style="border-color:var(--amber-b)">
             <div class="row-between" style="margin-bottom:6px">
               <div>
@@ -2999,10 +2957,7 @@ body[data-idle="1"] .marble-veins{
             <h3 class="h2" style="color:var(--green-t)">🧬 Muscle Heatmap</h3>
             <div class="micro subtle">72h Large · 48h Small Direct · 24h Compound Synergists</div>
           </div>
-          <div class="row gap-1">
-            <button class="btn xs blue" onclick="showScreen('screen-analytics');switchAnalyticsSubPage('radar')" title="Open Biomechanical Symmetry Radar">🕸️ Radar</button>
-            <span class="db-badge" id="heatmapOverallBadge" style="font-size:10px;padding:4px 8px">100% Fresh</span>
-          </div>
+          <span class="db-badge" id="heatmapOverallBadge" style="font-size:10px;padding:4px 8px">100% Fresh</span>
         </div>
 
         <!-- HEATMAP LENS SWITCHER & TIME-TRAVEL RECOVERY SCRUBBER -->
@@ -11985,6 +11940,7 @@ function deleteLatestSession(){
   });
 }
 function renderChart(){
+  if(typeof renderTrendWatchlist === 'function') renderTrendWatchlist();
   const sel = $('analyticsExerciseSelect');
   const val = sel.value;
   const svg = $('progressSvg'); svg.innerHTML = '';
@@ -16064,10 +16020,9 @@ function switchAnalyticsSubPage(tab){
   playSound('tap');
   activeAnalyticsSubPage = tab || 'lifts';
   if($('anSubTabLifts')) $('anSubTabLifts').classList.toggle('on', activeAnalyticsSubPage === 'lifts');
-  if($('anSubTabRadar')) $('anSubTabRadar').classList.toggle('on', activeAnalyticsSubPage === 'radar');
   if($('anSubTabVolume')) $('anSubTabVolume').classList.toggle('on', activeAnalyticsSubPage === 'volume');
   if($('anSubTabWeight')) $('anSubTabWeight').classList.toggle('on', activeAnalyticsSubPage === 'weight');
-  const pages = { lifts: $('anPageLifts'), radar: $('anPageRadar'), volume: $('anPageVolume'), weight: $('anPageWeight') };
+  const pages = { lifts: $('anPageLifts'), volume: $('anPageVolume'), weight: $('anPageWeight') };
   Object.keys(pages).forEach(function(k){
     const el = pages[k];
     if(!el) return;
@@ -16079,14 +16034,13 @@ function switchAnalyticsSubPage(tab){
       el.classList.add('subpage-anim');
     }
   });
-  if(activeAnalyticsSubPage === 'radar'){
-    renderSymmetryRadarAndTrends();
-  } else if(activeAnalyticsSubPage === 'volume'){
+  if(activeAnalyticsSubPage === 'volume'){
     renderAnalyticsConsistencyAndVolume();
   } else if(activeAnalyticsSubPage === 'weight'){
     renderWeightProgressChart();
   } else {
     renderChart();
+    if(typeof renderTrendWatchlist === 'function') renderTrendWatchlist();
   }
 }
 
@@ -16500,171 +16454,49 @@ function applyTrendCoachAction(action, altName){
   }
 }
 
-/* ============ 3. BIOMECHANICAL SYMMETRY RADAR & WATCHLIST ENGINE ============ */
-function renderSymmetryRadarAndTrends(){
-  const vs = getWeeklyMuscleVolumeAndSplitFrequency();
-  const vol = vs.volSets || {};
-  const freq = vs.splitFreq || {};
-
-  // Combine 7-day logged sets + programmed split frequency so the radar works immediately even on Day 1!
-  function getAxisScore(keys, idealWeeklySets){
-    let setsSum = 0;
-    let freqSum = 0;
-    keys.forEach(function(k){
-      setsSum += (vol[k] || 0);
-      freqSum += (freq[k] || 0);
-    });
-    const effectiveSets = setsSum > 0 ? setsSum : (freqSum * 3.5);
-    return clamp(Math.round((effectiveSets / idealWeeklySets) * 100), 18, 100);
-  }
-
-  const axes = [
-    { key: 'Push', label: 'Push', sub: 'Chest · F.Delts · Tri', score: getAxisScore(['Chest','Front Delts','Triceps'], 22) },
-    { key: 'Pull', label: 'Pull', sub: 'Lats · Upper Back · Bi', score: getAxisScore(['Lats','Upper Back','Rear Delts','Biceps'], 24) },
-    { key: 'Quads', label: 'Quads', sub: 'Anterior Knee', score: getAxisScore(['Quads','Adductors'], 12) },
-    { key: 'PostChain', label: 'Post. Chain', sub: 'Hams · Glutes', score: getAxisScore(['Hamstrings','Glutes','Abductors'], 14) },
-    { key: 'Delts', label: 'Lateral', sub: 'Side/Rear Delts · Traps', score: getAxisScore(['Side Delts','Rear Delts','Upper Traps'], 14) },
-    { key: 'CoreCalves', label: 'Core & Shins', sub: 'Abs · Calves · Tibialis', score: getAxisScore(['Upper Abs','Lower Abs','Obliques','Lower Back','Calves','Tibialis'], 14) }
-  ];
-
-  const svg = $('symmetryRadarSvg');
-  if(svg){
-    const cx = 130, cy = 115, maxR = 76;
-    const angles = [-90, -30, 30, 90, 150, 210].map(function(deg){ return deg * Math.PI / 180; });
-
-    function pt(idx, rRatio){
-      const r = maxR * rRatio;
-      const x = cx + r * Math.cos(angles[idx]);
-      const y = cy + r * Math.sin(angles[idx]);
-      return x.toFixed(1) + ',' + y.toFixed(1);
-    }
-
-    let ringsHtml = '';
-    [0.25, 0.5, 0.75, 1.0].forEach(function(lvl){
-      const pts = [0,1,2,3,4,5].map(function(i){ return pt(i, lvl); }).join(' ');
-      ringsHtml += '<polygon points="' + pts + '" fill="none" stroke="rgba(148,163,184,' + (lvl === 1 ? '0.28' : '0.14') + ')" stroke-width="' + (lvl === 1 ? '1.2' : '0.8') + '" stroke-dasharray="' + (lvl === 0.75 ? '3,2' : 'none') + '"/>';
-    });
-
-    let spokesHtml = '';
-    axes.forEach(function(ax, i){
-      const outer = pt(i, 1.0).split(',');
-      spokesHtml += '<line x1="' + cx + '" y1="' + cy + '" x2="' + outer[0] + '" y2="' + outer[1] + '" stroke="rgba(148,163,184,0.16)" stroke-width="1"/>';
-      const lblR = maxR + 22;
-      const lx = cx + lblR * Math.cos(angles[i]);
-      const ly = cy + lblR * Math.sin(angles[i]);
-      spokesHtml += '<text x="' + lx.toFixed(1) + '" y="' + (ly - 2).toFixed(1) + '" text-anchor="middle" fill="var(--txt)" font-size="9.5" font-weight="900">' + ax.label + '</text>';
-      spokesHtml += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 9).toFixed(1) + '" text-anchor="middle" fill="var(--blue-t)" font-family="var(--font-mono)" font-size="8.5" font-weight="800">' + ax.score + '%</text>';
-    });
-
-    const actualPts = axes.map(function(ax, i){ return pt(i, clamp(ax.score / 100, 0.15, 1.0)); }).join(' ');
-    let dotsHtml = '';
-    axes.forEach(function(ax, i){
-      const p = pt(i, clamp(ax.score / 100, 0.15, 1.0)).split(',');
-      const cCol = ax.score >= 70 ? '#10b981' : (ax.score >= 45 ? '#38bdf8' : '#f59e0b');
-      dotsHtml += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="4" fill="' + cCol + '" stroke="#06101e" stroke-width="1.5"/>';
-    });
-
-    svg.innerHTML =
-      '<defs>' +
-        '<linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
-          '<stop offset="0%" stop-color="#38bdf8" stop-opacity="0.42"/>' +
-          '<stop offset="100%" stop-color="#10b981" stop-opacity="0.32"/>' +
-        '</linearGradient>' +
-      '</defs>' +
-      ringsHtml +
-      spokesHtml +
-      '<polygon class="radar-poly-actual" points="' + actualPts + '" fill="url(#radarGrad)" stroke="#38bdf8" stroke-width="2.2" stroke-linejoin="round"/>' +
-      dotsHtml;
-  }
-
-  // Joint Health Ratios
-  const pushPullRatio = axes[1].score > 0 ? (axes[0].score / axes[1].score) : 1;
-  const quadHamRatio = axes[3].score > 0 ? (axes[2].score / axes[3].score) : 1;
-  const upperAvg = Math.round((axes[0].score + axes[1].score + axes[4].score) / 3);
-  const lowerAvg = Math.round((axes[2].score + axes[3].score + axes[5].score) / 3);
-  const upperLowerRatio = lowerAvg > 0 ? (upperAvg / lowerAvg) : 1;
-
-  const imbalances = [];
-  if(pushPullRatio > 1.28) imbalances.push('⚠️ <b>Shoulder Health Alert:</b> Push volume exceeds Pull by <b>' + Math.round((pushPullRatio - 1)*100) + '%</b>. Add 2–3 sets of Rear Delts or Chest-Supported Rows to protect rotator cuff mechanics.');
-  else if(pushPullRatio < 0.72) imbalances.push('💡 <b>Pull-Dominant Split:</b> Your back/pull chain is ahead of Anterior Push. You have plenty of shoulder joint stability headroom to push Chest/Delt intensity.');
-
-  if(quadHamRatio > 1.32) imbalances.push('⚠️ <b>Knee Stability Alert:</b> Quads dominate Posterior Chain by <b>' + Math.round((quadHamRatio - 1)*100) + '%</b>. Add seated/lying Leg Curls or RDLs to balance ACL &amp; patellar shear forces.');
-  else if(quadHamRatio < 0.72) imbalances.push('💡 <b>Posterior-Dominant Legs:</b> Hams/Glutes outpace Quads. Consider adding 2 sets of Knee Extensions or Hack Squats.');
-
-  const symScore = clamp(100 - Math.round(Math.abs(1 - pushPullRatio) * 35 + Math.abs(1 - quadHamRatio) * 35 + Math.abs(1 - upperLowerRatio) * 20), 52, 100);
-  const scoreBadge = $('radarOverallScoreBadge');
-  if(scoreBadge){
-    scoreBadge.textContent = symScore + '% Symmetry';
-    scoreBadge.className = 'chip ' + (symScore >= 82 ? 'green' : (symScore >= 68 ? 'amber' : 'red'));
-  }
-
-  const ratioGrid = $('radarJointRatiosGrid');
-  if(ratioGrid){
-    function ratioCard(lbl, val, okMin, okMax){
-      const ok = val >= okMin && val <= okMax;
-      const col = ok ? 'var(--green-t)' : 'var(--amber-t)';
-      return '<div class="radar-ratio-card">' +
-        '<span class="micro subtle" style="font-size:8px">' + lbl + '</span>' +
-        '<span class="mono" style="font-size:13px;font-weight:900;color:' + col + '">' + val.toFixed(2) + ':1</span>' +
-        '<span class="micro" style="font-size:8px;color:' + col + '">' + (ok ? '✓ Optimal' : '⚠️ Check') + '</span>' +
-      '</div>';
-    }
-    ratioGrid.innerHTML =
-      ratioCard('PUSH : PULL', pushPullRatio, 0.78, 1.25) +
-      ratioCard('QUAD : HAM', quadHamRatio, 0.78, 1.28) +
-      ratioCard('UPPER : LOWER', upperLowerRatio, 0.75, 1.35);
-  }
-
-  const diagBox = $('radarDiagnosticBox');
-  if(diagBox){
-    diagBox.innerHTML = imbalances.length
-      ? imbalances.join('<br><br>')
-      : '✅ <b>Biomechanical Equilibrium:</b> Your Push/Pull, Quad/Hamstring, and Upper/Lower ratios are within optimal orthopedic and hypertrophy corridors.';
-  }
-
-  // Render Plateau & Regression Watchlist across all exercises in active split
+/* ============ 3. PLATEAU & REGRESSION WATCHLIST ENGINE ============ */
+function renderTrendWatchlist(){
   const wlContainer = $('trendWatchlistContainer');
   const wlChip = $('trendWatchlistSummaryChip');
-  if(wlContainer){
-    const prog = getProgram();
-    const items = [];
-    let dropCount = 0, platCount = 0, progCount = 0;
-    prog.forEach(function(d, dIdx){
-      (d.exercises || []).forEach(function(ex, eIdx){
-        const tr = analyzeExerciseTrend(ex);
-        if(tr.status === 'drop') dropCount++;
-        else if(tr.status === 'plateau') platCount++;
-        else if(tr.status === 'progress') progCount++;
-        items.push({ day: d.day, dIdx: dIdx, eIdx: eIdx, ex: ex, tr: tr });
-      });
+  if(!wlContainer) return;
+  const prog = getProgram();
+  const items = [];
+  let dropCount = 0, platCount = 0, progCount = 0;
+  prog.forEach(function(d, dIdx){
+    (d.exercises || []).forEach(function(ex, eIdx){
+      const tr = analyzeExerciseTrend(ex);
+      if(tr.status === 'drop') dropCount++;
+      else if(tr.status === 'plateau') platCount++;
+      else if(tr.status === 'progress') progCount++;
+      items.push({ day: d.day, dIdx: dIdx, eIdx: eIdx, ex: ex, tr: tr });
     });
+  });
 
-    const rankOrder = { drop: 1, plateau: 2, progress: 3, new: 4 };
-    items.sort(function(a, b){ return (rankOrder[a.tr.status] || 4) - (rankOrder[b.tr.status] || 4); });
+  const rankOrder = { drop: 1, plateau: 2, progress: 3, new: 4 };
+  items.sort(function(a, b){ return (rankOrder[a.tr.status] || 4) - (rankOrder[b.tr.status] || 4); });
 
-    if(wlChip){
-      if(dropCount > 0){ wlChip.className = 'chip red'; wlChip.textContent = dropCount + ' Drop · ' + platCount + ' Plateau'; }
-      else if(platCount > 0){ wlChip.className = 'chip amber'; wlChip.textContent = platCount + ' Plateau · ' + progCount + ' Growing'; }
-      else { wlChip.className = 'chip green'; wlChip.textContent = progCount + ' Progressing'; }
-    }
+  if(wlChip){
+    if(dropCount > 0){ wlChip.className = 'chip red'; wlChip.textContent = dropCount + ' Drop · ' + platCount + ' Plateau'; }
+    else if(platCount > 0){ wlChip.className = 'chip amber'; wlChip.textContent = platCount + ' Plateau · ' + progCount + ' Growing'; }
+    else { wlChip.className = 'chip green'; wlChip.textContent = progCount + ' Progressing'; }
+  }
 
-    if(!items.length){
-      wlContainer.innerHTML = '<div class="tiny muted center" style="padding:10px">No exercises in current split yet.</div>';
-    } else {
-      wlContainer.innerHTML = items.map(function(item){
-        const seatStr = getExerciseSeatNote(item.ex.name, item.ex);
-        return '<div class="card tight glass row-between" style="padding:7px 9px;cursor:pointer" onclick="openTrendCoachFromWatchlist(' + item.dIdx + ',' + item.eIdx + ')">' +
-          '<div style="min-width:0;flex:1;padding-right:6px">' +
-            '<div style="font-size:11.5px;font-weight:900;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">D' + item.day + ' · ' + escapeAttr(item.ex.name) + '</div>' +
-            '<div class="micro subtle" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
-              escapeAttr(item.tr.metricLine || item.tr.summary) +
-              (seatStr ? (' · 🪑 ' + escapeAttr(seatStr)) : '') +
-            '</div>' +
+  if(!items.length){
+    wlContainer.innerHTML = '<div class="tiny muted center" style="padding:10px">No exercises in current split yet.</div>';
+  } else {
+    wlContainer.innerHTML = items.map(function(item){
+      const seatStr = getExerciseSeatNote(item.ex.name, item.ex);
+      return '<div class="card tight glass row-between" style="padding:7px 9px;cursor:pointer" onclick="openTrendCoachFromWatchlist(' + item.dIdx + ',' + item.eIdx + ')">' +
+        '<div style="min-width:0;flex:1;padding-right:6px">' +
+          '<div style="font-size:11.5px;font-weight:900;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">D' + item.day + ' · ' + escapeAttr(item.ex.name) + '</div>' +
+          '<div class="micro subtle" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
+            escapeAttr(item.tr.metricLine || item.tr.summary) +
+            (seatStr ? (' · 🪑 ' + escapeAttr(seatStr)) : '') +
           '</div>' +
-          '<span class="trend-badge ' + item.tr.status + '">' + escapeAttr(item.tr.badge) + '</span>' +
-        '</div>';
-      }).join('');
-    }
+        '</div>' +
+        '<span class="trend-badge ' + item.tr.status + '">' + escapeAttr(item.tr.badge) + '</span>' +
+      '</div>';
+    }).join('');
   }
 }
 
