@@ -337,20 +337,136 @@ body.modal-open .hm-region.hm-fatigued-pulse{
   animation-play-state:paused;
 }
 
-/* Liquid Timer Ring & Countdown Pulse */
-.timer-ring-wrap{
-  display:flex;align-items:center;justify-content:center;gap:10px;
+/* System-Wide Enhanced GPU Animations & Fluid Transitions */
+.screen.active.dir-right{
+  animation: screenSlideInRight 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.timer-svg-ring{
-  width:38px;height:38px;transform:rotate(-90deg);flex-shrink:0;
+.screen.active.dir-left{
+  animation: screenSlideInLeft 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.timer-svg-ring circle{
-  fill:none;stroke-width:3.8;stroke-linecap:round;
+.screen.active.dir-zoom{
+  animation: screenZoomIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.timer-svg-ring .ring-bg{stroke:rgba(255,255,255,.10)}
-.timer-svg-ring .ring-fg{
-  stroke:var(--green-t);
-  transition:stroke-dashoffset .35s cubic-bezier(.16,1,.3,1), stroke .3s ease;
+@keyframes screenSlideInRight{
+  0%{opacity:0;transform:translate3d(26px, 0, 0) scale(0.985)}
+  100%{opacity:1;transform:translate3d(0, 0, 0) scale(1)}
+}
+@keyframes screenSlideInLeft{
+  0%{opacity:0;transform:translate3d(-26px, 0, 0) scale(0.985)}
+  100%{opacity:1;transform:translate3d(0, 0, 0) scale(1)}
+}
+@keyframes screenZoomIn{
+  0%{opacity:0;transform:translate3d(0, 12px, 0) scale(0.975)}
+  100%{opacity:1;transform:translate3d(0, 0, 0) scale(1)}
+}
+.screen.active .screen-body > *:nth-child(6) { animation-delay: 0.155s; }
+.screen.active .screen-body > *:nth-child(7) { animation-delay: 0.18s; }
+.screen.active .screen-body > *:nth-child(8) { animation-delay: 0.205s; }
+
+.subpage-anim{
+  animation: subpageSpringIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes subpageSpringIn{
+  0%{opacity:0;transform:translate3d(0, 12px, 0) scale(0.985)}
+  100%{opacity:1;transform:translate3d(0, 0, 0) scale(1)}
+}
+
+.modal.open .modal-card{
+  animation: modalSpringPop 0.34s cubic-bezier(0.22, 1.12, 0.36, 1) both;
+}
+@keyframes modalSpringPop{
+  0%{opacity:0;transform:translate3d(0, 18px, 0) scale(0.92)}
+  100%{opacity:1;transform:translate3d(0, 0, 0) scale(1)}
+}
+
+.btn, .chip, .seg-btn, .home-big-btn{
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease, color 0.18s ease;
+}
+.btn:active, .chip:active, .seg-btn:active{
+  transform: translate3d(0, 0, 0) scale(0.94) !important;
+  transition-duration: 0.05s !important;
+}
+
+/* Seat Setup Pill & Trend Badges */
+.seat-setup-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;height:25px;border-radius:8px;
+  font-size:9.5px;font-weight:800;white-space:nowrap;
+  background:rgba(56,189,248,.10);border:1px solid rgba(56,189,248,.32);
+  color:var(--blue-t);cursor:pointer;flex-shrink:0;
+  max-width:155px;overflow:hidden;text-overflow:ellipsis;
+}
+.seat-setup-pill.has-setup{
+  background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(56,189,248,.14));
+  border-color:var(--green-b);color:var(--green-t);
+  box-shadow:0 2px 10px rgba(16,185,129,.16);
+}
+.trend-badge{
+  display:inline-flex;align-items:center;gap:3.5px;
+  padding:2px 7px;height:22px;border-radius:99px;
+  font-size:9px;font-weight:900;letter-spacing:.2px;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s ease;
+}
+.trend-badge.progress{
+  background:rgba(16,185,129,.15);border:1px solid var(--green-b);color:var(--green-t);
+}
+.trend-badge.plateau{
+  background:rgba(245,158,11,.16);border:1px solid var(--amber-b);color:var(--amber-t);
+  animation:trendPulseAmber 2.4s ease-in-out infinite;
+}
+.trend-badge.drop{
+  background:rgba(244,63,94,.18);border:1px solid var(--red-b);color:var(--red-t);
+  animation:trendPulseRed 2s ease-in-out infinite;
+}
+.trend-badge.new{
+  background:rgba(148,163,184,.12);border:1px solid var(--line-2);color:var(--txt-2);
+}
+@keyframes trendPulseAmber{
+  0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}
+  50%{box-shadow:0 0 12px 1px rgba(245,158,11,.32)}
+}
+@keyframes trendPulseRed{
+  0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,0)}
+  50%{box-shadow:0 0 14px 2px rgba(244,63,94,.38)}
+}
+
+/* Biomechanical Symmetry Radar */
+.radar-stage{
+  width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:6px 0 2px;position:relative;
+}
+.radar-svg{
+  width:100%;max-width:250px;height:auto;overflow:visible;
+  filter:drop-shadow(0 6px 18px rgba(14,165,233,.16));
+}
+.radar-poly-actual{
+  transform-origin:130px 115px;
+  animation:radarMorphIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes radarMorphIn{
+  0%{opacity:0;transform:scale(0.35)}
+  100%{opacity:1;transform:scale(1)}
+}
+.radar-ratio-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin-top:6px;
+}
+.radar-ratio-card{
+  padding:7px 6px;border-radius:10px;background:var(--surface-2);
+  border:1px solid var(--line);text-align:center;
+  display:flex;flex-direction:column;gap:2px;
+}
+.setup-chip-grid{
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.setup-chip{
+  padding:5px 9px;border-radius:8px;font-size:10.5px;font-weight:800;
+  background:var(--surface-3);border:1px solid var(--line-2);color:var(--txt-2);
+  cursor:pointer;transition:transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.setup-chip.on{
+  background:var(--blue-g);border-color:var(--blue-b);color:var(--blue-t);
+  box-shadow:0 2px 8px rgba(56,189,248,.22);
 }
 .timer-cd-badge{
   display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;
@@ -555,29 +671,31 @@ body.numpad-ActivePad .modal-body {
 .dock-item:active svg{
   transform:translate3d(0,1px,0) scale(0.92);
 }
+.dock-item{
+  z-index:2;
+}
 .dock-glass-pill{
   position:absolute;top:5px;bottom:5px;left:0;width:20%;
   border-radius:var(--r-md);
-  background:linear-gradient(145deg,rgba(255,255,255,.18) 0%,var(--blue-g) 48%,rgba(16,185,129,.16) 100%);
-  border:1px solid rgba(255,255,255,.32);
-  box-shadow:0 6px 20px rgba(14,165,233,.26), inset 0 1.5px 1px rgba(255,255,255,.45), inset 0 -1px 2px rgba(56,189,248,.22);
-  backdrop-filter:blur(14px) saturate(190%);-webkit-backdrop-filter:blur(14px) saturate(190%);
+  background:linear-gradient(145deg,rgba(255,255,255,.06) 0%,rgba(56,189,248,.075) 50%,rgba(16,185,129,.045) 100%);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 4px 12px rgba(14,165,233,.10), inset 0 1px 1px rgba(255,255,255,.28), inset 0 -1px 1.5px rgba(56,189,248,.12);
   pointer-events:none;z-index:1;
   transform:translate3d(0,0,0) scale(1);
-  transition:transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, background 0.25s ease;
+  transition:transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
   will-change:transform;
 }
 .dock.scrubbing .dock-glass-pill{
   transition:transform 0.04s linear, width 0.15s ease, box-shadow 0.18s ease !important;
-  background:linear-gradient(145deg,rgba(255,255,255,.30) 0%,rgba(56,189,248,.28) 50%,rgba(16,185,129,.24) 100%);
-  border-color:rgba(255,255,255,.58);
-  box-shadow:0 10px 28px rgba(56,189,248,.42), inset 0 2px 2px rgba(255,255,255,.68), inset 0 -2px 4px rgba(16,185,129,.35);
+  background:linear-gradient(145deg,rgba(255,255,255,.11) 0%,rgba(56,189,248,.12) 50%,rgba(16,185,129,.08) 100%);
+  border-color:rgba(255,255,255,.38);
+  box-shadow:0 6px 16px rgba(56,189,248,.18), inset 0 1.5px 1.5px rgba(255,255,255,.42), inset 0 -1px 2px rgba(16,185,129,.18);
 }
 .dock-item.active{
   color:var(--txt);
   background:transparent;
   border-color:transparent;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.16), 0 6px 14px rgba(0,0,0,.22);
+  box-shadow:none;
 }
 .dock-item.active::after{
   transform:translateX(-50%) scaleX(1);
@@ -2325,7 +2443,10 @@ body[data-idle="1"] .marble-veins{
           <div class="bar"><div class="bar-fill" id="workoutProgressBar"></div></div>
           <div class="workout-live-strip" id="workoutLiveTelemetryStrip">
             <span id="wLiveVolTxt">📊 Session: 0 sets · 0 kg</span>
-            <span class="micro subtle" id="wLiveGoalHint" onclick="openAthleteProfileModal()" style="cursor:pointer;color:var(--blue-t)">🎯 Goal: Bulk</span>
+            <div class="row" style="gap:5px;align-items:center">
+              <span class="trend-badge new" id="workoutTrendBadge" onclick="openTrendCoachModal()" title="Plateau & Regression Detector">✨ Tracking</span>
+              <span class="micro subtle" id="wLiveGoalHint" onclick="openAthleteProfileModal()" style="cursor:pointer;color:var(--blue-t)">🎯 Goal: Bulk</span>
+            </div>
           </div>
         </div>
 
@@ -2340,6 +2461,8 @@ body[data-idle="1"] .marble-veins{
             <button class="chip purple w-compact-chip w-ss-each-chip" id="ssEachBtn" onclick="toggleSSEach()">Each: OFF</button>
           </div>
           <div class="w-row">
+            <button type="button" class="seat-setup-pill" id="workoutSeatSetupBtn" onclick="openSeatSetupModal('main')" title="Machine Seat, Pad & Grip Setup">🪑 Setup</button>
+            <button type="button" class="seat-setup-pill hidden" id="workoutSSSeatSetupBtn" onclick="openSeatSetupModal('super')" title="Superset Seat & Grip Setup" style="border-color:var(--purple-b);color:var(--purple-t)">⚡🪑 SS</button>
             <input type="text" id="activeExNote" class="w-note-input" placeholder="📌 Notes" onchange="saveNote()">
             <div class="w-step-box" title="Main Exercise Minimum Weight Increment (adds − / + buttons next to Weight)">
               <span class="micro" style="color:var(--green-t);font-size:8px">±Step</span>
@@ -2374,9 +2497,9 @@ body[data-idle="1"] .marble-veins{
             <button class="btn xs blue" onclick="openWorkoutCustomRestModal()" style="padding:2px 7px" title="Set custom rest in minutes or seconds">⏱️ Custom</button>
           </div>
           <div class="timer-rect">
-            <div class="row" style="justify-content:center;align-items:center;gap:6px">
-              <div class="timer-rect-time" id="timerDisplay">01:30</div>
-              <span class="timer-cd-badge hidden" id="timerFinalCountdownBadge">READY</span>
+            <div class="row" style="justify-content:center;align-items:center;position:relative;width:100%">
+              <div class="timer-rect-time" id="timerDisplay" style="width:100%;text-align:center">01:30</div>
+              <span class="timer-cd-badge hidden" id="timerFinalCountdownBadge" style="position:absolute;right:4px;top:50%;transform:translateY(-50%)">READY</span>
             </div>
             <div class="bar" style="height:4px"><div class="timer-rect-fill" id="linearTimerFill"></div></div>
           </div>
@@ -2544,11 +2667,12 @@ body[data-idle="1"] .marble-veins{
           </div>
         </div>
 
-        <!-- 3-TAB SUB-PAGE SWITCHER -->
+        <!-- 4-TAB SUB-PAGE SWITCHER -->
         <div class="seg" style="width:100%">
-          <div class="seg-btn on" id="anSubTabLifts" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('lifts')">📈 Lifts &amp; 1RM</div>
-          <div class="seg-btn" id="anSubTabVolume" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('volume')">🎯 Muscle Targets</div>
-          <div class="seg-btn" id="anSubTabWeight" style="flex:1;text-align:center" onclick="switchAnalyticsSubPage('weight')">⚖️ Weight &amp; Goal</div>
+          <div class="seg-btn on" id="anSubTabLifts" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('lifts')">📈 Lifts</div>
+          <div class="seg-btn" id="anSubTabRadar" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('radar')">🕸️ Radar &amp; Alerts</div>
+          <div class="seg-btn" id="anSubTabVolume" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('volume')">🎯 Targets</div>
+          <div class="seg-btn" id="anSubTabWeight" style="flex:1;text-align:center;padding:5px 4px;font-size:10px" onclick="switchAnalyticsSubPage('weight')">⚖️ Weight</div>
         </div>
 
         <!-- SUB-PAGE 1: LIFTS, 1RM CHART, AI AUDIT & 28-DAY CONSISTENCY -->
@@ -2591,6 +2715,35 @@ body[data-idle="1"] .marble-veins{
               <span class="db-badge" id="analyticsAdherenceBadge">0 Active Days</span>
             </div>
             <div id="analyticsConsistencyGrid" class="consistency-grid"></div>
+          </div>
+        </div>
+
+        <!-- SUB-PAGE: BIOMECHANICAL SYMMETRY RADAR & PLATEAU/REGRESSION WATCHLIST -->
+        <div id="anPageRadar" class="stack gap-2 hidden">
+          <div class="card tight hud" style="border-color:var(--blue-b);background:linear-gradient(155deg,rgba(14,165,233,.10),rgba(16,185,129,.05)),var(--surface)">
+            <div class="row-between" style="margin-bottom:4px">
+              <div>
+                <span class="h4" style="color:var(--blue-t)">🕸️ Biomechanical Symmetry Radar</span>
+                <div class="micro subtle">Joint balance across Push, Pull, Quads, Post. Chain, Delts &amp; Core</div>
+              </div>
+              <span class="chip green" id="radarOverallScoreBadge">100% Balanced</span>
+            </div>
+            <div class="radar-stage">
+              <svg id="symmetryRadarSvg" class="radar-svg" viewBox="0 0 260 230"></svg>
+            </div>
+            <div class="radar-ratio-grid" id="radarJointRatiosGrid"></div>
+            <div class="card glass" id="radarDiagnosticBox" style="margin-top:7px;padding:8px 10px;font-size:11px;line-height:1.45"></div>
+          </div>
+
+          <div class="card tight hud" style="border-color:var(--amber-b)">
+            <div class="row-between" style="margin-bottom:6px">
+              <div>
+                <span class="h4" style="color:var(--amber-t)">⚡ Plateau &amp; Regression Watchlist</span>
+                <div class="micro subtle">Auto-detects performance drops (📉) &amp; 3-session plateaus (停)</div>
+              </div>
+              <span class="chip" id="trendWatchlistSummaryChip">Scanning...</span>
+            </div>
+            <div id="trendWatchlistContainer" class="stack gap-1"></div>
           </div>
         </div>
 
@@ -2825,7 +2978,8 @@ body[data-idle="1"] .marble-veins{
               <button class="btn sq-sm" style="width:27px;height:29px;flex-shrink:0" onclick="navEditor(1)">▶</button>
             </div>
             <div class="row" style="gap:4px;flex:0 0 auto;flex-shrink:0">
-              <button class="btn xs blue" style="padding:5px 7px;font-size:9.5px;white-space:nowrap" onclick="startSuggestWizard()" title="Open AI Split Generator">🤖 AI Rebuild</button>
+              <button class="btn xs green" style="padding:5px 7px;font-size:9.5px;white-space:nowrap" onclick="openShareSplitModal()" title="Share or Import Split Code">📤 Share</button>
+              <button class="btn xs blue" style="padding:5px 7px;font-size:9.5px;white-space:nowrap" onclick="startSuggestWizard()" title="Open AI Split Generator">🤖 AI</button>
               <button class="btn xs" style="padding:5px 7px;font-size:9.5px;white-space:nowrap" onclick="addDay()">+ Day</button>
               <button class="btn xs red" style="padding:5px 7px;font-size:9.5px" onclick="deleteDay()">🗑️</button>
             </div>
@@ -2845,7 +2999,10 @@ body[data-idle="1"] .marble-veins{
             <h3 class="h2" style="color:var(--green-t)">🧬 Muscle Heatmap</h3>
             <div class="micro subtle">72h Large · 48h Small Direct · 24h Compound Synergists</div>
           </div>
-          <span class="db-badge" id="heatmapOverallBadge" style="font-size:10px;padding:4px 8px">100% Fresh</span>
+          <div class="row gap-1">
+            <button class="btn xs blue" onclick="showScreen('screen-analytics');switchAnalyticsSubPage('radar')" title="Open Biomechanical Symmetry Radar">🕸️ Radar</button>
+            <span class="db-badge" id="heatmapOverallBadge" style="font-size:10px;padding:4px 8px">100% Fresh</span>
+          </div>
         </div>
 
         <!-- HEATMAP LENS SWITCHER & TIME-TRAVEL RECOVERY SCRUBBER -->
@@ -2918,9 +3075,9 @@ body[data-idle="1"] .marble-veins{
                 <!-- Knees Reference -->
                 <rect x="51" y="190" width="16" height="9" rx="3" class="hm-outline"/>
                 <rect x="93" y="190" width="16" height="9" rx="3" class="hm-outline"/>
-                <!-- Anterior Shin / Tibialis Anterior (Does NOT turn red when training posterior Calves!) -->
-                <path d="M50 201 L68 201 Q69 225 64 252 L52 252 Q47 225 50 201 Z" class="hm-region" data-hm="Tibialis" onclick="inspectHeatmapMuscle('Calves')"/>
-                <path d="M92 201 L110 201 Q113 225 108 252 L96 252 Q91 225 92 201 Z" class="hm-region" data-hm="Tibialis" onclick="inspectHeatmapMuscle('Calves')"/>
+                <!-- Anterior Shin / Tibialis Anterior (Separate muscle from posterior Calves!) -->
+                <path d="M50 201 L68 201 Q69 225 64 252 L52 252 Q47 225 50 201 Z" class="hm-region" data-hm="Tibialis" onclick="inspectHeatmapMuscle('Tibialis')"/>
+                <path d="M92 201 L110 201 Q113 225 108 252 L96 252 Q91 225 92 201 Z" class="hm-region" data-hm="Tibialis" onclick="inspectHeatmapMuscle('Tibialis')"/>
               </svg>
             </div>
 
@@ -3157,6 +3314,13 @@ body[data-idle="1"] .marble-veins{
           <div class="row gap-1">
             <button class="chip" id="settingsDeloadToggleBtn" onclick="toggleAutoDeloadEnabled()">ON</button>
             <button class="btn xs ghost" onclick="closeModal('modal-settings');openDeloadConfigModal()">⚙️</button>
+          </div>
+        </div>
+        <div class="row-between" style="padding-top:5px;border-top:1px solid var(--line)">
+          <span class="h4">🔔 System Alerts</span>
+          <div class="row gap-1">
+            <button class="chip" id="settingsNotifToggleBtn" onclick="toggleSystemNotifications()">ON</button>
+            <button class="btn xs blue" onclick="sendTestSystemNotification()">Test</button>
           </div>
         </div>
         <div class="row-between" style="padding-top:5px;border-top:1px solid var(--line)">
@@ -3878,6 +4042,112 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 
+<!-- MACHINE & SEAT SETUP NOTES MODAL -->
+<div class="modal" id="modal-seat-setup">
+  <div class="modal-card" style="max-height:88dvh;gap:7px">
+    <div class="modal-head">
+      <div>
+        <span class="modal-title" style="color:var(--green-t)">🪑 Machine &amp; Seat Setup</span>
+        <div class="micro subtle" id="seatSetupExTitle">Pin your exact seat, pad &amp; grip settings</div>
+      </div>
+      <button class="btn sq-sm" onclick="closeModal('modal-seat-setup')">✕</button>
+    </div>
+    <div class="modal-body" style="gap:8px">
+      <div class="card tight glass">
+        <div class="row-between" style="margin-bottom:5px">
+          <span class="micro" style="color:var(--blue-t)">🪑 SEAT HEIGHT NUMBER</span>
+          <span class="mono" id="seatHeightValLbl" style="font-size:12px;font-weight:900;color:var(--green-t)">—</span>
+        </div>
+        <div class="setup-chip-grid" id="seatHeightChips"></div>
+      </div>
+
+      <div class="card tight glass">
+        <div class="row-between" style="margin-bottom:5px">
+          <span class="micro" style="color:var(--purple-t)">🛡️ BACK / CHEST PAD POSITION</span>
+          <span class="mono" id="seatPadValLbl" style="font-size:12px;font-weight:900;color:var(--purple-t)">—</span>
+        </div>
+        <div class="setup-chip-grid" id="seatPadChips"></div>
+      </div>
+
+      <div class="card tight glass">
+        <div class="row-between" style="margin-bottom:5px">
+          <span class="micro" style="color:var(--amber-t)">📐 BENCH ANGLE / INCLINE</span>
+          <span class="mono" id="seatAngleValLbl" style="font-size:12px;font-weight:900;color:var(--amber-t)">—</span>
+        </div>
+        <div class="setup-chip-grid" id="seatAngleChips"></div>
+      </div>
+
+      <div class="card tight glass">
+        <div class="row-between" style="margin-bottom:5px">
+          <span class="micro" style="color:var(--blue-t)">🔗 CABLE PULLEY / GRIP</span>
+          <span class="mono" id="seatGripValLbl" style="font-size:12px;font-weight:900;color:var(--blue-t)">—</span>
+        </div>
+        <div class="setup-chip-grid" id="seatGripChips"></div>
+      </div>
+
+      <div>
+        <label class="label">Custom Setup Note (Optional)</label>
+        <input type="text" id="seatCustomNoteInput" placeholder="e.g. Footplate #2 · Elbows 45° · Pause 1s">
+      </div>
+    </div>
+    <div class="row gap-2">
+      <button class="btn red sm" onclick="clearSeatSetupNote()">🗑️ Clear</button>
+      <button class="btn green block sm" onclick="saveSeatSetupNote()">💾 Save Setup</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLATEAU & REGRESSION DETECTOR COACH MODAL -->
+<div class="modal" id="modal-trend-coach">
+  <div class="modal-card" style="max-height:88dvh;gap:8px">
+    <div class="modal-head">
+      <div>
+        <span class="modal-title" id="trendCoachModalTitle" style="color:var(--amber-t)">⚡ Performance Trend Coach</span>
+        <div class="micro subtle" id="trendCoachModalSub">Real-time Plateau &amp; Regression Diagnostics</div>
+      </div>
+      <button class="btn sq-sm" onclick="closeModal('modal-trend-coach')">✕</button>
+    </div>
+    <div class="modal-body" id="trendCoachModalBody" style="gap:8px"></div>
+    <button class="btn block" onclick="closeModal('modal-trend-coach')">Close</button>
+  </div>
+</div>
+
+<!-- SPLIT SHARE & IMPORT MODAL -->
+<div class="modal" id="modal-share-split">
+  <div class="modal-card" style="max-height:88dvh;gap:8px">
+    <div class="modal-head">
+      <div>
+        <span class="modal-title" style="color:var(--green-t)">📤 Share &amp; Import Split</span>
+        <div class="micro subtle" id="shareSplitSubTitle">Export your split code or import a friend's program</div>
+      </div>
+      <button class="btn sq-sm" onclick="closeModal('modal-share-split')">✕</button>
+    </div>
+    <div class="modal-body" style="gap:8px">
+      <div class="card tight glass" style="border-color:var(--green-b)">
+        <div class="row-between" style="margin-bottom:4px">
+          <span class="h4" style="color:var(--green-t)">📤 Export Current Split</span>
+          <span class="chip green" id="shareSplitSummaryBadge">Active Split</span>
+        </div>
+        <div class="micro subtle" style="margin-bottom:6px">Includes all workout days, exercises, sets, warmups, custom rest timers, and machine setup notes.</div>
+        <input type="text" readonly id="shareSplitCodeOutput" class="mono" style="font-size:10.5px;padding:7px 9px;margin-bottom:6px;color:var(--blue-t);user-select:all" onclick="this.select()">
+        <div class="grid-3" style="gap:5px">
+          <button class="btn green sm" onclick="copyShareSplitCode()">📋 Copy Code</button>
+          <button class="btn blue sm" onclick="nativeShareSplit()">📲 Share</button>
+          <button class="btn ghost sm" onclick="copyReadableSplitText()">📄 Text Plan</button>
+        </div>
+      </div>
+
+      <div class="card tight glass" style="border-color:var(--purple-b)">
+        <div class="h4" style="color:var(--purple-t);margin-bottom:4px">📥 Import Split from Code</div>
+        <div class="micro subtle" style="margin-bottom:6px">Paste any <b>IP1-...</b> split code below to add it to your account splits immediately:</div>
+        <input type="text" id="importSplitCodeInput" class="mono" placeholder="Paste IP1-... share code here" style="font-size:11px;margin-bottom:6px">
+        <button class="btn purple block sm" onclick="importSplitFromCode()">📥 Import &amp; Activate Split</button>
+      </div>
+    </div>
+    <button class="btn block" onclick="closeModal('modal-share-split')">Close</button>
+  </div>
+</div>
+
 <!-- PROGRAMS MODAL (ALL ACCOUNT SPLITS) -->
 <div class="modal" id="modal-programs">
   <div class="modal-card" style="max-height:84dvh">
@@ -3893,7 +4163,10 @@ body[data-idle="1"] .marble-veins{
       <input type="text" id="newProgramNameInput" placeholder="New split name (e.g. PPL, Upper/Lower)" class="grow">
       <button class="btn green sm" onclick="createProgram()">+ New Split</button>
     </div>
-    <button class="btn blue block sm" onclick="closeModal('modal-programs');startSetup()">⚡ Build Another Split (AI / Manual)</button>
+    <div class="grid-2" style="gap:6px">
+      <button class="btn green sm" onclick="closeModal('modal-programs');openShareSplitModal()">📤 Share / Import Code</button>
+      <button class="btn blue sm" onclick="closeModal('modal-programs');startSetup()">⚡ Build Split</button>
+    </div>
     <button class="btn block" onclick="closeModal('modal-programs')">Close</button>
   </div>
 </div>
@@ -4038,8 +4311,13 @@ function safeRemoveItem(k){
 })();
 
 /* ============ STANDALONE & FULLSCREEN CONTROLLER ============ */
+let _iosExpandedFs = false;
+function isNativeFullScreenSupported(){
+  const docEl = document.documentElement;
+  return !!(docEl && (docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen));
+}
 function isCurrentlyFullScreen(){
-  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || _iosExpandedFs);
 }
 function isStandaloneMode(){
   return !!((window.navigator && window.navigator.standalone === true) ||
@@ -4058,11 +4336,11 @@ function isAnyModalOrOverlayOpen(){
 
 function scheduleRePromptFullScreen(delayMs){
   clearTimeout(_rePromptFsTimer);
+  if(!isNativeFullScreenSupported()) return;
   const wait = delayMs || 5000;
   _rePromptFsTimer = setTimeout(function(){
     if(!isCurrentlyFullScreen() && !isStandaloneMode()){
       if(isAnyModalOrOverlayOpen()){
-        // Wait until current modal/popup closes so Fullscreen prompt never collides!
         scheduleRePromptFullScreen(3500);
         return;
       }
@@ -4089,25 +4367,38 @@ function updateFullScreenBtnUI(){
   } else if(_wasInFullScreen){
     _wasInFullScreen = false;
   }
+  if(typeof syncDockGlassPillToActive === 'function'){
+    setTimeout(syncDockGlassPillToActive, 60);
+  }
 }
 function toggleFullScreen(){
   const docEl = document.documentElement;
+  const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
   if(!isCurrentlyFullScreen()){
-    const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
     if(req){
       try{
         const p = req.call(docEl);
         if(p && typeof p.then === 'function'){
-          p.then(updateFullScreenBtnUI).catch(function(){ toast('Full screen not supported in this browser view'); });
+          p.then(updateFullScreenBtnUI).catch(function(){
+            _iosExpandedFs = true;
+            updateFullScreenBtnUI();
+          });
         }
-      }catch(e){ toast('Full screen not supported in this browser view'); }
+      }catch(e){
+        _iosExpandedFs = true;
+        updateFullScreenBtnUI();
+      }
     } else {
-      toast('Use Add to Home Screen for full screen on iOS');
+      // iOS Safari fallback: toggle expanded full-viewport UI layout smoothly without error toast
+      _iosExpandedFs = true;
+      try{ window.scrollTo(0, 1); }catch(e){}
+      updateFullScreenBtnUI();
     }
   } else {
     _wasInFullScreen = true;
+    _iosExpandedFs = false;
     const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
-    if(exit){
+    if(exit && (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement)){
       try{
         const p = exit.call(document);
         if(p && typeof p.then === 'function') p.then(updateFullScreenBtnUI).catch(function(){});
@@ -4515,7 +4806,9 @@ function classifyExerciseByAI(rawName){
   else if(/push-up|pushup|pull-up|pullup|chin-up|dip|plank|bodyweight|hang|عقلة|ضغط|بلانك|متوازي/.test(n) && !/machine|assisted|جهاز/.test(n)) equip = 'Free';
   else if(/machine|seated|press|ext|curl|pec|hack|pendulum|جهاز|ماكينة/.test(n)) equip = 'Machine';
 
-  if(/calv|calf|gastroc|soleus|tibialis|سمانة|بطة/.test(n)){
+  if(/tibialis|ظنبوب|أمامية الساق|امامية الساق/.test(n)){
+    muscle = 'Legs'; sub = 'Tibialis'; compound = false;
+  } else if(/calv|calf|gastroc|soleus|سمانة|بطة/.test(n)){
     muscle = 'Legs'; sub = 'Calves'; compound = false;
   } else if(/glute|thrust|bridge|kickback|abduct|قلوتس|مؤخرة|هيب ثرست|مبعدات|خارجي/.test(n) && !/tricep/.test(n)){
     muscle = 'Legs'; sub = /abduct|خارجي|مبعدات/.test(n) ? 'Abductors' : 'Glutes'; compound = /thrust|bridge|squat/.test(n);
@@ -7994,6 +8287,7 @@ function renderManualStudio(){
         '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Warmup Sets (Ex ' + (i+1) + ')" value="' + (ex.warmupSets||0) + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].warmupSets=clamp(parseInt(this.value)||0,0,10)">' +
         '<span class="mini-lbl" style="color:var(--green-t)">±Step</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target step-target" data-label="Min Weight Increment (Ex ' + (i+1) + ')" placeholder="—" value="' + (ex.minWeightStep||'') + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].minWeightStep=Math.max(0,parseFloat(this.value)||0)">' +
+        '<button type="button" class="seat-setup-pill' + (getExerciseSeatNote(ex.name, ex) ? ' has-setup' : '') + '" style="height:22px;padding:1px 6px;font-size:8.5px" onclick="openSeatSetupFromEditor(' + i + ',\'main\')" title="Machine & Seat Setup">' + escapeAttr(getCompactSeatLabel(ex.name, ex)) + '</button>' +
         '<div class="move-chips">' + moveChips + '</div>' +
       '</div>' +
       (isSS ?
@@ -9879,6 +10173,7 @@ function renderWorkout(){
     ex.note = '';
   }
   $('activeExNote').value = ex.note || '';
+  if(typeof refreshWorkoutSeatAndTrendUI === 'function') refreshWorkoutSeatAndTrendUI(ex);
   const stepInp = $('activeExStep');
   if(stepInp && document.activeElement !== stepInp && activeNum !== stepInp){
     stepInp.value = (ex.minWeightStep && parseFloat(ex.minWeightStep) > 0) ? ex.minWeightStep : '';
@@ -10500,13 +10795,7 @@ function updateTimerUI(mode){
   }
   let state = '';
   if(timerInt && timerTime > 0){ if(ratio <= .25) state = 'quarter'; else if(ratio <= .5) state = 'half'; }
-  // Update Liquid SVG Progress Ring & Final 3-2-1 Countdown Badge
-  const ringCircle = $('timerSvgCircle');
-  if(ringCircle){
-    const circum = 100.53;
-    ringCircle.style.strokeDashoffset = String(circum * (1 - ratio));
-    ringCircle.style.stroke = state === 'quarter' ? 'var(--red-t)' : (state === 'half' ? 'var(--amber-t)' : 'var(--green-t)');
-  }
+  // Centered digital countdown + Final 3-2-1 Countdown Badge
   const cdBadge = $('timerFinalCountdownBadge');
   if(cdBadge){
     if(timerInt && timerTime > 0 && timerTime <= 3){
@@ -10562,6 +10851,10 @@ function runTick(){
   }
   if(timerTime <= 0){
     timerInt = false; clearTick(); playSound('alarm');
+    if(typeof fireSystemTimerNotification === 'function'){
+      const curEx = (workoutActive && activeSessionData && activeSessionData[activeExIndex]) ? activeSessionData[activeExIndex].name : 'Workout';
+      fireSystemTimerNotification('⏱️ Rest Complete — IRON PULSE', 'Time for your next set of ' + curEx + '!');
+    }
     timerTime = appData.defaultTimer; timerTotal = appData.defaultTimer;
     releaseWake();
     if(timerRestStartTs > 0){
@@ -11423,6 +11716,9 @@ function resumeCardio(){
 
     if(activeRemain <= 0 && !activeRest){
       clearInterval(cardioInt); cardioInt = null; releaseWake(); playSound('alarm');
+      if(typeof fireSystemTimerNotification === 'function'){
+        fireSystemTimerNotification('🏃 Cardio Session Complete!', 'Great work! Your ' + (cardioType || 'Cardio') + ' session is finished.');
+      }
       const totalWallSec = cardioTotal + completedRestSec;
       showCardioSummary(totalWallSec, cardioTotal, completedRestSec);
       if(cardioEcoHere){ appData.powerSaveMode = false; applyPower(); save(); }
@@ -12343,6 +12639,12 @@ function createProgram(){
 /* ============ SETTINGS & BACKUP ============ */
 function openSettings(){ refreshSettingsUI(); openModal('modal-settings'); }
 function refreshSettingsUI(){
+  const nfBtn = $('settingsNotifToggleBtn');
+  if(nfBtn){
+    const nfOn = appData.systemNotifications !== false;
+    nfBtn.textContent = nfOn ? '🔔 ON' : 'OFF';
+    nfBtn.classList.toggle('on', nfOn);
+  }
   const btn = $('ecoBtn');
   if(btn){ btn.textContent = appData.powerSaveMode ? '🔋 ON' : 'OFF'; btn.classList.toggle('on', appData.powerSaveMode); }
   const d = $('themeDarkChip'), l = $('themeLightChip');
@@ -14126,7 +14428,7 @@ function renderMuscleHeatmap(){
     el.style.strokeDasharray = dash;
     const isFatiguedPulse = (heatmapLens === 'recovery' && detailed[mKey] && detailed[mKey].pct < 50);
     el.classList.toggle('hm-fatigued-pulse', !!isFatiguedPulse);
-    el.classList.toggle('selected-muscle', selectedHeatmapMuscle === mKey || (selectedHeatmapMuscle === 'Calves' && mKey === 'Tibialis'));
+    el.classList.toggle('selected-muscle', selectedHeatmapMuscle === mKey);
   });
 
   const badge = $('heatmapOverallBadge');
@@ -14188,7 +14490,7 @@ function renderMuscleHeatmap(){
     smallGrid.innerHTML = buildMuscleGridHTML([
       'Lower Back', 'Upper Traps',
       'Front Delts', 'Side Delts', 'Rear Delts',
-      'Biceps', 'Triceps', 'Calves',
+      'Biceps', 'Triceps', 'Calves', 'Tibialis',
       'Upper Abs', 'Lower Abs', 'Obliques',
       'Adductors', 'Abductors', 'Forearms'
     ]);
@@ -14203,7 +14505,7 @@ function inspectHeatmapMuscle(mKey, silent){
   const card = $('homeHeatmapCard');
   if(card){
     card.querySelectorAll('.hm-region').forEach(function(el){
-      const rKey = el.getAttribute('data-hm'); el.classList.toggle('selected-muscle', rKey === mKey || (mKey === 'Calves' && rKey === 'Tibialis'));
+      const rKey = el.getAttribute('data-hm'); el.classList.toggle('selected-muscle', rKey === mKey);
     });
   }
   document.querySelectorAll('.hm-muscle-pill').forEach(function(el){
@@ -14214,7 +14516,7 @@ function inspectHeatmapMuscle(mKey, silent){
   const vs = getWeeklyMuscleVolumeAndSplitFrequency();
   const st = detailed[mKey];
   const pct = st ? st.pct : 100;
-  const isExempt = ['Adductors', 'Abductors', 'Forearms'].indexOf(mKey) >= 0;
+  const isExempt = ['Adductors', 'Abductors', 'Forearms', 'Tibialis'].indexOf(mKey) >= 0;
 
   const prog = getProgram();
   const directDays = [];
@@ -15762,17 +16064,843 @@ function switchAnalyticsSubPage(tab){
   playSound('tap');
   activeAnalyticsSubPage = tab || 'lifts';
   if($('anSubTabLifts')) $('anSubTabLifts').classList.toggle('on', activeAnalyticsSubPage === 'lifts');
+  if($('anSubTabRadar')) $('anSubTabRadar').classList.toggle('on', activeAnalyticsSubPage === 'radar');
   if($('anSubTabVolume')) $('anSubTabVolume').classList.toggle('on', activeAnalyticsSubPage === 'volume');
   if($('anSubTabWeight')) $('anSubTabWeight').classList.toggle('on', activeAnalyticsSubPage === 'weight');
-  if($('anPageLifts')) $('anPageLifts').classList.toggle('hidden', activeAnalyticsSubPage !== 'lifts');
-  if($('anPageVolume')) $('anPageVolume').classList.toggle('hidden', activeAnalyticsSubPage !== 'volume');
-  if($('anPageWeight')) $('anPageWeight').classList.toggle('hidden', activeAnalyticsSubPage !== 'weight');
-  if(activeAnalyticsSubPage === 'volume'){
+  const pages = { lifts: $('anPageLifts'), radar: $('anPageRadar'), volume: $('anPageVolume'), weight: $('anPageWeight') };
+  Object.keys(pages).forEach(function(k){
+    const el = pages[k];
+    if(!el) return;
+    const isAct = (k === activeAnalyticsSubPage);
+    el.classList.toggle('hidden', !isAct);
+    if(isAct){
+      el.classList.remove('subpage-anim');
+      void el.offsetWidth;
+      el.classList.add('subpage-anim');
+    }
+  });
+  if(activeAnalyticsSubPage === 'radar'){
+    renderSymmetryRadarAndTrends();
+  } else if(activeAnalyticsSubPage === 'volume'){
     renderAnalyticsConsistencyAndVolume();
   } else if(activeAnalyticsSubPage === 'weight'){
     renderWeightProgressChart();
   } else {
     renderChart();
+  }
+}
+
+
+/* ============ 1. MACHINE & SEAT SETUP NOTES ENGINE ============ */
+let _seatSetupContext = { mode: 'workout', target: 'main', editorIdx: 0 };
+let _seatTempState = { height: '', pad: '', angle: '', grip: '', custom: '' };
+
+function normSeatExKey(name){
+  return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function getExerciseSeatNote(exName, exObj){
+  if(!appData.seatNotes) appData.seatNotes = {};
+  const k = normSeatExKey(exName);
+  if(k && appData.seatNotes[k]) return appData.seatNotes[k];
+  if(exObj && exObj.seatNote) return exObj.seatNote;
+  return '';
+}
+
+function getCompactSeatLabel(exName, exObj){
+  const raw = getExerciseSeatNote(exName, exObj);
+  if(!raw) return '🪑 Setup';
+  return '🪑 ' + (raw.length > 18 ? raw.slice(0, 17) + '…' : raw);
+}
+
+function parseSeatNoteToState(str){
+  const st = { height: '', pad: '', angle: '', grip: '', custom: '' };
+  if(!str) return st;
+  const parts = String(str).split('·').map(function(s){ return s.trim(); }).filter(Boolean);
+  const customParts = [];
+  parts.forEach(function(p){
+    if(/^Seat\s+/i.test(p)) st.height = p.replace(/^Seat\s+/i, '').trim();
+    else if(/^Pad\s+/i.test(p)) st.pad = p.replace(/^Pad\s+/i, '').trim();
+    else if(/^Angle\s+/i.test(p)) st.angle = p.replace(/^Angle\s+/i, '').trim();
+    else if(/^(Grip|Cable)\s+/i.test(p)) st.grip = p.replace(/^(Grip|Cable)\s+/i, '').trim();
+    else customParts.push(p);
+  });
+  st.custom = customParts.join(' · ');
+  return st;
+}
+
+function formatSeatStateToString(st){
+  const arr = [];
+  if(st.height) arr.push('Seat ' + st.height);
+  if(st.pad) arr.push('Pad ' + st.pad);
+  if(st.angle) arr.push('Angle ' + st.angle);
+  if(st.grip) arr.push('Grip ' + st.grip);
+  if(st.custom && st.custom.trim()) arr.push(st.custom.trim());
+  return arr.join(' · ');
+}
+
+function renderSeatSetupChipsUI(){
+  const heights = ['1','2','3','4','5','6','7','8','9','10'];
+  const pads = ['1','2','3','4','5','6','7','8'];
+  const angles = ['0° Flat','15°','30°','45°','60°','75°','85°'];
+  const grips = ['Standard','Neutral','Wide','Close','Rope','D-Handle','EZ-Bar','Low Cable','High Cable','Cuff'];
+
+  const hBox = $('seatHeightChips');
+  if(hBox){
+    hBox.innerHTML = heights.map(function(v){
+      return '<button type="button" class="setup-chip' + (_seatTempState.height === v ? ' on' : '') + '" onclick="selectSeatChip(\'height\',\'' + v + '\')">#' + v + '</button>';
+    }).join('');
+  }
+  if($('seatHeightValLbl')) $('seatHeightValLbl').textContent = _seatTempState.height ? ('#' + _seatTempState.height) : '—';
+
+  const pBox = $('seatPadChips');
+  if(pBox){
+    pBox.innerHTML = pads.map(function(v){
+      return '<button type="button" class="setup-chip' + (_seatTempState.pad === v ? ' on' : '') + '" onclick="selectSeatChip(\'pad\',\'' + v + '\')">#' + v + '</button>';
+    }).join('');
+  }
+  if($('seatPadValLbl')) $('seatPadValLbl').textContent = _seatTempState.pad ? ('#' + _seatTempState.pad) : '—';
+
+  const aBox = $('seatAngleChips');
+  if(aBox){
+    aBox.innerHTML = angles.map(function(v){
+      return '<button type="button" class="setup-chip' + (_seatTempState.angle === v ? ' on' : '') + '" onclick="selectSeatChip(\'angle\',\'' + v + '\')">' + v + '</button>';
+    }).join('');
+  }
+  if($('seatAngleValLbl')) $('seatAngleValLbl').textContent = _seatTempState.angle || '—';
+
+  const gBox = $('seatGripChips');
+  if(gBox){
+    gBox.innerHTML = grips.map(function(v){
+      return '<button type="button" class="setup-chip' + (_seatTempState.grip === v ? ' on' : '') + '" onclick="selectSeatChip(\'grip\',\'' + v + '\')">' + v + '</button>';
+    }).join('');
+  }
+  if($('seatGripValLbl')) $('seatGripValLbl').textContent = _seatTempState.grip || '—';
+
+  const cInp = $('seatCustomNoteInput');
+  if(cInp && document.activeElement !== cInp) cInp.value = _seatTempState.custom || '';
+}
+
+function selectSeatChip(field, val){
+  playSound('tap');
+  _seatTempState[field] = (_seatTempState[field] === val) ? '' : val;
+  renderSeatSetupChipsUI();
+}
+
+function openSeatSetupModal(target){
+  playSound('tap');
+  const ex = activeSessionData[activeExIndex];
+  if(!ex) return;
+  _seatSetupContext = { mode: 'workout', target: target || 'main', editorIdx: activeExIndex };
+  const exName = (target === 'super' && ex.supersetName) ? ex.supersetName : ex.name;
+  const existing = (target === 'super') ? getExerciseSeatNote(exName, { seatNote: ex.supersetSeatNote }) : getExerciseSeatNote(exName, ex);
+  _seatTempState = parseSeatNoteToState(existing);
+  if($('seatSetupExTitle')) $('seatSetupExTitle').textContent = exName || 'Exercise Setup';
+  renderSeatSetupChipsUI();
+  openModal('modal-seat-setup');
+}
+
+function openSeatSetupFromEditor(idx, target){
+  playSound('tap');
+  const prog = getProgram();
+  const day = prog[editorDayIdx];
+  if(!day || !day.exercises[idx]) return;
+  const ex = day.exercises[idx];
+  _seatSetupContext = { mode: 'editor', target: target || 'main', editorIdx: idx };
+  const exName = (target === 'super' && ex.supersetName) ? ex.supersetName : ex.name;
+  const existing = (target === 'super') ? getExerciseSeatNote(exName, { seatNote: ex.supersetSeatNote }) : getExerciseSeatNote(exName, ex);
+  _seatTempState = parseSeatNoteToState(existing);
+  if($('seatSetupExTitle')) $('seatSetupExTitle').textContent = exName || 'Exercise Setup';
+  renderSeatSetupChipsUI();
+  openModal('modal-seat-setup');
+}
+
+function applySeatNoteToTarget(formatted){
+  if(!appData.seatNotes) appData.seatNotes = {};
+  let exName = '';
+  if(_seatSetupContext.mode === 'workout'){
+    const ex = activeSessionData[activeExIndex];
+    if(ex){
+      if(_seatSetupContext.target === 'super' && ex.supersetName){
+        exName = ex.supersetName;
+        ex.supersetSeatNote = formatted;
+      } else {
+        exName = ex.name;
+        ex.seatNote = formatted;
+      }
+      const prog = getProgram();
+      if(prog[appData.currentDayIndex] && prog[appData.currentDayIndex].exercises[activeExIndex]){
+        if(_seatSetupContext.target === 'super') prog[appData.currentDayIndex].exercises[activeExIndex].supersetSeatNote = formatted;
+        else prog[appData.currentDayIndex].exercises[activeExIndex].seatNote = formatted;
+      }
+    }
+  } else {
+    const prog = getProgram();
+    const day = prog[editorDayIdx];
+    const ex = day && day.exercises[_seatSetupContext.editorIdx];
+    if(ex){
+      if(_seatSetupContext.target === 'super' && ex.supersetName){
+        exName = ex.supersetName;
+        ex.supersetSeatNote = formatted;
+      } else {
+        exName = ex.name;
+        ex.seatNote = formatted;
+      }
+    }
+  }
+  const k = normSeatExKey(exName);
+  if(k){
+    if(formatted) appData.seatNotes[k] = formatted;
+    else delete appData.seatNotes[k];
+  }
+  save();
+  if(workoutActive && activeSessionData[activeExIndex]) refreshWorkoutSeatAndTrendUI(activeSessionData[activeExIndex]);
+  if(currentScreen === 'screen-editor') renderEditor();
+}
+
+function saveSeatSetupNote(){
+  playSound('success');
+  const cInp = $('seatCustomNoteInput');
+  if(cInp) _seatTempState.custom = cInp.value.trim();
+  const formatted = formatSeatStateToString(_seatTempState);
+  applySeatNoteToTarget(formatted);
+  closeModal('modal-seat-setup');
+  toast(formatted ? ('🪑 Saved: ' + formatted) : '🪑 Setup note cleared');
+}
+
+function clearSeatSetupNote(){
+  playSound('warn');
+  _seatTempState = { height: '', pad: '', angle: '', grip: '', custom: '' };
+  applySeatNoteToTarget('');
+  closeModal('modal-seat-setup');
+  toast('🪑 Machine setup cleared');
+}
+
+/* ============ 2. PLATEAU & REGRESSION DETECTOR ENGINE ============ */
+function getUnitLabel(){ return (typeof unitLabel === "function") ? unitLabel() : (appData.unit || "kg"); }
+function dispW(val){ const n = parseFloat(val) || 0; return Math.round(n * 10) / 10; }
+function computeSessionMetrics(entry, isSuper){
+  if(!entry) return null;
+  const wArr = isSuper ? (entry.supersetWeights || []) : (entry.weights || []);
+  const rArr = isSuper ? (entry.supersetReps || []) : (entry.reps || []);
+  let bestW = 0, best1RM = 0, totalVol = 0, topRepsAtBestW = 0, validSets = 0;
+  const len = Math.max(wArr.length, rArr.length);
+  for(let i = 0; i < len; i++){
+    const w = parseFloat(wArr[i]) || 0;
+    const r = parseInt(rArr[i], 10) || 0;
+    if(w > 0 && r > 0){
+      validSets++;
+      const e1rm = w * (1 + r / 30);
+      totalVol += (w * r);
+      if(e1rm > best1RM) best1RM = e1rm;
+      if(w > bestW || (w === bestW && r > topRepsAtBestW)){
+        bestW = w;
+        topRepsAtBestW = r;
+      }
+    }
+  }
+  if(validSets === 0) return null;
+  return { date: entry.date || 0, bestW: bestW, best1RM: best1RM, totalVol: totalVol, topReps: topRepsAtBestW, validSets: validSets, techChanged: !!entry.techniqueChanged };
+}
+
+function analyzeExerciseTrend(ex){
+  if(!ex) return { status: 'new', badge: '✨ Tracking', title: 'New Exercise Tracking', summary: 'Log at least 2 sessions to unlock Plateau & Regression detection.' };
+  const hist = (ex.history || []).filter(function(h){ return !h.isDeload; });
+  const sessions = [];
+  for(let i = 0; i < hist.length; i++){
+    const m = computeSessionMetrics(hist[i], false);
+    if(m) sessions.push(m);
+  }
+  if(sessions.length < 2){
+    return {
+      status: 'new',
+      badge: '✨ Tracking (' + sessions.length + '/2)',
+      title: 'Building Baseline (' + (ex.name || 'Exercise') + ')',
+      summary: 'Log ' + (2 - sessions.length) + ' more working session(s) so the engine can compare your 1RM trajectory, volume, and rep progression.',
+      sessions: sessions
+    };
+  }
+
+  const sPrev = sessions[sessions.length - 2];
+  const sLast = sessions[sessions.length - 1];
+  const u = getUnitLabel();
+  const rmDiffPct = sPrev.best1RM > 0 ? ((sLast.best1RM - sPrev.best1RM) / sPrev.best1RM) * 100 : 0;
+
+  // 1. Check for Regression / Performance Drop
+  const weightDropped = sLast.bestW < sPrev.bestW && sLast.best1RM < sPrev.best1RM * 0.975;
+  const repsDroppedSameWeight = (sLast.bestW === sPrev.bestW) && (sLast.topReps <= sPrev.topReps - 2);
+  if((rmDiffPct <= -3.2 || weightDropped || repsDroppedSameWeight) && !sLast.techChanged){
+    const dropDesc = sLast.bestW < sPrev.bestW
+      ? ('Top load dropped from ' + dispW(sPrev.bestW) + u + '×' + sPrev.topReps + ' to ' + dispW(sLast.bestW) + u + '×' + sLast.topReps + ' (' + rmDiffPct.toFixed(1) + '% 1RM)')
+      : ('Reps at ' + dispW(sLast.bestW) + u + ' dropped from ' + sPrev.topReps + ' to ' + sLast.topReps + ' reps (' + rmDiffPct.toFixed(1) + '% 1RM)');
+    return {
+      status: 'drop',
+      badge: '📉 Drop (' + rmDiffPct.toFixed(1) + '%)',
+      title: '📉 Performance Regression Detected',
+      metricLine: dropDesc,
+      summary: 'Your output dipped compared to the previous session. Common causes: residual local/CNS fatigue, under-recovery between sessions, or short intra-set rest.',
+      sessions: sessions,
+      rmDiffPct: rmDiffPct
+    };
+  }
+
+  // 2. Check for 3-Session Plateau
+  if(sessions.length >= 3){
+    const sOld = sessions[sessions.length - 3];
+    const gainVs2Ago = sOld.best1RM > 0 ? ((sLast.best1RM - sOld.best1RM) / sOld.best1RM) * 100 : 0;
+    const volGainVs2Ago = sOld.totalVol > 0 ? ((sLast.totalVol - sOld.totalVol) / sOld.totalVol) * 100 : 0;
+    if(Math.abs(gainVs2Ago) <= 1.2 && volGainVs2Ago <= 2.0){
+      return {
+        status: 'plateau',
+        badge: '停 Plateau (3×)',
+        title: '停 3-Session Plateau Detected',
+        metricLine: 'Stuck around ' + dispW(sLast.bestW) + u + ' × ' + sLast.topReps + ' reps across your last 3 sessions',
+        summary: 'Your neuromuscular adaptation has stalled at this exact load & rep bracket for 3 consecutive sessions. Use one of the scientific breakers below to force new recruitment.',
+        sessions: sessions,
+        rmDiffPct: gainVs2Ago
+      };
+    }
+  }
+
+  // 3. Otherwise: Active Progressive Overload!
+  const posPct = Math.max(0.5, rmDiffPct);
+  return {
+    status: 'progress',
+    badge: '🚀 +' + posPct.toFixed(1) + '%',
+    title: '🚀 Active Progressive Overload',
+    metricLine: 'Peak: ' + dispW(sLast.bestW) + u + ' × ' + sLast.topReps + ' reps (Est. 1RM: ' + dispW(sLast.best1RM) + u + ')',
+    summary: 'You are actively beating or consolidating your previous numbers with clean mechanical progression. Keep driving +1 rep or +1.25–2.5' + u + ' once you hit the top of your rep range.',
+    sessions: sessions,
+    rmDiffPct: rmDiffPct
+  };
+}
+
+function refreshWorkoutSeatAndTrendUI(ex){
+  if(!ex) return;
+  const seatBtn = $('workoutSeatSetupBtn');
+  if(seatBtn){
+    const sNote = getExerciseSeatNote(ex.name, ex);
+    seatBtn.textContent = getCompactSeatLabel(ex.name, ex);
+    seatBtn.classList.toggle('has-setup', !!sNote);
+  }
+  const ssSeatBtn = $('workoutSSSeatSetupBtn');
+  const hasSS = !!(ex.supersetName && String(ex.supersetName).trim());
+  if(ssSeatBtn){
+    ssSeatBtn.classList.toggle('hidden', !hasSS);
+    if(hasSS){
+      const ssNote = getExerciseSeatNote(ex.supersetName, { seatNote: ex.supersetSeatNote });
+      ssSeatBtn.textContent = ssNote ? ('⚡🪑 ' + (ssNote.length > 14 ? ssNote.slice(0, 13) + '…' : ssNote)) : '⚡🪑 SS Setup';
+      ssSeatBtn.classList.toggle('has-setup', !!ssNote);
+    }
+  }
+  const tBadge = $('workoutTrendBadge');
+  if(tBadge){
+    const tr = analyzeExerciseTrend(ex);
+    tBadge.className = 'trend-badge ' + tr.status;
+    tBadge.textContent = tr.badge;
+  }
+}
+
+let _trendInspectExObj = null;
+function openTrendCoachModal(customExObj){
+  playSound('tap');
+  const ex = customExObj || (workoutActive && activeSessionData ? activeSessionData[activeExIndex] : null);
+  if(!ex) return;
+  _trendInspectExObj = ex;
+  const tr = analyzeExerciseTrend(ex);
+  const titleEl = $('trendCoachModalTitle');
+  const subEl = $('trendCoachModalSub');
+  const bodyEl = $('trendCoachModalBody');
+  if(titleEl){
+    titleEl.textContent = tr.title;
+    titleEl.style.color = tr.status === 'drop' ? 'var(--red-t)' : (tr.status === 'plateau' ? 'var(--amber-t)' : 'var(--green-t)');
+  }
+  if(subEl) subEl.textContent = ex.name || 'Exercise Analysis';
+
+  // Find a biomechanically equivalent exercise in catalog for 1-tap angle variation
+  const catEntry = findCatalogEntry(ex.name) || classifyAndRegisterCustomExercise(ex.name, true);
+  let altExName = '';
+  if(catEntry){
+    const candidates = EXERCISE_CATALOG.filter(function(c){
+      return c.muscle === catEntry.muscle && c.sub === catEntry.sub && c.name.toLowerCase() !== String(ex.name || '').toLowerCase();
+    });
+    if(candidates.length > 0) altExName = candidates[0].name;
+  }
+
+  let historyBarsHtml = '';
+  if(tr.sessions && tr.sessions.length > 0){
+    const recent = tr.sessions.slice(-4);
+    const maxRM = Math.max.apply(null, recent.map(function(s){ return s.best1RM || 1; }));
+    const u = getUnitLabel();
+    historyBarsHtml = '<div class="card tight glass" style="padding:8px 10px">' +
+      '<div class="micro subtle" style="margin-bottom:6px">📊 LAST ' + recent.length + ' SESSIONS (EST. 1RM TRAJECTORY)</div>' +
+      '<div class="stack gap-1">' +
+      recent.map(function(s, idx){
+        const pct = Math.max(18, Math.round((s.best1RM / maxRM) * 100));
+        const dStr = s.date ? new Date(s.date).toLocaleDateString(undefined, {month:'short', day:'numeric'}) : ('S' + (idx+1));
+        return '<div class="row-between" style="font-size:10.5px;gap:6px">' +
+          '<span class="mono subtle" style="width:48px">' + dStr + '</span>' +
+          '<div class="bar" style="flex:1;height:6px"><div class="bar-fill" style="width:' + pct + '%;background:' + (idx === recent.length - 1 && tr.status === 'drop' ? 'var(--red)' : (idx === recent.length - 1 && tr.status === 'plateau' ? 'var(--amber)' : 'var(--green)')) + '"></div></div>' +
+          '<span class="mono" style="font-weight:900;min-width:95px;text-align:right">' + dispW(s.bestW) + u + ' × ' + s.topReps + ' (' + dispW(s.best1RM) + ')</span>' +
+        '</div>';
+      }).join('') +
+      '</div></div>';
+  }
+
+  let actionsHtml = '';
+  if(tr.status === 'drop' || tr.status === 'plateau'){
+    actionsHtml =
+      '<div class="card tight glass" style="border-color:var(--blue-b)">' +
+        '<div class="micro" style="color:var(--blue-t);margin-bottom:6px">⚡ 1-TAP SCIENTIFIC INTERVENTIONS</div>' +
+        '<div class="stack gap-1">' +
+          '<button class="btn sm amber block" onclick="applyTrendCoachAction(\'boost_rest\')">⏱️ Boost Rest Timer +30s (Full ATP-CP Recharge)</button>' +
+          '<button class="btn sm green block" onclick="applyTrendCoachAction(\'top_backoff\')">🎯 Apply Top Set + Back-Off Set Protocol (+1 Set)</button>' +
+          (altExName && workoutActive ? '<button class="btn sm purple block" onclick="applyTrendCoachAction(\'swap_alt\',\'' + escapeAttr(altExName) + '\')">🔄 Swap Angle to ' + escapeAttr(altExName) + '</button>' : '') +
+        '</div>' +
+      '</div>';
+  }
+
+  if(bodyEl){
+    bodyEl.innerHTML =
+      '<div class="card tight glass" style="border-color:' + (tr.status === 'drop' ? 'var(--red-b)' : (tr.status === 'plateau' ? 'var(--amber-b)' : 'var(--green-b)')) + '">' +
+        (tr.metricLine ? '<div class="h4" style="margin-bottom:4px">' + escapeAttr(tr.metricLine) + '</div>' : '') +
+        '<div class="tiny muted" style="line-height:1.45">' + escapeAttr(tr.summary) + '</div>' +
+      '</div>' +
+      historyBarsHtml +
+      actionsHtml;
+  }
+  openModal('modal-trend-coach');
+}
+
+function applyTrendCoachAction(action, altName){
+  playSound('success');
+  if(action === 'boost_rest'){
+    adjustTimer(30);
+    closeModal('modal-trend-coach');
+    toast('⏱️ Added +30s rest buffer for fuller CNS & local recovery!');
+  } else if(action === 'top_backoff'){
+    if(workoutActive && activeSessionData && activeSessionData[activeExIndex]){
+      addSet();
+      const ex = activeSessionData[activeExIndex];
+      ex.note = (ex.note ? ex.note + ' · ' : '') + 'Top Set + -10% Back-off';
+      $('activeExNote').value = ex.note;
+      saveNote();
+      closeModal('modal-trend-coach');
+      toast('🎯 Added Back-off Set! Drop weight ~10% on final set for 10-12 clean reps.');
+    } else {
+      closeModal('modal-trend-coach');
+      toast('🎯 Tip: Perform 1 heavy Top Set (6-8 reps) followed by -10% Back-Off sets (10-12 reps)!');
+    }
+  } else if(action === 'swap_alt' && altName){
+    if(workoutActive && activeSessionData && activeSessionData[activeExIndex]){
+      changeActiveExName(altName);
+      closeModal('modal-trend-coach');
+      toast('🔄 Swapped to ' + altName + ' to break accommodation plateau!');
+    }
+  }
+}
+
+/* ============ 3. BIOMECHANICAL SYMMETRY RADAR & WATCHLIST ENGINE ============ */
+function renderSymmetryRadarAndTrends(){
+  const vs = getWeeklyMuscleVolumeAndSplitFrequency();
+  const vol = vs.volSets || {};
+  const freq = vs.splitFreq || {};
+
+  // Combine 7-day logged sets + programmed split frequency so the radar works immediately even on Day 1!
+  function getAxisScore(keys, idealWeeklySets){
+    let setsSum = 0;
+    let freqSum = 0;
+    keys.forEach(function(k){
+      setsSum += (vol[k] || 0);
+      freqSum += (freq[k] || 0);
+    });
+    const effectiveSets = setsSum > 0 ? setsSum : (freqSum * 3.5);
+    return clamp(Math.round((effectiveSets / idealWeeklySets) * 100), 18, 100);
+  }
+
+  const axes = [
+    { key: 'Push', label: 'Push', sub: 'Chest · F.Delts · Tri', score: getAxisScore(['Chest','Front Delts','Triceps'], 22) },
+    { key: 'Pull', label: 'Pull', sub: 'Lats · Upper Back · Bi', score: getAxisScore(['Lats','Upper Back','Rear Delts','Biceps'], 24) },
+    { key: 'Quads', label: 'Quads', sub: 'Anterior Knee', score: getAxisScore(['Quads','Adductors'], 12) },
+    { key: 'PostChain', label: 'Post. Chain', sub: 'Hams · Glutes', score: getAxisScore(['Hamstrings','Glutes','Abductors'], 14) },
+    { key: 'Delts', label: 'Lateral', sub: 'Side/Rear Delts · Traps', score: getAxisScore(['Side Delts','Rear Delts','Upper Traps'], 14) },
+    { key: 'CoreCalves', label: 'Core & Shins', sub: 'Abs · Calves · Tibialis', score: getAxisScore(['Upper Abs','Lower Abs','Obliques','Lower Back','Calves','Tibialis'], 14) }
+  ];
+
+  const svg = $('symmetryRadarSvg');
+  if(svg){
+    const cx = 130, cy = 115, maxR = 76;
+    const angles = [-90, -30, 30, 90, 150, 210].map(function(deg){ return deg * Math.PI / 180; });
+
+    function pt(idx, rRatio){
+      const r = maxR * rRatio;
+      const x = cx + r * Math.cos(angles[idx]);
+      const y = cy + r * Math.sin(angles[idx]);
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }
+
+    let ringsHtml = '';
+    [0.25, 0.5, 0.75, 1.0].forEach(function(lvl){
+      const pts = [0,1,2,3,4,5].map(function(i){ return pt(i, lvl); }).join(' ');
+      ringsHtml += '<polygon points="' + pts + '" fill="none" stroke="rgba(148,163,184,' + (lvl === 1 ? '0.28' : '0.14') + ')" stroke-width="' + (lvl === 1 ? '1.2' : '0.8') + '" stroke-dasharray="' + (lvl === 0.75 ? '3,2' : 'none') + '"/>';
+    });
+
+    let spokesHtml = '';
+    axes.forEach(function(ax, i){
+      const outer = pt(i, 1.0).split(',');
+      spokesHtml += '<line x1="' + cx + '" y1="' + cy + '" x2="' + outer[0] + '" y2="' + outer[1] + '" stroke="rgba(148,163,184,0.16)" stroke-width="1"/>';
+      const lblR = maxR + 22;
+      const lx = cx + lblR * Math.cos(angles[i]);
+      const ly = cy + lblR * Math.sin(angles[i]);
+      spokesHtml += '<text x="' + lx.toFixed(1) + '" y="' + (ly - 2).toFixed(1) + '" text-anchor="middle" fill="var(--txt)" font-size="9.5" font-weight="900">' + ax.label + '</text>';
+      spokesHtml += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 9).toFixed(1) + '" text-anchor="middle" fill="var(--blue-t)" font-family="var(--font-mono)" font-size="8.5" font-weight="800">' + ax.score + '%</text>';
+    });
+
+    const actualPts = axes.map(function(ax, i){ return pt(i, clamp(ax.score / 100, 0.15, 1.0)); }).join(' ');
+    let dotsHtml = '';
+    axes.forEach(function(ax, i){
+      const p = pt(i, clamp(ax.score / 100, 0.15, 1.0)).split(',');
+      const cCol = ax.score >= 70 ? '#10b981' : (ax.score >= 45 ? '#38bdf8' : '#f59e0b');
+      dotsHtml += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="4" fill="' + cCol + '" stroke="#06101e" stroke-width="1.5"/>';
+    });
+
+    svg.innerHTML =
+      '<defs>' +
+        '<linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#38bdf8" stop-opacity="0.42"/>' +
+          '<stop offset="100%" stop-color="#10b981" stop-opacity="0.32"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      ringsHtml +
+      spokesHtml +
+      '<polygon class="radar-poly-actual" points="' + actualPts + '" fill="url(#radarGrad)" stroke="#38bdf8" stroke-width="2.2" stroke-linejoin="round"/>' +
+      dotsHtml;
+  }
+
+  // Joint Health Ratios
+  const pushPullRatio = axes[1].score > 0 ? (axes[0].score / axes[1].score) : 1;
+  const quadHamRatio = axes[3].score > 0 ? (axes[2].score / axes[3].score) : 1;
+  const upperAvg = Math.round((axes[0].score + axes[1].score + axes[4].score) / 3);
+  const lowerAvg = Math.round((axes[2].score + axes[3].score + axes[5].score) / 3);
+  const upperLowerRatio = lowerAvg > 0 ? (upperAvg / lowerAvg) : 1;
+
+  const imbalances = [];
+  if(pushPullRatio > 1.28) imbalances.push('⚠️ <b>Shoulder Health Alert:</b> Push volume exceeds Pull by <b>' + Math.round((pushPullRatio - 1)*100) + '%</b>. Add 2–3 sets of Rear Delts or Chest-Supported Rows to protect rotator cuff mechanics.');
+  else if(pushPullRatio < 0.72) imbalances.push('💡 <b>Pull-Dominant Split:</b> Your back/pull chain is ahead of Anterior Push. You have plenty of shoulder joint stability headroom to push Chest/Delt intensity.');
+
+  if(quadHamRatio > 1.32) imbalances.push('⚠️ <b>Knee Stability Alert:</b> Quads dominate Posterior Chain by <b>' + Math.round((quadHamRatio - 1)*100) + '%</b>. Add seated/lying Leg Curls or RDLs to balance ACL &amp; patellar shear forces.');
+  else if(quadHamRatio < 0.72) imbalances.push('💡 <b>Posterior-Dominant Legs:</b> Hams/Glutes outpace Quads. Consider adding 2 sets of Knee Extensions or Hack Squats.');
+
+  const symScore = clamp(100 - Math.round(Math.abs(1 - pushPullRatio) * 35 + Math.abs(1 - quadHamRatio) * 35 + Math.abs(1 - upperLowerRatio) * 20), 52, 100);
+  const scoreBadge = $('radarOverallScoreBadge');
+  if(scoreBadge){
+    scoreBadge.textContent = symScore + '% Symmetry';
+    scoreBadge.className = 'chip ' + (symScore >= 82 ? 'green' : (symScore >= 68 ? 'amber' : 'red'));
+  }
+
+  const ratioGrid = $('radarJointRatiosGrid');
+  if(ratioGrid){
+    function ratioCard(lbl, val, okMin, okMax){
+      const ok = val >= okMin && val <= okMax;
+      const col = ok ? 'var(--green-t)' : 'var(--amber-t)';
+      return '<div class="radar-ratio-card">' +
+        '<span class="micro subtle" style="font-size:8px">' + lbl + '</span>' +
+        '<span class="mono" style="font-size:13px;font-weight:900;color:' + col + '">' + val.toFixed(2) + ':1</span>' +
+        '<span class="micro" style="font-size:8px;color:' + col + '">' + (ok ? '✓ Optimal' : '⚠️ Check') + '</span>' +
+      '</div>';
+    }
+    ratioGrid.innerHTML =
+      ratioCard('PUSH : PULL', pushPullRatio, 0.78, 1.25) +
+      ratioCard('QUAD : HAM', quadHamRatio, 0.78, 1.28) +
+      ratioCard('UPPER : LOWER', upperLowerRatio, 0.75, 1.35);
+  }
+
+  const diagBox = $('radarDiagnosticBox');
+  if(diagBox){
+    diagBox.innerHTML = imbalances.length
+      ? imbalances.join('<br><br>')
+      : '✅ <b>Biomechanical Equilibrium:</b> Your Push/Pull, Quad/Hamstring, and Upper/Lower ratios are within optimal orthopedic and hypertrophy corridors.';
+  }
+
+  // Render Plateau & Regression Watchlist across all exercises in active split
+  const wlContainer = $('trendWatchlistContainer');
+  const wlChip = $('trendWatchlistSummaryChip');
+  if(wlContainer){
+    const prog = getProgram();
+    const items = [];
+    let dropCount = 0, platCount = 0, progCount = 0;
+    prog.forEach(function(d, dIdx){
+      (d.exercises || []).forEach(function(ex, eIdx){
+        const tr = analyzeExerciseTrend(ex);
+        if(tr.status === 'drop') dropCount++;
+        else if(tr.status === 'plateau') platCount++;
+        else if(tr.status === 'progress') progCount++;
+        items.push({ day: d.day, dIdx: dIdx, eIdx: eIdx, ex: ex, tr: tr });
+      });
+    });
+
+    const rankOrder = { drop: 1, plateau: 2, progress: 3, new: 4 };
+    items.sort(function(a, b){ return (rankOrder[a.tr.status] || 4) - (rankOrder[b.tr.status] || 4); });
+
+    if(wlChip){
+      if(dropCount > 0){ wlChip.className = 'chip red'; wlChip.textContent = dropCount + ' Drop · ' + platCount + ' Plateau'; }
+      else if(platCount > 0){ wlChip.className = 'chip amber'; wlChip.textContent = platCount + ' Plateau · ' + progCount + ' Growing'; }
+      else { wlChip.className = 'chip green'; wlChip.textContent = progCount + ' Progressing'; }
+    }
+
+    if(!items.length){
+      wlContainer.innerHTML = '<div class="tiny muted center" style="padding:10px">No exercises in current split yet.</div>';
+    } else {
+      wlContainer.innerHTML = items.map(function(item){
+        const seatStr = getExerciseSeatNote(item.ex.name, item.ex);
+        return '<div class="card tight glass row-between" style="padding:7px 9px;cursor:pointer" onclick="openTrendCoachFromWatchlist(' + item.dIdx + ',' + item.eIdx + ')">' +
+          '<div style="min-width:0;flex:1;padding-right:6px">' +
+            '<div style="font-size:11.5px;font-weight:900;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">D' + item.day + ' · ' + escapeAttr(item.ex.name) + '</div>' +
+            '<div class="micro subtle" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
+              escapeAttr(item.tr.metricLine || item.tr.summary) +
+              (seatStr ? (' · 🪑 ' + escapeAttr(seatStr)) : '') +
+            '</div>' +
+          '</div>' +
+          '<span class="trend-badge ' + item.tr.status + '">' + escapeAttr(item.tr.badge) + '</span>' +
+        '</div>';
+      }).join('');
+    }
+  }
+}
+
+function openTrendCoachFromWatchlist(dIdx, eIdx){
+  const prog = getProgram();
+  if(prog[dIdx] && prog[dIdx].exercises[eIdx]){
+    openTrendCoachModal(prog[dIdx].exercises[eIdx]);
+  }
+}
+
+/* ============ 4. SYSTEM NOTIFICATIONS & HAPTIC ALERTS ENGINE ============ */
+function toggleSystemNotifications(){
+  playSound('tap');
+  appData.systemNotifications = (appData.systemNotifications === false) ? true : false;
+  if(appData.systemNotifications && 'Notification' in window && Notification.permission === 'default'){
+    try{ Notification.requestPermission(); }catch(e){}
+  }
+  save();
+  refreshSettingsUI();
+  toast(appData.systemNotifications ? '🔔 System Notifications Enabled' : '🔕 System Notifications Muted');
+}
+
+function fireSystemTimerNotification(title, body){
+  if(appData.systemNotifications === false) return;
+  try{
+    if(navigator.vibrate) navigator.vibrate([180, 70, 220, 70, 320]);
+  }catch(e){}
+  if(!('Notification' in window)) return;
+  try{
+    if(Notification.permission === 'granted'){
+      const n = new Notification(title, {
+        body: body,
+        tag: 'iron-pulse-timer',
+        renotify: true
+      });
+      setTimeout(function(){ try{ n.close(); }catch(e){} }, 7000);
+    }
+  }catch(e){}
+}
+
+function sendTestSystemNotification(){
+  playSound('success');
+  if(!('Notification' in window)){
+    toast('🔔 Haptic & Audio Alert Active (Browser Notification API restricted on this device view)');
+    try{ if(navigator.vibrate) navigator.vibrate([150, 60, 200]); }catch(e){}
+    return;
+  }
+  if(Notification.permission === 'granted'){
+    fireSystemTimerNotification('⚡ IRON PULSE Alert Ready', 'Rest & Cardio completion notifications are active!');
+    toast('🔔 System notification sent!');
+  } else if(Notification.permission !== 'denied'){
+    Notification.requestPermission().then(function(perm){
+      if(perm === 'granted'){
+        appData.systemNotifications = true;
+        save();
+        refreshSettingsUI();
+        fireSystemTimerNotification('⚡ IRON PULSE Alert Ready', 'Rest & Cardio completion notifications are active!');
+        toast('🔔 Permission granted & notification sent!');
+      } else {
+        toast('🔔 Notification permission not granted — Audio & Haptics active');
+      }
+    }).catch(function(){
+      toast('🔔 Audio & Haptic alerts active');
+    });
+  } else {
+    toast('🔔 Enable browser notifications in site settings — Audio & Haptics active');
+  }
+}
+
+/* ============ 5. SPLIT SHARE CODE & INSTANT IMPORT ENGINE ============ */
+function generateShareSplitPayload(){
+  const pObj = getProgramObj();
+  const prog = getProgram();
+  const compactDays = prog.map(function(d){
+    return {
+      d: d.day,
+      l: d.label || ('Day ' + d.day),
+      e: (d.exercises || []).map(function(ex){
+        const item = {
+          n: ex.name,
+          s: ex.sets || 3
+        };
+        if(ex.warmupSets) item.w = ex.warmupSets;
+        if(ex.isEach) item.ea = 1;
+        if(ex.minWeightStep) item.st = ex.minWeightStep;
+        if(ex.customRestSec) item.cr = ex.customRestSec;
+        const sNote = getExerciseSeatNote(ex.name, ex);
+        if(sNote) item.sn = sNote;
+        if(ex.supersetName){
+          item.ssn = ex.supersetName;
+          item.sss = ex.supersetSets || ex.sets || 3;
+          if(ex.supersetIsEach) item.ssea = 1;
+        }
+        return item;
+      })
+    };
+  });
+  const payload = { v: 1, name: (pObj && pObj.name) ? pObj.name : 'IRON PULSE Split', days: compactDays };
+  const jsonStr = JSON.stringify(payload);
+  const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+  return 'IP1-' + b64;
+}
+
+function generateReadableSplitText(){
+  const pObj = getProgramObj();
+  const prog = getProgram();
+  const lines = ['⚡ IRON PULSE SPLIT: ' + ((pObj && pObj.name) ? pObj.name : 'Custom Split')];
+  prog.forEach(function(d){
+    lines.push('\n📅 ' + getDayDisplayTitle(d) + ':');
+    (d.exercises || []).forEach(function(ex, idx){
+      const sNote = getExerciseSeatNote(ex.name, ex);
+      lines.push('  ' + (idx + 1) + '. ' + ex.name + ' — ' + ex.sets + ' sets' + (ex.warmupSets ? (' (+' + ex.warmupSets + ' warm)') : '') + (sNote ? (' [🪑 ' + sNote + ']') : '') + (ex.supersetName ? (' ⚡ SS: ' + ex.supersetName) : ''));
+    });
+  });
+  lines.push('\n🔗 Import Code:\n' + generateShareSplitPayload());
+  return lines.join('\n');
+}
+
+function openShareSplitModal(){
+  playSound('tap');
+  const pObj = getProgramObj();
+  const prog = getProgram();
+  let totalEx = 0;
+  prog.forEach(function(d){ totalEx += (d.exercises ? d.exercises.length : 0); });
+  if($('shareSplitSummaryBadge')) $('shareSplitSummaryBadge').textContent = prog.length + ' Days · ' + totalEx + ' Ex';
+  if($('shareSplitSubTitle')) $('shareSplitSubTitle').textContent = (pObj && pObj.name ? pObj.name : 'Active Split') + ' — Ready to Share or Import';
+  if($('shareSplitCodeOutput')) $('shareSplitCodeOutput').value = generateShareSplitPayload();
+  if($('importSplitCodeInput')) $('importSplitCodeInput').value = '';
+  openModal('modal-share-split');
+}
+
+function copyShareSplitCode(){
+  playSound('success');
+  const code = generateShareSplitPayload();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(function(){
+      toast('📋 Split Share Code copied to clipboard!');
+    }).catch(function(){
+      const inp = $('shareSplitCodeOutput');
+      if(inp){ inp.select(); document.execCommand('copy'); }
+      toast('📋 Split Share Code copied!');
+    });
+  } else {
+    const inp = $('shareSplitCodeOutput');
+    if(inp){ inp.select(); document.execCommand('copy'); }
+    toast('📋 Split Share Code copied!');
+  }
+}
+
+function copyReadableSplitText(){
+  playSound('success');
+  const txt = generateReadableSplitText();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      toast('📄 Full readable workout plan copied!');
+    }).catch(function(){ toast('📄 Plan ready!'); });
+  } else {
+    toast('📄 Plan copied!');
+  }
+}
+
+function nativeShareSplit(){
+  playSound('tap');
+  const txt = generateReadableSplitText();
+  if(navigator.share){
+    navigator.share({
+      title: 'IRON PULSE Workout Split',
+      text: txt
+    }).catch(function(){});
+  } else {
+    copyReadableSplitText();
+  }
+}
+
+function importSplitFromCode(){
+  const inp = $('importSplitCodeInput');
+  const raw = inp ? inp.value.trim() : '';
+  if(!raw){
+    playSound('warn');
+    toast('Paste an IP1-... split code first');
+    return;
+  }
+  const m = raw.match(/IP1-[A-Za-z0-9+/=]+/);
+  const token = m ? m[0].slice(4) : (raw.startsWith('IP1-') ? raw.slice(4) : raw);
+  try{
+    const jsonStr = decodeURIComponent(escape(atob(token)));
+    const data = JSON.parse(jsonStr);
+    if(!data || !Array.isArray(data.days) || !data.days.length){
+      throw new Error('Invalid split structure');
+    }
+    if(!appData.seatNotes) appData.seatNotes = {};
+    const newProgDays = data.days.map(function(d, idx){
+      return {
+        day: d.d || (idx + 1),
+        label: d.l || ('Day ' + (idx + 1)),
+        exercises: (d.e || []).map(function(item, eIdx){
+          if(item.sn && item.n){
+            appData.seatNotes[normSeatExKey(item.n)] = item.sn;
+          }
+          return {
+            _id: 'ex_' + Date.now() + '_' + idx + '_' + eIdx,
+            name: item.n || 'Exercise',
+            sets: clamp(parseInt(item.s, 10) || 3, 1, 20),
+            warmupSets: clamp(parseInt(item.w, 10) || 0, 0, 10),
+            isEach: !!item.ea,
+            minWeightStep: item.st || '',
+            customRestSec: item.cr || 0,
+            seatNote: item.sn || '',
+            supersetName: item.ssn || '',
+            supersetSets: item.sss || (item.s || 3),
+            supersetIsEach: !!item.ssea,
+            history: []
+          };
+        })
+      };
+    });
+    const newId = 'prog_' + Date.now();
+    const newName = (data.name || 'Imported Split').slice(0, 32);
+    appData.programs.push({
+      id: newId,
+      name: newName,
+      program: newProgDays,
+      currentDayIndex: 0,
+      cycleCount: 1
+    });
+    appData.activeProgramId = newId;
+    appData.currentDayIndex = 0;
+    editorDayIdx = 0;
+    save();
+    closeModal('modal-share-split');
+    playSound('fanfare');
+    route(true);
+    toast('🎉 Imported & activated "' + newName + '" (' + newProgDays.length + ' days)!');
+  }catch(e){
+    playSound('warn');
+    toast('⚠️ Invalid split code. Please copy the full IP1-... code.');
   }
 }
 
@@ -16536,7 +17664,7 @@ function renderMonthlyReportModal(monthKey){
 
 /* ============ AUTO POPUPS ON HOME (FIRST-TIME TOUR, MONTHLY REPORT, WEEKLY WEIGHT) ============ */
 function checkAutoPopupsOnHome(){
-  if(currentScreen !== 'screen-home') return;
+  if(currentScreen !== 'screen-home' || workoutActive || cardioInt) return;
   if(workoutActive || cardioInt) return;
   // Never open a new popup if ANY modal or tutorial overlay is currently open!
   if(isAnyModalOrOverlayOpen()) return;
