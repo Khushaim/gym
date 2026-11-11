@@ -831,38 +831,92 @@ body.numpad-ActivePad .modal-body {
 .chip-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
 
 .seg{
-  display:inline-flex;padding:2.5px;gap:2px;border-radius:var(--r-sm);
+  display:inline-flex;align-items:center;padding:2.5px;gap:2px;border-radius:var(--r-sm);
   background:var(--surface-2);border:1px solid var(--line-2);box-shadow:var(--spec);
   position:relative;overflow:hidden;touch-action:pan-y;user-select:none;
+  isolation:isolate;
 }
 .seg-btn{
   padding:5px 10px;border-radius:calc(var(--r-sm) - 2px);
   font-size:10px;font-weight:800;color:var(--txt-2);
   display:inline-flex;align-items:center;justify-content:center;
-  min-width:50px;height:24px;cursor:pointer;user-select:none;
+  min-width:44px;height:24px;cursor:pointer;user-select:none;
   position:relative;z-index:2;background:transparent !important;border:1px solid transparent !important;box-shadow:none !important;
-  transition:color .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
+  transform:none !important;
+  transition:color .20s ease, text-shadow .20s ease, opacity .18s ease;
+  white-space:nowrap;
+}
+.seg-btn:active{
+  transform:none !important;
+  color:var(--txt);
 }
 .seg-btn.on{
   color:var(--blue-t);
-  text-shadow:0 0 10px rgba(56,189,248,.22);
+  text-shadow:0 0 12px rgba(56,189,248,.32);
 }
 .seg-glass-pill{
   position:absolute;top:2.5px;bottom:2.5px;left:0;width:50%;
   border-radius:calc(var(--r-sm) - 2px);
-  background:linear-gradient(145deg,rgba(255,255,255,.09) 0%,var(--blue-g) 52%,rgba(16,185,129,.07) 100%);
+  background:linear-gradient(145deg,rgba(255,255,255,.16) 0%,var(--blue-g) 50%,rgba(16,185,129,.14) 100%);
   border:1px solid var(--blue-b);
-  box-shadow:0 3px 10px rgba(14,165,233,.14), inset 0 1px 1px rgba(255,255,255,.32);
+  box-shadow:0 4px 14px rgba(14,165,233,.22), inset 0 1.5px 1px rgba(255,255,255,.45), inset 0 -1px 2px rgba(14,165,233,.18);
+  backdrop-filter:blur(10px) saturate(180%);
+  -webkit-backdrop-filter:blur(10px) saturate(180%);
   pointer-events:none;z-index:1;
   transform:translate3d(0,0,0) scale(1);
-  transition:transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), width 0.30s cubic-bezier(0.22, 1, 0.36, 1), background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  transition:transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.22s ease, height 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   will-change:transform,width;
 }
 .seg.scrubbing .seg-glass-pill{
-  transition:transform 0.04s linear, width 0.14s ease !important;
-  background:linear-gradient(145deg,rgba(255,255,255,.15) 0%,var(--blue-g) 50%,rgba(16,185,129,.12) 100%);
-  border-color:rgba(255,255,255,.45);
-  box-shadow:0 5px 15px rgba(56,189,248,.24), inset 0 1.5px 1.5px rgba(255,255,255,.48);
+  transition:transform 0.04s linear, width 0.12s ease !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.24) 0%,var(--blue-g) 48%,rgba(16,185,129,.20) 100%);
+  border-color:rgba(255,255,255,.62);
+  box-shadow:0 6px 18px rgba(56,189,248,.34), inset 0 1.5px 2px rgba(255,255,255,.65);
+}
+/* Floating Liquid-Glass Gesture Feedback Pill (#gestureGlassHUD) */
+.gesture-glass-hud{
+  position:fixed;
+  top:0;left:0;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:7px 14px;
+  border-radius:999px;
+  font-size:11.5px;font-weight:900;font-family:var(--font-main);
+  color:#f8fafc;
+  white-space:nowrap;
+  background:linear-gradient(145deg, rgba(255,255,255,.26) 0%, rgba(14,165,233,.32) 52%, rgba(16,185,129,.28) 100%);
+  border:1.5px solid rgba(255,255,255,.62);
+  box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 20px rgba(56,189,248,.35), inset 0 1.5px 1.5px rgba(255,255,255,.80);
+  backdrop-filter:blur(14px) saturate(200%);
+  -webkit-backdrop-filter:blur(14px) saturate(200%);
+  transform:translate3d(-50%,-50%,0) scale(.86);
+  transition:opacity .16s ease, transform .18s cubic-bezier(.22,1,.36,1), background .18s ease, border-color .18s ease;
+}
+.gesture-glass-hud.active{
+  opacity:1;
+}
+.gesture-glass-hud.emerald{
+  background:linear-gradient(145deg, rgba(255,255,255,.28) 0%, rgba(16,185,129,.38) 55%, rgba(14,165,233,.28) 100%);
+  border-color:rgba(52,211,153,.80);
+  box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 24px rgba(16,185,129,.45), inset 0 1.5px 1.5px rgba(255,255,255,.85);
+}
+.gesture-glass-hud.crimson{
+  background:linear-gradient(145deg, rgba(255,255,255,.26) 0%, rgba(244,63,94,.38) 55%, rgba(245,158,11,.28) 100%);
+  border-color:rgba(251,113,133,.80);
+  box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 24px rgba(244,63,94,.45), inset 0 1.5px 1.5px rgba(255,255,255,.85);
+}
+@keyframes stepperGlassPulse05{
+  0%{transform:var(--lens-pos, translate3d(0,0,0)) scale(1)}
+  45%{transform:var(--lens-pos, translate3d(0,0,0)) scale(1.14)}
+  100%{transform:var(--lens-pos, translate3d(0,0,0)) scale(1)}
+}
+.stepper-glass-lens.pulse-step{
+  border-color:#34d399;
+  background:linear-gradient(145deg, rgba(255,255,255,.45) 0%, rgba(52,211,153,.38) 50%, rgba(56,189,248,.36) 100%);
+  box-shadow:0 0 24px rgba(16,185,129,.75), inset 0 1.5px 2px rgba(255,255,255,.95);
+  animation:stepperGlassPulse05 0.24s cubic-bezier(.22,1,.36,1);
 }
 
 input[type=text],input[type=email],input[type=date],input[type=number],input[type=password],select,textarea{width:100%;padding:8px 11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--txt);font-size:12px;font-weight:700;outline:none;color-scheme:dark}
@@ -1966,6 +2020,7 @@ body[data-idle="1"] .marble-veins{
   <div class="bg-vignette"></div>
 </div>
 <div id="stepperGlassLens" class="stepper-glass-lens" aria-hidden="true"></div>
+<div id="gestureGlassHUD" class="gesture-glass-hud" aria-hidden="true"></div>
 
 <div class="timer-sides" id="timerSides">
   <div class="timer-side l"><i></i></div>
@@ -1992,6 +2047,7 @@ body[data-idle="1"] .marble-veins{
     <div class="header-center"><span id="workoutStopwatch">00:00</span></div>
     <div class="header-actions">
       <button class="icon-btn" id="cloudHeaderBtn" title="Account & Cloud Sync" onclick="openCloudAuthModal()" style="border-color:var(--blue-b);color:var(--blue-t);font-size:15px">👤</button>
+      <button class="icon-btn" id="gesturesGuideHeaderBtn" title="Glassy Gestures Guide" onclick="openModal('modal-gestures-guide')" style="color:var(--blue-t);border-color:var(--blue-b)">✨</button>
       <button class="icon-btn" id="fullscreenBtn" title="Toggle Full Screen" onclick="toggleFullScreen()">⛶</button>
       <button class="icon-btn" title="Settings" onclick="openSettings()">⚙️</button>
     </div>
@@ -2112,7 +2168,11 @@ body[data-idle="1"] .marble-veins{
             </div>
             <div>
               <label class="label">Height (cm)</label>
-              <input type="text" readonly inputmode="none" class="num-target" id="aiProfHeightInput" data-label="Height (cm)" value="175" onclick="setActiveNumTarget(this)" oninput="syncProfileFromAIWizard()" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:5px">
+              <div class="row gap-1">
+                <button type="button" class="btn sq-sm" style="width:24px;height:30px;padding:0" onclick="stepProfileField('aiProfHeightInput', -1);syncProfileFromAIWizard()">−</button>
+                <input type="text" readonly inputmode="none" class="num-target" id="aiProfHeightInput" data-label="Height (cm)" value="175" onclick="setActiveNumTarget(this)" oninput="syncProfileFromAIWizard()" style="text-align:center;font-family:var(--font-mono);font-weight:900;padding:5px">
+                <button type="button" class="btn sq-sm" style="width:24px;height:30px;padding:0" onclick="stepProfileField('aiProfHeightInput', 1);syncProfileFromAIWizard()">+</button>
+              </div>
             </div>
             <div>
               <label class="label">Physique Goal</label>
@@ -2139,9 +2199,10 @@ body[data-idle="1"] .marble-veins{
           <div class="grid-2" style="align-items:center">
             <div>
               <span class="label">Gender Profile</span>
-              <div class="row gap-1">
-                <button class="btn sm flex1 on" id="sgMaleBtn" style="border-color:var(--blue-b);background:var(--blue-g);color:var(--blue-t)" onclick="sgSelectGender('male')">♂ Male</button>
-                <button class="btn sm flex1" id="sgFemaleBtn" onclick="sgSelectGender('female')">♀ Female</button>
+              <div class="seg" id="sgGenderSeg" style="width:100%">
+                <div class="seg-glass-pill"></div>
+                <div class="seg-btn on" id="sgMaleBtn" style="flex:1;height:28px" onclick="sgSelectGender('male')">♂ Male</div>
+                <div class="seg-btn" id="sgFemaleBtn" style="flex:1;height:28px" onclick="sgSelectGender('female')">♀ Female</div>
               </div>
             </div>
             <div>
@@ -2216,12 +2277,13 @@ body[data-idle="1"] .marble-veins{
             <input type="text" readonly inputmode="none" class="num-target" id="sgDaysVal" data-label="Training Days / Week" value="4" onclick="setActiveNumTarget(this)" oninput="sgTypeDays(this)" style="width:68px;text-align:center;font-size:22px;padding:4px">
             <button class="btn sq-sm" onclick="sgAdjustDays(1)">+</button>
           </div>
-          <div class="chip-row">
-            <div class="chip" onclick="sgSetDays(2)">2d</div>
-            <div class="chip" onclick="sgSetDays(3)">3d</div>
-            <div class="chip on" onclick="sgSetDays(4)">4d</div>
-            <div class="chip" onclick="sgSetDays(5)">5d</div>
-            <div class="chip" onclick="sgSetDays(6)">6d</div>
+          <div class="seg" id="sgDaysPresetSeg" style="width:100%">
+            <div class="seg-glass-pill"></div>
+            <div class="seg-btn chip" style="flex:1" onclick="sgSetDays(2)">2d</div>
+            <div class="seg-btn chip" style="flex:1" onclick="sgSetDays(3)">3d</div>
+            <div class="seg-btn chip on" style="flex:1" onclick="sgSetDays(4)">4d</div>
+            <div class="seg-btn chip" style="flex:1" onclick="sgSetDays(5)">5d</div>
+            <div class="seg-btn chip" style="flex:1" onclick="sgSetDays(6)">6d</div>
           </div>
         </div>
 
@@ -2302,11 +2364,12 @@ body[data-idle="1"] .marble-veins{
               <input type="text" readonly inputmode="none" class="num-target" id="aiSetsPerExVal" data-label="Sets per Individual Exercise" value="3" onclick="setActiveNumTarget(this)" oninput="aiTypeSetsPerEx(this)" style="width:68px;text-align:center;font-size:18px;padding:5px">
               <button class="btn sq-sm" onclick="aiAdjustSetsPerEx(1)">+</button>
             </div>
-            <div class="chip-row">
-              <div class="chip" onclick="aiSetSetsPerEx(2)">2 sets</div>
-              <div class="chip on" onclick="aiSetSetsPerEx(3)">3 sets</div>
-              <div class="chip" onclick="aiSetSetsPerEx(4)">4 sets</div>
-              <div class="chip" onclick="aiSetSetsPerEx(5)">5 sets</div>
+            <div class="seg" id="aiSetsPresetSeg" style="width:100%">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn chip" style="flex:1" onclick="aiSetSetsPerEx(2)">2 sets</div>
+              <div class="seg-btn chip on" style="flex:1" onclick="aiSetSetsPerEx(3)">3 sets</div>
+              <div class="seg-btn chip" style="flex:1" onclick="aiSetSetsPerEx(4)">4 sets</div>
+              <div class="seg-btn chip" style="flex:1" onclick="aiSetSetsPerEx(5)">5 sets</div>
             </div>
           </div>
         </div>
@@ -2580,12 +2643,20 @@ body[data-idle="1"] .marble-veins{
         <div class="card tight workout-ex-card" id="workoutExHeaderCard">
           <div class="w-row w-row-title">
             <input type="text" id="activeExName" class="grow ex-name-input auto-fit-name" data-max-font="13.5" data-min-font="8" oninput="fitActiveExNameFontSize(this)" onchange="changeActiveExName(this.value)" placeholder="Exercise name">
-            <button class="chip w-compact-chip w-title-each-chip" id="eachBtn" onclick="toggleEach()">Each: OFF</button>
+            <div class="seg micro-seg" id="eachSegWrap" style="height:26px;flex-shrink:0" title="Total weight vs Each dumbbell/side">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="eachOffBtn" style="padding:0 6px;font-size:8.5px" onclick="setWorkoutEach(false)">Total</div>
+              <div class="seg-btn" id="eachBtn" style="padding:0 6px;font-size:8.5px" onclick="setWorkoutEach(true)">Each</div>
+            </div>
           </div>
           <div class="w-row w-row-ss-title hidden" id="workoutSSNameRow">
             <span class="ss-live-badge" title="Superset Exercise">⚡ SS</span>
             <input type="text" id="activeSSExName" class="grow ss-name-input auto-fit-name" data-max-font="12.5" data-min-font="8" oninput="fitActiveExNameFontSize(this)" onchange="changeActiveSSExName(this.value)" placeholder="Superset exercise name">
-            <button class="chip purple w-compact-chip w-ss-each-chip" id="ssEachBtn" onclick="toggleSSEach()">Each: OFF</button>
+            <div class="seg micro-seg" id="ssEachSegWrap" style="height:26px;flex-shrink:0" title="Superset: Total weight vs Each side">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="ssEachOffBtn" style="padding:0 6px;font-size:8.5px" onclick="setWorkoutSSEach(false)">Total</div>
+              <div class="seg-btn" id="ssEachBtn" style="padding:0 6px;font-size:8.5px" onclick="setWorkoutSSEach(true)">Each</div>
+            </div>
           </div>
           <div class="w-row" style="gap:3.5px">
             <button type="button" class="seat-setup-pill auto-fit-name" data-max-font="9" data-min-font="6.8" id="workoutSeatSetupBtn" onclick="openSeatSetupModal('main')" title="Machine Seat, Pulley, Pad & Grip Setup">🪑 Setup</button>
@@ -2599,7 +2670,11 @@ body[data-idle="1"] .marble-veins{
               <span class="micro" style="color:var(--purple-t);font-size:7.5px">⚡±SS</span>
               <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
             </div>
-            <button class="chip purple w-compact-chip" style="height:26px;padding:0 6px;font-size:8.5px" id="techChangedBtn" onclick="toggleTechChanged()" title="Different machine or grip? Pauses strict PR comparison">🔄 Tech</button>
+            <div class="seg micro-seg" id="techSegWrap" style="height:26px;flex-shrink:0" title="Standard PR comparison vs Different Machine/Grip">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(false)">Std</div>
+              <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(true)">🔄 Tech</div>
+            </div>
           </div>
           <div class="workout-controls">
             <button class="btn micro-btn amber" onclick="addWarmup()">+Warm</button>
@@ -2680,20 +2755,22 @@ body[data-idle="1"] .marble-veins{
             <input type="text" readonly inputmode="none" class="num-target" data-label="Duration (Minutes)" id="cardioDurInput" value="30" onclick="setActiveNumTarget(this)" oninput="onCardioDurOrCountChange()" style="width:82px;text-align:center;font-size:18px;font-weight:900;font-family:var(--font-mono);padding:6px">
             <button class="btn sq-sm" onclick="adjustCardio('dur',5)">+</button>
           </div>
-          <div class="chip-row">
-            <div class="chip" onclick="setDur(15)">15m</div>
-            <div class="chip" onclick="setDur(20)">20m</div>
-            <div class="chip" onclick="setDur(30)">30m</div>
-            <div class="chip" onclick="setDur(45)">45m</div>
-            <div class="chip" onclick="setDur(60)">60m</div>
+          <div class="seg" id="cardioDurPresetSeg" style="width:100%">
+            <div class="seg-glass-pill"></div>
+            <div class="seg-btn" style="flex:1" data-dur="15" onclick="setDur(15)">15m</div>
+            <div class="seg-btn" style="flex:1" data-dur="20" onclick="setDur(20)">20m</div>
+            <div class="seg-btn on" style="flex:1" data-dur="30" onclick="setDur(30)">30m</div>
+            <div class="seg-btn" style="flex:1" data-dur="45" onclick="setDur(45)">45m</div>
+            <div class="seg-btn" style="flex:1" data-dur="60" onclick="setDur(60)">60m</div>
           </div>
         </div>
 
         <div class="card tight center">
           <label class="label">Water rests?</label>
-          <div class="row gap-2" style="justify-content:center;margin-bottom:6px">
-            <div class="chip green on" id="wrYes" onclick="toggleWater(true)">Yes</div>
-            <div class="chip" id="wrNo" onclick="toggleWater(false)">No</div>
+          <div class="seg" id="waterEnableSeg" style="width:100%;max-width:220px;margin:0 auto 6px">
+            <div class="seg-glass-pill"></div>
+            <div class="seg-btn on" id="wrYes" style="flex:1" onclick="toggleWater(true)">💧 Yes</div>
+            <div class="seg-btn" id="wrNo" style="flex:1" onclick="toggleWater(false)">No</div>
           </div>
           <div id="waterConfigSection" class="stack gap-2">
             <div id="cardioAutoRestDivider" style="height:1px;background:var(--line)"></div>
@@ -2725,9 +2802,10 @@ body[data-idle="1"] .marble-veins{
             <div style="height:1px;background:var(--line)"></div>
             <div>
               <label class="label">Custom Rests (Per-Rest Time &amp; Length)</label>
-              <div class="row gap-2" style="justify-content:center">
-                <div class="chip green" id="crCustomYes" onclick="toggleCustomRests(true)">Custom</div>
-                <div class="chip green on" id="crCustomNo" onclick="toggleCustomRests(false)">Auto Equal</div>
+              <div class="seg" id="cardioCustomModeSeg" style="width:100%;max-width:240px;margin:0 auto">
+                <div class="seg-glass-pill"></div>
+                <div class="seg-btn on" id="crCustomNo" style="flex:1" onclick="toggleCustomRests(false)">⚖️ Auto Equal</div>
+                <div class="seg-btn" id="crCustomYes" style="flex:1" onclick="toggleCustomRests(true)">✨ Custom</div>
               </div>
             </div>
 
@@ -2741,8 +2819,15 @@ body[data-idle="1"] .marble-veins{
           </div>
         </div>
 
-        <div class="card tight center">
-          <div class="chip" id="cardioEcoChip" onclick="toggleCardioEco()">🔋 ECO</div>
+        <div class="card tight">
+          <div class="row-between">
+            <span class="h4">🔋 Cardio Display Mode</span>
+            <div class="seg" id="cardioEcoSeg">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="cardioEcoOffBtn" onclick="setCardioEco(false)">⚡ Normal</div>
+              <div class="seg-btn" id="cardioEcoChip" onclick="setCardioEco(true)">🔋 ECO</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="action-bar">
@@ -2865,7 +2950,11 @@ body[data-idle="1"] .marble-veins{
                 <div class="micro subtle" id="analyticsVolSubLabel">Use − / + or tap any target number to set your weekly goal per muscle</div>
               </div>
               <div class="row gap-1">
-                <button class="btn xs purple" id="editVolTargetsBtn" onclick="toggleVolumeTargetsEditMode()">✓ Edit On</button>
+                <div class="seg micro-seg" id="volTargetsEditSeg">
+                  <div class="seg-glass-pill"></div>
+                  <div class="seg-btn" id="volTargetsLockBtn" onclick="if(volumeTargetsEditMode) toggleVolumeTargetsEditMode()">🔒 View</div>
+                  <div class="seg-btn on" id="editVolTargetsBtn" onclick="if(!volumeTargetsEditMode) toggleVolumeTargetsEditMode()">✏️ Targets</div>
+                </div>
                 <button class="btn xs ghost" id="resetVolTargetsBtn" onclick="resetWeeklyVolumeTargetsToStandard()" title="Restore Standard Scientific Weekly Set Targets">↺ Standard</button>
               </div>
             </div>
@@ -2932,8 +3021,22 @@ body[data-idle="1"] .marble-veins{
         <div class="card hud">
           <div class="row-between" style="margin-bottom:7px"><span class="h4">1RM Calculator</span><span class="micro subtle">Epley Formula</span></div>
           <div class="grid-2" style="margin-bottom:7px">
-            <div><label class="label">Weight</label><input type="text" readonly inputmode="none" class="num-target" data-label="1RM Weight" id="calcWeight" value="100" onclick="setActiveNumTarget(this)" oninput="calc1RM();calcPyramid()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px"></div>
-            <div><label class="label">Reps</label><input type="text" readonly inputmode="none" class="num-target" data-label="1RM Reps" id="calcReps" value="5" onclick="setActiveNumTarget(this)" oninput="calc1RM();calcPyramid()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px"></div>
+            <div>
+              <label class="label">Weight</label>
+              <div class="row gap-1">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('calcWeight', -2.5, function(){calc1RM();calcPyramid();})">−</button>
+                <input type="text" readonly inputmode="none" class="num-target" data-label="1RM Weight" id="calcWeight" value="100" onclick="setActiveNumTarget(this)" oninput="calc1RM();calcPyramid()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('calcWeight', 2.5, function(){calc1RM();calcPyramid();})">+</button>
+              </div>
+            </div>
+            <div>
+              <label class="label">Reps</label>
+              <div class="row gap-1">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('calcReps', -1, function(){calc1RM();calcPyramid();})">−</button>
+                <input type="text" readonly inputmode="none" class="num-target" data-label="1RM Reps" id="calcReps" value="5" onclick="setActiveNumTarget(this)" oninput="calc1RM();calcPyramid()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('calcReps', 1, function(){calc1RM();calcPyramid();})">+</button>
+              </div>
+            </div>
           </div>
           <div class="card glass center" style="padding:8px">
             <span class="micro subtle">Estimated 1RM</span>
@@ -2943,8 +3046,22 @@ body[data-idle="1"] .marble-veins{
         <div class="card">
           <div class="row-between" style="margin-bottom:7px"><span class="h4">📊 Pyramid Calculator</span><span class="micro subtle">weight × reps</span></div>
           <div class="grid-2" style="margin-bottom:7px">
-            <div><label class="label">Step</label><input type="text" readonly inputmode="none" class="num-target" data-label="Pyramid Weight Step" id="pyrStep" value="2.5" onclick="setActiveNumTarget(this)" oninput="calcPyramid()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:6px"></div>
-            <div><label class="label">Rows below</label><input type="text" readonly inputmode="none" class="num-target" data-label="Pyramid Rows Below" id="pyrRows" value="3" onclick="setActiveNumTarget(this)" oninput="calcPyramid()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:6px"></div>
+            <div>
+              <label class="label">Step</label>
+              <div class="row gap-1">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('pyrStep', -0.5, calcPyramid)">−</button>
+                <input type="text" readonly inputmode="none" class="num-target" data-label="Pyramid Weight Step" id="pyrStep" value="2.5" onclick="setActiveNumTarget(this)" oninput="calcPyramid()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:6px">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('pyrStep', 0.5, calcPyramid)">+</button>
+              </div>
+            </div>
+            <div>
+              <label class="label">Rows below</label>
+              <div class="row gap-1">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('pyrRows', -1, calcPyramid)">−</button>
+                <input type="text" readonly inputmode="none" class="num-target" data-label="Pyramid Rows Below" id="pyrRows" value="3" onclick="setActiveNumTarget(this)" oninput="calcPyramid()" style="text-align:center;font-size:13.5px;font-weight:900;font-family:var(--font-mono);padding:6px">
+                <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('pyrRows', 1, calcPyramid)">+</button>
+              </div>
+            </div>
           </div>
           <div class="micro subtle center" style="margin-bottom:5px">Above = overload · Below = back-off sets</div>
           <div id="pyrList" class="stack" style="gap:4px"></div>
@@ -2953,15 +3070,23 @@ body[data-idle="1"] .marble-veins{
         <div id="toolsPanePlates" class="stack gap-2 hidden">
         <div class="card hud" style="border-color:var(--amber-b)">
           <div class="row-between" style="margin-bottom:7px"><span class="h4" style="color:var(--amber-t)">💿 Plate Calculator</span><span class="micro subtle">per side</span></div>
-          <div><label class="label">Target Total Weight</label><input type="text" readonly inputmode="none" class="num-target" data-label="Plate Target Weight" id="plateTarget" value="100" onclick="setActiveNumTarget(this)" oninput="calcPlates()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px;margin-bottom:7px"></div>
+          <div style="margin-bottom:7px">
+            <label class="label">Target Total Weight</label>
+            <div class="row gap-1">
+              <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('plateTarget', -2.5, calcPlates)">−</button>
+              <input type="text" readonly inputmode="none" class="num-target" data-label="Plate Target Weight" id="plateTarget" value="100" onclick="setActiveNumTarget(this)" oninput="calcPlates()" style="text-align:center;font-size:14.5px;font-weight:900;font-family:var(--font-mono);padding:7px">
+              <button type="button" class="btn sq-sm" onclick="stepQuickCalcField('plateTarget', 2.5, calcPlates)">+</button>
+            </div>
+          </div>
           <div class="grid-2" style="gap:8px;margin-bottom:7px">
             <div>
               <label class="label">Bar weight (<span class="unit-txt">kg</span>)</label>
-              <div class="chip-row" id="toolsBarChips" style="justify-content:flex-start">
-                <div class="chip on" data-bar="20" onclick="setBar(20,this)">20</div>
-                <div class="chip" data-bar="15" onclick="setBar(15,this)">15</div>
-                <div class="chip" data-bar="10" onclick="setBar(10,this)">10</div>
-                <div class="chip" data-bar="25" onclick="setBar(25,this)">25</div>
+              <div class="seg" id="toolsBarChips" style="width:100%">
+                <div class="seg-glass-pill"></div>
+                <div class="seg-btn chip on" style="flex:1;min-width:0;padding:4px 2px" data-bar="20" onclick="setBar(20,this)">20</div>
+                <div class="seg-btn chip" style="flex:1;min-width:0;padding:4px 2px" data-bar="15" onclick="setBar(15,this)">15</div>
+                <div class="seg-btn chip" style="flex:1;min-width:0;padding:4px 2px" data-bar="10" onclick="setBar(10,this)">10</div>
+                <div class="seg-btn chip" style="flex:1;min-width:0;padding:4px 2px" data-bar="25" onclick="setBar(25,this)">25</div>
               </div>
             </div>
             <div>
@@ -3388,6 +3513,66 @@ body[data-idle="1"] .marble-veins{
 </div>
 
 <!-- SETTINGS MODAL (CRISP, COMMERCIAL-GRADE, ZERO FILLER) -->
+
+<!-- INTERACTIVE LIQUID-GLASS GESTURES GUIDE MODAL -->
+<div class="modal" id="modal-gestures-guide">
+  <div class="modal-card" style="max-height:86dvh">
+    <div class="modal-head">
+      <span class="modal-title" style="color:var(--blue-t)">✨ Liquid-Glass Gestures Guide</span>
+      <button class="btn sq-sm" onclick="closeModal('modal-gestures-guide')">✕</button>
+    </div>
+    <div class="modal-body" style="gap:8px">
+      <div class="micro subtle center" style="color:var(--green-t);font-weight:800">Every gesture below uses real-time morphing Liquid-Glass feedback:</div>
+
+      <div class="card glass" style="padding:9px 11px;border-color:var(--green-b)">
+        <div class="h4" style="color:var(--green-t)">1. 🫧 Morphing Stepper Swipe + 0.5s Hold (العدسة الزجاجية المتقلصة)</div>
+        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
+          اسحب أفقياً من أي مربع رقم (الوزن، العدات، الكارديو، الحاسبات) باتجاه زر <b>−</b> أو <b>+</b>: تتقلص العدسة الزجاجية تدريجياً لتطابق حجم زر <b>− / +</b> وتزيد خطوة واحدة، وإذا استمررت بالتعليق (Hold) تضيف <b>خطوة كل 0.5 ثانية</b> مع نبضة زجاجية! وعند الإفلات تكبر لحجم المربع الأصلي.
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:9px 11px;border-color:var(--blue-b)">
+        <div class="h4" style="color:var(--blue-t)">2. 🎛️ Liquid-Glass Switch Scrubbing (السحب الزجاجي على السويتشات)</div>
+        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
+          على أي سويتش زجاجي (<b>Each/Total</b>، <b>Std/Tech</b>، <b>Dark/Light</b>، الخلفيات الـ 5، أوزان البار، الكارديو، أو الشريط السفلي): يمكنك <b>سحب إصبعك أفقياً</b> مباشرة فوق السويتش لتنتقل الكبسولة الزجاجية بسلاسة مع حركة إصبعك.
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:9px 11px;border-color:var(--amber-b)">
+        <div class="h4" style="color:var(--amber-t)">3. ⏱️ Rest Timer Scrub &amp; Double-Tap (إيماءات مؤقت الراحة الزجاجية)</div>
+        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
+          أثناء التمرين، <b>اسحب يميناً أو يساراً</b> فوق شريط مؤقت الراحة لإضافة أو إنقاص <b>±15 ثانية / ±30 ثانية</b> مع كبسولة زجاجية تفاعلية، أو <b>اضغط مرتين (Double-Tap)</b> على الوقت لتشغيل/إيقاف المؤقت فوراً.
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:9px 11px;border-color:var(--purple-b)">
+        <div class="h4" style="color:var(--purple-t)">4. ⚡ Set Tag Swipe Actions (سحب بطاقة الجولة للنسخ أو الدروب سيت)</div>
+        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
+          على شارة الجولة (<b>SET 1 · L: ...</b>) يسار الصف:<br>
+          • <b>اسحب لليمين (→)</b> لنسخ وزن وعدات الجلسة السابقة تلقائياً بكبسولة زجاجية خضراء.<br>
+          • <b>اسحب لليسار (←)</b> لإضافة جولة <b>+Drop Set</b> فوراً بكبسولة زجاجية حمراء.
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:9px 11px">
+        <div class="h4" style="color:var(--blue-t)">5. 🧭 Header Swipe Navigation (التنقل الزجاجي بين الأيام والتمارين)</div>
+        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
+          اسحب أفقياً (يمين/يسار) على البطاقة العلوية في الرئيسية، التمرين، محرر الجدول، أو الإحصائيات للتنقل بين الأيام والتمارين مع مؤشر زجاجي عائم (<b>◀ Prev / Next ▶</b>).
+        </div>
+      </div>
+
+      <div class="card glass" style="padding:9px 11px">
+        <div class="h4" style="color:var(--green-t)">6. 🔽 Modal Pull-Down &amp; Numpad Swipe-Backspace</div>
+        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
+          • <b>اسحب للأسفل (↓)</b> على رأس أي نافذة منبثقة أو لوحة الأرقام لإغلاقها بسلاسة.<br>
+          • <b>اسحب لليسار (←)</b> على شاشة الرقم في الكيبورد لمسح آخر خانة (<b>⌫</b>)، أو علّق على <b>⌫</b> لمدة <b>0.5 ثانية</b> لمسح الرقم بالكامل.
+        </div>
+      </div>
+    </div>
+    <button class="btn primary block" onclick="closeModal('modal-gestures-guide')">Got It! 🚀</button>
+  </div>
+</div>
+
 <div class="modal" id="modal-settings">
   <div class="modal-card" style="max-height:92dvh;padding:11px 12px;gap:6px">
     <div class="modal-head"><span class="modal-title">⚙️ Settings</span><button class="btn sq-sm" onclick="closeModal('modal-settings')">✕</button></div>
@@ -3448,55 +3633,74 @@ body[data-idle="1"] .marble-veins{
         <div class="row-between" style="padding-top:5px;border-top:1px solid var(--line)">
           <span class="h4">⚖️ Weight Check-In</span>
           <div class="row gap-1">
-            <button class="chip" id="settingsWeightPopupBtn" onclick="toggleWeeklyWeightPopupSetting()">ON</button>
+            <div class="seg micro-seg" id="settingsWeightPopupSeg">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="settingsWeightPopupBtn" onclick="setWeeklyWeightPopupSetting(true)">🔔 ON</div>
+              <div class="seg-btn" id="settingsWeightPopupOffBtn" onclick="setWeeklyWeightPopupSetting(false)">OFF</div>
+            </div>
             <button class="btn xs blue" onclick="closeModal('modal-settings');openWeeklyWeightModal(true)">Log</button>
           </div>
         </div>
         <div class="row-between" style="padding-top:5px;border-top:1px solid var(--line)">
           <span class="h4">🛡️ Deload Cycle</span>
           <div class="row gap-1">
-            <button class="chip" id="settingsDeloadToggleBtn" onclick="toggleAutoDeloadEnabled()">ON</button>
+            <div class="seg micro-seg" id="settingsDeloadToggleSeg">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="settingsDeloadToggleBtn" onclick="setAutoDeloadSetting(true)">🛡️ ON</div>
+              <div class="seg-btn" id="settingsDeloadToggleOffBtn" onclick="setAutoDeloadSetting(false)">OFF</div>
+            </div>
             <button class="btn xs ghost" onclick="closeModal('modal-settings');openDeloadConfigModal()">⚙️</button>
           </div>
         </div>
         <div class="row-between" style="padding-top:5px;border-top:1px solid var(--line)">
           <span class="h4">🔔 System Alerts</span>
           <div class="row gap-1">
-            <button class="chip" id="settingsNotifToggleBtn" onclick="toggleSystemNotifications()">ON</button>
+            <div class="seg micro-seg" id="settingsNotifToggleSeg">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="settingsNotifToggleBtn" onclick="setSystemNotificationsSetting(true)">🔔 ON</div>
+              <div class="seg-btn" id="settingsNotifToggleOffBtn" onclick="setSystemNotificationsSetting(false)">OFF</div>
+            </div>
             <button class="btn xs blue" onclick="sendTestSystemNotification()">Test</button>
           </div>
         </div>
         <div class="row-between" style="padding-top:5px;border-top:1px solid var(--line)">
           <span class="h4">🔋 Power Saver</span>
-          <button class="chip" id="ecoBtn" onclick="toggleEco();refreshSettingsUI()">OFF</button>
+          <div class="seg micro-seg" id="settingsEcoSeg">
+            <div class="seg-glass-pill"></div>
+            <div class="seg-btn on" id="ecoOffBtn" onclick="setEcoMode(false)">⚡ Normal</div>
+            <div class="seg-btn" id="ecoBtn" onclick="setEcoMode(true)">🔋 ECO</div>
+          </div>
         </div>
       </div>
 
-      <!-- 4. APPEARANCE: INDEPENDENT DARK/LIGHT MODE + 5 ARCHITECTURAL DESIGNS -->
+      <!-- 4. APPEARANCE: INDEPENDENT DARK/LIGHT MODE + 5 WALLPAPER DESIGNS (GLASSY SWITCH) -->
       <div class="card glass" style="padding:9px 11px">
         <div class="row-between" style="margin-bottom:7px">
           <div>
-            <span class="h4">🎨 Mode &amp; Design</span>
-            <div class="micro subtle">Switch Dark/Light freely inside any design</div>
+            <span class="h4">🎨 Mode &amp; Wallpaper</span>
+            <div class="micro subtle">Tap or scrub across any glassy switch</div>
           </div>
           <div class="seg" id="settingsThemeModeSeg">
+            <div class="seg-glass-pill"></div>
             <div class="seg-btn on" id="themeDarkChip" onclick="setTheme(true)">🌙 Dark</div>
             <div class="seg-btn" id="themeLightChip" onclick="setTheme(false)">☀️ Light</div>
           </div>
         </div>
-        <div class="skin-grid" style="grid-template-columns:repeat(5,1fr);gap:4px">
-          <button class="skin-pill" id="skinCyber" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('cyber')">⚡ Cyber</button>
-          <button class="skin-pill" id="skinRoyal" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('royal')">👑 Luxe</button>
-          <button class="skin-pill" id="skinHyper" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('hyper')">🔮 Synth</button>
-          <button class="skin-pill" id="skinEmerald" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('emerald')">🌿 HUD</button>
-          <button class="skin-pill" id="skinCrimson" style="padding:6px 2px;font-size:9.5px" onclick="setSkin('crimson')">🩸 Carbon</button>
+        <div class="seg" id="settingsSkinSeg" style="width:100%">
+          <div class="seg-glass-pill"></div>
+          <div class="seg-btn on" id="skinCyber" style="flex:1;min-width:0;padding:5px 2px;font-size:9.5px" onclick="setSkin('cyber')">⚡ Cyber</div>
+          <div class="seg-btn" id="skinRoyal" style="flex:1;min-width:0;padding:5px 2px;font-size:9.5px" onclick="setSkin('royal')">👑 Luxe</div>
+          <div class="seg-btn" id="skinHyper" style="flex:1;min-width:0;padding:5px 2px;font-size:9.5px" onclick="setSkin('hyper')">🔮 Synth</div>
+          <div class="seg-btn" id="skinEmerald" style="flex:1;min-width:0;padding:5px 2px;font-size:9.5px" onclick="setSkin('emerald')">🌿 HUD</div>
+          <div class="seg-btn" id="skinCrimson" style="flex:1;min-width:0;padding:5px 2px;font-size:9.5px" onclick="setSkin('crimson')">🩸 Carbon</div>
         </div>
       </div>
 
       <!-- 5. GUIDES, DATA & SPLITS -->
-      <div class="grid-2" style="gap:6px;flex-shrink:0">
-        <button class="tour-cta-hero-btn" style="padding:9px 8px;font-size:11px;min-height:36px" onclick="closeModal('modal-settings');openA2HSGuideModal(true)">📲 Install as App</button>
-        <button class="tour-cta-hero-btn" style="padding:9px 8px;font-size:11px;min-height:36px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
+      <div class="grid-3" style="gap:5px;flex-shrink:0">
+        <button class="tour-cta-hero-btn" style="padding:8px 4px;font-size:10px;min-height:36px" onclick="closeModal('modal-settings');openA2HSGuideModal(true)">📲 Install App</button>
+        <button class="tour-cta-hero-btn" style="padding:8px 4px;font-size:10px;min-height:36px" onclick="closeModal('modal-settings');openModal('modal-gestures-guide')">✨ Gestures</button>
+        <button class="tour-cta-hero-btn" style="padding:8px 4px;font-size:10px;min-height:36px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
       </div>
       <div class="grid-2" style="gap:6px">
         <button class="btn sm" onclick="closeModal('modal-settings');openPrograms()">📂 Splits</button>
@@ -3617,11 +3821,12 @@ body[data-idle="1"] .marble-veins{
       <button type="button" class="btn sq-sm num-target-proxy" onclick="stepQuickCalcField('quickPlateInput', 2.5, renderQuickPlates)">+</button>
     </div>
     <div class="row-between" style="gap:6px;flex-wrap:wrap">
-      <div class="chip-row" id="qpBarChips" style="flex:1">
-        <div class="chip on" data-bar="20" onclick="setQuickBar(20)">Bar 20</div>
-        <div class="chip" data-bar="15" onclick="setQuickBar(15)">Bar 15</div>
-        <div class="chip" data-bar="10" onclick="setQuickBar(10)">Bar 10</div>
-        <div class="chip" data-bar="25" onclick="setQuickBar(25)">Bar 25</div>
+      <div class="seg" id="qpBarChips" style="flex:1">
+        <div class="seg-glass-pill"></div>
+        <div class="seg-btn chip on" style="flex:1;min-width:0;padding:4px 3px" data-bar="20" onclick="setQuickBar(20)">Bar 20</div>
+        <div class="seg-btn chip" style="flex:1;min-width:0;padding:4px 3px" data-bar="15" onclick="setQuickBar(15)">Bar 15</div>
+        <div class="seg-btn chip" style="flex:1;min-width:0;padding:4px 3px" data-bar="10" onclick="setQuickBar(10)">Bar 10</div>
+        <div class="seg-btn chip" style="flex:1;min-width:0;padding:4px 3px" data-bar="25" onclick="setQuickBar(25)">Bar 25</div>
       </div>
     </div>
     <div class="row-between card glass" style="padding:7px 10px">
@@ -5635,7 +5840,13 @@ function showScreen(id, force){
   if(DOCK_SCREENS.indexOf(id) >= 0 && (prog.length > 0 || id === 'screen-ai-chat')) dock.classList.remove('hidden');
   else dock.classList.add('hidden');
   document.querySelectorAll('.dock-item').forEach(function(b){ b.classList.toggle('active', b.dataset.target === id); });
-  requestAnimationFrame(function(){ if(typeof syncDockGlassPillToActive === 'function') syncDockGlassPillToActive(); });
+  requestAnimationFrame(function(){
+    if(typeof syncDockGlassPillToActive === 'function') syncDockGlassPillToActive();
+    if(typeof syncAllVisibleSegPills === 'function') syncAllVisibleSegPills();
+  });
+  setTimeout(function(){
+    if(typeof syncAllVisibleSegPills === 'function') syncAllVisibleSegPills();
+  }, 55);
   closeNumpad();
   document.body.dataset.paused = (id !== 'screen-home') ? '1' : '';
 
@@ -5897,18 +6108,9 @@ function startSuggestWizard(){
 function sgSelectGender(g){
   suggestData.gender = g;
   const m = $('sgMaleBtn'), f = $('sgFemaleBtn');
-  if(m){
-    m.classList.toggle('on', g === 'male');
-    m.style.background = g === 'male' ? 'var(--blue-g)' : '';
-    m.style.borderColor = g === 'male' ? 'var(--blue-b)' : '';
-    m.style.color = g === 'male' ? 'var(--blue-t)' : '';
-  }
-  if(f){
-    f.classList.toggle('on', g === 'female');
-    f.style.background = g === 'female' ? 'rgba(244,114,182,.18)' : '';
-    f.style.borderColor = g === 'female' ? 'rgba(236,72,153,.45)' : '';
-    f.style.color = g === 'female' ? '#f472b6' : '';
-  }
+  if(m) m.classList.toggle('on', g === 'male');
+  if(f) f.classList.toggle('on', g === 'female');
+  if($('sgGenderSeg') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('sgGenderSeg'));
 }
 
 function aiAdjustAge(d){
@@ -5978,9 +6180,10 @@ function sgTypeDays(el){
 function sgSetDays(n){
   suggestData.days = n;
   $('sgDaysVal').value = n;
-  document.querySelectorAll('#screen-suggest-days .chip-row .chip').forEach(function(c){
-    c.classList.toggle('on', c.textContent === n + 'd');
+  document.querySelectorAll('#sgDaysPresetSeg .seg-btn, #screen-suggest-days .chip-row .chip').forEach(function(c){
+    c.classList.toggle('on', c.textContent.trim() === n + 'd');
   });
+  if($('sgDaysPresetSeg') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('sgDaysPresetSeg'));
   aiEnsurePerDayMuscles();
   sgRenderSplitsForStep2();
 }
@@ -8820,8 +9023,10 @@ function finalizeNumTarget(el){
   }
 }
 
+let _suppressInputClickUntil = 0;
 function setActiveNumTarget(el){
   if(!el) return;
+  if(Date.now() < _suppressInputClickUntil) return;
   if(activeNum && activeNum !== el){
     finalizeNumTarget(activeNum);
     activeNum.classList.remove('num-active');
@@ -9931,6 +10136,21 @@ function toggleTechChanged(){
   syncWorkout();
   toast(ex.currentEntry.techniqueChanged ? 'Tech Changed: PR comparison paused' : 'Standard comparison active');
 }
+function setWorkoutEach(val){
+  const ex = activeSessionData[activeExIndex];
+  if(!ex || !!ex.isEach === !!val) return;
+  toggleEach();
+}
+function setWorkoutSSEach(val){
+  const ex = activeSessionData[activeExIndex];
+  if(!ex || !ex.supersetName || !!ex.supersetIsEach === !!val) return;
+  toggleSSEach();
+}
+function setWorkoutTechChanged(val){
+  const ex = activeSessionData[activeExIndex];
+  if(!ex || !ex.currentEntry || !!ex.currentEntry.techniqueChanged === !!val) return;
+  toggleTechChanged();
+}
 function getActiveWorkoutWeightAndReps(){
   let w = 100, r = 5;
   const w0 = $('w_0'), r0 = $('r_0');
@@ -10439,11 +10659,10 @@ function renderWorkout(){
         ex.supersetIsEach = !!(ssEntry && ssEntry.equip === 'Dumbbell');
       }
     }
-    const ssEachBtn = $('ssEachBtn');
-    if(ssEachBtn){
-      ssEachBtn.textContent = 'Each: ' + (ex.supersetIsEach ? 'ON' : 'OFF');
-      ssEachBtn.classList.toggle('on', !!ex.supersetIsEach);
-    }
+    const ssEachBtn = $('ssEachBtn'), ssEachOffBtn = $('ssEachOffBtn');
+    if(ssEachBtn) ssEachBtn.classList.toggle('on', !!ex.supersetIsEach);
+    if(ssEachOffBtn) ssEachOffBtn.classList.toggle('on', !ex.supersetIsEach);
+    if($('ssEachSegWrap') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('ssEachSegWrap'));
   }
 
   if(ex.note && (/^Target:\s*/i.test(ex.note.trim()) || ex.note.trim().toLowerCase() === (ex.name || '').trim().toLowerCase())){
@@ -10461,12 +10680,16 @@ function renderWorkout(){
   if(ssStepInp && document.activeElement !== ssStepInp && activeNum !== ssStepInp){
     ssStepInp.value = (hasSS && ex.supersetMinWeightStep && parseFloat(ex.supersetMinWeightStep) > 0) ? ex.supersetMinWeightStep : '';
   }
-  const eachBtn = $('eachBtn');
-  eachBtn.textContent = 'Each: ' + (ex.isEach ? 'ON' : 'OFF');
-  eachBtn.classList.toggle('on', !!ex.isEach);
+  const eachBtn = $('eachBtn'), eachOffBtn = $('eachOffBtn');
+  if(eachBtn) eachBtn.classList.toggle('on', !!ex.isEach);
+  if(eachOffBtn) eachOffBtn.classList.toggle('on', !ex.isEach);
+  if($('eachSegWrap') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('eachSegWrap'));
   requestAnimationFrame(fitAllVisibleNameInputs);
-  const techBtn = $('techChangedBtn');
-  if(techBtn) techBtn.classList.toggle('on', !!(ex.currentEntry && ex.currentEntry.techniqueChanged));
+  const isTech = !!(ex.currentEntry && ex.currentEntry.techniqueChanged);
+  const techBtn = $('techChangedBtn'), techStdBtn = $('techStdBtn');
+  if(techBtn) techBtn.classList.toggle('on', isTech);
+  if(techStdBtn) techStdBtn.classList.toggle('on', !isTech);
+  if($('techSegWrap') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('techSegWrap'));
   $('ssHistBtn').classList.toggle('hidden', !ex.supersetName);
   const c = $('setsContainer');
   c.innerHTML = '';
@@ -11594,16 +11817,34 @@ function adjustCardio(type, d){
   }
 }
 
+function syncCardioDurPresetPill(){
+  const seg = $('cardioDurPresetSeg');
+  if(!seg) return;
+  const v = parseInt($('cardioDurInput') && $('cardioDurInput').value) || 30;
+  seg.querySelectorAll('.seg-btn').forEach(function(b){
+    b.classList.toggle('on', parseInt(b.dataset.dur) === v);
+  });
+  if(typeof syncSegGlassPill === 'function') syncSegGlassPill(seg);
+}
+
 function setDur(m){
+  playSound('tap');
   $('cardioDurInput').value = Math.max(5, m);
+  syncCardioDurPresetPill();
   onCardioDurOrCountChange();
 }
 
 function toggleWater(on){
-  waterRestsEnabled = on;
-  $('wrYes').classList.toggle('on', on);
-  $('wrNo').classList.toggle('on', !on);
-  $('waterConfigSection').style.display = on ? 'flex' : 'none';
+  playSound('tap');
+  waterRestsEnabled = !!on;
+  if($('wrYes')) $('wrYes').classList.toggle('on', waterRestsEnabled);
+  if($('wrNo')) $('wrNo').classList.toggle('on', !waterRestsEnabled);
+  if($('waterEnableSeg') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('waterEnableSeg'));
+  $('waterConfigSection').style.display = waterRestsEnabled ? 'flex' : 'none';
+  if(waterRestsEnabled && typeof syncAllVisibleSegPills === 'function'){
+    requestAnimationFrame(syncAllVisibleSegPills);
+    setTimeout(syncAllVisibleSegPills, 40);
+  }
 }
 
 function toggleCustomRests(on){
@@ -11726,7 +11967,16 @@ function stepCustomRestMin(idx, delta){
       customRestMins[j] = reqMin;
     }
   }
-  renderCustomPoints();
+  // Update inputs in-place so swipe & 0.5s hold never detach DOM elements
+  for(let j = 0; j < count; j++){
+    const sInp = $('crStartInput_' + j);
+    if(sInp){
+      sInp.value = customRestSpecs[j].atMin;
+      if($('numpad') && $('numpad').classList.contains('open') && activeNum === sInp){
+        $('numpadValue').textContent = String(customRestSpecs[j].atMin);
+      }
+    }
+  }
 }
 
 function stepCustomRestDuration(idx, dir){
@@ -11740,6 +11990,15 @@ function stepCustomRestDuration(idx, dir){
   } else {
     const step = 15;
     spec.durVal = clamp(Math.round(v + dir * step), step, 3600);
+  }
+  // Update input in-place so swipe & 0.5s hold never detach DOM elements
+  const dInp = $('crDurInput_' + idx);
+  if(dInp){
+    dInp.value = spec.durVal;
+    if($('numpad') && $('numpad').classList.contains('open') && activeNum === dInp){
+      $('numpadValue').textContent = String(spec.durVal);
+    }
+    return;
   }
   renderCustomPoints();
 }
@@ -11852,7 +12111,14 @@ function renderCustomPoints(){
   }
 }
 
-function toggleCardioEco(){ cardioEcoSelected = !cardioEcoSelected; $('cardioEcoChip').classList.toggle('on', cardioEcoSelected); }
+function setCardioEco(val){
+  playSound('tap');
+  cardioEcoSelected = !!val;
+  if($('cardioEcoChip')) $('cardioEcoChip').classList.toggle('on', cardioEcoSelected);
+  if($('cardioEcoOffBtn')) $('cardioEcoOffBtn').classList.toggle('on', !cardioEcoSelected);
+  if($('cardioEcoSeg') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('cardioEcoSeg'));
+}
+function toggleCardioEco(){ setCardioEco(!cardioEcoSelected); }
 function startCardioSetup(){
   playSound('nav');
   showScreen('screen-cardio-setup');
@@ -12969,18 +13235,39 @@ function createProgram(){
 
 /* ============ SETTINGS & BACKUP ============ */
 function openSettings(){ refreshSettingsUI(); openModal('modal-settings'); }
+function setEcoMode(val){
+  if(!!appData.powerSaveMode === !!val) return;
+  playSound('tap');
+  toggleEco();
+  refreshSettingsUI();
+}
+function setWeeklyWeightPopupSetting(val){
+  const prof = ensureAthleteProfile();
+  if((prof.weeklyWeightPrompt !== false) === !!val) return;
+  toggleWeeklyWeightPopupSetting();
+}
+function setAutoDeloadSetting(val){
+  const cfg = ensureDeloadConfig();
+  if(!!cfg.enabled === !!val) return;
+  toggleAutoDeloadEnabled();
+}
+function setSystemNotificationsSetting(val){
+  if((appData.systemNotifications !== false) === !!val) return;
+  toggleSystemNotifications();
+}
 function refreshSettingsUI(){
-  const nfBtn = $('settingsNotifToggleBtn');
-  if(nfBtn){
-    const nfOn = appData.systemNotifications !== false;
-    nfBtn.textContent = nfOn ? '🔔 ON' : 'OFF';
-    nfBtn.classList.toggle('on', nfOn);
-  }
-  const btn = $('ecoBtn');
-  if(btn){ btn.textContent = appData.powerSaveMode ? '🔋 ON' : 'OFF'; btn.classList.toggle('on', appData.powerSaveMode); }
+  const nfOn = appData.systemNotifications !== false;
+  if($('settingsNotifToggleBtn')) $('settingsNotifToggleBtn').classList.toggle('on', nfOn);
+  if($('settingsNotifToggleOffBtn')) $('settingsNotifToggleOffBtn').classList.toggle('on', !nfOn);
+
+  const ecoOn = !!appData.powerSaveMode;
+  if($('ecoBtn')) $('ecoBtn').classList.toggle('on', ecoOn);
+  if($('ecoOffBtn')) $('ecoOffBtn').classList.toggle('on', !ecoOn);
+
   const d = $('themeDarkChip'), l = $('themeLightChip');
   if(d) d.classList.toggle('on', !!appData.darkMode);
   if(l) l.classList.toggle('on', !appData.darkMode);
+
   const curSkin = appData.skin || 'cyber';
   const sCyber = $('skinCyber'), sRoyal = $('skinRoyal'), sHyper = $('skinHyper'), sEmerald = $('skinEmerald'), sCrimson = $('skinCrimson');
   if(sCyber) sCyber.classList.toggle('on', curSkin === 'cyber');
@@ -12988,21 +13275,23 @@ function refreshSettingsUI(){
   if(sHyper) sHyper.classList.toggle('on', curSkin === 'hyper');
   if(sEmerald) sEmerald.classList.toggle('on', curSkin === 'emerald');
   if(sCrimson) sCrimson.classList.toggle('on', curSkin === 'crimson');
-  if(typeof syncAllVisibleSegPills === 'function') setTimeout(syncAllVisibleSegPills, 20);
+
   const wg = $('weeklyGoalInput'); if(wg) wg.value = appData.weeklyGoal || 4;
-  const dlBtn = $('settingsDeloadToggleBtn');
-  if(dlBtn && typeof ensureDeloadConfig === 'function'){
+
+  if(typeof ensureDeloadConfig === 'function'){
     const cfg = ensureDeloadConfig();
-    dlBtn.textContent = cfg.enabled ? '🛡️ ON' : 'OFF';
-    dlBtn.classList.toggle('on', !!cfg.enabled);
+    if($('settingsDeloadToggleBtn')) $('settingsDeloadToggleBtn').classList.toggle('on', !!cfg.enabled);
+    if($('settingsDeloadToggleOffBtn')) $('settingsDeloadToggleOffBtn').classList.toggle('on', !cfg.enabled);
   }
   refreshUnitUI();
   const prof = (typeof ensureAthleteProfile === 'function') ? ensureAthleteProfile() : {};
-  const wpBtn = $('settingsWeightPopupBtn');
-  if(wpBtn){
-    const wpOn = prof.weeklyWeightPrompt !== false;
-    wpBtn.textContent = wpOn ? '🔔 ON' : 'OFF';
-    wpBtn.classList.toggle('on', wpOn);
+  const wpOn = prof.weeklyWeightPrompt !== false;
+  if($('settingsWeightPopupBtn')) $('settingsWeightPopupBtn').classList.toggle('on', wpOn);
+  if($('settingsWeightPopupOffBtn')) $('settingsWeightPopupOffBtn').classList.toggle('on', !wpOn);
+
+  if(typeof syncAllVisibleSegPills === 'function'){
+    requestAnimationFrame(syncAllVisibleSegPills);
+    setTimeout(syncAllVisibleSegPills, 25);
   }
   const wwToggle = $('wwModalAutoToggleBtn');
   if(wwToggle){
@@ -13280,10 +13569,12 @@ function calcPlates(){
   el.innerHTML = parts.join('');
 }
 function setBar(val, el){
+  playSound('tap');
   appData.barWeight = val; save();
   refreshUnitUI();
   calcPlates();
   renderQuickPlates();
+  if($('toolsBarChips') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('toolsBarChips'));
 }
 function setUnit(u){
   const prevUnit = appData.unit || 'kg';
@@ -13354,15 +13645,17 @@ function refreshUnitUI(){
   if(barPresets.indexOf(appData.barWeight) < 0) appData.barWeight = barPresets[0];
   const qpContainer = $('qpBarChips');
   if(qpContainer){
-    qpContainer.innerHTML = barPresets.map(function(bVal){
-      return '<div class="chip' + (appData.barWeight === bVal ? ' on' : '') + '" data-bar="' + bVal + '" onclick="setQuickBar(' + bVal + ')">Bar ' + bVal + '</div>';
+    qpContainer.innerHTML = '<div class="seg-glass-pill"></div>' + barPresets.map(function(bVal){
+      return '<div class="seg-btn chip' + (appData.barWeight === bVal ? ' on' : '') + '" style="flex:1;min-width:0;padding:4px 3px" data-bar="' + bVal + '" onclick="setQuickBar(' + bVal + ')">Bar ' + bVal + '</div>';
     }).join('');
+    if(typeof syncSegGlassPill === 'function') requestAnimationFrame(function(){ syncSegGlassPill(qpContainer); });
   }
   const toolsBarContainer = $('toolsBarChips');
   if(toolsBarContainer){
-    toolsBarContainer.innerHTML = barPresets.map(function(bVal){
-      return '<div class="chip' + (appData.barWeight === bVal ? ' on' : '') + '" data-bar="' + bVal + '" onclick="setBar(' + bVal + ',this)">' + bVal + '</div>';
+    toolsBarContainer.innerHTML = '<div class="seg-glass-pill"></div>' + barPresets.map(function(bVal){
+      return '<div class="seg-btn chip' + (appData.barWeight === bVal ? ' on' : '') + '" style="flex:1;min-width:0;padding:4px 2px" data-bar="' + bVal + '" onclick="setBar(' + bVal + ',this)">' + bVal + '</div>';
     }).join('');
+    if(typeof syncSegGlassPill === 'function') requestAnimationFrame(function(){ syncSegGlassPill(toolsBarContainer); });
   }
   if($('qpBarLbl')) $('qpBarLbl').textContent = appData.barWeight + ' ' + uLbl;
 }
@@ -14623,11 +14916,9 @@ function hasCustomWeeklyTargets(){
 function toggleVolumeTargetsEditMode(){
   playSound('tap');
   volumeTargetsEditMode = !volumeTargetsEditMode;
-  const btn = $('editVolTargetsBtn');
-  if(btn){
-    btn.textContent = volumeTargetsEditMode ? '✓ Done' : '🎯 Targets';
-    btn.className = volumeTargetsEditMode ? 'btn xs green' : 'btn xs purple';
-  }
+  if($('editVolTargetsBtn')) $('editVolTargetsBtn').classList.toggle('on', volumeTargetsEditMode);
+  if($('volTargetsLockBtn')) $('volTargetsLockBtn').classList.toggle('on', !volumeTargetsEditMode);
+  if($('volTargetsEditSeg') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('volTargetsEditSeg'));
   renderAnalyticsConsistencyAndVolume();
 }
 
@@ -14652,11 +14943,9 @@ function resetWeeklyVolumeTargetsToStandard(){
   playSound('success');
   appData.customVolumeTargets = {};
   volumeTargetsEditMode = false;
-  const btn = $('editVolTargetsBtn');
-  if(btn){
-    btn.textContent = '🎯 Targets';
-    btn.className = 'btn xs purple';
-  }
+  if($('editVolTargetsBtn')) $('editVolTargetsBtn').classList.toggle('on', false);
+  if($('volTargetsLockBtn')) $('volTargetsLockBtn').classList.toggle('on', true);
+  if($('volTargetsEditSeg') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('volTargetsEditSeg'));
   save();
   renderAnalyticsConsistencyAndVolume();
   if(typeof renderMuscleHeatmap === 'function') renderMuscleHeatmap();
@@ -17162,7 +17451,7 @@ function importSplitFromCode(){
 }
 
 
-/* ============ 6. UNIVERSAL LIQUID GLASS SWITCHER (.seg) ENGINE ============ */
+/* ============ 6. UNIVERSAL LIQUID GLASS SWITCHER (.seg) ENGINE (OFFSET-EXACT & ZERO-JITTER) ============ */
 function syncSegGlassPill(seg){
   if(!seg) return;
   const btns = Array.prototype.slice.call(seg.querySelectorAll(':scope > .seg-btn'));
@@ -17176,31 +17465,46 @@ function syncSegGlassPill(seg){
   let activeIdx = 0;
   btns.forEach(function(b, idx){ if(b.classList.contains('on')) activeIdx = idx; });
   const activeBtn = btns[activeIdx] || btns[0];
-  const sRect = seg.getBoundingClientRect();
-  const bRect = activeBtn.getBoundingClientRect();
-  if(sRect.width > 10 && bRect.width > 4){
-    const offsetLeft = bRect.left - sRect.left;
-    pill.style.width = bRect.width + 'px';
-    pill.style.transform = 'translate3d(' + offsetLeft.toFixed(1) + 'px, 0, 0)';
+
+  // Use offsetLeft & offsetWidth (immune to parent/button CSS scale transforms during animations!)
+  const bw = activeBtn.offsetWidth;
+  const bh = activeBtn.offsetHeight;
+  const bl = activeBtn.offsetLeft;
+  const bt = activeBtn.offsetTop;
+
+  if(bw > 4 && seg.offsetWidth > 10){
+    pill.style.width = bw + 'px';
+    pill.style.top = bt + 'px';
+    pill.style.height = bh + 'px';
+    pill.style.bottom = 'auto';
+    pill.style.transform = 'translate3d(' + bl + 'px, 0, 0)';
   } else {
     const pctW = 100 / btns.length;
     pill.style.width = 'calc(' + pctW.toFixed(2) + '% - 4px)';
-    pill.style.transform = 'translate3d(' + (activeIdx * 100) + '%, 0, 0)';
+    pill.style.top = '2.5px';
+    pill.style.bottom = '2.5px';
+    pill.style.height = 'auto';
+    pill.style.transform = 'translate3d(calc(' + (activeIdx * 100) + '% + 2px), 0, 0)';
   }
 }
 
 function syncAllVisibleSegPills(){
   document.querySelectorAll('.seg').forEach(function(seg){
-    syncSegGlassPill(seg);
+    if(seg.offsetWidth > 0) syncSegGlassPill(seg);
   });
 }
 
 (function initUniversalSegLiquidGlass(){
-  let activeSeg = null;
+  let downSeg = null;
+  let startX = 0;
+  let startY = 0;
+  let isScrubbing = false;
   let segRaf = null;
-  let lastTriggeredBtn = null;
+  let lastScrubBtn = null;
+  let suppressClickUntil = 0;
 
   function scrubSegAtX(seg, clientX){
+    if(!seg || !isScrubbing) return;
     const sRect = seg.getBoundingClientRect();
     if(sRect.width <= 0) return;
     const btns = Array.prototype.slice.call(seg.querySelectorAll(':scope > .seg-btn'));
@@ -17221,32 +17525,51 @@ function syncAllVisibleSegPills(){
         targetBtn = btns[i];
       }
     }
-    const tRect = targetBtn.getBoundingClientRect();
-    const pillW = tRect.width || (sRect.width / btns.length);
-    const pillX = clamp(relX - pillW / 2, 2, Math.max(2, sRect.width - pillW - 2));
+    const pillW = targetBtn.offsetWidth || (seg.offsetWidth / btns.length);
+    const pillX = clamp(relX - pillW / 2, 2, Math.max(2, seg.offsetWidth - pillW - 2));
     if(pill){
       pill.style.width = pillW + 'px';
       pill.style.transform = 'translate3d(' + pillX.toFixed(1) + 'px, 0, 0) scale(1.03)';
     }
-    if(targetBtn && targetBtn !== lastTriggeredBtn && !targetBtn.classList.contains('on')){
-      lastTriggeredBtn = targetBtn;
+    if(targetBtn && targetBtn !== lastScrubBtn && !targetBtn.classList.contains('on')){
+      lastScrubBtn = targetBtn;
+      suppressClickUntil = Date.now() + 340;
       targetBtn.click();
+      // Keep smooth finger tracking position while scrubbing
+      if(pill && isScrubbing){
+        pill.style.width = (targetBtn.offsetWidth || pillW) + 'px';
+        pill.style.transform = 'translate3d(' + pillX.toFixed(1) + 'px, 0, 0) scale(1.03)';
+      }
     }
   }
 
   document.addEventListener('pointerdown', function(e){
+    if(e.button !== undefined && e.button !== 0) return;
     const seg = e.target && e.target.closest ? e.target.closest('.seg') : null;
     if(!seg) return;
-    activeSeg = seg;
-    lastTriggeredBtn = null;
-    seg.classList.add('scrubbing');
+    downSeg = seg;
+    startX = e.clientX;
+    startY = e.clientY;
+    isScrubbing = false;
+    lastScrubBtn = seg.querySelector(':scope > .seg-btn.on');
     syncSegGlassPill(seg);
   }, {passive: true});
 
   document.addEventListener('pointermove', function(e){
-    if(!activeSeg) return;
+    if(!downSeg) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if(!isScrubbing){
+      // Only start scrubbing after an intentional >= 8px horizontal drag
+      if(Math.abs(dx) >= 8 && Math.abs(dx) > Math.abs(dy) * 1.15){
+        isScrubbing = true;
+        downSeg.classList.add('scrubbing');
+      } else {
+        return;
+      }
+    }
     const cx = e.clientX;
-    const segRef = activeSeg;
+    const segRef = downSeg;
     if(segRaf) cancelAnimationFrame(segRaf);
     segRaf = requestAnimationFrame(function(){
       scrubSegAtX(segRef, cx);
@@ -17254,29 +17577,67 @@ function syncAllVisibleSegPills(){
   }, {passive: true});
 
   function endSegScrub(){
-    if(!activeSeg) return;
-    const segRef = activeSeg;
-    activeSeg = null;
-    lastTriggeredBtn = null;
+    if(!downSeg) return;
+    if(segRaf){
+      cancelAnimationFrame(segRaf);
+      segRaf = null;
+    }
+    const segRef = downSeg;
+    const wasScrubbing = isScrubbing;
+    downSeg = null;
+    isScrubbing = false;
+    lastScrubBtn = null;
     segRef.classList.remove('scrubbing');
+    if(wasScrubbing){
+      suppressClickUntil = Date.now() + 260;
+    }
     requestAnimationFrame(function(){ syncSegGlassPill(segRef); });
+    setTimeout(function(){ syncSegGlassPill(segRef); }, 50);
   }
   document.addEventListener('pointerup', endSegScrub, {passive: true});
   document.addEventListener('pointercancel', endSegScrub, {passive: true});
 
+  // Prevent duplicate native click after scrubbing already triggered .click()
   document.addEventListener('click', function(e){
     const seg = e.target && e.target.closest ? e.target.closest('.seg') : null;
-    if(seg){
+    if(!seg) return;
+    if(Date.now() < suppressClickUntil && e.isTrusted){
+      e.stopPropagation();
+      e.preventDefault();
       requestAnimationFrame(function(){ syncSegGlassPill(seg); });
-      setTimeout(function(){ syncSegGlassPill(seg); }, 60);
+      return;
     }
-  }, {passive: true});
+    requestAnimationFrame(function(){ syncSegGlassPill(seg); });
+    setTimeout(function(){ syncSegGlassPill(seg); }, 45);
+  }, true);
+
+  // Automatic MutationObserver so any programmatic .on class change immediately animates the glass pill!
+  let mutRaf = null;
+  if(typeof MutationObserver !== 'undefined'){
+    const mo = new MutationObserver(function(mutations){
+      let needsSync = false;
+      for(let i = 0; i < mutations.length; i++){
+        const t = mutations[i].target;
+        if(t && t.classList && (t.classList.contains('seg-btn') || t.classList.contains('seg') || t.classList.contains('screen') || t.classList.contains('modal'))){
+          needsSync = true;
+          break;
+        }
+      }
+      if(needsSync && !isScrubbing){
+        if(mutRaf) cancelAnimationFrame(mutRaf);
+        mutRaf = requestAnimationFrame(syncAllVisibleSegPills);
+      }
+    });
+    window.addEventListener('DOMContentLoaded', function(){
+      if(document.body) mo.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+    });
+  }
 
   window.addEventListener('resize', function(){
     requestAnimationFrame(syncAllVisibleSegPills);
   }, {passive: true});
 
-  setTimeout(syncAllVisibleSegPills, 120);
+  setTimeout(syncAllVisibleSegPills, 100);
 })();
 
 /* ============ 7. INTERACTIVE ADD-TO-HOME-SCREEN (A2HS) VISUAL WIZARD ENGINE ============ */
@@ -18720,11 +19081,63 @@ function bindHorizontalSwipe(el, onSwipeLeft, onSwipeRight){
   }, {passive:true});
 }
 
+function showGestureGlassHUD(text, x, y, tone, scaleVal){
+  const hud = document.getElementById('gestureGlassHUD');
+  if(!hud) return;
+  hud.textContent = text;
+  hud.className = 'gesture-glass-hud active' + (tone ? (' ' + tone) : '');
+  const sc = scaleVal || 1;
+  hud.style.transform = 'translate3d(' + x.toFixed(0) + 'px,' + y.toFixed(0) + 'px,0) translate(-50%,-50%) scale(' + sc.toFixed(2) + ')';
+}
+function hideGestureGlassHUD(){
+  const hud = document.getElementById('gestureGlassHUD');
+  if(hud) hud.classList.remove('active', 'emerald', 'crimson');
+}
+
+function bindHorizontalSwipe(el, onSwipeLeft, onSwipeRight, leftLabel, rightLabel){
+  if(!el) return;
+  let sx = 0, sy = 0, tracking = false, showingHud = false;
+  el.addEventListener('pointerdown', function(e){
+    if(e.target && e.target.closest && e.target.closest('input, select, textarea, .seg, .weight-wrap, .reps-wrap')) return;
+    sx = e.clientX;
+    sy = e.clientY;
+    tracking = true;
+    showingHud = false;
+  }, {passive:true});
+  el.addEventListener('pointermove', function(e){
+    if(!tracking) return;
+    const dx = e.clientX - sx;
+    const dy = e.clientY - sy;
+    if(Math.abs(dx) > 18 && Math.abs(dx) > Math.abs(dy) * 1.4){
+      showingHud = true;
+      const pct = clamp(Math.abs(dx) / 58, 0.85, 1.08);
+      const lbl = dx < 0 ? (leftLabel || 'Next ▶') : (rightLabel || '◀ Prev');
+      showGestureGlassHUD(lbl, e.clientX, Math.max(48, e.clientY - 28), dx < 0 ? 'emerald' : '', pct);
+    }
+  }, {passive:true});
+  function endCardSwipe(e){
+    if(!tracking) return;
+    tracking = false;
+    if(showingHud) hideGestureGlassHUD();
+    if(!e || e.clientX === undefined) return;
+    const dx = e.clientX - sx;
+    const dy = e.clientY - sy;
+    if(Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy) * 1.5){
+      if(dx < 0) onSwipeLeft();
+      else onSwipeRight();
+    }
+  }
+  el.addEventListener('pointerup', endCardSwipe, {passive:true});
+  el.addEventListener('pointercancel', function(){ tracking = false; hideGestureGlassHUD(); }, {passive:true});
+}
+
 function initSwipeGestures(){
   bindHorizontalSwipe(
     document.querySelector('#screen-home .hero'),
     function(){ changeDay(1); },
-    function(){ changeDay(-1); }
+    function(){ changeDay(-1); },
+    'Next Day ▶',
+    '◀ Prev Day'
   );
   bindHorizontalSwipe(
     $('workoutExHeaderCard'),
@@ -18733,17 +19146,23 @@ function initSwipeGestures(){
     },
     function(){
       if(workoutActive && activeExIndex > 0) navWorkout(-1);
-    }
+    },
+    'Next Exercise ▶',
+    '◀ Prev Exercise'
   );
   bindHorizontalSwipe(
     document.querySelector('#screen-editor .card.hud'),
     function(){ navEditor(1); },
-    function(){ navEditor(-1); }
+    function(){ navEditor(-1); },
+    'Next Split Day ▶',
+    '◀ Prev Split Day'
   );
   bindHorizontalSwipe(
     document.querySelector('#screen-manual-builder .card.hud'),
     function(){ navManualDay(1); },
-    function(){ navManualDay(-1); }
+    function(){ navManualDay(-1); },
+    'Next Day ▶',
+    '◀ Prev Day'
   );
 }
 
@@ -19882,14 +20301,19 @@ async function confirmAccountPasswordReset(){
 
 
 /* ============================================================================
- * 10. UNIVERSAL MORPHING LIQUID GLASS STEPPER SWIPE LENS & 1S HOLD-TO-REPEAT
- *     - Works on Weight, Reps, and ANY box in the app flanked by − and + buttons
- *     - Smoothly shrinks from origin box size to exact − / + button size on swipe,
- *       and expands back to origin box size when returning/releasing
- *     - Steps +1 / -1 once upon reaching button, and if held adds 1 step every 1000ms
+ * 10. UNIVERSAL MORPHING LIQUID GLASS STEPPER SWIPE LENS (0.5S HOLD-TO-REPEAT)
+ *     + FULL LIQUID-GLASS GESTURES SUITE
+ *     - Swiping from Weight, Reps, or ANY box flanked by − and + shrinks smoothly
+ *       to fit − / + and expands back to the origin box size on return/release
+ *     - Steps +1 / -1 once upon reaching button, and if held adds 1 step every
+ *       0.5 seconds (500ms) with a liquid-glass pulse animation!
  *     - Hidden automatically if − and + buttons are absent (e.g. Weight without ±Step)
+ *     - Includes Rest Timer Glass Scrub & Double-Tap, Set-Tag Swipe (Copy Last / +Drop),
+ *       Modal Pull-Down to Dismiss, and Numpad Swipe-Backspace & 0.5s Hold-Clear!
  * ============================================================================ */
-(function initUniversalStepperGlassLensAndHold(){
+(function initUniversalStepperGlassLensAndGestures(){
+  const HOLD_STEP_INTERVAL_MS = 500; // 0.5 seconds per step on hold!
+
   function getLens(){ return document.getElementById('stepperGlassLens'); }
 
   function findStepperContext(startEl){
@@ -19899,7 +20323,6 @@ async function confirmAccountPasswordReset(){
     const parent = inp.parentElement;
     if(!parent) return null;
 
-    // Must have both a minus and a plus button inside the same wrapper (.weight-wrap, .reps-wrap, .row)
     const btns = Array.prototype.slice.call(parent.querySelectorAll(':scope > button'));
     if(btns.length < 2) return null;
 
@@ -19927,22 +20350,30 @@ async function confirmAccountPasswordReset(){
 
   function setLensGeometry(lens, rect, radiusPx){
     if(!lens || !rect) return;
+    const posStr = 'translate3d(' + rect.left.toFixed(1) + 'px,' + rect.top.toFixed(1) + 'px,0)';
     lens.style.width = Math.max(18, rect.width).toFixed(1) + 'px';
     lens.style.height = Math.max(18, rect.height).toFixed(1) + 'px';
-    lens.style.transform = 'translate3d(' + rect.left.toFixed(1) + 'px,' + rect.top.toFixed(1) + 'px,0)';
+    lens.style.setProperty('--lens-pos', posStr);
+    lens.style.transform = posStr;
     lens.style.borderRadius = (radiusPx || 9) + 'px';
   }
 
   function pulseLens(lens){
     if(!lens) return;
+    lens.classList.remove('pulse-step');
+    void lens.offsetWidth; // Reflow to re-trigger 0.5s glassy pulse animation
     lens.classList.add('pulse-step');
-    setTimeout(function(){ lens.classList.remove('pulse-step'); }, 180);
   }
 
   let swipeState = null;
   let holdInterval = null;
+  let holdShowTimer = null;
 
   function clearHoldTimer(){
+    if(holdShowTimer){
+      clearTimeout(holdShowTimer);
+      holdShowTimer = null;
+    }
     if(holdInterval){
       clearInterval(holdInterval);
       holdInterval = null;
@@ -19950,7 +20381,16 @@ async function confirmAccountPasswordReset(){
   }
 
   function triggerStepButton(btn, lens){
-    if(!btn) return;
+    if(!btn || !document.body.contains(btn)){
+      clearHoldTimer();
+      if(lens) lens.classList.remove('active', 'pulse-step');
+      return;
+    }
+    const bRect = btn.getBoundingClientRect();
+    if(lens && bRect.width > 0){
+      setLensGeometry(lens, bRect, 8);
+      lens.classList.add('active');
+    }
     pulseLens(lens);
     btn.click();
   }
@@ -19958,7 +20398,7 @@ async function confirmAccountPasswordReset(){
   document.addEventListener('pointerdown', function(e){
     if(e.button !== undefined && e.button !== 0) return;
 
-    // Case A: User presses directly on a − or + stepper button -> 1 step happens via click, hold repeats 1 step every 1000ms
+    // Case A: User presses directly on a − or + stepper button -> 1 step happens via click, hold repeats every 0.5s (500ms) with glassy animation!
     const directBtn = e.target && e.target.closest ? e.target.closest('button') : null;
     if(directBtn){
       const txt = (directBtn.textContent || '').trim();
@@ -19968,17 +20408,22 @@ async function confirmAccountPasswordReset(){
         if(siblingInput){
           clearHoldTimer();
           const lens = getLens();
-          const bRect = directBtn.getBoundingClientRect();
-          if(lens && bRect.width > 0){
-            setLensGeometry(lens, bRect, 8);
-            lens.classList.add('active');
-          }
+          // Show glassy lens if held >= 160ms, and step every 500ms (0.5s)!
+          holdShowTimer = setTimeout(function(){
+            if(!document.body.contains(directBtn)) return;
+            const bRect = directBtn.getBoundingClientRect();
+            if(lens && bRect.width > 0){
+              setLensGeometry(lens, bRect, 8);
+              lens.classList.add('active');
+              pulseLens(lens);
+            }
+          }, 160);
           holdInterval = setInterval(function(){
             triggerStepButton(directBtn, lens);
-          }, 1000);
+          }, HOLD_STEP_INTERVAL_MS);
           const stopDirectHold = function(){
             clearHoldTimer();
-            if(lens) lens.classList.remove('active');
+            if(lens) lens.classList.remove('active', 'pulse-step');
             document.removeEventListener('pointerup', stopDirectHold);
             document.removeEventListener('pointercancel', stopDirectHold);
           };
@@ -20016,8 +20461,10 @@ async function confirmAccountPasswordReset(){
     const dy = e.clientY - swipeState.startY;
 
     if(!swipeState.swiping){
-      if(Math.abs(dx) >= 6 && Math.abs(dx) >= Math.abs(dy) * 1.15){
+      // Require intentional >= 10px horizontal swipe so normal taps always open the Numpad cleanly
+      if(Math.abs(dx) >= 10 && Math.abs(dx) >= Math.abs(dy) * 1.2){
         swipeState.swiping = true;
+        _suppressInputClickUntil = Date.now() + 450;
         closeNumpad();
         const lens = getLens();
         if(lens){
@@ -20032,10 +20479,13 @@ async function confirmAccountPasswordReset(){
       }
     }
 
+    _suppressInputClickUntil = Date.now() + 320;
     const lens = getLens();
     const iRect = swipeState.ctx.input.getBoundingClientRect();
     const mRect = swipeState.ctx.minusBtn.getBoundingClientRect();
     const pRect = swipeState.ctx.plusBtn.getBoundingClientRect();
+    if(iRect.width <= 0) return;
+
     const originCx = iRect.left + iRect.width / 2;
     const minusCx = mRect.left + mRect.width / 2;
     const plusCx = pRect.left + pRect.width / 2;
@@ -20048,14 +20498,14 @@ async function confirmAccountPasswordReset(){
       const span = Math.max(16, originCx - minusCx);
       t = clamp((originCx - e.clientX) / span, 0, 1);
       targetRect = mRect;
-      if(t >= 0.82 || (e.clientX >= mRect.left - 8 && e.clientX <= mRect.right + 4)){
+      if(t >= 0.80 || (e.clientX >= mRect.left - 10 && e.clientX <= mRect.right + 4)){
         reachedSide = 'minus';
       }
     } else {
       const span = Math.max(16, plusCx - originCx);
       t = clamp((e.clientX - originCx) / span, 0, 1);
       targetRect = pRect;
-      if(t >= 0.82 || (e.clientX >= pRect.left - 4 && e.clientX <= pRect.right + 8)){
+      if(t >= 0.80 || (e.clientX >= pRect.left - 4 && e.clientX <= pRect.right + 10)){
         reachedSide = 'plus';
       }
     }
@@ -20070,7 +20520,7 @@ async function confirmAccountPasswordReset(){
     const curRadius = lerp(10, 7, t);
     setLensGeometry(lens, curRect, curRadius);
 
-    // Trigger 1 step immediately upon reaching − or +, and if held down add 1 step every 1 second (1000ms)
+    // Trigger 1 step immediately upon reaching − or +, and if held down add 1 step every 0.5 seconds (500ms)!
     if(reachedSide !== swipeState.activeSide){
       clearHoldTimer();
       swipeState.activeSide = reachedSide;
@@ -20079,13 +20529,13 @@ async function confirmAccountPasswordReset(){
         triggerStepButton(btn, lens);
         holdInterval = setInterval(function(){
           triggerStepButton(btn, lens);
-        }, 1000);
+        }, HOLD_STEP_INTERVAL_MS);
       } else if(reachedSide === 'plus'){
         const btn = swipeState.ctx.plusBtn;
         triggerStepButton(btn, lens);
         holdInterval = setInterval(function(){
           triggerStepButton(btn, lens);
-        }, 1000);
+        }, HOLD_STEP_INTERVAL_MS);
       }
     }
   }, {passive: true});
@@ -20098,22 +20548,230 @@ async function confirmAccountPasswordReset(){
     swipeState = null;
     const lens = getLens();
     if(lens && wasSwiping){
+      _suppressInputClickUntil = Date.now() + 280;
       lens.style.transition = 'transform .18s cubic-bezier(.22,1,.36,1), width .18s cubic-bezier(.22,1,.36,1), height .18s cubic-bezier(.22,1,.36,1), opacity .18s ease';
-      setLensGeometry(lens, iRect, 10);
+      if(iRect.width > 0) setLensGeometry(lens, iRect, 10);
       setTimeout(function(){
         if(!swipeState){
-          lens.classList.remove('active');
+          lens.classList.remove('active', 'pulse-step');
           lens.style.transition = 'opacity .16s ease';
         }
-      }, 170);
+      }, 175);
     } else if(lens){
-      lens.classList.remove('active');
+      lens.classList.remove('active', 'pulse-step');
     }
   }
 
   document.addEventListener('pointerup', endStepperSwipe, {passive: true});
   document.addEventListener('pointercancel', endStepperSwipe, {passive: true});
+
+  /* --------------------------------------------------------------------------
+   * GESTURE 3: REST TIMER LIQUID-GLASS SCRUB (±15s) & DOUBLE-TAP (START/PAUSE)
+   * -------------------------------------------------------------------------- */
+  let timerScrub = null;
+  let lastTimerTapTs = 0;
+  document.addEventListener('pointerdown', function(e){
+    const tRectEl = e.target && e.target.closest ? e.target.closest('.timer-rect') : null;
+    if(!tRectEl) return;
+    timerScrub = {
+      startX: e.clientX,
+      startY: e.clientY,
+      lastStepCount: 0,
+      scrubbing: false
+    };
+  }, {passive: true});
+
+  document.addEventListener('pointermove', function(e){
+    if(!timerScrub) return;
+    const dx = e.clientX - timerScrub.startX;
+    const dy = e.clientY - timerScrub.startY;
+    if(!timerScrub.scrubbing){
+      if(Math.abs(dx) >= 14 && Math.abs(dx) > Math.abs(dy) * 1.3){
+        timerScrub.scrubbing = true;
+      } else {
+        return;
+      }
+    }
+    const stepCount = Math.trunc(dx / 28);
+    if(stepCount !== timerScrub.lastStepCount){
+      const diffSteps = stepCount - timerScrub.lastStepCount;
+      timerScrub.lastStepCount = stepCount;
+      if(typeof adjustTimer === 'function') adjustTimer(diffSteps * 15);
+    }
+    const totalDeltaSec = stepCount * 15;
+    const sign = totalDeltaSec >= 0 ? '+' : '−';
+    showGestureGlassHUD(
+      '⏱️ Rest ' + sign + Math.abs(totalDeltaSec) + 's',
+      e.clientX,
+      Math.max(48, e.clientY - 28),
+      totalDeltaSec >= 0 ? 'emerald' : 'crimson',
+      1.04
+    );
+  }, {passive: true});
+
+  document.addEventListener('pointerup', function(e){
+    if(!timerScrub) return;
+    const wasScrub = timerScrub.scrubbing;
+    timerScrub = null;
+    if(wasScrub){
+      hideGestureGlassHUD();
+      return;
+    }
+    const tRectEl = e.target && e.target.closest ? e.target.closest('.timer-rect') : null;
+    if(tRectEl){
+      const now = Date.now();
+      if(now - lastTimerTapTs < 320){
+        lastTimerTapTs = 0;
+        if(typeof toggleTimer === 'function'){
+          toggleTimer();
+          showGestureGlassHUD(timerInt ? '▶️ Timer Running' : '⏸️ Timer Paused', e.clientX, Math.max(48, e.clientY - 26), 'emerald', 1.0);
+          setTimeout(hideGestureGlassHUD, 650);
+        }
+      } else {
+        lastTimerTapTs = now;
+      }
+    }
+  }, {passive: true});
+  document.addEventListener('pointercancel', function(){ timerScrub = null; hideGestureGlassHUD(); }, {passive: true});
+
+  /* --------------------------------------------------------------------------
+   * GESTURE 4: WORKOUT SET-TAG LIQUID-GLASS SWIPE (→ COPY LAST SET / ← +DROP SET)
+   * -------------------------------------------------------------------------- */
+  let setMetaSwipe = null;
+  document.addEventListener('pointerdown', function(e){
+    const metaEl = e.target && e.target.closest ? e.target.closest('.set-row > .meta') : null;
+    if(!metaEl) return;
+    const rowEl = metaEl.closest('.set-row');
+    if(!rowEl) return;
+    setMetaSwipe = {
+      rowEl: rowEl,
+      startX: e.clientX,
+      startY: e.clientY,
+      swiping: false
+    };
+  }, {passive: true});
+
+  document.addEventListener('pointermove', function(e){
+    if(!setMetaSwipe) return;
+    const dx = e.clientX - setMetaSwipe.startX;
+    const dy = e.clientY - setMetaSwipe.startY;
+    if(Math.abs(dx) >= 14 && Math.abs(dx) > Math.abs(dy) * 1.3){
+      setMetaSwipe.swiping = true;
+      if(dx > 0){
+        showGestureGlassHUD('⚡ Copy Last Set →', e.clientX, Math.max(48, e.clientY - 26), 'emerald', clamp(dx / 45, 0.9, 1.08));
+      } else {
+        showGestureGlassHUD('← 🔥 +Drop Set', e.clientX, Math.max(48, e.clientY - 26), 'crimson', clamp(Math.abs(dx) / 45, 0.9, 1.08));
+      }
+    }
+  }, {passive: true});
+
+  document.addEventListener('pointerup', function(e){
+    if(!setMetaSwipe) return;
+    const st = setMetaSwipe;
+    setMetaSwipe = null;
+    if(!st.swiping) return;
+    hideGestureGlassHUD();
+    const dx = e.clientX - st.startX;
+    const row = st.rowEl;
+    const si = parseInt(row.dataset.si) || 0;
+    const sType = row.dataset.st || 'main';
+    const pw = row.dataset.pw;
+    const pr = row.dataset.pr;
+
+    if(dx >= 42){
+      // Swipe Right on Set Tag -> Copy Last Session's PW × PR (or previous row's weight/reps) into this set!
+      const p = prefix(sType, null);
+      const wInp = $(p + 'w_' + si);
+      const rInp = $(p + 'r_' + si);
+      let copyW = (pw && pw !== '-' && parseFloat(pw) > 0) ? pw : '';
+      let copyR = (pr && pr !== '-' && parseFloat(pr) > 0) ? pr : '';
+      if((!copyW || !copyR) && si > 0){
+        const prevW = $(p + 'w_' + (si - 1));
+        const prevR = $(p + 'r_' + (si - 1));
+        if(!copyW && prevW && prevW.value) copyW = prevW.value;
+        if(!copyR && prevR && prevR.value) copyR = prevR.value;
+      }
+      if(wInp && copyW !== '') { wInp.value = copyW; triggerActiveInputCallbacks(wInp); }
+      if(rInp && copyR !== '') { rInp.value = copyR; triggerActiveInputCallbacks(rInp); }
+      playSound('success');
+      toast('⚡ Set ' + (si + 1) + ' filled: ' + (copyW || '—') + unitLabel() + ' × ' + (copyR || '—'));
+    } else if(dx <= -42){
+      // Swipe Left on Set Tag -> Add Drop Set!
+      if((sType === 'main' || sType === 'super') && typeof addDrop === 'function'){
+        addDrop(si, sType);
+        toast('🔥 Added Drop Set to Set ' + (si + 1));
+      }
+    }
+  }, {passive: true});
+  document.addEventListener('pointercancel', function(){ setMetaSwipe = null; hideGestureGlassHUD(); }, {passive: true});
+
+  /* --------------------------------------------------------------------------
+   * GESTURE 6 & 7: MODAL HEADER PULL-DOWN TO CLOSE & NUMPAD SWIPE-BACKSPACE / 0.5S HOLD CLEAR
+   * -------------------------------------------------------------------------- */
+  let modalPull = null;
+  let numpadValSwipe = null;
+
+  document.addEventListener('pointerdown', function(e){
+    const mHead = e.target && e.target.closest ? e.target.closest('.modal.open .modal-head, #numpad.open .numpad-top') : null;
+    if(mHead && !(e.target.closest && e.target.closest('button'))){
+      const modalEl = mHead.closest('.modal.open');
+      const isNumpad = !!mHead.closest('#numpad.open');
+      modalPull = { modalEl: modalEl, isNumpad: isNumpad, startY: e.clientY, startX: e.clientX, pulling: false };
+    }
+    const npVal = e.target && e.target.closest ? e.target.closest('#numpadValue') : null;
+    if(npVal){
+      numpadValSwipe = { startX: e.clientX, startY: e.clientY };
+    }
+    // 0.5s Hold on Numpad Backspace (⌫) clears the entire field!
+    const keyBtn = e.target && e.target.closest ? e.target.closest('#numpad .key') : null;
+    if(keyBtn && (keyBtn.textContent || '').trim() === '⌫'){
+      clearHoldTimer();
+      holdInterval = setTimeout(function(){
+        if(typeof numKey === 'function') numKey('C');
+        showGestureGlassHUD('🧹 Cleared', e.clientX, Math.max(48, e.clientY - 26), 'crimson', 1.0);
+        setTimeout(hideGestureGlassHUD, 500);
+      }, HOLD_STEP_INTERVAL_MS);
+    }
+  }, {passive: true});
+
+  document.addEventListener('pointermove', function(e){
+    if(modalPull){
+      const dy = e.clientY - modalPull.startY;
+      const dx = e.clientX - modalPull.startX;
+      if(dy > 16 && dy > Math.abs(dx) * 1.3){
+        modalPull.pulling = true;
+        showGestureGlassHUD('↓ Release to Close', e.clientX, e.clientY - 20, '', clamp(dy / 55, 0.9, 1.06));
+      }
+    }
+  }, {passive: true});
+
+  document.addEventListener('pointerup', function(e){
+    if(modalPull){
+      const mp = modalPull;
+      modalPull = null;
+      if(mp.pulling){
+        hideGestureGlassHUD();
+        if(e.clientY - mp.startY > 46){
+          playSound('tap');
+          if(mp.isNumpad && typeof closeNumpad === 'function') closeNumpad();
+          else if(mp.modalEl && mp.modalEl.id && typeof closeModal === 'function') closeModal(mp.modalEl.id);
+        }
+      }
+    }
+    if(numpadValSwipe){
+      const ns = numpadValSwipe;
+      numpadValSwipe = null;
+      const dx = e.clientX - ns.startX;
+      const dy = e.clientY - ns.startY;
+      if(dx < -28 && Math.abs(dx) > Math.abs(dy) * 1.4){
+        if(typeof numKey === 'function') numKey('BACK');
+        showGestureGlassHUD('⌫ Backspace', e.clientX, Math.max(48, e.clientY - 24), '', 0.96);
+        setTimeout(hideGestureGlassHUD, 420);
+      }
+    }
+  }, {passive: true});
 })();
+
 
 window.onload = function(){
   load();
