@@ -210,13 +210,12 @@ html:not([data-skin]) .wp-cyber,
   opacity:0;
   visibility:hidden;
   border-radius:10px;
-  background:linear-gradient(145deg, rgba(255,255,255,.30) 0%, rgba(56,189,248,.22) 48%, rgba(16,185,129,.24) 100%);
-  border:1.5px solid rgba(255,255,255,.55);
+  background:linear-gradient(145deg, rgba(255,255,255,.07) 0%, rgba(56,189,248,.06) 50%, rgba(16,185,129,.07) 100%);
+  border:1.8px solid rgba(56,189,248,.85);
   box-shadow:
-    0 10px 28px rgba(14,165,233,.32),
-    0 2px 10px rgba(16,185,129,.25),
-    inset 0 1.5px 1px rgba(255,255,255,.75),
-    inset 0 -1px 2px rgba(14,165,233,.30);
+    0 0 16px rgba(56,189,248,.35),
+    inset 0 1.5px 1px rgba(255,255,255,.65),
+    inset 0 -1px 2px rgba(56,189,248,.22);
   backdrop-filter:none;
   -webkit-backdrop-filter:none;
   transition:opacity .16s ease, visibility .16s ease;
@@ -224,17 +223,16 @@ html:not([data-skin]) .wp-cyber,
 .stepper-glass-lens.active{
   opacity:1;
   visibility:visible;
-  backdrop-filter:blur(12px) saturate(190%);
-  -webkit-backdrop-filter:blur(12px) saturate(190%);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   will-change:transform, width, height, border-radius, opacity;
 }
 .stepper-glass-lens.pulse-step{
   border-color:#34d399;
-  box-shadow:
-    0 0 22px rgba(16,185,129,.65),
-    inset 0 1.5px 2px rgba(255,255,255,.92);
+  background:linear-gradient(145deg, rgba(255,255,255,.11) 0%, rgba(52,211,153,.12) 50%, rgba(56,189,248,.10) 100%);
+  box-shadow:0 0 22px rgba(16,185,129,.70), inset 0 1.5px 2px rgba(255,255,255,.85);
+  animation:stepperGlassPulse05 0.24s cubic-bezier(.22,1,.36,1);
 }
-
 /* Step-by-Step A2HS Visual Browser Mockups */
 .a2hs-visual-box{
   width:100%;border-radius:14px;padding:12px;
@@ -920,12 +918,7 @@ body.numpad-ActivePad .modal-body {
   45%{transform:var(--lens-pos, translate3d(0,0,0)) scale(1.14)}
   100%{transform:var(--lens-pos, translate3d(0,0,0)) scale(1)}
 }
-.stepper-glass-lens.pulse-step{
-  border-color:#34d399;
-  background:linear-gradient(145deg, rgba(255,255,255,.45) 0%, rgba(52,211,153,.38) 50%, rgba(56,189,248,.36) 100%);
-  box-shadow:0 0 24px rgba(16,185,129,.75), inset 0 1.5px 2px rgba(255,255,255,.95);
-  animation:stepperGlassPulse05 0.24s cubic-bezier(.22,1,.36,1);
-}
+
 
 input[type=text],input[type=email],input[type=date],input[type=number],input[type=password],select,textarea{width:100%;padding:8px 11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--txt);font-size:12px;font-weight:700;outline:none;color-scheme:dark}
 [data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] textarea{color-scheme:light}
@@ -2058,7 +2051,6 @@ body[data-idle="1"] .marble-veins{
     <div class="header-center"><span id="workoutStopwatch">00:00</span></div>
     <div class="header-actions">
       <button class="icon-btn" id="cloudHeaderBtn" title="Account & Cloud Sync" onclick="openCloudAuthModal()" style="border-color:var(--blue-b);color:var(--blue-t);font-size:15px">👤</button>
-      <button class="icon-btn" id="gesturesGuideHeaderBtn" title="Glassy Gestures Guide" onclick="openModal('modal-gestures-guide')" style="color:var(--blue-t);border-color:var(--blue-b)">✨</button>
       <button class="icon-btn" id="fullscreenBtn" title="Toggle Full Screen" onclick="toggleFullScreen()">⛶</button>
       <button class="icon-btn" title="Settings" onclick="openSettings()">⚙️</button>
     </div>
@@ -2683,7 +2675,7 @@ body[data-idle="1"] .marble-veins{
             </div>
             <div class="seg micro-seg" id="techSegWrap" style="height:26px;flex-shrink:0" title="Standard PR comparison vs Different Machine/Grip">
               <div class="seg-glass-pill"></div>
-              <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(false)">Std</div>
+              <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(false)">Standard</div>
               <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(true)">🔄 Tech</div>
             </div>
           </div>
@@ -2696,7 +2688,7 @@ body[data-idle="1"] .marble-veins{
               <div class="seg-btn" data-view="1" onclick="setView('1')">Top</div>
               <div class="seg-btn on" data-view="all" onclick="setView('all')">All</div>
             </div>
-            <button class="btn micro-btn txt-blue" onclick="openHist('main')">Hist</button>
+            <button class="btn micro-btn txt-blue" onclick="openHist('main')">History</button>
             <button class="btn micro-btn txt-purple hidden" id="ssHistBtn" onclick="openHist('super')">SS</button>
           </div>
         </div>
@@ -2710,9 +2702,9 @@ body[data-idle="1"] .marble-veins{
             <button class="btn xs blue" onclick="openWorkoutCustomRestModal()" style="padding:2px 7px" title="Set custom rest in minutes or seconds">⏱️ Custom</button>
           </div>
           <div class="timer-rect">
-            <div class="row" style="justify-content:center;align-items:center;position:relative;width:100%">
+            <div class="stack" style="align-items:center;gap:2px;width:100%">
+              <span class="timer-cd-badge hidden" id="timerFinalCountdownBadge">READY</span>
               <div class="timer-rect-time" id="timerDisplay" style="width:100%;text-align:center">01:30</div>
-              <span class="timer-cd-badge hidden" id="timerFinalCountdownBadge" style="position:absolute;right:4px;top:50%;transform:translateY(-50%)">READY</span>
             </div>
             <div class="bar" style="height:4px"><div class="timer-rect-fill" id="linearTimerFill"></div></div>
           </div>
@@ -3196,7 +3188,7 @@ body[data-idle="1"] .marble-veins{
 
         <!-- LIVE PHARMACOKINETIC METRICS -->
         <div class="grid-3" id="caffMetricsRow">
-          <div class="stat center"><span class="lbl">Half-Life (t½)</span><span class="v amber" id="caffHalfLifeVal">4.9h</span></div>
+          <div class="stat center"><span class="lbl">Half-Life</span><span class="v amber" id="caffHalfLifeVal">4.9h</span></div>
           <div class="stat center"><span class="lbl">Sleep-Safe In</span><span class="v green" id="caffSleepSafeVal">+14h</span></div>
           <div class="stat center"><span class="lbl">Cleared (&lt;5mg)</span><span class="v blue" id="caffClearedVal">+26h</span></div>
         </div>
@@ -3525,65 +3517,6 @@ body[data-idle="1"] .marble-veins{
 
 <!-- SETTINGS MODAL (CRISP, COMMERCIAL-GRADE, ZERO FILLER) -->
 
-<!-- INTERACTIVE LIQUID-GLASS GESTURES GUIDE MODAL -->
-<div class="modal" id="modal-gestures-guide">
-  <div class="modal-card" style="max-height:86dvh">
-    <div class="modal-head">
-      <span class="modal-title" style="color:var(--blue-t)">✨ Liquid-Glass Gestures Guide</span>
-      <button class="btn sq-sm" onclick="closeModal('modal-gestures-guide')">✕</button>
-    </div>
-    <div class="modal-body" style="gap:8px">
-      <div class="micro subtle center" style="color:var(--green-t);font-weight:800">Every gesture below uses real-time morphing Liquid-Glass feedback:</div>
-
-      <div class="card glass" style="padding:9px 11px;border-color:var(--green-b)">
-        <div class="h4" style="color:var(--green-t)">1. 🫧 Morphing Stepper Swipe + 0.5s Hold (العدسة الزجاجية المتقلصة)</div>
-        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
-          اسحب أفقياً من أي مربع رقم (الوزن، العدات، الكارديو، الحاسبات) باتجاه زر <b>−</b> أو <b>+</b>: تتقلص العدسة الزجاجية تدريجياً لتطابق حجم زر <b>− / +</b> وتزيد خطوة واحدة، وإذا استمررت بالتعليق (Hold) تضيف <b>خطوة كل 0.5 ثانية</b> مع نبضة زجاجية! وعند الإفلات تكبر لحجم المربع الأصلي.
-        </div>
-      </div>
-
-      <div class="card glass" style="padding:9px 11px;border-color:var(--blue-b)">
-        <div class="h4" style="color:var(--blue-t)">2. 🎛️ Liquid-Glass Switch Scrubbing (السحب الزجاجي على السويتشات)</div>
-        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
-          على أي سويتش زجاجي (<b>Each/Total</b>، <b>Std/Tech</b>، <b>Dark/Light</b>، الخلفيات الـ 5، أوزان البار، الكارديو، أو الشريط السفلي): يمكنك <b>سحب إصبعك أفقياً</b> مباشرة فوق السويتش لتنتقل الكبسولة الزجاجية بسلاسة مع حركة إصبعك.
-        </div>
-      </div>
-
-      <div class="card glass" style="padding:9px 11px;border-color:var(--amber-b)">
-        <div class="h4" style="color:var(--amber-t)">3. ⏱️ Rest Timer Scrub &amp; Double-Tap (إيماءات مؤقت الراحة الزجاجية)</div>
-        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
-          أثناء التمرين، <b>اسحب يميناً أو يساراً</b> فوق شريط مؤقت الراحة لإضافة أو إنقاص <b>±15 ثانية / ±30 ثانية</b> مع كبسولة زجاجية تفاعلية، أو <b>اضغط مرتين (Double-Tap)</b> على الوقت لتشغيل/إيقاف المؤقت فوراً.
-        </div>
-      </div>
-
-      <div class="card glass" style="padding:9px 11px;border-color:var(--purple-b)">
-        <div class="h4" style="color:var(--purple-t)">4. ⚡ Set Tag Swipe Actions (سحب بطاقة الجولة للنسخ أو الدروب سيت)</div>
-        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
-          على شارة الجولة (<b>SET 1 · L: ...</b>) يسار الصف:<br>
-          • <b>اسحب لليمين (→)</b> لنسخ وزن وعدات الجلسة السابقة تلقائياً بكبسولة زجاجية خضراء.<br>
-          • <b>اسحب لليسار (←)</b> لإضافة جولة <b>+Drop Set</b> فوراً بكبسولة زجاجية حمراء.
-        </div>
-      </div>
-
-      <div class="card glass" style="padding:9px 11px">
-        <div class="h4" style="color:var(--blue-t)">5. 🧭 Header Swipe Navigation (التنقل الزجاجي بين الأيام والتمارين)</div>
-        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
-          اسحب أفقياً (يمين/يسار) على البطاقة العلوية في الرئيسية، التمرين، محرر الجدول، أو الإحصائيات للتنقل بين الأيام والتمارين مع مؤشر زجاجي عائم (<b>◀ Prev / Next ▶</b>).
-        </div>
-      </div>
-
-      <div class="card glass" style="padding:9px 11px">
-        <div class="h4" style="color:var(--green-t)">6. 🔽 Modal Pull-Down &amp; Numpad Swipe-Backspace</div>
-        <div class="tiny muted" style="margin-top:3px;line-height:1.45">
-          • <b>اسحب للأسفل (↓)</b> على رأس أي نافذة منبثقة أو لوحة الأرقام لإغلاقها بسلاسة.<br>
-          • <b>اسحب لليسار (←)</b> على شاشة الرقم في الكيبورد لمسح آخر خانة (<b>⌫</b>)، أو علّق على <b>⌫</b> لمدة <b>0.5 ثانية</b> لمسح الرقم بالكامل.
-        </div>
-      </div>
-    </div>
-    <button class="btn primary block" onclick="closeModal('modal-gestures-guide')">Got It! 🚀</button>
-  </div>
-</div>
-
 <div class="modal" id="modal-settings">
   <div class="modal-card" style="max-height:92dvh;padding:11px 12px;gap:6px">
     <div class="modal-head"><span class="modal-title">⚙️ Settings</span><button class="btn sq-sm" onclick="closeModal('modal-settings')">✕</button></div>
@@ -3708,10 +3641,9 @@ body[data-idle="1"] .marble-veins{
       </div>
 
       <!-- 5. GUIDES, DATA & SPLITS -->
-      <div class="grid-3" style="gap:5px;flex-shrink:0">
-        <button class="tour-cta-hero-btn" style="padding:8px 4px;font-size:10px;min-height:36px" onclick="closeModal('modal-settings');openA2HSGuideModal(true)">📲 Install App</button>
-        <button class="tour-cta-hero-btn" style="padding:8px 4px;font-size:10px;min-height:36px" onclick="closeModal('modal-settings');openModal('modal-gestures-guide')">✨ Gestures</button>
-        <button class="tour-cta-hero-btn" style="padding:8px 4px;font-size:10px;min-height:36px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
+      <div class="grid-2" style="gap:6px;flex-shrink:0">
+        <button class="tour-cta-hero-btn" style="padding:9px 8px;font-size:11px;min-height:36px" onclick="closeModal('modal-settings');openA2HSGuideModal(true)">📲 Install as App</button>
+        <button class="tour-cta-hero-btn" style="padding:9px 8px;font-size:11px;min-height:36px" onclick="closeModal('modal-settings');startFullMultiPageTutorial()">🎓 App Guide</button>
       </div>
       <div class="grid-2" style="gap:6px">
         <button class="btn sm" onclick="closeModal('modal-settings');openPrograms()">📂 Splits</button>
@@ -8726,7 +8658,7 @@ function renderManualStudio(){
       '<div class="meta">' +
         '<span class="mini-lbl">Sets</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Main Sets (Ex ' + (i+1) + ')" value="' + ex.sets + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].sets=clamp(parseInt(this.value)||1,1,20)">' +
-        '<span class="mini-lbl" style="color:var(--amber-t)">Warm</span>' +
+        '<span class="mini-lbl" style="color:var(--amber-t)">Warmup</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Warmup Sets (Ex ' + (i+1) + ')" value="' + (ex.warmupSets||0) + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].warmupSets=clamp(parseInt(this.value)||0,0,10)">' +
         '<span class="mini-lbl" style="color:var(--green-t)">±Step</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target step-target" data-label="Min Weight Increment (Ex ' + (i+1) + ')" placeholder="—" value="' + (ex.minWeightStep||'') + '" onclick="setActiveNumTarget(this)" oninput="manualDraftDays[manualDayIdx].exercises[' + i + '].minWeightStep=Math.max(0,parseFloat(this.value)||0)">' +
@@ -10847,9 +10779,9 @@ function rowHTML(i, type, pw, pr, vw, vr, dropIdx, ssName){
   const p = prefix(type, dropIdx);
   let tag = 'SET ' + (i + 1);
   if(type === 'warm') tag = 'WARM ' + (i + 1);
-  else if(type === 'drop') tag = 'DRP ' + (dropIdx + 1);
+  else if(type === 'drop') tag = 'Drop ' + (dropIdx + 1);
   else if(type === 'super') tag = ssName ? ssName.substring(0,6).toUpperCase() : 'SS';
-  else if(type === 'superDrop') tag = 'S-D ' + (dropIdx + 1);
+  else if(type === 'superDrop') tag = 'SS Drop ' + (dropIdx + 1);
   const last = (pw !== '-' && pr !== '-') ? (pw + '×' + pr) : '—';
   const rm = calc1RMVal(vw, vr);
   const rmTxt = rm > 0 ? rm.toFixed(1) : '—';
@@ -10863,17 +10795,17 @@ function rowHTML(i, type, pw, pr, vw, vr, dropIdx, ssName){
     slot = '<button type="button" class="btn xs blue" onclick="confirmRepsDoubleTap($(\'' + p + 'r_' + i + '\'),' + i + ',\'' + type + '\',\'' + pw + '\',\'' + pr + '\',' + dropIdx + ')" style="padding:3px 5px;font-size:8.5px;white-space:nowrap" title="Confirm Deload Set &amp; Rest">✓Set</button>';
   } else if(type === 'main' || type === 'super'){
     const tt = type === 'main' ? 'main' : 'super';
-    const dropLbl = wStep > 0 ? '+Drp' : '+Drop';
+    const dropLbl = '+Drop';
     slot = '<button type="button" class="btn xs red" onclick="addDrop(' + i + ',\'' + tt + '\')" style="padding:3px 5px;font-size:8.5px;white-space:nowrap">' + dropLbl + '</button>';
   } else if(type === 'drop' || type === 'superDrop'){
     const tt = type === 'drop' ? 'main' : 'super';
-    const dropLbl = wStep > 0 ? '−Drp' : '−Drop';
+    const dropLbl = '−Drop';
     slot = '<button type="button" class="btn xs red" onclick="delDrop(' + i + ',' + dropIdx + ',\'' + tt + '\')" style="padding:3px 5px;font-size:8.5px;white-space:nowrap">' + dropLbl + '</button>';
   }
 
   if(isDeload){
     return '<div class="set-row ' + type + '" id="' + p + 'row_' + i + '" data-st="' + type + '" data-si="' + i + '" data-pw="' + pw + '" data-pr="' + pr + '">' +
-      '<div class="meta"><span class="tag" id="' + p + 'tag_' + i + '">🛡️ ' + tag + '</span><span class="prev" id="' + p + 'p_' + i + '">L: ' + last + '</span><span class="rm" id="' + p + 'rm_' + i + '" style="color:#22d3ee">DELOAD</span></div>' +
+      '<div class="meta"><span class="tag" id="' + p + 'tag_' + i + '">🛡️ ' + tag + '</span><span class="prev" id="' + p + 'p_' + i + '">Last: ' + last + '</span><span class="rm" id="' + p + 'rm_' + i + '" style="color:#22d3ee">DELOAD</span></div>' +
       '<div class="slot">' + slot + '</div>' +
       '<input type="text" readonly inputmode="none" class="deload-locked-input" onclick="notifyDeloadLocked()" id="' + p + 'w_' + i + '" value="' + vw + '" title="Locked in Deload Mode">' +
       '<input type="text" readonly inputmode="none" class="deload-locked-input" onclick="notifyDeloadLocked()" ondblclick="confirmRepsDoubleTap(this,' + i + ',\'' + type + '\',\'' + pw + '\',\'' + pr + '\',' + dropIdx + ')" id="' + p + 'r_' + i + '" value="' + vr + '" title="Locked in Deload Mode (Double-tap to start rest)">' +
@@ -10890,7 +10822,7 @@ function rowHTML(i, type, pw, pr, vw, vr, dropIdx, ssName){
     : weightInputHTML;
 
   return '<div class="set-row ' + type + (wStep > 0 ? ' has-wstep' : '') + '" id="' + p + 'row_' + i + '" data-st="' + type + '" data-si="' + i + '" data-pw="' + pw + '" data-pr="' + pr + '">' +
-    '<div class="meta"><span class="tag" id="' + p + 'tag_' + i + '">' + tag + '</span><span class="prev" id="' + p + 'p_' + i + '">L: ' + last + '</span><span class="rm" id="' + p + 'rm_' + i + '">1RM ' + rmTxt + '</span></div>' +
+    '<div class="meta"><span class="tag" id="' + p + 'tag_' + i + '">' + tag + '</span><span class="prev" id="' + p + 'p_' + i + '">Last: ' + last + '</span><span class="rm" id="' + p + 'rm_' + i + '">1RM ' + rmTxt + '</span></div>' +
     '<div class="slot">' + slot + '</div>' +
     weightCellHTML +
     '<div class="reps-wrap">' +
@@ -13072,7 +13004,7 @@ function renderEditor(){
       '<div class="meta">' +
         '<span class="mini-lbl">Sets</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Main Sets (Ex ' + (i+1) + ')" value="' + ex.sets + '" onclick="setActiveNumTarget(this)" oninput="editSets(' + i + ',this.value)">' +
-        '<span class="mini-lbl" style="color:var(--amber-t)">Warm</span>' +
+        '<span class="mini-lbl" style="color:var(--amber-t)">Warmup</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target" data-label="Warmup Sets (Ex ' + (i+1) + ')" value="' + (ex.warmupSets||0) + '" onclick="setActiveNumTarget(this)" oninput="editWarm(' + i + ',this.value)">' +
         '<span class="mini-lbl" style="color:var(--green-t)">±Step</span>' +
         '<input type="text" readonly inputmode="none" class="mini-input num-target step-target" data-label="Min Weight Increment (Ex ' + (i+1) + ')" placeholder="—" value="' + (ex.minWeightStep||'') + '" onclick="setActiveNumTarget(this)" oninput="editMinStep(' + i + ',this.value)">' +
@@ -19199,27 +19131,73 @@ function getCurrentDeviceLabel(){
   return 'Web Browser';
 }
 
+function _utf8Encode(str){
+  if(typeof TextEncoder !== 'undefined') return new TextEncoder().encode(String(str || ''));
+  const s = unescape(encodeURIComponent(String(str || '')));
+  const u = new Uint8Array(s.length);
+  for(let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i);
+  return u;
+}
+function _utf8Decode(u8){
+  if(typeof TextDecoder !== 'undefined') return new TextDecoder().decode(u8);
+  let s = '';
+  for(let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]);
+  return decodeURIComponent(escape(s));
+}
+function _pureSha256U8(data){
+  const K = [
+    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+  ];
+  const H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l = data.length;
+  const bitLen = l * 8;
+  const padLen = ((l + 9 + 63) >> 6) << 6;
+  const buf = new Uint8Array(padLen);
+  buf.set(data);
+  buf[l] = 0x80;
+  const view = new DataView(buf.buffer);
+  view.setUint32(padLen - 8, Math.floor(bitLen / 0x100000000), false);
+  view.setUint32(padLen - 4, bitLen >>> 0, false);
+  const W = new Uint32Array(64);
+  for(let off = 0; off < padLen; off += 64){
+    for(let i = 0; i < 16; i++) W[i] = view.getUint32(off + i * 4, false);
+    for(let i = 16; i < 64; i++){
+      const s0 = ((W[i-15]>>>7)|(W[i-15]<<25)) ^ ((W[i-15]>>>18)|(W[i-15]<<14)) ^ (W[i-15]>>>3);
+      const s1 = ((W[i-2]>>>17)|(W[i-2]<<15)) ^ ((W[i-2]>>>19)|(W[i-2]<<13)) ^ (W[i-2]>>>10);
+      W[i] = (W[i-16] + s0 + W[i-7] + s1) >>> 0;
+    }
+    let a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(let i = 0; i < 64; i++){
+      const S1 = ((e>>>6)|(e<<26)) ^ ((e>>>11)|(e<<21)) ^ ((e>>>25)|(e<<7));
+      const ch = (e & f) ^ ((~e) & g);
+      const temp1 = (h + S1 + ch + K[i] + W[i]) >>> 0;
+      const S0 = ((a>>>2)|(a<<30)) ^ ((a>>>13)|(a<<19)) ^ ((a>>>22)|(a<<10));
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const temp2 = (S0 + maj) >>> 0;
+      h=g; g=f; f=e; e=(d+temp1)>>>0; d=c; c=b; b=a; a=(temp1+temp2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0; H[1]=(H[1]+b)>>>0; H[2]=(H[2]+c)>>>0; H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0; H[5]=(H[5]+f)>>>0; H[6]=(H[6]+g)>>>0; H[7]=(H[7]+h)>>>0;
+  }
+  const out = new Uint8Array(32);
+  const ov = new DataView(out.buffer);
+  for(let i = 0; i < 8; i++) ov.setUint32(i * 4, H[i], false);
+  return out;
+}
+
 async function computeVaultKeyHash(email, pin){
   const cleanEmail = String(email || '').trim().toLowerCase();
   const cleanPin = String(pin || '').trim();
   const raw = 'ironpulse_v1::' + cleanEmail + '::' + cleanPin;
-  if(window.crypto && window.crypto.subtle && window.TextEncoder){
-    try{
-      const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
-      const arr = Array.from(new Uint8Array(buf));
-      return 'ipv_' + arr.map(function(b){ return b.toString(16).padStart(2, '0'); }).join('').slice(0, 32);
-    }catch(e){}
-  }
-  // Fallback deterministic hash
-  let h1 = 0xdeadbeef ^ raw.length, h2 = 0x41c6ce57 ^ raw.length;
-  for(let i = 0, ch; i < raw.length; i++){
-    ch = raw.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return 'ipv_' + (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
+  const arr = await _sha256U8(_utf8Encode(raw));
+  return 'ipv_' + _u8ToHex(arr).slice(0, 32);
 }
 
 /* ============================================================================
@@ -19232,6 +19210,8 @@ const NOSTR_CLOUD_RELAYS = [
   'wss://nos.lol',
   'wss://relay.damus.io',
   'wss://relay.primal.net',
+  'wss://relay.snort.social',
+  'wss://nostr.bitcoiner.social',
   'wss://offchain.pub',
   'wss://nostr.mom'
 ];
@@ -19289,19 +19269,61 @@ function _concatU8(){
   return res;
 }
 async function _sha256U8(u8){
-  const buf = await window.crypto.subtle.digest('SHA-256', u8);
-  return new Uint8Array(buf);
+  if(window.crypto && window.crypto.subtle){
+    try{
+      const buf = await window.crypto.subtle.digest('SHA-256', u8);
+      return new Uint8Array(buf);
+    }catch(_){}
+  }
+  return _pureSha256U8(u8);
 }
 async function _sha256Hex(str){
-  const bytes = await _sha256U8(new TextEncoder().encode(String(str || '')));
+  const bytes = await _sha256U8(_utf8Encode(String(str || '')));
   return _u8ToHex(bytes);
 }
 async function _taggedHash(tag, msgBytes){
-  const th = await _sha256U8(new TextEncoder().encode(tag));
+  const th = await _sha256U8(_utf8Encode(tag));
   return await _sha256U8(_concatU8(th, th, msgBytes));
 }
+function _u8ToB64(u8){
+  let bin = '';
+  const chunk = 0x8000;
+  for(let i = 0; i < u8.length; i += chunk){
+    bin += String.fromCharCode.apply(null, u8.subarray(i, i + chunk));
+  }
+  return btoa(bin);
+}
+function _b64ToU8(b64){
+  const bin = atob(b64);
+  const u8 = new Uint8Array(bin.length);
+  for(let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return u8;
+}
+async function _gzipCompressU8(u8){
+  if(typeof CompressionStream === 'undefined') return { u8: u8, gz: false };
+  try{
+    const cs = new CompressionStream('gzip');
+    const w = cs.writable.getWriter();
+    w.write(u8);
+    w.close();
+    const buf = await new Response(cs.readable).arrayBuffer();
+    return { u8: new Uint8Array(buf), gz: true };
+  }catch(_){
+    return { u8: u8, gz: false };
+  }
+}
+async function _gzipDecompressU8(u8){
+  if(typeof DecompressionStream === 'undefined') return u8;
+  const ds = new DecompressionStream('gzip');
+  const w = ds.writable.getWriter();
+  w.write(u8);
+  w.close();
+  const buf = await new Response(ds.readable).arrayBuffer();
+  return new Uint8Array(buf);
+}
+
 async function deriveNostrIdentityFromVaultKey(vaultKey){
-  const privBytes = await _sha256U8(new TextEncoder().encode('ironpulse_nostr_secp256k1_v2::' + vaultKey));
+  const privBytes = await _sha256U8(_utf8Encode('ironpulse_nostr_secp256k1_v2::' + vaultKey));
   const privHex = _u8ToHex(privBytes);
   const d0 = BigInt('0x' + privHex);
   const P_pt = _secpMul(d0);
@@ -19314,7 +19336,7 @@ async function signNostrVaultEvent(vaultKey, contentStr){
   const kind = 30078;
   const tags = [['d', 'ironpulse_vault_' + vaultKey]];
   const serialized = JSON.stringify([0, idObj.pubHex, created_at, kind, tags, contentStr]);
-  const msgHashBytes = await _sha256U8(new TextEncoder().encode(serialized));
+  const msgHashBytes = await _sha256U8(_utf8Encode(serialized));
   const idHex = _u8ToHex(msgHashBytes);
 
   const d0 = BigInt('0x' + idObj.privHex);
@@ -19342,47 +19364,66 @@ async function signNostrVaultEvent(vaultKey, contentStr){
   };
 }
 
-// AES-256-GCM Encryption so user workout data is private on public relays
+// Compact GZIP + AES-256-GCM Encryption (70-85% smaller so full history fits easily on Nostr & ntfy!)
 async function encryptVaultPayload(vaultKey, obj){
-  try{
-    const keyMaterial = await _sha256U8(new TextEncoder().encode('ironpulse_aes_key::' + vaultKey));
-    const cryptoKey = await window.crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['encrypt']);
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
-    const encoded = new TextEncoder().encode(JSON.stringify(obj));
-    const cipherBuf = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, encoded);
-    return ' IPENC1:' + _u8ToHex(iv) + ':' + _u8ToHex(new Uint8Array(cipherBuf));
-  }catch(e){
-    return JSON.stringify(obj);
+  const rawBytes = _utf8Encode(JSON.stringify(obj));
+  const comp = await _gzipCompressU8(rawBytes);
+  if(window.crypto && window.crypto.subtle){
+    try{
+      const keyMaterial = await _sha256U8(_utf8Encode('ironpulse_aes_key::' + vaultKey));
+      const cryptoKey = await window.crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['encrypt']);
+      const iv = window.crypto.getRandomValues(new Uint8Array(12));
+      const cipherBuf = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, comp.u8);
+      const prefix = comp.gz ? 'IPGZ2:' : 'IPENC2:';
+      return prefix + _u8ToB64(iv) + ':' + _u8ToB64(new Uint8Array(cipherBuf));
+    }catch(_){}
   }
+  return JSON.stringify(obj);
 }
 
 async function decryptVaultPayload(vaultKey, str){
   if(!str) return null;
   const trimmed = String(str).trim();
+  if(trimmed.indexOf('IPGZ2:') === 0 || trimmed.indexOf('IPENC2:') === 0){
+    try{
+      const isGz = trimmed.indexOf('IPGZ2:') === 0;
+      const parts = trimmed.split(':');
+      const iv = _b64ToU8(parts[1]);
+      const cipher = _b64ToU8(parts[2]);
+      const keyMaterial = await _sha256U8(_utf8Encode('ironpulse_aes_key::' + vaultKey));
+      const cryptoKey = await window.crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['decrypt']);
+      const plainBuf = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, cipher);
+      let plainU8 = new Uint8Array(plainBuf);
+      if(isGz) plainU8 = await _gzipDecompressU8(plainU8);
+      return JSON.parse(_utf8Decode(plainU8));
+    }catch(_){
+      return null;
+    }
+  }
   if(trimmed.indexOf('IPENC1:') === 0){
     try{
       const parts = trimmed.split(':');
       const iv = _hexToU8(parts[1]);
       const cipher = _hexToU8(parts[2]);
-      const keyMaterial = await _sha256U8(new TextEncoder().encode('ironpulse_aes_key::' + vaultKey));
+      const keyMaterial = await _sha256U8(_utf8Encode('ironpulse_aes_key::' + vaultKey));
       const cryptoKey = await window.crypto.subtle.importKey('raw', keyMaterial, { name: 'AES-GCM' }, false, ['decrypt']);
       const plainBuf = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, cipher);
-      return JSON.parse(new TextDecoder().decode(plainBuf));
-    }catch(e){
+      return JSON.parse(_utf8Decode(new Uint8Array(plainBuf)));
+    }catch(_){
       return null;
     }
   }
   try{ return JSON.parse(trimmed); }catch(e){ return null; }
 }
 
-// Fetch latest encrypted vault from Nostr Relays + ntfy.sh + Custom Server
+// Fetch ALL candidate events from all 5 Nostr relays and return the list so we pick max(updatedAt)!
 async function fetchFromNostrRelays(vaultKey, timeoutMs){
-  timeoutMs = timeoutMs || 3600;
+  timeoutMs = timeoutMs || 4200;
   try{
     const idObj = await deriveNostrIdentityFromVaultKey(vaultKey);
     const dTag = 'ironpulse_vault_' + vaultKey;
     return await new Promise(function(resolve){
-      let bestEvent = null;
+      const events = [];
       let finishedCount = 0;
       let resolved = false;
       const socks = [];
@@ -19390,66 +19431,112 @@ async function fetchFromNostrRelays(vaultKey, timeoutMs){
         if(resolved) return;
         resolved = true;
         socks.forEach(function(ws){ try{ ws.close(); }catch(_){} });
-        resolve(bestEvent);
+        events.sort(function(a, b){ return (b.created_at || 0) - (a.created_at || 0); });
+        resolve(events);
       };
       const timer = setTimeout(done, timeoutMs);
 
       NOSTR_CLOUD_RELAYS.forEach(function(url){
+        let closedThis = false;
+        const markDone = function(){
+          if(closedThis) return;
+          closedThis = true;
+          finishedCount++;
+          // Wait for at least 4 of 5 relays so a fast stale relay never shadows a newer relay!
+          if(finishedCount >= Math.max(4, NOSTR_CLOUD_RELAYS.length - 1)){
+            clearTimeout(timer);
+            done();
+          }
+        };
         try{
           const ws = new WebSocket(url);
           socks.push(ws);
           ws.onopen = function(){
             try{
-              ws.send(JSON.stringify(['REQ', 'ipget', { kinds: [30078], authors: [idObj.pubHex], '#d': [dTag], limit: 1 }]));
-            }catch(_){}
+              ws.send(JSON.stringify(['REQ', 'ipget', { kinds: [30078], authors: [idObj.pubHex], '#d': [dTag], limit: 5 }]));
+            }catch(_){ markDone(); }
           };
           ws.onmessage = function(ev){
             try{
               const msg = JSON.parse(ev.data);
               if(msg[0] === 'EVENT' && msg[2] && msg[2].content){
-                if(!bestEvent || msg[2].created_at > bestEvent.created_at){
-                  bestEvent = msg[2];
-                }
+                events.push(msg[2]);
               } else if(msg[0] === 'EOSE'){
-                finishedCount++;
-                // As soon as at least 2 relays respond (or 1 relay has our event), resolve fast!
-                if(bestEvent || finishedCount >= 3){
-                  clearTimeout(timer);
-                  done();
-                }
+                markDone();
               }
             }catch(_){}
           };
-          ws.onerror = function(){
-            finishedCount++;
-            if(finishedCount >= NOSTR_CLOUD_RELAYS.length){ clearTimeout(timer); done(); }
-          };
+          ws.onerror = markDone;
+          ws.onclose = markDone;
         }catch(_){
-          finishedCount++;
+          markDone();
         }
       });
     });
   }catch(e){
-    return null;
+    return [];
   }
 }
 
+// Await actual relay OK confirmations instead of fire-and-forget!
 async function publishToNostrRelays(vaultKey, encryptedContent){
   try{
     const signedEv = await signNostrVaultEvent(vaultKey, encryptedContent);
-    NOSTR_CLOUD_RELAYS.forEach(function(url){
-      try{
-        const ws = new WebSocket(url);
-        const t = setTimeout(function(){ try{ ws.close(); }catch(_){} }, 4500);
-        ws.onopen = function(){
-          try{
-            ws.send(JSON.stringify(['EVENT', signedEv]));
-            setTimeout(function(){ clearTimeout(t); try{ ws.close(); }catch(_){} }, 1200);
-          }catch(_){}
+    return await new Promise(function(resolve){
+      let okCount = 0;
+      let finishedCount = 0;
+      let settled = false;
+      const socks = [];
+      const finish = function(){
+        if(settled) return;
+        settled = true;
+        setTimeout(function(){ socks.forEach(function(ws){ try{ ws.close(); }catch(_){} }); }, 150);
+        resolve(okCount > 0);
+      };
+      const timer = setTimeout(finish, 3200);
+
+      NOSTR_CLOUD_RELAYS.forEach(function(url){
+        let doneOne = false;
+        const markOne = function(){
+          if(doneOne) return;
+          doneOne = true;
+          finishedCount++;
+          if(finishedCount >= NOSTR_CLOUD_RELAYS.length){
+            clearTimeout(timer);
+            finish();
+          }
         };
-      }catch(_){}
+        try{
+          const ws = new WebSocket(url);
+          socks.push(ws);
+          ws.onopen = function(){
+            try{
+              ws.send(JSON.stringify(['EVENT', signedEv]));
+            }catch(_){ markOne(); }
+          };
+          ws.onmessage = function(ev){
+            try{
+              const msg = JSON.parse(ev.data);
+              if(msg[0] === 'OK' && msg[1] === signedEv.id){
+                if(msg[2] === true){
+                  okCount++;
+                  // Resolve fast once >= 2 relays confirm persistence while letting remaining sockets finish briefly
+                  if(okCount >= 2){
+                    clearTimeout(timer);
+                    setTimeout(finish, 250);
+                  }
+                }
+                markOne();
+              }
+            }catch(_){}
+          };
+          ws.onerror = markOne;
+          ws.onclose = markOne;
+        }catch(_){
+          markOne();
+        }
+      });
     });
-    return true;
   }catch(e){
     return false;
   }
@@ -19457,39 +19544,79 @@ async function publishToNostrRelays(vaultKey, encryptedContent){
 
 async function fetchFromNtfyCloud(vaultKey){
   const ctrl = new AbortController();
-  const t = setTimeout(function(){ ctrl.abort(); }, 3200);
+  const t = setTimeout(function(){ ctrl.abort(); }, 5000);
   try{
     const url = 'https://ntfy.sh/ip_vault_' + encodeURIComponent(vaultKey) + '/json?poll=1&since=all';
     const r = await fetch(url, { method: 'GET', signal: ctrl.signal, cache: 'no-store' });
     clearTimeout(t);
-    if(!r.ok) return null;
+    if(!r.ok) return [];
     const txt = await r.text();
-    if(!txt) return null;
+    if(!txt) return [];
     const lines = txt.trim().split('\n');
-    let latestMsg = null;
-    for(let i = lines.length - 1; i >= 0; i--){
+    const payloads = [];
+    const chunkGroups = {};
+
+    for(let i = 0; i < lines.length; i++){
       try{
         const item = JSON.parse(lines[i]);
-        if(item && item.event === 'message' && item.message){
-          latestMsg = item.message;
-          break;
+        if(!item || item.event !== 'message' || !item.message) continue;
+        const msg = String(item.message);
+        if(msg.indexOf('IPCHK:') === 0){
+          const c1 = msg.indexOf(':', 6);
+          const c2 = msg.indexOf(':', c1 + 1);
+          if(c1 > 6 && c2 > c1){
+            const snapId = msg.slice(6, c1);
+            const partMeta = msg.slice(c1 + 1, c2).split('/');
+            const idx = parseInt(partMeta[0], 10);
+            const total = parseInt(partMeta[1], 10);
+            const data = msg.slice(c2 + 1);
+            if(!chunkGroups[snapId]) chunkGroups[snapId] = { total: total, parts: {}, ts: item.time || 0 };
+            chunkGroups[snapId].parts[idx] = data;
+          }
+        } else if(msg.indexOf('IPGZ2:') === 0 || msg.indexOf('IPENC2:') === 0 || msg.indexOf('IPENC1:') === 0 || msg.trim().indexOf('{') === 0){
+          payloads.push(msg);
         }
       }catch(_){}
     }
-    return latestMsg;
+
+    const snapIds = Object.keys(chunkGroups).sort(function(a, b){
+      return (chunkGroups[b].ts || 0) - (chunkGroups[a].ts || 0);
+    });
+    for(let s = 0; s < snapIds.length; s++){
+      const g = chunkGroups[snapIds[s]];
+      let complete = true;
+      let joined = '';
+      for(let k = 0; k < g.total; k++){
+        if(g.parts[k] === undefined){ complete = false; break; }
+        joined += g.parts[k];
+      }
+      if(complete && joined) payloads.push(joined);
+    }
+    return payloads;
   }catch(e){
     clearTimeout(t);
-    return null;
+    return [];
   }
 }
 
 async function publishToNtfyCloud(vaultKey, encryptedContent){
   try{
-    await fetch('https://ntfy.sh/ip_vault_' + encodeURIComponent(vaultKey), {
-      method: 'POST',
-      body: encryptedContent
-    });
-    return true;
+    const endpoint = 'https://ntfy.sh/ip_vault_' + encodeURIComponent(vaultKey);
+    const CHUNK_SIZE = 3000;
+    if(encryptedContent.length <= CHUNK_SIZE){
+      const r = await fetch(endpoint, { method: 'POST', body: encryptedContent });
+      return r.ok;
+    }
+    const total = Math.ceil(encryptedContent.length / CHUNK_SIZE);
+    const snapId = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const promises = [];
+    for(let i = 0; i < total; i++){
+      const slice = encryptedContent.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+      const body = 'IPCHK:' + snapId + ':' + i + '/' + total + ':' + slice;
+      promises.push(fetch(endpoint, { method: 'POST', body: body }).then(function(r){ return r.ok; }).catch(function(){ return false; }));
+    }
+    const results = await Promise.all(promises);
+    return results.every(Boolean);
   }catch(e){
     return false;
   }
@@ -19508,10 +19635,17 @@ function startLiveCrossDeviceStream(vaultKey){
       if(!ev || !ev.data || _isSessionKickedLocked) return;
       try{
         const wrapper = JSON.parse(ev.data);
-        if(wrapper && wrapper.event === 'message' && wrapper.message){
-          const dec = await decryptVaultPayload(vaultKey, wrapper.message);
-          if(dec && dec.activeSessionId && dec.activeSessionId !== MY_SESSION_INSTANCE_ID){
-            triggerSessionKickedLock(dec.activeDeviceLabel || 'Another Device');
+        if(wrapper && wrapper.event === 'message'){
+          let rawPayload = wrapper.message || '';
+          if(wrapper.attachment && wrapper.attachment.url){
+            const ar = await fetch(wrapper.attachment.url, { cache: 'no-store' });
+            if(ar.ok) rawPayload = await ar.text();
+          }
+          if(rawPayload){
+            const dec = await decryptVaultPayload(vaultKey, rawPayload);
+            if(dec && dec.activeSessionId && dec.activeSessionId !== MY_SESSION_INSTANCE_ID){
+              triggerSessionKickedLock(dec.activeDeviceLabel || 'Another Device');
+            }
           }
         }
       }catch(_){}
@@ -19519,42 +19653,52 @@ function startLiveCrossDeviceStream(vaultKey){
   }catch(_){}
 }
 
-async function cloudVaultGet(vaultKey){
+async function cloudVaultGet(vaultKey, forceRemoteOnly){
   let bestCandidate = null;
 
   // Run Nostr NIP-78 Global Relays and ntfy.sh Cloud fetch in parallel!
   const results = await Promise.all([
-    fetchFromNostrRelays(vaultKey, 3600),
+    fetchFromNostrRelays(vaultKey, 4200),
     fetchFromNtfyCloud(vaultKey)
   ]);
 
-  const nostrEv = results[0];
-  const ntfyMsg = results[1];
+  const nostrEvents = Array.isArray(results[0]) ? results[0] : (results[0] ? [results[0]] : []);
+  const ntfyPayloads = Array.isArray(results[1]) ? results[1] : (results[1] ? [results[1]] : []);
 
-  if(nostrEv && nostrEv.content){
-    const dec1 = await decryptVaultPayload(vaultKey, nostrEv.content);
-    if(dec1 && typeof dec1 === 'object'){
-      bestCandidate = dec1;
+  for(let i = 0; i < nostrEvents.length; i++){
+    const ev = nostrEvents[i];
+    if(ev && ev.content){
+      const dec = await decryptVaultPayload(vaultKey, ev.content);
+      if(dec && typeof dec === 'object'){
+        if(!bestCandidate || (dec.updatedAt || 0) > (bestCandidate.updatedAt || 0)){
+          bestCandidate = dec;
+        }
+      }
     }
   }
-  if(ntfyMsg){
-    const dec2 = await decryptVaultPayload(vaultKey, ntfyMsg);
-    if(dec2 && typeof dec2 === 'object'){
-      if(!bestCandidate || (dec2.updatedAt || 0) > (bestCandidate.updatedAt || 0)){
-        bestCandidate = dec2;
+  for(let j = 0; j < ntfyPayloads.length; j++){
+    const raw = ntfyPayloads[j];
+    if(raw){
+      const dec = await decryptVaultPayload(vaultKey, raw);
+      if(dec && typeof dec === 'object'){
+        if(!bestCandidate || (dec.updatedAt || 0) > (bestCandidate.updatedAt || 0)){
+          bestCandidate = dec;
+        }
       }
     }
   }
 
-  // Also check local mirror and pick whichever has the newest timestamp
-  const localRaw = safeGetItem('ip_local_vault_mirror_' + vaultKey);
-  if(localRaw){
-    try{
-      const localObj = JSON.parse(localRaw);
-      if(localObj && (!bestCandidate || (localObj.updatedAt || 0) > (bestCandidate.updatedAt || 0))){
-        bestCandidate = localObj;
-      }
-    }catch(_){}
+  // Only consult local mirror if NOT forceRemoteOnly (so Pull Latest / Cross-Device Login always prefers live cloud)
+  if(!forceRemoteOnly){
+    const localRaw = safeGetItem('ip_local_vault_mirror_' + vaultKey);
+    if(localRaw){
+      try{
+        const localObj = JSON.parse(localRaw);
+        if(localObj && (!bestCandidate || (localObj.updatedAt || 0) > (bestCandidate.updatedAt || 0))){
+          bestCandidate = localObj;
+        }
+      }catch(_){}
+    }
   }
 
   if(bestCandidate){
@@ -19578,11 +19722,11 @@ async function cloudVaultPut(vaultKey, payloadObj){
   }
 
   const encrypted = await encryptVaultPayload(vaultKey, payloadObj);
-  await Promise.all([
+  const res = await Promise.all([
     publishToNostrRelays(vaultKey, encrypted),
     publishToNtfyCloud(vaultKey, encrypted)
   ]);
-  return true;
+  return !!(res[0] || res[1]);
 }
 
 function ensurePersistentAccountRestored(){
@@ -19665,7 +19809,7 @@ async function performAccountLoginWithEmailAndPassword(rawEmail, rawPass, option
   if(btnEl){ btnEl.disabled = true; btnEl.textContent = '⏳ Signing In & Loading Data...'; }
 
   const vaultKey = await computeVaultKeyHash(email, pass);
-  const existingVault = await cloudVaultGet(vaultKey);
+  const existingVault = await cloudVaultGet(vaultKey, true);
   const devLabel = getCurrentDeviceLabel();
   const authObj = {
     email: email,
@@ -19813,18 +19957,32 @@ async function forcePullCloudSyncNow(){
   const acc = appData.cloudAccount;
   if(!acc || !acc.vaultKey) return;
   playSound('tap');
-  const remote = await cloudVaultGet(acc.vaultKey);
+  toast('⏳ Pulling latest cloud data...');
+  const remote = await cloudVaultGet(acc.vaultKey, true);
   if(remote && remote.appData){
     appData = Object.assign({}, appData, remote.appData);
     appData.cloudAccount = acc;
     normalizePrograms();
+    if(typeof syncSavedCustomExercises === 'function') syncSavedCustomExercises();
+    safeSetItem('gymTrackerData', JSON.stringify(appData));
     applyTheme();
+    applyPower();
     refreshUnitUI();
+    syncViewModeUI();
+    updateGymJourneyBanner();
+    renderWeightProgressChart();
+    if(typeof updateDeloadUI === 'function') updateDeloadUI();
+    if(typeof updateDayReadinessUI === 'function') updateDayReadinessUI();
+    refreshCloudAuthUI();
+    if(typeof refreshSettingsUI === 'function') refreshSettingsUI();
+    if($('cloudLastSyncTxt')){
+      $('cloudLastSyncTxt').textContent = 'Pulled: ' + new Date().toLocaleTimeString();
+    }
     route(true);
     playSound('success');
     toast('📥 Pulled latest data from Cloud!');
   } else {
-    toast('Already up to date');
+    toast('⚠️ No newer cloud snapshot found yet');
   }
 }
 
@@ -19877,19 +20035,36 @@ async function reclaimCloudSessionHere(silentOnStartup){
   _isSessionKickedLocked = false;
   closeModal('modal-session-kicked');
 
-  if(!silentOnStartup){
-    const remote = await cloudVaultGet(acc.vaultKey);
-    if(remote && remote.appData){
-      const mergedProgs = mergeAccountSplitsArray(remote.appData.programs || [], appData.programs || []);
-      appData = Object.assign({}, appData, remote.appData);
-      appData.programs = mergedProgs;
-      appData.cloudAccount = acc;
-    }
+  // ALWAYS check cloud first (even on silent startup!) so an older browser tab never overwrites a newer device!
+  const remote = await cloudVaultGet(acc.vaultKey, true);
+  const localSyncTs = acc.lastSyncTs || 0;
+  if(remote && remote.appData && (!silentOnStartup || (remote.updatedAt || 0) > localSyncTs)){
+    const mergedProgs = mergeAccountSplitsArray(remote.appData.programs || [], appData.programs || []);
+    appData = Object.assign({}, appData, remote.appData);
+    appData.programs = mergedProgs;
+    appData.cloudAccount = acc;
+    acc.lastSyncTs = remote.updatedAt || Date.now();
+    safeSetItem('ironPulsePersistentAuthV1', JSON.stringify(acc));
     normalizePrograms();
+    if(typeof syncSavedCustomExercises === 'function') syncSavedCustomExercises();
     safeSetItem('gymTrackerData', JSON.stringify(appData));
+    applyTheme();
+    applyPower();
+    refreshUnitUI();
+    syncViewModeUI();
+    updateGymJourneyBanner();
+    renderWeightProgressChart();
+    if(typeof updateDeloadUI === 'function') updateDeloadUI();
+    if(typeof updateDayReadinessUI === 'function') updateDayReadinessUI();
+    refreshCloudAuthUI();
+    if(typeof refreshSettingsUI === 'function') refreshSettingsUI();
     route(true);
-    playSound('success');
-    toast('🔓 Session active on this device!');
+    if(!silentOnStartup){
+      playSound('success');
+      toast('🔓 Synced latest data & activated on this device!');
+    } else {
+      toast('☁️ Synced latest updates from your other device');
+    }
   }
   await pushCloudVaultSnapshot(true);
   startCloudSessionHeartbeat();
