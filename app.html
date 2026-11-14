@@ -1379,7 +1379,8 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
 }
 .micro-seg .seg-btn{padding:0 7px;font-size:9px;min-width:auto;height:20px;font-weight:800;border-radius:6px;white-space:nowrap}
 
-.timer-controls{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:1px}
+.timer-controls{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:1px;touch-action:pan-y}
+.timer-controls>button{touch-action:pan-y}
 .timer-controls .btn{padding:7px 13px;font-size:11px;font-weight:800}
 .timer-controls #timerBtn{min-width:100px;padding:8px 18px;font-size:12.5px;font-weight:900}
 
@@ -2673,10 +2674,10 @@ body[data-idle="1"] .marble-veins{
               <span class="micro" style="color:var(--purple-t);font-size:7.5px">⚡±SS</span>
               <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
             </div>
-            <div class="seg micro-seg" id="techSegWrap" style="height:26px;flex-shrink:0" title="Standard PR comparison vs Different Machine/Grip">
+            <div class="seg micro-seg" id="techSegWrap" style="height:26px;flex-shrink:0" title="Same Technique/Form vs Changed Technique, Grip, or Machine (pauses strict PR comparison)">
               <div class="seg-glass-pill"></div>
-              <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(false)">Standard</div>
-              <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(true)">🔄 Tech</div>
+              <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(false)">Same Form</div>
+              <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(true)">🔄 New Technique</div>
             </div>
           </div>
           <div class="workout-controls">
@@ -2842,11 +2843,11 @@ body[data-idle="1"] .marble-veins{
     <!-- CARDIO ACTIVE SCREEN -->
     <section id="screen-cardio-active" class="screen">
       <div class="screen-body" style="justify-content:space-between;text-align:center;padding-bottom:var(--dock-bottom);position:relative">
-        <!-- 5-SECOND INITIAL COUNTDOWN OVERLAY WITH INSTANT CANCEL -->
+        <!-- 3-SECOND INITIAL COUNTDOWN OVERLAY WITH INSTANT CANCEL -->
         <div id="cardioCountdownOverlay" class="cardio-cd-overlay hidden">
           <div class="micro" style="color:var(--blue-t);font-weight:900;letter-spacing:1px">⚡ GET READY FOR CARDIO</div>
-          <div class="cardio-cd-num" id="cardioCountdownNum">5</div>
-          <div class="tiny muted" id="cardioCountdownSub">Starting session in 5 seconds...</div>
+          <div class="cardio-cd-num" id="cardioCountdownNum">3</div>
+          <div class="tiny muted" id="cardioCountdownSub">Starting session in 3 seconds...</div>
           <button type="button" class="btn red block lg" onclick="cancelCardioDuringCountdown()" style="max-width:260px;margin-top:8px">✕ Cancel Cardio (Don't Save)</button>
         </div>
         <div class="row-between">
@@ -10077,7 +10078,7 @@ function toggleTechChanged(){
   playSound('tap');
   renderWorkout();
   syncWorkout();
-  toast(ex.currentEntry.techniqueChanged ? 'Tech Changed: PR comparison paused' : 'Standard comparison active');
+  toast(ex.currentEntry.techniqueChanged ? '🔄 New Technique / Form: PR comparison paused' : '✓ Same Form: Standard PR comparison active');
 }
 function setWorkoutEach(val){
   const ex = activeSessionData[activeExIndex];
@@ -12174,12 +12175,12 @@ function startCardioSession(){
 }
 
 let _cardioCountdownInt = null;
-let _cardioCountdownRem = 5;
+let _cardioCountdownRem = 3;
 
 function startCardioInitialCountdown(){
   clearInterval(_cardioCountdownInt);
   if(cardioInt){ clearInterval(cardioInt); cardioInt = null; }
-  _cardioCountdownRem = 5;
+  _cardioCountdownRem = 3;
   const ov = $('cardioCountdownOverlay');
   const numEl = $('cardioCountdownNum');
   const subEl = $('cardioCountdownSub');
@@ -12187,8 +12188,8 @@ function startCardioInitialCountdown(){
   const s = String(cardioTotal % 60).padStart(2, '0');
   if($('cardioMainDisplay')) $('cardioMainDisplay').textContent = m + ':' + s;
   if(ov) ov.classList.remove('hidden');
-  if(numEl) numEl.textContent = '5';
-  if(subEl) subEl.textContent = 'Starting in 5 seconds... Tap Cancel below to abort without saving.';
+  if(numEl) numEl.textContent = '3';
+  if(subEl) subEl.textContent = 'Starting in 3 seconds... Tap Cancel below to abort without saving.';
   _cardioCountdownInt = setInterval(function(){
     _cardioCountdownRem--;
     if(_cardioCountdownRem > 0){
@@ -19453,14 +19454,16 @@ async function fetchFromNostrRelays(vaultKey, timeoutMs){
           socks.push(ws);
           ws.onopen = function(){
             try{
-              ws.send(JSON.stringify(['REQ', 'ipget', { kinds: [30078], authors: [idObj.pubHex], '#d': [dTag], limit: 5 }]));
+              ws.send(JSON.stringify(['REQ', 'ipget', { kinds: [30078], authors: [idObj.pubHex], limit: 10 }]));
             }catch(_){ markDone(); }
           };
           ws.onmessage = function(ev){
             try{
               const msg = JSON.parse(ev.data);
               if(msg[0] === 'EVENT' && msg[2] && msg[2].content){
-                events.push(msg[2]);
+                const evTags = Array.isArray(msg[2].tags) ? msg[2].tags : [];
+                const hasD = evTags.some(function(tg){ return Array.isArray(tg) && tg[0] === 'd' && tg[1] === dTag; });
+                if(hasD || !evTags.length) events.push(msg[2]);
               } else if(msg[0] === 'EOSE'){
                 markDone();
               }
@@ -19609,14 +19612,19 @@ async function publishToNtfyCloud(vaultKey, encryptedContent){
     }
     const total = Math.ceil(encryptedContent.length / CHUNK_SIZE);
     const snapId = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    const promises = [];
+    let allOk = true;
     for(let i = 0; i < total; i++){
       const slice = encryptedContent.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
       const body = 'IPCHK:' + snapId + ':' + i + '/' + total + ':' + slice;
-      promises.push(fetch(endpoint, { method: 'POST', body: body }).then(function(r){ return r.ok; }).catch(function(){ return false; }));
+      try{
+        const r = await fetch(endpoint, { method: 'POST', body: body });
+        if(!r.ok) allOk = false;
+      }catch(_){ allOk = false; }
+      if(i < total - 1){
+        await new Promise(function(res){ setTimeout(res, 95); });
+      }
     }
-    const results = await Promise.all(promises);
-    return results.every(Boolean);
+    return allOk;
   }catch(e){
     return false;
   }
@@ -20464,6 +20472,34 @@ async function confirmAccountPasswordReset(){
 
   function findStepperContext(startEl){
     if(!startEl || !startEl.closest) return null;
+
+    // Support Rest Timer Controls (−30s ⇄ START/PAUSE ⇄ +30s)
+    const timerBtn = startEl.closest('.timer-controls > #timerBtn');
+    if(timerBtn){
+      const parent = timerBtn.parentElement;
+      const btns = Array.prototype.slice.call(parent.querySelectorAll(':scope > button'));
+      let minusBtn = null, plusBtn = null;
+      btns.forEach(function(b){
+        const txt = (b.textContent || '').trim();
+        if(txt.indexOf('−30') >= 0 || txt.indexOf('-30') >= 0) minusBtn = b;
+        else if(txt.indexOf('+30') >= 0) plusBtn = b;
+      });
+      if(minusBtn && plusBtn){
+        const mRect = minusBtn.getBoundingClientRect();
+        const pRect = plusBtn.getBoundingClientRect();
+        const iRect = timerBtn.getBoundingClientRect();
+        if(mRect.width > 0 && pRect.width > 0 && iRect.width > 0){
+          return {
+            input: timerBtn,
+            container: parent,
+            minusBtn: minusBtn,
+            plusBtn: plusBtn,
+            isTimerBar: true
+          };
+        }
+      }
+    }
+
     const inp = startEl.closest('input.num-target, input[type="text"], input[type="number"]');
     if(!inp || inp.classList.contains('deload-locked-input')) return null;
     const parent = inp.parentElement;
@@ -20521,9 +20557,31 @@ async function confirmAccountPasswordReset(){
       holdShowTimer = null;
     }
     if(holdInterval){
+      clearTimeout(holdInterval);
       clearInterval(holdInterval);
       holdInterval = null;
     }
+  }
+
+  // Progressive hold acceleration: starts at 500ms, speeds up smoothly, capped at 200ms so every step remains readable!
+  function getAcceleratedHoldDelay(stepCount){
+    const schedule = [500, 400, 320, 250, 200];
+    return schedule[Math.min(stepCount, schedule.length - 1)];
+  }
+
+  function startAcceleratedHold(btnGetter, lens, onclickKey){
+    clearHoldTimer();
+    let stepCount = 0;
+    const scheduleNext = function(){
+      const delay = getAcceleratedHoldDelay(stepCount);
+      holdInterval = setTimeout(function(){
+        const nextBtn = triggerStepButton(btnGetter(), lens, onclickKey);
+        if(!nextBtn) return;
+        stepCount++;
+        scheduleNext();
+      }, delay);
+    };
+    scheduleNext();
   }
 
   function triggerStepButton(btn, lens, onclickKey){
@@ -20554,13 +20612,14 @@ async function confirmAccountPasswordReset(){
   document.addEventListener('pointerdown', function(e){
     if(e.button !== undefined && e.button !== 0) return;
 
-    // Case A: User presses directly on a − or + stepper button -> 1 step happens via click, hold repeats every 0.5s (500ms) with glassy animation!
+    // Case A: User presses directly on a − / + / −30s / +30s stepper button -> hold repeats with progressive acceleration!
+    // Note: #timerBtn (START/PAUSE) is intentionally NOT matched here so Case B handles horizontal swipe from #timerBtn -> −30s / +30s!
     const directBtn = e.target && e.target.closest ? e.target.closest('button') : null;
-    if(directBtn){
+    if(directBtn && directBtn.id !== 'timerBtn'){
       const txt = (directBtn.textContent || '').trim();
-      if(txt === '−' || txt === '-' || txt === '+'){
+      if(txt === '−' || txt === '-' || txt === '+' || txt === '−30s' || txt === '+30s'){
         const p = directBtn.parentElement;
-        const siblingInput = p ? p.querySelector(':scope > input') : null;
+        const siblingInput = p ? p.querySelector(':scope > input, :scope > #timerBtn') : null;
         if(siblingInput){
           clearHoldTimer();
           const lens = getLens();
@@ -20576,9 +20635,7 @@ async function confirmAccountPasswordReset(){
           }, 160);
           const btnOnclickKey = directBtn.getAttribute('onclick') || '';
           let curDirectBtn = directBtn;
-          holdInterval = setInterval(function(){
-            curDirectBtn = triggerStepButton(curDirectBtn, lens, btnOnclickKey);
-          }, HOLD_STEP_INTERVAL_MS);
+          startAcceleratedHold(function(){ return curDirectBtn; }, lens, btnOnclickKey);
           const stopDirectHold = function(){
             clearHoldTimer();
             if(lens) lens.classList.remove('active', 'pulse-step');
@@ -20684,16 +20741,14 @@ async function confirmAccountPasswordReset(){
       swipeState.activeSide = reachedSide;
       if(reachedSide === 'minus'){
         const btn = swipeState.ctx.minusBtn;
-        triggerStepButton(btn, lens);
-        holdInterval = setInterval(function(){
-          triggerStepButton(btn, lens);
-        }, HOLD_STEP_INTERVAL_MS);
+        const k = btn.getAttribute('onclick') || '';
+        triggerStepButton(btn, lens, k);
+        startAcceleratedHold(function(){ return btn; }, lens, k);
       } else if(reachedSide === 'plus'){
         const btn = swipeState.ctx.plusBtn;
-        triggerStepButton(btn, lens);
-        holdInterval = setInterval(function(){
-          triggerStepButton(btn, lens);
-        }, HOLD_STEP_INTERVAL_MS);
+        const k = btn.getAttribute('onclick') || '';
+        triggerStepButton(btn, lens, k);
+        startAcceleratedHold(function(){ return btn; }, lens, k);
       }
     }
   }, {passive: true});
@@ -20702,8 +20757,17 @@ async function confirmAccountPasswordReset(){
     clearHoldTimer();
     if(!swipeState) return;
     const wasSwiping = swipeState.swiping;
+    const wasTimerBar = !!swipeState.ctx.isTimerBar;
     const iRect = swipeState.ctx.input.getBoundingClientRect();
     swipeState = null;
+    if(wasSwiping && wasTimerBar){
+      const tb = $('timerBtn');
+      if(tb){
+        const blockClick = function(ev){ ev.stopPropagation(); ev.preventDefault(); };
+        tb.addEventListener('click', blockClick, { capture: true, once: true });
+        setTimeout(function(){ tb.removeEventListener('click', blockClick, { capture: true }); }, 250);
+      }
+    }
     const lens = getLens();
     if(lens && wasSwiping){
       _suppressInputClickUntil = Date.now() + 280;
@@ -20722,75 +20786,6 @@ async function confirmAccountPasswordReset(){
 
   document.addEventListener('pointerup', endStepperSwipe, {passive: true});
   document.addEventListener('pointercancel', endStepperSwipe, {passive: true});
-
-  /* --------------------------------------------------------------------------
-   * GESTURE 3: REST TIMER LIQUID-GLASS SCRUB (±15s) & DOUBLE-TAP (START/PAUSE)
-   * -------------------------------------------------------------------------- */
-  let timerScrub = null;
-  let lastTimerTapTs = 0;
-  document.addEventListener('pointerdown', function(e){
-    const tRectEl = e.target && e.target.closest ? e.target.closest('.timer-rect') : null;
-    if(!tRectEl) return;
-    timerScrub = {
-      startX: e.clientX,
-      startY: e.clientY,
-      lastStepCount: 0,
-      scrubbing: false
-    };
-  }, {passive: true});
-
-  document.addEventListener('pointermove', function(e){
-    if(!timerScrub) return;
-    const dx = e.clientX - timerScrub.startX;
-    const dy = e.clientY - timerScrub.startY;
-    if(!timerScrub.scrubbing){
-      if(Math.abs(dx) >= 14 && Math.abs(dx) > Math.abs(dy) * 1.3){
-        timerScrub.scrubbing = true;
-      } else {
-        return;
-      }
-    }
-    const stepCount = Math.trunc(dx / 28);
-    if(stepCount !== timerScrub.lastStepCount){
-      const diffSteps = stepCount - timerScrub.lastStepCount;
-      timerScrub.lastStepCount = stepCount;
-      if(typeof adjustTimer === 'function') adjustTimer(diffSteps * 15);
-    }
-    const totalDeltaSec = stepCount * 15;
-    const sign = totalDeltaSec >= 0 ? '+' : '−';
-    showGestureGlassHUD(
-      '⏱️ Rest ' + sign + Math.abs(totalDeltaSec) + 's',
-      e.clientX,
-      Math.max(48, e.clientY - 28),
-      totalDeltaSec >= 0 ? 'emerald' : 'crimson',
-      1.04
-    );
-  }, {passive: true});
-
-  document.addEventListener('pointerup', function(e){
-    if(!timerScrub) return;
-    const wasScrub = timerScrub.scrubbing;
-    timerScrub = null;
-    if(wasScrub){
-      hideGestureGlassHUD();
-      return;
-    }
-    const tRectEl = e.target && e.target.closest ? e.target.closest('.timer-rect') : null;
-    if(tRectEl){
-      const now = Date.now();
-      if(now - lastTimerTapTs < 320){
-        lastTimerTapTs = 0;
-        if(typeof toggleTimer === 'function'){
-          toggleTimer();
-          showGestureGlassHUD(timerInt ? '▶️ Timer Running' : '⏸️ Timer Paused', e.clientX, Math.max(48, e.clientY - 26), 'emerald', 1.0);
-          setTimeout(hideGestureGlassHUD, 650);
-        }
-      } else {
-        lastTimerTapTs = now;
-      }
-    }
-  }, {passive: true});
-  document.addEventListener('pointercancel', function(){ timerScrub = null; hideGestureGlassHUD(); }, {passive: true});
 
   /* --------------------------------------------------------------------------
    * GESTURE 4: WORKOUT SET-TAG LIQUID-GLASS SWIPE (→ COPY LAST SET / ← +DROP SET)
