@@ -2676,30 +2676,36 @@ body[data-idle="1"] .marble-veins{
           <div class="w-row w-row-ss-title hidden" id="workoutSSNameRow">
             <span class="ss-live-badge" title="Superset Exercise">⚡ SS</span>
             <input type="text" id="activeSSExName" class="grow ss-name-input auto-fit-name" data-max-font="12.5" data-min-font="8" oninput="fitActiveExNameFontSize(this)" onchange="changeActiveSSExName(this.value)" placeholder="Superset exercise name">
-            <div class="seg micro-seg" id="ssEachSegWrap" style="height:26px;flex-shrink:0" title="Superset: Total weight vs Each side">
+            <div class="seg micro-seg" id="ssEachSegWrap" style="height:26px;flex-shrink:0;border-color:var(--purple-b)" title="Superset: Total weight vs Each side">
               <div class="seg-glass-pill"></div>
-              <div class="seg-btn on" id="ssEachOffBtn" style="padding:0 6px;font-size:8.5px" onclick="setWorkoutSSEach(false)">Total</div>
-              <div class="seg-btn" id="ssEachBtn" style="padding:0 6px;font-size:8.5px" onclick="setWorkoutSSEach(true)">Each</div>
+              <div class="seg-btn on" id="ssEachOffBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutSSEach(false)">SS: Total</div>
+              <div class="seg-btn" id="ssEachBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutSSEach(true)">Each</div>
             </div>
           </div>
-          <div class="w-row" style="gap:3.5px">
-            <button type="button" class="seat-setup-pill auto-fit-name" data-max-font="9" data-min-font="6.8" id="workoutSeatSetupBtn" onclick="openSeatSetupModal('main')" title="Machine Seat, Pulley, Pad & Grip Setup">🪑 Setup</button>
-            <button type="button" class="seat-setup-pill auto-fit-name hidden" data-max-font="8.5" data-min-font="6.5" id="workoutSSSeatSetupBtn" onclick="openSeatSetupModal('super')" title="Superset Seat & Grip Setup" style="border-color:var(--purple-b);color:var(--purple-t)">⚡🪑 SS</button>
-            <input type="text" id="activeExNote" class="w-note-input auto-fit-name" data-max-font="11" data-min-font="6.8" placeholder="📌 Notes" oninput="autoFitElementFont(this,11,6.8);saveNote()" onchange="saveNote()">
-            <div class="w-step-box" style="padding:1px 4px;gap:2px;height:26px" title="Main Exercise Minimum Weight Increment (adds − / + buttons next to Weight)">
-              <span class="micro" style="color:var(--green-t);font-size:7.5px">±Step</span>
-              <input type="text" readonly inputmode="none" id="activeExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Main Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveExStep(this.value)">
-            </div>
-            <div class="w-step-box hidden" id="activeSSStepWrap" style="padding:1px 4px;gap:2px;height:26px;border-color:var(--purple-b);background:rgba(168,85,247,.10)" title="Superset Exercise Minimum Weight Increment (adds − / + buttons next to Superset Weight)">
-              <span class="micro" style="color:var(--purple-t);font-size:7.5px">⚡±SS</span>
-              <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
-            </div>
+          <div class="w-row" style="gap:4px">
+            <input type="text" id="activeExNote" class="w-note-input auto-fit-name" style="flex:1 1 auto;min-width:0" data-max-font="11" data-min-font="7" placeholder="📌 Notes" oninput="autoFitElementFont(this,11,7);saveNote()" onchange="saveNote()">
             <div class="w-step-box" style="padding:1px 2px 1px 5px;gap:3px;height:26px;flex-shrink:0;border-color:var(--purple-b);background:rgba(168,85,247,.08)" title="Technique / Form: Same vs New (pauses strict PR comparison when using a different machine or grip)">
               <span class="micro" style="color:var(--purple-t);font-size:7.5px;font-weight:900">Technique</span>
               <div class="seg micro-seg" id="techSegWrap" style="height:22px;border:none;background:transparent;box-shadow:none;padding:1px">
                 <div class="seg-glass-pill"></div>
                 <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px;height:20px" onclick="setWorkoutTechChanged(false)">Same</div>
                 <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px;height:20px" onclick="setWorkoutTechChanged(true)">New</div>
+              </div>
+            </div>
+          </div>
+          <div class="w-row" style="gap:4px;justify-content:space-between">
+            <div class="row" style="gap:3.5px;min-width:0;flex:1 1 auto">
+              <button type="button" class="seat-setup-pill auto-fit-name" data-max-font="9" data-min-font="6.8" id="workoutSeatSetupBtn" onclick="openSeatSetupModal('main')" title="Machine Seat, Pulley, Pad & Grip Setup">🪑 Setup</button>
+              <button type="button" class="seat-setup-pill auto-fit-name hidden" data-max-font="8.5" data-min-font="6.5" id="workoutSSSeatSetupBtn" onclick="openSeatSetupModal('super')" title="Superset Seat & Grip Setup" style="border-color:var(--purple-b);color:var(--purple-t)">⚡🪑 SS</button>
+            </div>
+            <div class="row" style="gap:3.5px;flex-shrink:0">
+              <div class="w-step-box" style="padding:1px 4px;gap:2px;height:26px" title="Main Exercise Minimum Weight Increment (adds − / + buttons next to Weight)">
+                <span class="micro" style="color:var(--green-t);font-size:7.5px">±Step</span>
+                <input type="text" readonly inputmode="none" id="activeExStep" class="num-target step-target" style="width:26px;font-size:10px" data-label="Main Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveExStep(this.value)">
+              </div>
+              <div class="w-step-box hidden" id="activeSSStepWrap" style="padding:1px 4px;gap:2px;height:26px;border-color:var(--purple-b);background:rgba(168,85,247,.10)" title="Superset Exercise Minimum Weight Increment (adds − / + buttons next to Superset Weight)">
+                <span class="micro" style="color:var(--purple-t);font-size:7.5px">⚡±SS</span>
+                <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" style="width:26px;font-size:10px" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
               </div>
             </div>
           </div>
