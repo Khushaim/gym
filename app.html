@@ -208,6 +208,7 @@ html:not([data-skin]) .wp-cyber,
   pointer-events:none;
   z-index:9998;
   opacity:0;
+  visibility:hidden;
   border-radius:10px;
   background:linear-gradient(145deg, rgba(255,255,255,.30) 0%, rgba(56,189,248,.22) 48%, rgba(16,185,129,.24) 100%);
   border:1.5px solid rgba(255,255,255,.55);
@@ -216,13 +217,16 @@ html:not([data-skin]) .wp-cyber,
     0 2px 10px rgba(16,185,129,.25),
     inset 0 1.5px 1px rgba(255,255,255,.75),
     inset 0 -1px 2px rgba(14,165,233,.30);
-  backdrop-filter:blur(12px) saturate(190%);
-  -webkit-backdrop-filter:blur(12px) saturate(190%);
-  transition:opacity .16s ease;
-  will-change:transform, width, height, border-radius, opacity;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  transition:opacity .16s ease, visibility .16s ease;
 }
 .stepper-glass-lens.active{
   opacity:1;
+  visibility:visible;
+  backdrop-filter:blur(12px) saturate(190%);
+  -webkit-backdrop-filter:blur(12px) saturate(190%);
+  will-change:transform, width, height, border-radius, opacity;
 }
 .stepper-glass-lens.pulse-step{
   border-color:#34d399;
@@ -880,6 +884,7 @@ body.numpad-ActivePad .modal-body {
   z-index:9999;
   pointer-events:none;
   opacity:0;
+  visibility:hidden;
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   padding:7px 14px;
   border-radius:999px;
@@ -889,13 +894,16 @@ body.numpad-ActivePad .modal-body {
   background:linear-gradient(145deg, rgba(255,255,255,.26) 0%, rgba(14,165,233,.32) 52%, rgba(16,185,129,.28) 100%);
   border:1.5px solid rgba(255,255,255,.62);
   box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 20px rgba(56,189,248,.35), inset 0 1.5px 1.5px rgba(255,255,255,.80);
-  backdrop-filter:blur(14px) saturate(200%);
-  -webkit-backdrop-filter:blur(14px) saturate(200%);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   transform:translate3d(-50%,-50%,0) scale(.86);
-  transition:opacity .16s ease, transform .18s cubic-bezier(.22,1,.36,1), background .18s ease, border-color .18s ease;
+  transition:opacity .16s ease, visibility .16s ease, transform .18s cubic-bezier(.22,1,.36,1), background .18s ease, border-color .18s ease;
 }
 .gesture-glass-hud.active{
   opacity:1;
+  visibility:visible;
+  backdrop-filter:blur(14px) saturate(200%);
+  -webkit-backdrop-filter:blur(14px) saturate(200%);
 }
 .gesture-glass-hud.emerald{
   background:linear-gradient(145deg, rgba(255,255,255,.28) 0%, rgba(16,185,129,.38) 55%, rgba(14,165,233,.28) 100%);
@@ -920,6 +928,9 @@ body.numpad-ActivePad .modal-body {
 }
 
 input[type=text],input[type=email],input[type=date],input[type=number],input[type=password],select,textarea{width:100%;padding:8px 11px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--txt);font-size:12px;font-weight:700;outline:none;color-scheme:dark}
+[data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] textarea{color-scheme:light}
+.timer-rect,.set-row>.meta,.weight-wrap>input.num-target,.reps-wrap>input.num-target{touch-action:pan-y}
+.modal-head,.numpad-top{touch-action:none}
 input.num-target{cursor:pointer;font-family:var(--font-mono);font-weight:800}
 select{background-image:linear-gradient(45deg,transparent 50%,var(--txt-2) 50%),linear-gradient(135deg,var(--txt-2) 50%,transparent 50%);background-position:calc(100% - 15px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:28px}
 .label{font-size:9.5px;font-weight:800;color:var(--txt-3);letter-spacing:.4px;text-transform:uppercase;display:block;margin-bottom:4px}
@@ -15422,25 +15433,7 @@ function toggleAIVoiceInput(){
     }).catch(function(){});
   }
 
-  let touchStartX = 0, touchStartY = 0;
-  document.addEventListener('touchstart', function(ev){
-    const hero = ev.target && ev.target.closest ? ev.target.closest('#screen-home .hero') : null;
-    if(!hero || !ev.touches || !ev.touches.length) return;
-    touchStartX = ev.touches[0].clientX;
-    touchStartY = ev.touches[0].clientY;
-  }, {passive: true});
-
-  document.addEventListener('touchend', function(ev){
-    if(!touchStartX) return;
-    const hero = ev.target && ev.target.closest ? ev.target.closest('#screen-home .hero') : null;
-    if(!hero || !ev.changedTouches || !ev.changedTouches.length){ touchStartX = 0; return; }
-    const dx = ev.changedTouches[0].clientX - touchStartX;
-    const dy = ev.changedTouches[0].clientY - touchStartY;
-    touchStartX = 0;
-    if(Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.6){
-      changeDay(dx < 0 ? 1 : -1);
-    }
-  }, {passive: true});
+  // Hero swipe is handled by unified bindHorizontalSwipe() in initSwipeGestures()
 })();
 
 /* ============================================================================
@@ -17629,7 +17622,7 @@ function syncAllVisibleSegPills(){
       }
     });
     window.addEventListener('DOMContentLoaded', function(){
-      if(document.body) mo.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+      if(document.body) mo.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
     });
   }
 
@@ -19058,29 +19051,6 @@ function applyAppLanguage(){
 }
 
 /* ============ ONE-HANDED HORIZONTAL SWIPE GESTURES ============ */
-function bindHorizontalSwipe(el, onSwipeLeft, onSwipeRight){
-  if(!el || el._swipeBound) return;
-  el._swipeBound = true;
-  let sx = 0, sy = 0, tracking = false;
-  el.addEventListener('touchstart', function(e){
-    if(e.target.closest('input,select,textarea,.ex-mini-strip,.w-calc-strip,.ai-quick-strip')) return;
-    if(!e.touches || e.touches.length !== 1) return;
-    sx = e.touches[0].clientX;
-    sy = e.touches[0].clientY;
-    tracking = true;
-  }, {passive:true});
-  el.addEventListener('touchend', function(e){
-    if(!tracking || !e.changedTouches || !e.changedTouches.length) return;
-    tracking = false;
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
-    if(Math.abs(dx) > 54 && Math.abs(dx) > Math.abs(dy) * 1.6){
-      if(dx < 0) onSwipeLeft();
-      else onSwipeRight();
-    }
-  }, {passive:true});
-}
-
 function showGestureGlassHUD(text, x, y, tone, scaleVal){
   const hud = document.getElementById('gestureGlassHUD');
   if(!hud) return;
@@ -19095,7 +19065,8 @@ function hideGestureGlassHUD(){
 }
 
 function bindHorizontalSwipe(el, onSwipeLeft, onSwipeRight, leftLabel, rightLabel){
-  if(!el) return;
+  if(!el || el._swipeBound) return;
+  el._swipeBound = true;
   let sx = 0, sy = 0, tracking = false, showingHud = false;
   el.addEventListener('pointerdown', function(e){
     if(e.target && e.target.closest && e.target.closest('input, select, textarea, .seg, .weight-wrap, .reps-wrap')) return;
@@ -20380,19 +20351,29 @@ async function confirmAccountPasswordReset(){
     }
   }
 
-  function triggerStepButton(btn, lens){
-    if(!btn || !document.body.contains(btn)){
+  function triggerStepButton(btn, lens, onclickKey){
+    let targetBtn = btn;
+    if((!targetBtn || !document.body.contains(targetBtn)) && onclickKey){
+      targetBtn = Array.prototype.find.call(document.querySelectorAll('button[onclick]'), function(b){
+        return b.getAttribute('onclick') === onclickKey;
+      }) || null;
+    }
+    if(!targetBtn || !document.body.contains(targetBtn)){
       clearHoldTimer();
       if(lens) lens.classList.remove('active', 'pulse-step');
-      return;
+      return null;
     }
-    const bRect = btn.getBoundingClientRect();
+    const bRect = targetBtn.getBoundingClientRect();
     if(lens && bRect.width > 0){
       setLensGeometry(lens, bRect, 8);
       lens.classList.add('active');
     }
     pulseLens(lens);
-    btn.click();
+    targetBtn.click();
+    if($('numpad') && $('numpad').classList.contains('open') && activeNum){
+      $('numpadValue').textContent = activeNum.value !== '' ? activeNum.value : '—';
+    }
+    return targetBtn;
   }
 
   document.addEventListener('pointerdown', function(e){
@@ -20418,8 +20399,10 @@ async function confirmAccountPasswordReset(){
               pulseLens(lens);
             }
           }, 160);
+          const btnOnclickKey = directBtn.getAttribute('onclick') || '';
+          let curDirectBtn = directBtn;
           holdInterval = setInterval(function(){
-            triggerStepButton(directBtn, lens);
+            curDirectBtn = triggerStepButton(curDirectBtn, lens, btnOnclickKey);
           }, HOLD_STEP_INTERVAL_MS);
           const stopDirectHold = function(){
             clearHoldTimer();
@@ -20710,6 +20693,14 @@ async function confirmAccountPasswordReset(){
    * -------------------------------------------------------------------------- */
   let modalPull = null;
   let numpadValSwipe = null;
+  let numpadClearTimer = null;
+
+  function clearNumpadHoldTimer(){
+    if(numpadClearTimer){
+      clearTimeout(numpadClearTimer);
+      numpadClearTimer = null;
+    }
+  }
 
   document.addEventListener('pointerdown', function(e){
     const mHead = e.target && e.target.closest ? e.target.closest('.modal.open .modal-head, #numpad.open .numpad-top') : null;
@@ -20725,8 +20716,8 @@ async function confirmAccountPasswordReset(){
     // 0.5s Hold on Numpad Backspace (⌫) clears the entire field!
     const keyBtn = e.target && e.target.closest ? e.target.closest('#numpad .key') : null;
     if(keyBtn && (keyBtn.textContent || '').trim() === '⌫'){
-      clearHoldTimer();
-      holdInterval = setTimeout(function(){
+      clearNumpadHoldTimer();
+      numpadClearTimer = setTimeout(function(){
         if(typeof numKey === 'function') numKey('C');
         showGestureGlassHUD('🧹 Cleared', e.clientX, Math.max(48, e.clientY - 26), 'crimson', 1.0);
         setTimeout(hideGestureGlassHUD, 500);
@@ -20745,7 +20736,9 @@ async function confirmAccountPasswordReset(){
     }
   }, {passive: true});
 
+  document.addEventListener('pointercancel', clearNumpadHoldTimer, {passive: true});
   document.addEventListener('pointerup', function(e){
+    clearNumpadHoldTimer();
     if(modalPull){
       const mp = modalPull;
       modalPull = null;
