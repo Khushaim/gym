@@ -16,6 +16,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
+/* ============================================================================
+ * IRON PULSE — ARCHITECTURE & AI/DEVELOPER HANDOFF GUIDE (CSS)
+ * ----------------------------------------------------------------------------
+ * 1. THEMING & WALLPAPER CONTRACT:
+ *    - Dark/Light mode is controlled by [data-theme="dark"|"light"] on <html>.
+ *    - The 5 skins ([data-skin="cyber"|"royal"|"hyper"|"emerald"|"crimson"])
+ *      share Cyber's exact high-contrast card/button tokens and swap ONLY the
+ *      background wallpaper layers (.wp-layer inside #bgRoot).
+ *    - Battery Power Saver ([data-powersave="true"]) strips blurs/shadows/blobs.
+ * 2. 1–120Hz GPU BATTERY GOVERNOR:
+ *    - Only animate GPU-composited properties (transform, opacity).
+ *    - Inactive screens (.screen:not(.active)) & closed modals (.modal:not(.open))
+ *      strip backdrop-filter & will-change to keep idle GPU/battery drain near 0%.
+ * 3. LIQUID GLASS SWITCHES (.seg) & MORPHING STEPPER LENS (#stepperGlassLens):
+ *    - .seg-btn NEVER scales on :active so offsetLeft/offsetWidth stay exact.
+ *    - #stepperGlassLens has backdrop-filter:none so numbers & −/+ stay razor-sharp.
+ * ============================================================================ */
 :root{
   --font-main:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
   --font-mono:'JetBrains Mono',ui-monospace,monospace;
@@ -630,11 +647,11 @@ body.modal-open .hm-region.hm-fatigued-pulse{
 .screen{
   position:absolute;inset:0;display:flex;flex-direction:column;min-height:0;width:100%;max-width:100%;overflow:hidden;
   opacity:0;visibility:hidden;pointer-events:none;
-  transform:translate3d(0, 14px, 0) scale(0.982);
+  transform:translate3d(0, 12px, 0) scale(0.985);
   transition:
-    opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.28s;
+    opacity 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.26s;
   contain: layout style paint;
 }
 .screen:not(.active){
@@ -1129,8 +1146,8 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
   background:linear-gradient(150deg,rgba(148,178,255,.09),rgba(148,178,255,.02)),var(--surface);
   border:1px solid var(--line-2);
   box-shadow:var(--shadow-lg),var(--spec-strong);
-  transform:translate3d(0,14px,0) scale(0.95);
-  transition:transform 0.32s var(--ease-spring);
+  transform:translate3d(0,16px,0) scale(0.96);
+  transition:transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .modal.open .modal-card{transform:translate3d(0,0,0) scale(1)}
 .modal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;width:100%;min-width:0}
@@ -1381,6 +1398,7 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
 
 .timer-controls{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:1px;touch-action:pan-y}
 .timer-controls>button{touch-action:pan-y}
+.timer-controls>button:active{transform:translate3d(0,0,0) scale(0.97) !important}
 .timer-controls .btn{padding:7px 13px;font-size:11px;font-weight:800}
 .timer-controls #timerBtn{min-width:100px;padding:8px 18px;font-size:12.5px;font-weight:900}
 
@@ -2674,10 +2692,13 @@ body[data-idle="1"] .marble-veins{
               <span class="micro" style="color:var(--purple-t);font-size:7.5px">⚡±SS</span>
               <input type="text" readonly inputmode="none" id="activeSSExStep" class="num-target step-target" style="width:28px;font-size:10px" data-label="Superset Min Weight Increment (Clear/0 to hide)" placeholder="—" onclick="setActiveNumTarget(this)" oninput="saveActiveSSExStep(this.value)">
             </div>
-            <div class="seg micro-seg" id="techSegWrap" style="height:26px;flex-shrink:0" title="Same Technique/Form vs Changed Technique, Grip, or Machine (pauses strict PR comparison)">
-              <div class="seg-glass-pill"></div>
-              <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(false)">Same Form</div>
-              <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px" onclick="setWorkoutTechChanged(true)">🔄 New Technique</div>
+            <div class="w-step-box" style="padding:1px 2px 1px 5px;gap:3px;height:26px;flex-shrink:0;border-color:var(--purple-b);background:rgba(168,85,247,.08)" title="Technique / Form: Same vs New (pauses strict PR comparison when using a different machine or grip)">
+              <span class="micro" style="color:var(--purple-t);font-size:7.5px;font-weight:900">Technique</span>
+              <div class="seg micro-seg" id="techSegWrap" style="height:22px;border:none;background:transparent;box-shadow:none;padding:1px">
+                <div class="seg-glass-pill"></div>
+                <div class="seg-btn on" id="techStdBtn" style="padding:0 5px;font-size:8px;height:20px" onclick="setWorkoutTechChanged(false)">Same</div>
+                <div class="seg-btn" id="techChangedBtn" style="padding:0 5px;font-size:8px;height:20px" onclick="setWorkoutTechChanged(true)">New</div>
+              </div>
             </div>
           </div>
           <div class="workout-controls">
@@ -2710,9 +2731,9 @@ body[data-idle="1"] .marble-veins{
             <div class="bar" style="height:4px"><div class="timer-rect-fill" id="linearTimerFill"></div></div>
           </div>
           <div class="timer-controls">
-            <button class="btn amber" onclick="adjustTimer(-30)">−30s</button>
+            <button class="btn amber" id="timerStepMinusBtn" onclick="adjustTimerByStep(-1)">−30s</button>
             <button class="btn green" id="timerBtn" onclick="toggleTimer()">START</button>
-            <button class="btn amber" onclick="adjustTimer(30)">+30s</button>
+            <button class="btn amber" id="timerStepPlusBtn" onclick="adjustTimerByStep(1)">+30s</button>
           </div>
         </div>
 
@@ -4276,8 +4297,22 @@ body[data-idle="1"] .marble-veins{
     <div class="row-between card glass" style="padding:8px 11px">
       <span class="h4">Time Unit</span>
       <div class="seg">
+        <div class="seg-glass-pill"></div>
         <div class="seg-btn on" id="wRestUnitSecBtn" onclick="setWorkoutCustomRestUnit('sec')">Seconds (s)</div>
         <div class="seg-btn" id="wRestUnitMinBtn" onclick="setWorkoutCustomRestUnit('min')">Minutes (m)</div>
+      </div>
+    </div>
+    <div class="card glass" style="padding:8px 11px;display:flex;flex-direction:column;gap:5px">
+      <div class="row-between">
+        <span class="h4">Timer ±Step Buttons</span>
+        <span class="micro subtle">Adjusts −/+ step size</span>
+      </div>
+      <div class="seg" id="wTimerStepSeg" style="width:100%">
+        <div class="seg-glass-pill"></div>
+        <div class="seg-btn" data-tstep="15" style="flex:1" onclick="setTimerStepSize(15)">±15s</div>
+        <div class="seg-btn on" data-tstep="30" style="flex:1" onclick="setTimerStepSize(30)">±30s</div>
+        <div class="seg-btn" data-tstep="45" style="flex:1" onclick="setTimerStepSize(45)">±45s</div>
+        <div class="seg-btn" data-tstep="60" style="flex:1" onclick="setTimerStepSize(60)">±60s</div>
       </div>
     </div>
     <div class="row gap-2 num-target-proxy" style="justify-content:center;margin:4px 0">
@@ -4520,6 +4555,44 @@ body[data-idle="1"] .marble-veins{
   </div>
 </div>
 <script>
+/* ============================================================================
+ * IRON PULSE — COMPLETE CODEBASE ARCHITECTURE & AI/DEVELOPER HANDOFF GUIDE
+ * ============================================================================
+ * Welcome! This single-file PWA is structured into clear, interconnected layers:
+ *
+ * 1. STATE & PERSISTENCE (appData -> localStorage 'gymTrackerData'):
+ *    - appData holds userName, darkMode, skin ('cyber'|'royal'|'hyper'|'emerald'|'crimson'),
+ *      powerSaveMode, defaultTimer, timerStep (15|30|45|60), unit ('kg'|'lb'),
+ *      barWeight, maxPlateKg, programs[], cardioHistory[], weightLogs[],
+ *      customExercises[], customVolumeTargets{}, athleteProfile{}, deloadConfig{}.
+ *    - ALWAYS mutate via save() (debounced idle localStorage write + auto cloud push).
+ *    - Live session recovery uses 'ironPulseLiveWorkout' & 'ironPulseLiveCardio'.
+ *
+ * 2. MULTI-LAYER CROSS-DEVICE CLOUD SYNC (Sections 9+):
+ *    - Vault Key: computeVaultKeyHash(email, pass) uses WebCrypto SHA-256 with a
+ *      pure-JS _pureSha256U8 fallback so https:// & http:// match identically.
+ *    - Encryption: encryptVaultPayload compresses JSON with GZIP + AES-256-GCM (IPGZ2:).
+ *    - Layer 1: 7 global Nostr NIP-78 relays (kind 30078, await OK on push, multi-relay
+ *      consensus on fetch by max(updatedAt)).
+ *    - Layer 2: ntfy.sh chunked plain-text POST (IPCHK: <=3000 chars, sequential 95ms,
+ *      zero CORS preflight) + live SSE single-active-device session guard.
+ *    - Startup reclaimCloudSessionHere(true) ALWAYS checks cloud first before pushing.
+ *
+ * 3. WORKOUT & CARDIO ENGINES:
+ *    - Workout rowHTML() renders Weight (with −/+ when minWeightStep > 0), Reps,
+ *      Drop sets (Drop N / SS Drop N), Warmup sets, and Same/New Technique toggle.
+ *    - Rest Timer supports configurable ±Step (15/30/45/60s via #modal-custom-rest)
+ *      and horizontal glass-lens swiping between [−Step] ⇄ [START/PAUSE] ⇄ [+Step].
+ *    - Cardio Setup hides standard Rest Count/Duration when Custom Rests is active
+ *      and starts sessions with a 3-second cancellable countdown overlay.
+ *
+ * 4. UNIVERSAL LIQUID-GLASS UI & GESTURE ENGINES (Sections 6 & 10):
+ *    - .seg switches animate .seg-glass-pill via offsetLeft/offsetWidth (MutationObserver
+ *      watches ONLY 'class' to avoid layout thrashing on 1–120Hz displays).
+ *    - #stepperGlassLens uses requestAnimationFrame-locked lerp from origin box to
+ *      −/+ button with crystal-clear glass (no blur) + progressive hold acceleration
+ *      (500ms -> 400ms -> 320ms -> 250ms -> 200ms cap).
+ * ============================================================================ */
 /* ============ SAFE LOCALSTORAGE HELPERS ============ */
 const memStore = {};
 function safeGetItem(k){
@@ -5618,7 +5691,7 @@ function load(){
   trimHistory();
   applyTheme(); applyPower();
   timerTime = appData.defaultTimer; timerTotal = appData.defaultTimer;
-  updateTimerUI('adjust');
+  syncTimerStepUI(); updateTimerUI('adjust');
   refreshUnitUI();
   syncViewModeUI();
   const liveW = safeGetItem('activeLiveWorkoutSessionV2');
@@ -11393,6 +11466,37 @@ function adjustTimer(sec){
   syncWorkout();
 }
 
+/* Configurable Rest Timer ±Step Size (15s / 30s / 45s / 60s) */
+function getTimerStepSize(){
+  const s = parseInt(appData && appData.timerStep, 10);
+  return (s >= 5 && s <= 120) ? s : 30;
+}
+function syncTimerStepUI(){
+  const step = getTimerStepSize();
+  const mBtn = $('timerStepMinusBtn');
+  const pBtn = $('timerStepPlusBtn');
+  if(mBtn) mBtn.textContent = '−' + step + 's';
+  if(pBtn) pBtn.textContent = '+' + step + 's';
+  const seg = $('wTimerStepSeg');
+  if(seg){
+    seg.querySelectorAll('.seg-btn').forEach(function(b){
+      b.classList.toggle('on', parseInt(b.dataset.tstep, 10) === step);
+    });
+    if(typeof syncSegGlassPill === 'function') syncSegGlassPill(seg);
+  }
+}
+function setTimerStepSize(sec){
+  playSound('tap');
+  appData.timerStep = clamp(parseInt(sec, 10) || 30, 5, 120);
+  syncTimerStepUI();
+  save();
+  toast('⏱️ Timer step set to ±' + appData.timerStep + 's');
+}
+function adjustTimerByStep(dir){
+  const step = getTimerStepSize();
+  adjustTimer((dir < 0 ? -1 : 1) * step);
+}
+
 let _wCustomRestUnit = 'sec';
 let _wCustomRestSetIdx = null;
 function openWorkoutCustomRestModal(setIdx){
@@ -11417,6 +11521,7 @@ function openWorkoutCustomRestModal(setIdx){
     $('wCustomRestInput').value = curSec;
   }
   setWorkoutCustomRestUnit(_wCustomRestUnit, true);
+  syncTimerStepUI();
   openModal('modal-custom-rest');
 }
 function setWorkoutCustomRestUnit(unit, skipConvert){
@@ -20473,17 +20578,12 @@ async function confirmAccountPasswordReset(){
   function findStepperContext(startEl){
     if(!startEl || !startEl.closest) return null;
 
-    // Support Rest Timer Controls (−30s ⇄ START/PAUSE ⇄ +30s)
+    // Support Rest Timer Controls (−Step ⇄ START/PAUSE ⇄ +Step)
     const timerBtn = startEl.closest('.timer-controls > #timerBtn');
     if(timerBtn){
       const parent = timerBtn.parentElement;
-      const btns = Array.prototype.slice.call(parent.querySelectorAll(':scope > button'));
-      let minusBtn = null, plusBtn = null;
-      btns.forEach(function(b){
-        const txt = (b.textContent || '').trim();
-        if(txt.indexOf('−30') >= 0 || txt.indexOf('-30') >= 0) minusBtn = b;
-        else if(txt.indexOf('+30') >= 0) plusBtn = b;
-      });
+      const minusBtn = $('timerStepMinusBtn') || parent.querySelector(':scope > button:first-child');
+      const plusBtn = $('timerStepPlusBtn') || parent.querySelector(':scope > button:last-child');
       if(minusBtn && plusBtn){
         const mRect = minusBtn.getBoundingClientRect();
         const pRect = plusBtn.getBoundingClientRect();
@@ -20617,7 +20717,7 @@ async function confirmAccountPasswordReset(){
     const directBtn = e.target && e.target.closest ? e.target.closest('button') : null;
     if(directBtn && directBtn.id !== 'timerBtn'){
       const txt = (directBtn.textContent || '').trim();
-      if(txt === '−' || txt === '-' || txt === '+' || txt === '−30s' || txt === '+30s'){
+      if(txt === '−' || txt === '-' || txt === '+' || directBtn.id === 'timerStepMinusBtn' || directBtn.id === 'timerStepPlusBtn'){
         const p = directBtn.parentElement;
         const siblingInput = p ? p.querySelector(':scope > input, :scope > #timerBtn') : null;
         if(siblingInput){
@@ -20694,68 +20794,74 @@ async function confirmAccountPasswordReset(){
       }
     }
 
-    _suppressInputClickUntil = Date.now() + 320;
-    const lens = getLens();
-    const iRect = swipeState.ctx.input.getBoundingClientRect();
-    const mRect = swipeState.ctx.minusBtn.getBoundingClientRect();
-    const pRect = swipeState.ctx.plusBtn.getBoundingClientRect();
-    if(iRect.width <= 0) return;
+        _suppressInputClickUntil = Date.now() + 320;
+    const cx = e.clientX;
+    const stateRef = swipeState;
+    if(stateRef.rafId) cancelAnimationFrame(stateRef.rafId);
+    stateRef.rafId = requestAnimationFrame(function(){
+      if(!swipeState || swipeState !== stateRef) return;
+      const lens = getLens();
+      const iRect = stateRef.iRect;
+      const mRect = stateRef.mRect;
+      const pRect = stateRef.pRect;
+      if(!iRect || iRect.width <= 0) return;
 
-    const originCx = iRect.left + iRect.width / 2;
-    const minusCx = mRect.left + mRect.width / 2;
-    const plusCx = pRect.left + pRect.width / 2;
+      const originCx = iRect.left + iRect.width / 2;
+      const minusCx = mRect.left + mRect.width / 2;
+      const plusCx = pRect.left + pRect.width / 2;
 
-    let t = 0;
-    let targetRect = iRect;
-    let reachedSide = null;
+      let t = 0;
+      let targetRect = iRect;
+      let reachedSide = null;
 
-    if(e.clientX < originCx){
-      const span = Math.max(16, originCx - minusCx);
-      t = clamp((originCx - e.clientX) / span, 0, 1);
-      targetRect = mRect;
-      if(t >= 0.80 || (e.clientX >= mRect.left - 10 && e.clientX <= mRect.right + 4)){
-        reachedSide = 'minus';
+      if(cx < originCx){
+        const span = Math.max(16, originCx - minusCx);
+        t = clamp((originCx - cx) / span, 0, 1);
+        targetRect = mRect;
+        if(t >= 0.80 || (cx >= mRect.left - 10 && cx <= mRect.right + 4)){
+          reachedSide = 'minus';
+        }
+      } else {
+        const span = Math.max(16, plusCx - originCx);
+        t = clamp((cx - originCx) / span, 0, 1);
+        targetRect = pRect;
+        if(t >= 0.80 || (cx >= pRect.left - 4 && cx <= pRect.right + 10)){
+          reachedSide = 'plus';
+        }
       }
-    } else {
-      const span = Math.max(16, plusCx - originCx);
-      t = clamp((e.clientX - originCx) / span, 0, 1);
-      targetRect = pRect;
-      if(t >= 0.80 || (e.clientX >= pRect.left - 4 && e.clientX <= pRect.right + 10)){
-        reachedSide = 'plus';
-      }
-    }
 
-    // Morph smoothly between the origin input box size and the exact − / + button size
-    const curRect = {
-      left: lerp(iRect.left, targetRect.left, t),
-      top: lerp(iRect.top, targetRect.top, t),
-      width: lerp(iRect.width, targetRect.width, t),
-      height: lerp(iRect.height, targetRect.height, t)
-    };
-    const curRadius = lerp(10, 7, t);
-    setLensGeometry(lens, curRect, curRadius);
+      // 120Hz vsync-locked linear interpolation between origin box and − / + button
+      const curRect = {
+        left: lerp(iRect.left, targetRect.left, t),
+        top: lerp(iRect.top, targetRect.top, t),
+        width: lerp(iRect.width, targetRect.width, t),
+        height: lerp(iRect.height, targetRect.height, t)
+      };
+      setLensGeometry(lens, curRect, lerp(10, 7, t));
 
-    // Trigger 1 step immediately upon reaching − or +, and if held down add 1 step every 0.5 seconds (500ms)!
-    if(reachedSide !== swipeState.activeSide){
-      clearHoldTimer();
-      swipeState.activeSide = reachedSide;
-      if(reachedSide === 'minus'){
-        const btn = swipeState.ctx.minusBtn;
-        const k = btn.getAttribute('onclick') || '';
-        triggerStepButton(btn, lens, k);
-        startAcceleratedHold(function(){ return btn; }, lens, k);
-      } else if(reachedSide === 'plus'){
-        const btn = swipeState.ctx.plusBtn;
-        const k = btn.getAttribute('onclick') || '';
-        triggerStepButton(btn, lens, k);
-        startAcceleratedHold(function(){ return btn; }, lens, k);
+      if(reachedSide !== stateRef.activeSide){
+        clearHoldTimer();
+        stateRef.activeSide = reachedSide;
+        if(reachedSide === 'minus'){
+          const btn = stateRef.ctx.minusBtn;
+          const k = btn.getAttribute('onclick') || '';
+          triggerStepButton(btn, lens, k);
+          startAcceleratedHold(function(){ return btn; }, lens, k);
+        } else if(reachedSide === 'plus'){
+          const btn = stateRef.ctx.plusBtn;
+          const k = btn.getAttribute('onclick') || '';
+          triggerStepButton(btn, lens, k);
+          startAcceleratedHold(function(){ return btn; }, lens, k);
+        }
       }
-    }
+    });
+    return;
   }, {passive: true});
 
   function endStepperSwipe(){
     clearHoldTimer();
     if(!swipeState) return;
+    if(swipeState.rafId) cancelAnimationFrame(swipeState.rafId);
     const wasSwiping = swipeState.swiping;
     const wasTimerBar = !!swipeState.ctx.isTimerBar;
     const iRect = swipeState.ctx.input.getBoundingClientRect();
