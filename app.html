@@ -19203,6 +19203,7 @@ let _cloudSelectedProvider = 'apple';
 let _cloudPushDebounceTimer = null;
 let _cloudHeartbeatInterval = null;
 let _isSessionKickedLocked = false;
+let _mySessionClaimedAt = Date.now();
 let _localSessionBroadcast = null;
 try{
   if(typeof BroadcastChannel !== 'undefined'){
@@ -19210,24 +19211,13 @@ try{
     _localSessionBroadcast.onmessage = function(ev){
       const msg = ev.data;
       if(!msg || !appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
-      if(msg.vaultKey === appData.cloudAccount.vaultKey && msg.sessionId && msg.sessionId !== MY_SESSION_INSTANCE_ID){
-        triggerSessionKickedLock(msg.deviceLabel || 'Another Browser Tab / Window');
+      // Only notify if strictly newer than our session claim (never kick out on stale broadcasts!)
+      if(msg.vaultKey === appData.cloudAccount.vaultKey && msg.sessionId && msg.sessionId !== MY_SESSION_INSTANCE_ID && (msg.ts || 0) > _mySessionClaimedAt + 5000){
+        toast('☁️ Account opened in another tab — tap Pull Latest to sync', 3200);
       }
     };
   }
 }catch(e){}
-
-window.addEventListener('storage', function(ev){
-  if(!ev || !appData.cloudAccount || !appData.cloudAccount.vaultKey) return;
-  if(ev.key === 'ip_active_sess_' + appData.cloudAccount.vaultKey && ev.newValue){
-    try{
-      const parsed = JSON.parse(ev.newValue);
-      if(parsed && parsed.sessionId && parsed.sessionId !== MY_SESSION_INSTANCE_ID){
-        triggerSessionKickedLock(parsed.deviceLabel || 'Another Browser Tab / Device');
-      }
-    }catch(_){}
-  }
-});
 
 function getCurrentDeviceLabel(){
   const ua = navigator.userAgent || '';
@@ -19758,8 +19748,9 @@ function startLiveCrossDeviceStream(vaultKey){
           }
           if(rawPayload){
             const dec = await decryptVaultPayload(vaultKey, rawPayload);
-            if(dec && dec.activeSessionId && dec.activeSessionId !== MY_SESSION_INSTANCE_ID){
-              triggerSessionKickedLock(dec.activeDeviceLabel || 'Another Device');
+            // Ignore historical SSE replays! Only react if strictly newer than when this device claimed the session.
+            if(dec && dec.activeSessionId && dec.activeSessionId !== MY_SESSION_INSTANCE_ID && (dec.updatedAt || 0) > _mySessionClaimedAt + 8000){
+              toast('☁️ Newer update from ' + (dec.activeDeviceLabel || 'another device') + ' — tap Pull Latest in Account', 3600);
             }
           }
         }
@@ -19924,11 +19915,33 @@ async function performAccountLoginWithEmailAndPassword(rawEmail, rawPass, option
   if(btnEl){ btnEl.disabled = true; btnEl.textContent = '⏳ Signing In & Loading Data...'; }
 
   const vaultKey = await computeVaultKeyHash(email, pass);
-  const existingVault = await cloudVaultGet(vaultKey, true);
+  const emailRecKey = await computeEmailRecoveryIndexKey(email);
+  const lookupRes = await Promise.all([
+    cloudVaultGet(vaultKey, false),
+    cloudVaultGet(emailRecKey, false)
+  ]);
+  let existingVault = lookupRes[0];
+  const emailIndex = lookupRes[1];
+
+  // If primary vault lookup missed but Email Index has the SAME vaultKey, restore from Email Index!
+  if((!existingVault || !existingVault.appData) && emailIndex && emailIndex.appData && (!emailIndex.vaultKey || emailIndex.vaultKey === vaultKey)){
+    existingVault = emailIndex;
+  }
+
+  // CRITICAL: If an account ALREADY exists for this email under a DIFFERENT password, BLOCK duplicate account creation!
+  if((!existingVault || !existingVault.appData) && emailIndex && emailIndex.vaultKey && emailIndex.vaultKey !== vaultKey){
+    if(btnEl){ btnEl.disabled = false; btnEl.textContent = origTxt; }
+    playSound('error');
+    toast('⚠️ An account already exists for ' + email + '! Enter your original password or tap Forgot Password.', 4200);
+    return false;
+  }
+
+  _mySessionClaimedAt = Date.now();
   const devLabel = getCurrentDeviceLabel();
   const authObj = {
     email: email,
     vaultKey: vaultKey,
+    ownerRecoveryKey: (existingVault && existingVault.ownerRecoveryKey) || (emailIndex && emailIndex.ownerRecoveryKey) || '',
     lastSyncTs: Date.now()
   };
 
@@ -20036,8 +20049,10 @@ async function pushCloudVaultSnapshot(claimSessionOwnership){
   // Also save encrypted Email Recovery Index locally & to Nostr relays
   try{
     const emailRecKey = await computeEmailRecoveryIndexKey(acc.email);
+    _mySessionClaimedAt = Date.now();
     const recPayload = {
       email: acc.email,
+      vaultKey: acc.vaultKey,
       ownerRecoveryKey: acc.ownerRecoveryKey,
       updatedAt: Date.now(),
       appData: cleanCopy
@@ -20045,6 +20060,7 @@ async function pushCloudVaultSnapshot(claimSessionOwnership){
     safeSetItem('ip_local_vault_mirror_' + emailRecKey, JSON.stringify(recPayload));
     const encRec = await encryptVaultPayload(emailRecKey, recPayload);
     publishToNostrRelays(emailRecKey, encRec);
+    publishToNtfyCloud(emailRecKey, encRec);
   }catch(_){}
   if($('cloudLastSyncTxt')){
     $('cloudLastSyncTxt').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
@@ -20123,10 +20139,22 @@ function triggerSessionKickedLock(otherDeviceLabel){
 async function checkCloudSessionLockOnce(){
   const acc = appData.cloudAccount;
   if(!acc || !acc.vaultKey || _isSessionKickedLocked) return;
-  const remote = await cloudVaultGet(acc.vaultKey);
-  if(!remote) return;
-  if(remote.activeSessionId && remote.activeSessionId !== MY_SESSION_INSTANCE_ID){
-    triggerSessionKickedLock(remote.activeDeviceLabel || 'Another Device');
+  const remote = await cloudVaultGet(acc.vaultKey, true);
+  if(!remote || !remote.appData) return;
+  if((remote.updatedAt || 0) > (acc.lastSyncTs || 0) + 5000 && remote.activeSessionId && remote.activeSessionId !== MY_SESSION_INSTANCE_ID){
+    // Auto-pull newer cloud changes silently when idle instead of kicking the user out!
+    if(!workoutActive && !cardioInt){
+      const mergedProgs = mergeAccountSplitsArray(remote.appData.programs || [], appData.programs || []);
+      appData = Object.assign({}, appData, remote.appData);
+      appData.programs = mergedProgs;
+      appData.cloudAccount = acc;
+      acc.lastSyncTs = remote.updatedAt;
+      safeSetItem('ironPulsePersistentAuthV1', JSON.stringify(acc));
+      normalizePrograms();
+      safeSetItem('gymTrackerData', JSON.stringify(appData));
+      route(true);
+      toast('☁️ Synced latest data from ' + (remote.activeDeviceLabel || 'other device'));
+    }
   }
 }
 
