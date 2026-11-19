@@ -443,7 +443,7 @@ body[data-idle="1"] .blob {
   50%{filter:drop-shadow(0 0 8px rgba(244,63,94,.85))}
 }
 .hm-region.hm-fatigued-pulse{
-  animation:hmThermalPulse 2.4s ease-in-out infinite;
+  animation:none;
 }
 body[data-idle="1"] .hm-region.hm-fatigued-pulse,
 body.modal-open .hm-region.hm-fatigued-pulse{
@@ -526,11 +526,11 @@ body.modal-open .hm-region.hm-fatigued-pulse{
 }
 .trend-badge.plateau{
   background:rgba(245,158,11,.16);border:1px solid var(--amber-b);color:var(--amber-t);
-  animation:trendPulseAmber 2.4s ease-in-out infinite;
+  animation:none;
 }
 .trend-badge.drop{
   background:rgba(244,63,94,.18);border:1px solid var(--red-b);color:var(--red-t);
-  animation:trendPulseRed 2s ease-in-out infinite;
+  animation:none;
 }
 .trend-badge.new{
   background:rgba(148,163,184,.12);border:1px solid var(--line-2);color:var(--txt-2);
@@ -1053,7 +1053,7 @@ html.is-windowed-mode .dock-item{height:42px;font-size:7.5px}
 /* Cardio 5s Countdown Overlay */
 .cardio-cd-overlay{
   position:absolute;inset:0;z-index:45;
-  background:rgba(4,9,20,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  background:rgba(4,9,20,.92);backdrop-filter:none;-webkit-backdrop-filter:none;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;
   border-radius:var(--r-xl);
 }
@@ -2676,6 +2676,11 @@ body[data-idle="1"] .marble-veins{
           <div class="w-row w-row-ss-title hidden" id="workoutSSNameRow">
             <span class="ss-live-badge" title="Superset Exercise">⚡ SS</span>
             <input type="text" id="activeSSExName" class="grow ss-name-input auto-fit-name" data-max-font="12.5" data-min-font="8" oninput="fitActiveExNameFontSize(this)" onchange="changeActiveSSExName(this.value)" placeholder="Superset exercise name">
+            <div class="seg micro-seg" id="ssEachSegWrap" style="height:22px;flex-shrink:0;padding:1px" title="Superset Total weight vs Each dumbbell/side">
+              <div class="seg-glass-pill"></div>
+              <div class="seg-btn on" id="ssEachOffBtn" style="padding:0 4px;font-size:7.5px;height:20px;min-width:auto" onclick="setWorkoutSSEach(false)">Total</div>
+              <div class="seg-btn" id="ssEachBtn" style="padding:0 4px;font-size:7.5px;height:20px;min-width:auto" onclick="setWorkoutSSEach(true)">Each</div>
+            </div>
             <div id="techSlotSS" style="display:flex;align-items:center;flex-shrink:0"></div>
           </div>
           <div class="w-row" style="gap:3px">
@@ -5812,7 +5817,7 @@ function closeModal(id){
 }
 document.querySelectorAll('.modal').forEach(function(m){
   m.addEventListener('click', function(e){
-    if(m.id === 'modal-session-kicked') return;
+    if(m.id === 'modal-session-kicked' || m.id === 'modal-summary') return;
     if(e.target === m) closeModal(m.id);
   });
 });
@@ -5836,6 +5841,10 @@ function enableSpectateOverlay(src){
 }
 
 function showScreen(id, force){
+  if(id === 'screen-workout' && (!workoutActive || !Array.isArray(activeSessionData) || !activeSessionData.length)){
+    route(true);
+    return;
+  }
   const prevScreen = currentScreen;
   const tabOrder = ['screen-home','screen-editor','screen-heatmap','screen-analytics','screen-tools'];
   const prevIdx = tabOrder.indexOf(prevScreen);
@@ -5870,6 +5879,10 @@ function showScreen(id, force){
   // Auto-enable Spectate (PiP) whenever leaving a live Workout or Cardio session for AI Chat or any other screen!
   if(id === 'screen-workout' || id === 'screen-cardio-active'){
     if(spectate) deactivatePip();
+    if(id === 'screen-workout' && workoutActive && (!workoutInt || !$('workoutStopwatch').classList.contains('on'))){
+      const curSec = workoutStartTs ? Math.max(0, Math.floor((Date.now() - workoutStartTs) / 1000)) : (workoutSeconds || 0);
+      startStopwatch(curSec);
+    }
   } else if(workoutActive && (prevScreen === 'screen-workout' || spectate)){
     enableSpectateOverlay('workout');
   } else if(cardioInt && (prevScreen === 'screen-cardio-active' || spectate)){
@@ -8936,6 +8949,7 @@ function pickExercise(name){
       viewMode: appData.globalViewMode || 'all',
       isEach: !!(catInfo && catInfo.equip === 'Dumbbell')
     });
+    if(typeof syncLiveSessionFromEditorDay === 'function') syncLiveSessionFromEditorDay();
     save(); renderEditor();
   } else if(dbTarget.mode === 'manualAddNew'){
     const day = manualDraftDays[manualDayIdx];
@@ -8957,9 +8971,10 @@ function pickExercise(name){
     const targetEx = prog[editorDayIdx].exercises[dbTarget.editIdx];
     if(targetEx && targetEx.name !== name){
       targetEx.name = name;
-      targetEx.history = [];
-      targetEx.supersetHistory = [];
+      if(!Array.isArray(targetEx.history)) targetEx.history = [];
+      if(!Array.isArray(targetEx.supersetHistory)) targetEx.supersetHistory = [];
     }
+    if(typeof syncLiveSessionFromEditorDay === 'function') syncLiveSessionFromEditorDay();
     save(); renderEditor();
   } else if(dbTarget.mode === 'editorSS' && dbTarget.ssIdx !== -1){
     const cur = prog[editorDayIdx].exercises[dbTarget.ssIdx];
@@ -8967,6 +8982,7 @@ function pickExercise(name){
       cur.supersetName = name;
       if(!cur.supersetSets) cur.supersetSets = cur.sets;
       if(!Array.isArray(cur.supersetHistory)) cur.supersetHistory = [];
+      if(typeof syncLiveSessionFromEditorDay === 'function') syncLiveSessionFromEditorDay();
       save(); renderEditor();
     }
   } else if(dbTarget.mode === 'manual' && dbTarget.editIdx !== -1){
@@ -9142,6 +9158,10 @@ function getTrainedSessionsThisWeek(){
     (ex.history || []).forEach(function(h){
       const dt = new Date(h.date);
       if(dt >= range.sunday && dt <= range.saturday){ sessions[h.date] = true; }
+    });
+    (ex.supersetHistory || []).forEach(function(sh){
+      const dt = new Date(sh.date);
+      if(dt >= range.sunday && dt <= range.saturday){ sessions[sh.date] = true; }
     });
   }); }); });
   return Object.keys(sessions).length;
@@ -9654,14 +9674,16 @@ function updateDayReadinessUI(){
   }
 }
 
-// Refresh readiness live (evaluates 30-minute recovery steps automatically)
+// Refresh readiness live (evaluates 30-minute recovery steps automatically without background/off-screen SVG rebuilds)
 setInterval(function(){
-  if(currentScreen === 'screen-home' || currentScreen === 'screen-heatmap'){
+  if(document.hidden) return;
+  if(currentScreen === 'screen-home'){
     updateDayReadinessUI();
     if(typeof updateDeloadUI === 'function') updateDeloadUI();
+  } else if(currentScreen === 'screen-heatmap'){
     if(typeof renderMuscleHeatmap === 'function') renderMuscleHeatmap();
   }
-}, 30000);
+}, 120000);
 
 function refreshHome(){
   const prog = getProgram();
@@ -9737,6 +9759,12 @@ function updateHomeStats(){
         (h.weights || []).forEach(function(w, i){ const r = (h.reps||[])[i] || 0; if(r > 0) volume += w * r; });
       }
     });
+    (ex.supersetHistory || []).forEach(function(sh){
+      const dt = new Date(sh.date);
+      if(dt >= range.sunday && dt <= range.saturday){
+        (sh.weights || []).forEach(function(w, i){ const r = (sh.reps||[])[i] || 0; if(r > 0) volume += w * r; });
+      }
+    });
   }); }); });
   animateNumber($('statSessions'), getTrainedSessionsThisWeek());
   animateNumber($('statVolume'), volume, true);
@@ -9784,8 +9812,8 @@ function updateStreak(){
 function countRecentPRs(){
   const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
   let count = 0;
-  appData.programs.forEach(function(p){ p.program.forEach(function(d){ d.exercises.forEach(function(ex){
-    const hist = (ex.history || []).filter(function(h){ return !h.techniqueChanged; }).sort(function(a,b){ return a.date - b.date; });
+  function scanHistList(rawList){
+    const hist = (rawList || []).filter(function(h){ return !h.techniqueChanged; }).sort(function(a,b){ return a.date - b.date; });
     for(let i = 1; i < hist.length; i++){
       if(hist[i].date < weekAgo) continue;
       const prev = hist[i-1], cur = hist[i];
@@ -9801,6 +9829,10 @@ function countRecentPRs(){
       });
       if(improved) count++;
     }
+  }
+  appData.programs.forEach(function(p){ p.program.forEach(function(d){ d.exercises.forEach(function(ex){
+    scanHistList(ex.history);
+    if(ex.supersetName) scanHistList(ex.supersetHistory);
   }); }); });
   return count;
 }
@@ -9836,7 +9868,7 @@ function startStopwatch(init){
   workoutInt = setInterval(function(){
     workoutSeconds = Math.floor((Date.now() - workoutStartTs) / 1000);
     updateStopwatchUI();
-    if(workoutSeconds % 5 === 0) syncWorkout();
+    if(workoutSeconds > 0 && workoutSeconds % 30 === 0) syncWorkout();
   }, 1000);
 }
 function updateStopwatchUI(){
@@ -10106,9 +10138,12 @@ function changeActiveExName(v){
   if(!ex) return;
   const raw = (v || '').trim();
   if(!raw) return;
+  saveCurrentEx();
   ex.name = raw;
   classifyAndRegisterCustomExercise(ex.name, false);
   fitActiveExNameFontSize($('activeExName'));
+  if(typeof refreshWorkoutSeatAndTrendUI === 'function') refreshWorkoutSeatAndTrendUI(ex);
+  renderWorkout();
   syncWorkout();
 }
 
@@ -10615,18 +10650,48 @@ function updateWorkoutTelemetry(){
   if(!volEl && !plateEl) return;
   let sessSets = 0, sessVol = 0;
   (activeSessionData || []).forEach(function(ex, idx){
+    const ce = ex.currentEntry || {};
     if(idx === activeExIndex){
       const maxS = ex.sets || 0;
       for(let i = 0; i < maxS; i++){
         const wInp = $('w_' + i), rInp = $('r_' + i);
-        const w = wInp ? (parseFloat(wInp.value) || 0) : ((ex.currentEntry && ex.currentEntry.weights && ex.currentEntry.weights[i]) || 0);
-        const r = rInp ? (parseFloat(rInp.value) || 0) : ((ex.currentEntry && ex.currentEntry.reps && ex.currentEntry.reps[i]) || 0);
+        const w = wInp ? (parseFloat(wInp.value) || 0) : ((ce.weights && ce.weights[i]) || 0);
+        const r = rInp ? (parseFloat(rInp.value) || 0) : ((ce.reps && ce.reps[i]) || 0);
         if(r > 0){ sessSets++; sessVol += (w * r); }
       }
-    } else if(ex.currentEntry && ex.currentEntry.reps){
-      ex.currentEntry.reps.forEach(function(r, i){
-        const w = (ex.currentEntry.weights && ex.currentEntry.weights[i]) || 0;
+      if(ex.supersetName){
+        const ssMax = ex.supersetSets || ex.sets || 0;
+        for(let i = 0; i < ssMax; i++){
+          const swInp = $('sw_' + i), srInp = $('sr_' + i);
+          const sw = swInp ? (parseFloat(swInp.value) || 0) : ((ce.supersetWeights && ce.supersetWeights[i]) || 0);
+          const sr = srInp ? (parseFloat(srInp.value) || 0) : ((ce.supersetReps && ce.supersetReps[i]) || 0);
+          if(sr > 0){ sessSets++; sessVol += (sw * sr); }
+        }
+      }
+    } else {
+      (ce.reps || []).forEach(function(r, i){
+        const w = (ce.weights && ce.weights[i]) || 0;
         if((parseFloat(r) || 0) > 0){ sessSets++; sessVol += (parseFloat(w) || 0) * (parseFloat(r) || 0); }
+      });
+      if(ex.supersetName){
+        (ce.supersetReps || []).forEach(function(r, i){
+          const w = (ce.supersetWeights && ce.supersetWeights[i]) || 0;
+          if((parseFloat(r) || 0) > 0){ sessSets++; sessVol += (parseFloat(w) || 0) * (parseFloat(r) || 0); }
+        });
+      }
+    }
+    (ce.drops || []).forEach(function(dArr){
+      (dArr || []).forEach(function(d){
+        const dw = parseFloat(d.w) || 0, dr = parseFloat(d.r) || 0;
+        if(dr > 0){ sessSets++; sessVol += (dw * dr); }
+      });
+    });
+    if(ex.supersetName){
+      (ce.supersetDrops || []).forEach(function(dArr){
+        (dArr || []).forEach(function(d){
+          const dw = parseFloat(d.w) || 0, dr = parseFloat(d.r) || 0;
+          if(dr > 0){ sessSets++; sessVol += (dw * dr); }
+        });
       });
     }
   });
@@ -10703,6 +10768,10 @@ function renderWorkout(){
   if(eachBtn) eachBtn.classList.toggle('on', !!ex.isEach);
   if(eachOffBtn) eachOffBtn.classList.toggle('on', !ex.isEach);
   if($('eachSegWrap') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('eachSegWrap'));
+  const ssEachBtn = $('ssEachBtn'), ssEachOffBtn = $('ssEachOffBtn');
+  if(ssEachBtn) ssEachBtn.classList.toggle('on', !!ex.supersetIsEach);
+  if(ssEachOffBtn) ssEachOffBtn.classList.toggle('on', !ex.supersetIsEach);
+  if($('ssEachSegWrap') && typeof syncSegGlassPill === 'function') syncSegGlassPill($('ssEachSegWrap'));
   requestAnimationFrame(fitAllVisibleNameInputs);
   const isTech = !!(ex.currentEntry && ex.currentEntry.techniqueChanged);
   const techBtn = $('techChangedBtn'), techStdBtn = $('techStdBtn');
@@ -11035,6 +11104,7 @@ function stepWeight(i, type, delta, pw, pr, dropIdx){
   let v = parseFloat(w.value) || 0;
   v = Math.max(0, Math.round((v + delta) * 100) / 100);
   w.value = v;
+  if($('numpad') && $('numpad').classList.contains('open') && activeNum === w) $('numpadValue').textContent = String(v);
   paintRow(i, type, pw, pr, dropIdx);
   liveRM(i, type, dropIdx);
   saveCurrentEx();
@@ -11051,6 +11121,7 @@ function stepReps(i, type, delta, pw, pr, dropIdx){
   let v = parseFloat(r.value) || 0;
   v = Math.max(1, v + delta);
   r.value = v;
+  if($('numpad') && $('numpad').classList.contains('open') && activeNum === r) $('numpadValue').textContent = String(v);
   paintRow(i, type, pw, pr, dropIdx);
   liveRM(i, type, dropIdx);
   maybePrompt(i, type);
@@ -11108,13 +11179,15 @@ function saveCurrentEx(){
     ww.push(a && a.value !== '' ? parseFloat(a.value) : 0);
     wr.push(b && b.value !== '' ? parseFloat(b.value) : 0);
   }
+  const prevCe = ex.currentEntry || {};
   const weights = [], reps = [], sw = [], sr = [];
   for(let i = 0; i < maxSets; i++){
-    const skip = mode === '1' && i > 0;
-    if(i < ex.sets && !skip){
+    if(i < ex.sets){
       const a = $('w_' + i), b = $('r_' + i);
-      weights.push(a && a.value !== '' ? parseFloat(a.value) : 0);
-      reps.push(b && b.value !== '' ? parseFloat(b.value) : 0);
+      const fallbackW = (prevCe.weights && prevCe.weights[i] !== undefined) ? (parseFloat(prevCe.weights[i]) || 0) : 0;
+      const fallbackR = (prevCe.reps && prevCe.reps[i] !== undefined) ? (parseFloat(prevCe.reps[i]) || 0) : 0;
+      weights.push(a ? (a.value !== '' ? parseFloat(a.value) : 0) : fallbackW);
+      reps.push(b ? (b.value !== '' ? parseFloat(b.value) : 0) : fallbackR);
     } else { weights.push(0); reps.push(0); }
     if(ex.currentEntry && ex.currentEntry.drops && ex.currentEntry.drops[i]){
       ex.currentEntry.drops[i].forEach(function(d, di){
@@ -11123,10 +11196,12 @@ function saveCurrentEx(){
         if(b) d.r = b.value !== '' ? parseFloat(b.value) : '';
       });
     }
-    if(ex.supersetName && i < (ex.supersetSets || ex.sets) && !skip){
+    if(ex.supersetName && i < (ex.supersetSets || ex.sets)){
       const a = $('sw_' + i), b = $('sr_' + i);
-      sw.push(a && a.value !== '' ? parseFloat(a.value) : 0);
-      sr.push(b && b.value !== '' ? parseFloat(b.value) : 0);
+      const fallbackSW = (prevCe.supersetWeights && prevCe.supersetWeights[i] !== undefined) ? (parseFloat(prevCe.supersetWeights[i]) || 0) : 0;
+      const fallbackSR = (prevCe.supersetReps && prevCe.supersetReps[i] !== undefined) ? (parseFloat(prevCe.supersetReps[i]) || 0) : 0;
+      sw.push(a ? (a.value !== '' ? parseFloat(a.value) : 0) : fallbackSW);
+      sr.push(b ? (b.value !== '' ? parseFloat(b.value) : 0) : fallbackSR);
     } else { sw.push(0); sr.push(0); }
     if(ex.supersetName && ex.currentEntry && ex.currentEntry.supersetDrops && ex.currentEntry.supersetDrops[i]){
       ex.currentEntry.supersetDrops[i].forEach(function(d, di){
@@ -11217,8 +11292,14 @@ function addWarmup(){ if(typeof isDeloadModeActive==='function' && isDeloadModeA
 }
 function removeWarmup(){ if(typeof isDeloadModeActive==='function' && isDeloadModeActive()){ notifyDeloadLocked(); return; } const ex = activeSessionData[activeExIndex]; if(!ex.warmupSets || ex.warmupSets <= 0) return; playSound('warn'); saveCurrentEx(); ex.warmupSets = Math.max(0, ex.warmupSets - 1); renderWorkout(); syncWorkout(); }
 function navWorkout(dir){
+  if(!workoutActive || !Array.isArray(activeSessionData) || !activeSessionData.length){
+    route();
+    return;
+  }
+  const nextIdx = clamp(activeExIndex + dir, 0, activeSessionData.length - 1);
+  if(nextIdx === activeExIndex) return;
   clearTimeout(promptT); closeModal('modal-restprompt');
-  playSound('nav'); saveCurrentEx(); activeExIndex += dir;
+  playSound('nav'); saveCurrentEx(); activeExIndex = nextIdx;
   renderWorkout(); syncWorkout();
   triggerDirAnim($('workoutExHeaderCard'), dir);
   triggerDirAnim($('setsContainer'), dir);
@@ -11241,9 +11322,10 @@ function progressFeedback(ex){
   }
 }
 function calc1RMVal(w, r){ w = parseFloat(w) || 0; r = parseFloat(r) || 0; if(w <= 0 || r <= 0) return 0; if(r === 1) return w; return w * (1 + r / 30); }
-let _syncWorkoutTimer = null;
+let _syncWorkoutTimer = null, _syncWorkoutIdleId = null;
 function flushSyncWorkout(){
   if(_syncWorkoutTimer){ clearTimeout(_syncWorkoutTimer); _syncWorkoutTimer = null; }
+  if(_syncWorkoutIdleId && window.cancelIdleCallback){ cancelIdleCallback(_syncWorkoutIdleId); _syncWorkoutIdleId = null; }
   if(!workoutActive || !activeSessionData.length) return;
   const obj = {
     version: 2, programId: appData.activeProgramId, dayIndex: appData.currentDayIndex,
@@ -11262,7 +11344,7 @@ function syncWorkout(){
   _syncWorkoutTimer = setTimeout(function(){
     _syncWorkoutTimer = null;
     if(window.requestIdleCallback){
-      requestIdleCallback(flushSyncWorkout, { timeout: 250 });
+      _syncWorkoutIdleId = requestIdleCallback(flushSyncWorkout, { timeout: 250 });
     } else {
       flushSyncWorkout();
     }
@@ -11271,6 +11353,7 @@ function syncWorkout(){
 window.addEventListener('pagehide', flushSyncWorkout);
 function clearLiveWorkout(){
   if(_syncWorkoutTimer){ clearTimeout(_syncWorkoutTimer); _syncWorkoutTimer = null; }
+  if(_syncWorkoutIdleId && window.cancelIdleCallback){ cancelIdleCallback(_syncWorkoutIdleId); _syncWorkoutIdleId = null; }
   workoutActive = false;
   safeRemoveItem('activeLiveWorkoutSessionV2');
 }
@@ -11278,11 +11361,13 @@ function restoreWorkout(s){
   workoutActive = true;
   appData.activeProgramId = s.programId || appData.activeProgramId;
   appData.currentDayIndex = s.dayIndex || 0;
-  activeExIndex = s.activeExIndex || 0;
-  activeSessionData = s.activeSessionData || [];
+  activeSessionData = Array.isArray(s.activeSessionData) ? s.activeSessionData : [];
+  activeExIndex = activeSessionData.length ? clamp(parseInt(s.activeExIndex, 10) || 0, 0, activeSessionData.length - 1) : 0;
   pendingRest = s.pendingRest || null;
-  const elapsed = Math.floor((Date.now() - s.timestamp) / 1000);
-  startStopwatch((s.workoutSeconds || 0) + elapsed);
+  const baseSec = Number.isFinite(Number(s.workoutSeconds)) ? Math.max(0, Number(s.workoutSeconds)) : 0;
+  const savedTs = Number.isFinite(Number(s.timestamp)) ? Number(s.timestamp) : Date.now();
+  const elapsed = Math.max(0, Math.floor((Date.now() - savedTs) / 1000));
+  startStopwatch(baseSec + elapsed);
   if(s.isTimerRunning && s.timerTargetTs > Date.now()){
     timerTotal = s.timerTotal; timerTime = Math.ceil((s.timerTargetTs - Date.now()) / 1000);
     timerTargetTs = s.timerTargetTs; timerRestStartTs = s.timerRestStartTs;
@@ -11627,7 +11712,10 @@ function confirmExit(saveIt){
   closeModal('modal-exit'); stopStopwatch(); killAllSounds();
   if(saveIt){ saveCurrentEx(); commitSession(); save(); }
   workoutActive = false;
-  if($('setsContainer')){ $('setsContainer').innerHTML = ''; delete $('setsContainer').dataset.renderedExId; }
+  if($('setsContainer')){ $('setsContainer').innerHTML = ''; delete $('setsContainer').dataset.renderedExId; delete $('setsContainer').dataset.renderedExName; }
+  if($('activeExName')) $('activeExName').value = '';
+  if($('activeSSExName')) $('activeSSExName').value = '';
+  if($('activeExNote')) $('activeExNote').value = '';
   clearLiveWorkout(); activeSessionData = []; activeExIndex = 0; resetTimer(); route();
 }
 let sessionRating = null, summaryRefs = [];
@@ -11682,7 +11770,11 @@ function commitSession(){
   });
   return totalSets;
 }
+let _finishingWorkoutGuard = false;
 function finishWorkout(){
+  if(_finishingWorkoutGuard || !workoutActive) return;
+  _finishingWorkoutGuard = true;
+  setTimeout(function(){ _finishingWorkoutGuard = false; }, 1500);
   clearTimeout(promptT); closeModal('modal-restprompt');
   playSound('success'); saveCurrentEx();
   const dur = fmtTime(workoutSeconds);
@@ -11694,34 +11786,51 @@ function finishWorkout(){
   const exBreakdowns = [];
   const musclesHitMap = {};
 
-  activeSessionData.forEach(function(ex){
-    const lh = ex.history && ex.history.length ? ex.history[ex.history.length - 1] : null;
-    const prof = getExerciseBioProfile(ex.name);
-    if(prof){
-      musclesHitMap[prof.primaryKey] = prof.isLarge ? '72h' : '48h';
-      if(prof.isCompound && prof.synergists){
-        prof.synergists.forEach(function(syn){
-          if(!musclesHitMap[syn]) musclesHitMap[syn] = '24h (Synergist)';
-        });
-      }
+  function recordMusclesForEx(nameStr){
+    const prof = getExerciseBioProfile(nameStr);
+    if(!prof) return;
+    musclesHitMap[prof.primaryKey] = prof.isLarge ? '72h' : '48h';
+    if(prof.isCompound && prof.synergists){
+      prof.synergists.forEach(function(syn){
+        if(!musclesHitMap[syn]) musclesHitMap[syn] = '24h (Synergist)';
+      });
     }
+  }
+  activeSessionData.forEach(function(ex){
+    const lh = getLatestValidHistoryEntry(ex, false);
+    const ls = ex.supersetName ? getLatestValidHistoryEntry(ex, true) : null;
+    recordMusclesForEx(ex.name);
+    if(ex.supersetName) recordMusclesForEx(ex.supersetName);
     let exSets = 0, bestW = 0, bestR = 0, bestRM = 0;
-    if(ex.currentEntry && ex.currentEntry.reps){
-      ex.currentEntry.reps.forEach(function(r, i){
-        const w = (ex.currentEntry.weights || [])[i] || 0;
+    const ce = ex.currentEntry || {};
+    (ce.reps || []).forEach(function(r, i){
+      const w = (ce.weights || [])[i] || 0;
+      if(r > 0){
+        totalSets++; exSets++; totalReps += r; totalVolume += (w * r);
+        const curRM = calc1RMVal(w, r);
+        if(curRM >= bestRM){ bestRM = curRM; bestW = w; bestR = r; }
+        if(!isDeload && !ce.techniqueChanged && lh && lh.weights && lh.reps && lh.reps[i] > 0){
+          const pw = lh.weights[i] || 0, pr = lh.reps[i];
+          const prr = calc1RMVal(pw, pr);
+          if(w > pw) ach.push('🔥 <b>' + ex.name + '</b>: +' + Math.round((w-pw)*100)/100 + unitLabel() + ' on Set ' + (i+1));
+          else if(w === pw && r > pr) ach.push('⚡ <b>' + ex.name + '</b>: +' + (r-pr) + ' rep' + ((r-pr)>1?'s':'') + ' on Set ' + (i+1));
+          if(prr > 0 && ((curRM - prr) / prr) >= .08) ach.push('👑 <b>' + ex.name + '</b>: New 1RM ' + curRM.toFixed(1) + unitLabel() + ' (+' + (((curRM-prr)/prr)*100).toFixed(1) + '%)');
+        }
+      }
+    });
+    if(ex.supersetName){
+      (ce.supersetReps || []).forEach(function(r, i){
+        const w = (ce.supersetWeights || [])[i] || 0;
         if(r > 0){
-          totalSets++;
-          exSets++;
-          totalReps += r;
-          totalVolume += (w * r);
+          totalSets++; exSets++; totalReps += r; totalVolume += (w * r);
           const curRM = calc1RMVal(w, r);
           if(curRM >= bestRM){ bestRM = curRM; bestW = w; bestR = r; }
-          if(!isDeload && lh && lh.weights && lh.reps && lh.reps[i] > 0){
-            const pw = lh.weights[i] || 0, pr = lh.reps[i];
+          if(!isDeload && !ce.techniqueChanged && ls && ls.weights && ls.reps && ls.reps[i] > 0){
+            const pw = ls.weights[i] || 0, pr = ls.reps[i];
             const prr = calc1RMVal(pw, pr);
-            if(w > pw) ach.push('🔥 <b>' + ex.name + '</b>: +' + Math.round((w-pw)*100)/100 + unitLabel() + ' on Set ' + (i+1));
-            else if(w === pw && r > pr) ach.push('⚡ <b>' + ex.name + '</b>: +' + (r-pr) + ' rep' + ((r-pr)>1?'s':'') + ' on Set ' + (i+1));
-            if(prr > 0 && ((curRM - prr) / prr) >= .08) ach.push('👑 <b>' + ex.name + '</b>: New 1RM ' + curRM.toFixed(1) + unitLabel() + ' (+' + (((curRM-prr)/prr)*100).toFixed(1) + '%)');
+            if(w > pw) ach.push('🔥 <b>' + ex.supersetName + '</b>: +' + Math.round((w-pw)*100)/100 + unitLabel() + ' on Set ' + (i+1));
+            else if(w === pw && r > pr) ach.push('⚡ <b>' + ex.supersetName + '</b>: +' + (r-pr) + ' rep' + ((r-pr)>1?'s':'') + ' on Set ' + (i+1));
+            if(prr > 0 && ((curRM - prr) / prr) >= .08) ach.push('👑 <b>' + ex.supersetName + '</b>: New 1RM ' + curRM.toFixed(1) + unitLabel() + ' (+' + (((curRM-prr)/prr)*100).toFixed(1) + '%)');
           }
         }
       });
@@ -12488,7 +12597,7 @@ function resumeCardio(){
       if(pipLabel) pipLabel.textContent = 'Water rests';
       if(pipStep) pipStep.textContent = '---';
     }
-    if(wallElapsed % 4 === 0 || activeRest) syncCardio();
+    if(wallElapsed % 15 === 0) syncCardio();
   };
   tick();
   cardioInt = setInterval(tick, 1000);
@@ -12518,7 +12627,7 @@ function endCardio(){
     return;
   }
   const elapsedSec = cardioStart ? Math.floor((Date.now() - cardioStart) / 1000) : 0;
-  if(elapsedSec <= 5){
+  if(elapsedSec <= 3){
     cancelCardioDuringCountdown();
     return;
   }
@@ -12610,6 +12719,7 @@ function updateAnalyticsUI(){
   renderAnalyticsAIAudit();
   if(typeof renderAnalyticsConsistencyAndVolume === 'function') renderAnalyticsConsistencyAndVolume();
   if(typeof renderWeightProgressChart === 'function') renderWeightProgressChart();
+  if(currentScreen === 'screen-caffeine-calc' && typeof openCaffeineCalcScreen === 'function') openCaffeineCalcScreen();
 }
 function deleteLatestSession(){
   playSound('warn');
@@ -12624,10 +12734,14 @@ function deleteLatestSession(){
   const ds = new Date(latest).toLocaleDateString();
   askConfirm('Delete Latest Session', 'Delete the latest session (' + ds + ') for Day ' + day.day + '?', function(){
     day.exercises.forEach(function(ex){
-      if(ex.history && ex.history.length){ const l = ex.history[ex.history.length-1]; if(Math.abs(l.date - latest) < 12*3600*1000) ex.history.pop(); }
-      if(ex.supersetHistory && ex.supersetHistory.length){ const l = ex.supersetHistory[ex.supersetHistory.length-1]; if(Math.abs(l.date - latest) < 12*3600*1000) ex.supersetHistory.pop(); }
+      if(Array.isArray(ex.history) && ex.history.length){
+        ex.history = ex.history.filter(function(h){ return !h || Math.abs((h.date || 0) - latest) >= 3 * 3600 * 1000; });
+      }
+      if(Array.isArray(ex.supersetHistory) && ex.supersetHistory.length){
+        ex.supersetHistory = ex.supersetHistory.filter(function(h){ return !h || Math.abs((h.date || 0) - latest) >= 3 * 3600 * 1000; });
+      }
     });
-    save(); renderChart(); updateHomeStats(); updateWeekGoal();
+    save(); renderChart(); updateHomeStats(); updateWeekGoal(); if(typeof renderAnalyticsConsistencyAndVolume==='function') renderAnalyticsConsistencyAndVolume(); if(typeof renderMuscleHeatmap==='function') renderMuscleHeatmap(); if(typeof updateDayReadinessUI==='function') updateDayReadinessUI();
     toast('Deleted latest session');
   });
 }
@@ -12737,8 +12851,8 @@ function initChartScrubbing(svg){
 function openPRBoard(){
   const c = $('prBoardBody'); c.innerHTML = '';
   const prs = [];
-  appData.programs.forEach(function(p){ p.program.forEach(function(d){ d.exercises.forEach(function(ex){
-    const hist = (ex.history || []).filter(function(h){ return !h.techniqueChanged; }).sort(function(a,b){ return a.date - b.date; });
+  function pushBestPR(exTitle, rawHist){
+    const hist = (rawHist || []).filter(function(h){ return !h.techniqueChanged; }).sort(function(a,b){ return a.date - b.date; });
     let best = 0, bestDate = 0, bestW = 0, bestR = 0;
     hist.forEach(function(h){
       (h.weights || []).forEach(function(w, i){
@@ -12746,7 +12860,11 @@ function openPRBoard(){
         if(r > 0){ const rm = calc1RMVal(w, r); if(rm > best){ best = rm; bestDate = h.date; bestW = w; bestR = r; } }
       });
     });
-    if(best > 0) prs.push({name:ex.name, rm:best, w:bestW, r:bestR, date:bestDate});
+    if(best > 0) prs.push({name:exTitle, rm:best, w:bestW, r:bestR, date:bestDate});
+  }
+  appData.programs.forEach(function(p){ p.program.forEach(function(d){ d.exercises.forEach(function(ex){
+    pushBestPR(ex.name, ex.history);
+    if(ex.supersetName) pushBestPR('⚡ ' + ex.supersetName, ex.supersetHistory);
   }); }); });
   prs.sort(function(a,b){ return b.rm - a.rm; });
   if(!prs.length){ c.innerHTML = '<div class="micro subtle center" style="padding:24px">No PRs yet</div>'; }
@@ -12807,7 +12925,7 @@ function delHist(idx){
     const realIdx = list.indexOf(targetItem);
     if(realIdx >= 0) list.splice(realIdx, 1);
     else list.splice(idx, 1);
-    save(); renderHist(); updateHomeStats(); updateWeekGoal();
+    save(); renderHist(); updateHomeStats(); updateWeekGoal(); if(currentScreen==='screen-analytics'){ renderChart(); if(typeof renderAnalyticsConsistencyAndVolume==='function') renderAnalyticsConsistencyAndVolume(); } if(typeof renderMuscleHeatmap==='function') renderMuscleHeatmap(); if(typeof updateDayReadinessUI==='function') updateDayReadinessUI();
   });
 }
 
@@ -13030,6 +13148,7 @@ function editorLinkSS(i){
   cur.supersetMinWeightStep = next.minWeightStep || 0;
   arr.splice(i + 1, 1);
   playSound('success');
+  if(typeof syncLiveSessionFromEditorDay === 'function') syncLiveSessionFromEditorDay();
   save();
   renderEditor();
   toast('🔗 Linked Superset with ' + cur.supersetName);
@@ -13071,6 +13190,7 @@ function unlinkSS(i){
   delete ex._ssSavedNote;
   delete ex._ssSavedWarmup;
   delete ex._ssSavedEach;
+  if(typeof syncLiveSessionFromEditorDay === 'function') syncLiveSessionFromEditorDay();
   save();
   renderEditor();
   toast('⛓️ Superset unlinked (history preserved)');
@@ -13144,6 +13264,7 @@ function renderEditor(){
     const arr = p[editorDayIdx].exercises;
     const item = arr.splice(fromIdx, 1)[0];
     arr.splice(toIdx, 0, item);
+    syncLiveSessionFromEditorDay();
     save();
     renderEditor();
   });
@@ -13152,17 +13273,47 @@ function renderEditor(){
 function editName(i, v){
   const p = getProgram();
   const targetEx = p[editorDayIdx].exercises[i];
-  if(targetEx && targetEx.name !== v){
-    targetEx.name = v;
-    targetEx.history = [];
-    targetEx.supersetHistory = [];
-    classifyAndRegisterCustomExercise(v, false);
+  const clean = String(v || '').trim();
+  if(targetEx && clean && targetEx.name !== clean){
+    targetEx.name = clean;
+    if(!Array.isArray(targetEx.history)) targetEx.history = [];
+    if(!Array.isArray(targetEx.supersetHistory)) targetEx.supersetHistory = [];
+    classifyAndRegisterCustomExercise(clean, false);
     save();
   }
 }
 function editSSName(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].supersetName = v; classifyAndRegisterCustomExercise(v, false); save(); }
-function editSets(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].sets = clamp(parseInt(v) || 1, 1, 20); save(); }
-function editWarm(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].warmupSets = clamp(parseInt(v) || 0, 0, 10); save(); }
+function syncLiveSessionFromEditorDay(){
+  if(!workoutActive || editorDayIdx !== appData.currentDayIndex) return;
+  const day = getProgram()[editorDayIdx];
+  if(!day || !Array.isArray(day.exercises)) return;
+  if(!day.exercises.length){
+    confirmExit(false);
+    return;
+  }
+  const prevById = {};
+  (activeSessionData || []).forEach(function(ex){
+    if(ex && ex._id) prevById[ex._id] = ex;
+  });
+  activeSessionData = day.exercises.map(function(orig){
+    const prev = (orig._id && prevById[orig._id]) ? prevById[orig._id] : null;
+    const copy = JSON.parse(JSON.stringify(orig));
+    if(prev && prev.currentEntry){
+      copy.currentEntry = prev.currentEntry;
+    } else {
+      copy.currentEntry = {
+        date: Date.now(), warmupWeights: [], warmupReps: [], warmupRestTimes: [],
+        weights: [], reps: [], restTimes: [], drops: [], supersetDrops: [],
+        supersetWeights: [], supersetReps: [], techniqueChanged: false
+      };
+    }
+    return copy;
+  });
+  activeExIndex = clamp(activeExIndex, 0, activeSessionData.length - 1);
+  flushSyncWorkout();
+}
+function editSets(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].sets = clamp(parseInt(v) || 1, 1, 20); syncLiveSessionFromEditorDay(); save(); }
+function editWarm(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].warmupSets = clamp(parseInt(v) || 0, 0, 10); syncLiveSessionFromEditorDay(); save(); }
 function editMinStep(i, v){
   const p = getProgram();
   const num = parseFloat(v);
@@ -13175,8 +13326,8 @@ function editSSMinStep(i, v){
   p[editorDayIdx].exercises[i].supersetMinWeightStep = (!isNaN(num) && num > 0) ? Math.round(num * 100) / 100 : 0;
   save();
 }
-function editSSSets(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].supersetSets = clamp(parseInt(v) || 1, 1, 20); save(); }
-function delEx(i){ askConfirm('Delete Exercise', 'Remove this exercise from Day ' + getProgram()[editorDayIdx].day + '?', function(){ const p = getProgram(); p[editorDayIdx].exercises.splice(i, 1); save(); renderEditor(); }); }
+function editSSSets(i, v){ const p = getProgram(); p[editorDayIdx].exercises[i].supersetSets = clamp(parseInt(v) || 1, 1, 20); syncLiveSessionFromEditorDay(); save(); }
+function delEx(i){ askConfirm('Delete Exercise', 'Remove this exercise from Day ' + getProgram()[editorDayIdx].day + '?', function(){ const p = getProgram(); p[editorDayIdx].exercises.splice(i, 1); syncLiveSessionFromEditorDay(); save(); renderEditor(); }); }
 function addExercise(){
   playSound('tap');
   dbTarget = { mode: 'editorAddNew', input: null, editIdx: -1, ssIdx: -1 };
@@ -13201,6 +13352,7 @@ function moveEx(exIdx, toDay){
   const p = getProgram();
   const ex = p[editorDayIdx].exercises.splice(exIdx, 1)[0];
   p[toDay].exercises.push(ex);
+  if(typeof syncLiveSessionFromEditorDay === 'function') syncLiveSessionFromEditorDay();
   save(); renderEditor();
 }
 
@@ -13399,8 +13551,14 @@ function importBackupFile(input){
     try{
       const parsed = JSON.parse(ev.target.result);
       if(!parsed || !Array.isArray(parsed.programs)) throw new Error('Invalid');
+      const activeCloud = appData.cloudAccount;
       appData = Object.assign({}, appData, parsed);
+      if(activeCloud && activeCloud.vaultKey && (!appData.cloudAccount || !appData.cloudAccount.vaultKey)){
+        appData.cloudAccount = activeCloud;
+      }
       normalizePrograms();
+      if(typeof syncSavedCustomExercises === 'function') syncSavedCustomExercises();
+      input.value = '';
       applyTheme(); applyPower(); save();
       closeModal('modal-settings');
       route();
@@ -13714,8 +13872,18 @@ function refreshUnitUI(){
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'visible'){
     if(timerInt){ const r = Math.max(0, Math.ceil((timerTargetTs - Date.now()) / 1000)); timerTime = r; updateTimerUI('tick'); }
-    if(workoutInt){ workoutSeconds = Math.floor((Date.now() - workoutStartTs) / 1000); updateStopwatchUI(); }
+    if(workoutActive && activeSessionData.length){
+      const curSec = workoutStartTs ? Math.max(0, Math.floor((Date.now() - workoutStartTs) / 1000)) : (workoutSeconds || 0);
+      if(!workoutInt || !$('workoutStopwatch').classList.contains('on')){
+        startStopwatch(curSec);
+      } else {
+        workoutSeconds = curSec;
+        updateStopwatchUI();
+      }
+    }
     if(currentScreen === 'screen-home') updateDayReadinessUI();
+  } else if(workoutActive && activeSessionData.length){
+    flushSyncWorkout();
   }
 });
 
@@ -14471,7 +14639,7 @@ function executeAgenticChatCommandIfRequested(userMsg){
     (prog[dIdx].exercises || []).forEach(function(ex){ ex.minWeightStep = stepVal; });
     if(workoutActive && activeSessionData && activeSessionData.length){
       activeSessionData.forEach(function(ex){ ex.minWeightStep = stepVal; });
-      loadActiveExercise(activeExIndex);
+      renderWorkout();
     }
     save();
     return isAr
@@ -17648,17 +17816,27 @@ function syncAllVisibleSegPills(){
   let mutRaf = null;
   if(typeof MutationObserver !== 'undefined'){
     const mo = new MutationObserver(function(mutations){
-      let needsSync = false;
+      if(isScrubbing) return;
+      let syncAll = false;
+      const dirtySegs = new Set();
       for(let i = 0; i < mutations.length; i++){
         const t = mutations[i].target;
-        if(t && t.classList && (t.classList.contains('seg-btn') || t.classList.contains('seg') || t.classList.contains('screen') || t.classList.contains('modal'))){
-          needsSync = true;
-          break;
+        if(!t || !t.classList) continue;
+        if(t.classList.contains('screen') || t.classList.contains('modal')){
+          if(t.classList.contains('active') || t.classList.contains('on')) syncAll = true;
+        } else if(t.classList.contains('seg')){
+          dirtySegs.add(t);
+        } else if(t.classList.contains('seg-btn')){
+          const p = t.closest('.seg');
+          if(p) dirtySegs.add(p);
         }
       }
-      if(needsSync && !isScrubbing){
+      if(syncAll){
         if(mutRaf) cancelAnimationFrame(mutRaf);
         mutRaf = requestAnimationFrame(syncAllVisibleSegPills);
+      } else if(dirtySegs.size){
+        if(mutRaf) cancelAnimationFrame(mutRaf);
+        mutRaf = requestAnimationFrame(function(){ dirtySegs.forEach(syncSegGlassPill); });
       }
     });
     window.addEventListener('DOMContentLoaded', function(){
@@ -20201,7 +20379,9 @@ async function reclaimCloudSessionHere(silentOnStartup){
     if(typeof updateDayReadinessUI === 'function') updateDayReadinessUI();
     refreshCloudAuthUI();
     if(typeof refreshSettingsUI === 'function') refreshSettingsUI();
-    route(true);
+    if(!workoutActive && !cardioInt){
+      route(true);
+    }
     if(!silentOnStartup){
       playSound('success');
       toast('🔓 Synced latest data & activated on this device!');
@@ -20235,16 +20415,45 @@ function mergeAccountSplitsArray(remoteProgs, localProgs){
     byId[copy.id] = copy;
   });
 
+  function mergeHistoryArrays(arrA, arrB){
+    const map = new Map();
+    (arrA || []).concat(arrB || []).forEach(function(h){
+      if(h && h.date) map.set(h.date, h);
+    });
+    return Array.from(map.values()).sort(function(a, b){ return (a.date || 0) - (b.date || 0); }).slice(-15);
+  }
+
+  function mergeTwoPrograms(primaryProg, secondaryProg){
+    const out = JSON.parse(JSON.stringify(primaryProg));
+    if(!secondaryProg || !Array.isArray(secondaryProg.program)) return out;
+    (out.program || []).forEach(function(d, dIdx){
+      const secDay = secondaryProg.program[dIdx];
+      if(!secDay || !Array.isArray(secDay.exercises)) return;
+      (d.exercises || []).forEach(function(ex, eIdx){
+        const match = secDay.exercises.find(function(se){
+          return (se._id && ex._id && se._id === ex._id) ||
+                 (String(se.name || '').toLowerCase() === String(ex.name || '').toLowerCase());
+        }) || secDay.exercises[eIdx];
+        if(match){
+          ex.history = mergeHistoryArrays(ex.history, match.history);
+          if(ex.supersetName || match.supersetName){
+            ex.supersetHistory = mergeHistoryArrays(ex.supersetHistory, match.supersetHistory);
+          }
+        }
+      });
+    });
+    return out;
+  }
+
   (localProgs || []).forEach(function(lp){
     if(!lp || !Array.isArray(lp.program) || lp.program.length === 0) return;
     if(byId[lp.id]){
-      // Keep whichever version has more recorded workout logs
-      if(countHistoryLogs(lp) > countHistoryLogs(byId[lp.id])){
-        const idx = result.indexOf(byId[lp.id]);
-        const copy = JSON.parse(JSON.stringify(lp));
-        if(idx >= 0) result[idx] = copy;
-        byId[copy.id] = copy;
-      }
+      const existing = byId[lp.id];
+      const idx = result.indexOf(existing);
+      const localHasMore = countHistoryLogs(lp) > countHistoryLogs(existing);
+      const merged = localHasMore ? mergeTwoPrograms(lp, existing) : mergeTwoPrograms(existing, lp);
+      if(idx >= 0) result[idx] = merged;
+      byId[merged.id] = merged;
     } else {
       // Check if an identical split name + day count already exists
       const sameName = result.find(function(x){
@@ -20765,7 +20974,14 @@ async function confirmAccountPasswordReset(){
           }, 160);
           const btnOnclickKey = directBtn.getAttribute('onclick') || '';
           let curDirectBtn = directBtn;
-          startAcceleratedHold(function(){ return curDirectBtn; }, lens, btnOnclickKey);
+          startAcceleratedHold(function(){
+            if(curDirectBtn && !document.body.contains(curDirectBtn) && btnOnclickKey){
+              curDirectBtn = Array.prototype.find.call(document.querySelectorAll('button[onclick]'), function(b){
+                return b.getAttribute('onclick') === btnOnclickKey;
+              }) || null;
+            }
+            return curDirectBtn;
+          }, lens, btnOnclickKey);
           const stopDirectHold = function(){
             clearHoldTimer();
             if(lens) lens.classList.remove('active', 'pulse-step');
@@ -21053,7 +21269,8 @@ async function confirmAccountPasswordReset(){
         if(e.clientY - mp.startY > 46){
           playSound('tap');
           if(mp.isNumpad && typeof closeNumpad === 'function') closeNumpad();
-          else if(mp.modalEl && mp.modalEl.id && typeof closeModal === 'function') closeModal(mp.modalEl.id);
+          else if(mp.modalEl && mp.modalEl.id === 'modal-summary' && typeof closeSummary === 'function') closeSummary();
+          else if(mp.modalEl && mp.modalEl.id && mp.modalEl.id !== 'modal-session-kicked' && typeof closeModal === 'function') closeModal(mp.modalEl.id);
         }
       }
     }
