@@ -218,7 +218,7 @@ html:not([data-skin]) .wp-cyber,
     repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 4px, rgba(0,0,0,.18) 4px 8px);
 }
 
-/* Morphing Liquid Glass Stepper Swipe Lens (.stepper-glass-lens) */
+/* Morphing Liquid Glass Stepper Swipe Lens (.stepper-glass-lens) — 120Hz GPU Spring Engine */
 .stepper-glass-lens{
   position:fixed;
   top:0;left:0;
@@ -226,29 +226,41 @@ html:not([data-skin]) .wp-cyber,
   z-index:9998;
   opacity:0;
   visibility:hidden;
+  transform-origin:center center;
   border-radius:10px;
-  background:linear-gradient(145deg, rgba(255,255,255,.07) 0%, rgba(56,189,248,.06) 50%, rgba(16,185,129,.07) 100%);
-  border:1.8px solid rgba(56,189,248,.85);
+  background:linear-gradient(145deg, rgba(255,255,255,.08) 0%, rgba(56,189,248,.07) 50%, rgba(16,185,129,.08) 100%);
+  border:1.8px solid rgba(56,189,248,.88);
   box-shadow:
-    0 0 16px rgba(56,189,248,.35),
-    inset 0 1.5px 1px rgba(255,255,255,.65),
-    inset 0 -1px 2px rgba(56,189,248,.22);
+    0 0 16px rgba(56,189,248,.36),
+    inset 0 1.5px 1px rgba(255,255,255,.68),
+    inset 0 -1px 2px rgba(56,189,248,.24);
   backdrop-filter:none;
   -webkit-backdrop-filter:none;
-  transition:opacity .16s ease, visibility .16s ease;
+  transition:border-color .14s ease, box-shadow .14s ease, background .14s ease;
 }
 .stepper-glass-lens.active{
-  opacity:1;
   visibility:visible;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  will-change:transform, width, height, border-radius, opacity;
+  will-change:transform, opacity;
+}
+.stepper-glass-lens.tone-minus{
+  border-color:rgba(251,191,36,.92);
+  background:linear-gradient(145deg, rgba(255,255,255,.10) 0%, rgba(251,191,36,.12) 55%, rgba(245,158,11,.08) 100%);
+  box-shadow:0 0 20px rgba(251,191,36,.52), inset 0 1.5px 1.5px rgba(255,255,255,.78);
+}
+.stepper-glass-lens.tone-plus{
+  border-color:rgba(52,211,153,.95);
+  background:linear-gradient(145deg, rgba(255,255,255,.11) 0%, rgba(52,211,153,.13) 55%, rgba(56,189,248,.10) 100%);
+  box-shadow:0 0 22px rgba(16,185,129,.58), inset 0 1.5px 1.5px rgba(255,255,255,.82);
 }
 .stepper-glass-lens.pulse-step{
   border-color:#34d399;
-  background:linear-gradient(145deg, rgba(255,255,255,.11) 0%, rgba(52,211,153,.12) 50%, rgba(56,189,248,.10) 100%);
-  box-shadow:0 0 22px rgba(16,185,129,.70), inset 0 1.5px 2px rgba(255,255,255,.85);
-  animation:stepperGlassPulse05 0.24s cubic-bezier(.22,1,.36,1);
+  background:linear-gradient(145deg, rgba(255,255,255,.14) 0%, rgba(52,211,153,.15) 50%, rgba(56,189,248,.12) 100%);
+  box-shadow:0 0 26px rgba(16,185,129,.76), inset 0 1.5px 2px rgba(255,255,255,.90);
+}
+.stepper-glass-lens.tone-minus.pulse-step{
+  border-color:#fbbf24;
+  background:linear-gradient(145deg, rgba(255,255,255,.14) 0%, rgba(251,191,36,.16) 50%, rgba(245,158,11,.12) 100%);
+  box-shadow:0 0 26px rgba(251,191,36,.74), inset 0 1.5px 2px rgba(255,255,255,.90);
 }
 /* Step-by-Step A2HS Visual Browser Mockups */
 .a2hs-visual-box{
@@ -879,12 +891,12 @@ body.numpad-ActivePad .modal-body {
   background:linear-gradient(145deg,rgba(255,255,255,.16) 0%,var(--blue-g) 50%,rgba(16,185,129,.14) 100%);
   border:1px solid var(--blue-b);
   box-shadow:0 4px 14px rgba(14,165,233,.22), inset 0 1.5px 1px rgba(255,255,255,.45), inset 0 -1px 2px rgba(14,165,233,.18);
-  backdrop-filter:blur(10px) saturate(180%);
-  -webkit-backdrop-filter:blur(10px) saturate(180%);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
   pointer-events:none;z-index:1;
   transform:translate3d(0,0,0) scale(1);
-  transition:transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.22s ease, height 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-  will-change:transform,width;
+  transition:transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), width 0.24s cubic-bezier(0.22, 1, 0.36, 1), top 0.20s ease, height 0.20s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  will-change:transform;
 }
 .seg.scrubbing .seg-glass-pill{
   transition:transform 0.04s linear, width 0.12s ease !important;
@@ -1939,11 +1951,24 @@ body[data-idle="1"] .marble-veins{
 
 /* Superset Exercise Row in Live Workout Header */
 #screen-workout .workout-ex-card .w-row.w-row-ss-title{
-  gap:5px;min-height:36px;margin-bottom:2px;width:100%;
-  display:flex;align-items:center;
+  gap:3px;min-height:34px;margin-bottom:2px;width:100%;
+  display:flex;align-items:center;flex-wrap:nowrap;
 }
 #screen-workout .workout-ex-card .w-row.w-row-ss-title.hidden{
   display:none !important;
+}
+/* Clean Focus Mode (toggled via 🎯 Focus pill — hides secondary chrome during heavy lifting) */
+#screen-workout.focus-mode .w-calc-strip .chip:not(#workoutFocusBtn),
+#screen-workout.focus-mode #workoutLiveTelemetryStrip,
+#screen-workout.focus-mode #workoutExHeaderCard .w-row:not(.w-row-title):not(.w-row-ss-title),
+#screen-workout.focus-mode #workoutExHeaderCard .workout-controls{
+  display:none !important;
+}
+#screen-workout.focus-mode #workoutFocusBtn{
+  background:var(--green-g);
+  border-color:var(--green-b);
+  color:var(--green-t);
+  box-shadow:0 0 12px rgba(16,185,129,.28);
 }
 .ss-live-badge{
   display:inline-flex;align-items:center;justify-content:center;
@@ -2652,11 +2677,15 @@ body[data-idle="1"] .marble-veins{
               <button class="chip green" onclick="openQuickLoads()" title="Weights by Reps / Pyramid Calculator">📊 Loads</button>
               <button class="chip amber" onclick="openQuickPlates()" title="Plate Loader Popup">💿 Plates</button>
               <button class="chip" onclick="activatePip('workout')" title="Floating Mini Timer">👁️ PiP</button>
+              <button class="chip" id="workoutFocusBtn" onclick="toggleWorkoutFocusMode()" title="Focus Mode: Hide secondary controls during heavy sets">🎯 Focus</button>
             </div>
           </div>
           <div class="bar"><div class="bar-fill" id="workoutProgressBar"></div></div>
           <div class="workout-live-strip" id="workoutLiveTelemetryStrip">
-            <span id="wLiveVolTxt">📊 Session: 0 sets · 0 kg</span>
+            <div class="row" style="gap:6px;align-items:center;min-width:0;flex:1;overflow:hidden">
+              <span id="wLiveVolTxt" style="white-space:nowrap">📊 Session: 0 sets · 0 kg</span>
+              <span class="micro hidden" id="wTargetBeatPill" style="color:var(--green-t);opacity:.86;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Next Progressive Overload Target"></span>
+            </div>
             <div class="row" style="gap:5px;align-items:center">
               <span class="trend-badge new" id="workoutTrendBadge" onclick="openTrendCoachModal()" title="Plateau & Regression Detector">✨ Tracking</span>
               <span class="micro subtle" id="wLiveGoalHint" onclick="openAthleteProfileModal()" style="cursor:pointer;color:var(--blue-t)">🎯 Goal: Bulk</span>
@@ -3006,9 +3035,9 @@ body[data-idle="1"] .marble-veins{
               </div>
             </div>
             <div class="seg" style="width:100%;margin-bottom:7px">
-              <div class="seg-btn" id="anGoalCutBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('cut')">🔥 Cut (تنشيف)</div>
-              <div class="seg-btn on" id="anGoalBulkBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('bulk')">💪 Bulk (تضخيم)</div>
-              <div class="seg-btn" id="anGoalRecompBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('recomp')">⚖️ Recomp (ثبات)</div>
+              <div class="seg-btn" id="anGoalCutBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('cut')">🔥 Cut</div>
+              <div class="seg-btn on" id="anGoalBulkBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('bulk')">💪 Bulk</div>
+              <div class="seg-btn" id="anGoalRecompBtn" style="flex:1;text-align:center" onclick="setAthleteGoalQuick('recomp')">⚖️ Recomp</div>
             </div>
             <div id="weightGoalVerdictBanner" class="card glass" style="padding:7px 10px;margin-bottom:7px;font-size:10.5px;font-weight:800"></div>
             <div class="chart-box" style="height:124px"><svg id="weightProgressSvg" width="100%" height="100%" viewBox="0 0 400 118" preserveAspectRatio="none"></svg></div>
@@ -3675,8 +3704,10 @@ body[data-idle="1"] .marble-veins{
       <div class="grid-2" style="gap:6px">
         <button class="btn sm" onclick="closeModal('modal-settings');openPrograms()">📂 Splits</button>
         <button class="btn sm" onclick="closeModal('modal-settings');changeName()">👤 Name</button>
-        <button class="btn sm blue" onclick="exportBackup()">📤 Export</button>
-        <button class="btn sm purple" onclick="triggerImportBackup()">📥 Import</button>
+        <button class="btn sm blue" onclick="exportBackup()">📤 Export JSON</button>
+        <button class="btn sm purple" onclick="triggerImportBackup()">📥 Import JSON</button>
+        <button class="btn sm green" onclick="exportWorkoutCSV()">📊 Export CSV</button>
+        <button class="btn sm blue" onclick="exportPrintablePDFReport()">🖨️ PDF Report</button>
         <button class="btn sm amber" onclick="closeModal('modal-settings');resetStats()">🔄 Clear History</button>
         <button class="btn sm red" onclick="closeModal('modal-settings');deleteProgram()">🗑️ Delete Split</button>
       </div>
@@ -4132,9 +4163,9 @@ body[data-idle="1"] .marble-veins{
       <div class="card glass" style="padding:10px;border-color:var(--blue-b)">
         <label class="label" style="color:var(--blue-t)">🎯 Current Physique &amp; Training Goal</label>
         <div class="seg" style="width:100%;margin-bottom:6px">
-          <div class="seg-btn" id="profGoalCut" style="flex:1;text-align:center" onclick="selectProfileGoal('cut')">🔥 Cut (تنشيف)</div>
-          <div class="seg-btn on" id="profGoalBulk" style="flex:1;text-align:center" onclick="selectProfileGoal('bulk')">💪 Bulk (تضخيم)</div>
-          <div class="seg-btn" id="profGoalRecomp" style="flex:1;text-align:center" onclick="selectProfileGoal('recomp')">⚖️ Recomp (ثبات)</div>
+          <div class="seg-btn" id="profGoalCut" style="flex:1;text-align:center" onclick="selectProfileGoal('cut')">🔥 Cut</div>
+          <div class="seg-btn on" id="profGoalBulk" style="flex:1;text-align:center" onclick="selectProfileGoal('bulk')">💪 Bulk</div>
+          <div class="seg-btn" id="profGoalRecomp" style="flex:1;text-align:center" onclick="selectProfileGoal('recomp')">⚖️ Recomp</div>
         </div>
         <div class="micro subtle" id="profGoalDescTxt">Muscle gain focus: evaluates weight graph as advancing when gaining steady lean weight.</div>
       </div>
@@ -4204,6 +4235,10 @@ body[data-idle="1"] .marble-veins{
     </div>
     <div id="monthlyReportSummaryBanner" class="card glass" style="padding:8px 10px;border-color:var(--green-b)"></div>
     <div class="modal-body" id="monthlyReportBody" style="max-height:48dvh"></div>
+    <div class="grid-2" style="gap:6px">
+      <button type="button" class="btn sm blue" onclick="exportWorkoutCSV()">📊 Export CSV</button>
+      <button type="button" class="btn sm green" onclick="exportPrintablePDFReport($('monthlyReportSelect') ? $('monthlyReportSelect').value : '')">🖨️ Print / PDF</button>
+    </div>
     <button class="btn primary block" onclick="closeModal('modal-monthly-report')">Done ✓</button>
   </div>
 </div>
@@ -10711,7 +10746,12 @@ function renderWorkout(){
   if(ex.warmupSets === undefined) ex.warmupSets = 0;
   const isDeload = (typeof isDeloadModeActive === 'function' && isDeloadModeActive());
   const wScreen = $('screen-workout');
-  if(wScreen) wScreen.classList.toggle('deload-mode-active', isDeload);
+  if(wScreen){
+    wScreen.classList.toggle('deload-mode-active', isDeload);
+    wScreen.classList.toggle('focus-mode', !!appData.focusMode);
+  }
+  const fBtn = $('workoutFocusBtn');
+  if(fBtn) fBtn.textContent = appData.focusMode ? '🎯 Exit Focus' : '🎯 Focus';
   const dBanner = $('deloadWorkoutBanner');
   if(dBanner) dBanner.classList.toggle('hidden', !isDeload);
   const mode = appData.globalViewMode || 'all';
@@ -10854,6 +10894,7 @@ function renderWorkout(){
   }
   saveCurrentEx();
   updateWorkoutTelemetry();
+  if(typeof updateWorkoutTargetBeatPill === 'function') updateWorkoutTargetBeatPill(ex, lh, isDeload);
   applyViewMode(mode);
   $('btnPrevEx').classList.toggle('hidden', activeExIndex === 0);
   const isLast = activeExIndex === activeSessionData.length - 1;
@@ -14609,7 +14650,7 @@ function executeAgenticChatCommandIfRequested(userMsg){
     renderWeightProgressChart();
     const verd = evaluateWeightGoalProgress(appData.weightLogs, prof.goal);
     return isAr
-      ? ('⚖️ أبشر يا وحش! سجلت وزنك <b>' + wVal + ' ' + unitLabel() + '</b> لهذا الأسبوع (' + wk + ') وحدثت ملفك الشخصي وحاسبة الكافيين!<br>📈 <b>تقييم الهدف:</b> ' + verd.fullText)
+      ? ('⚖️ تم بنجاح! سجلت وزنك <b>' + wVal + ' ' + unitLabel() + '</b> لهذا الأسبوع (' + wk + ') وحدثت ملفك الشخصي وحاسبة الكافيين!<br>📈 <b>تقييم الهدف:</b> ' + verd.fullText)
       : ('⚖️ Logged your body weight at <b>' + wVal + ' ' + unitLabel() + '</b> for week ' + wk + '!<br>📈 <b>Goal Verdict:</b> ' + verd.fullText);
   }
 
@@ -14617,7 +14658,7 @@ function executeAgenticChatCommandIfRequested(userMsg){
   if(/التقرير الشهري|تقرير الشهر|monthly report/i.test(norm)){
     setTimeout(function(){ openMonthlyReportModal(); }, 180);
     return isAr
-      ? '📅 أبشر يا بطل! فتحت لك <b>التقرير الشهري الشامل</b> لتقارن أوزانك وعداتك في كل تمرين (مع أرشيف جميع الشهور السابقة).'
+      ? '📅 تم! فتحت لك <b>التقرير الشهري الشامل</b> لتقارن أوزانك وعداتك في كل تمرين (مع أرشيف جميع الشهور السابقة).'
       : '📅 Opening your <b>Monthly Progress Report & Archive</b> right now!';
   }
   if(timerMatch){
@@ -14626,8 +14667,8 @@ function executeAgenticChatCommandIfRequested(userMsg){
     if(!timerInt){ timerTime = newSec; timerTotal = newSec; updateTimerUI('adjust'); }
     save();
     return isAr
-      ? ('⏱️ تم يا وحش! عدلت لك تايمر الراحة الافتراضي في النظام إلى <b>' + newSec + ' ثانية (' + fmtTime(newSec) + ')</b> فوراً.')
-      : ('⏱️ Done bro! I updated your default Rest Timer to <b>' + newSec + ' seconds (' + fmtTime(newSec) + ')</b>.');
+      ? ('⏱️ تم التحديث! عدلت لك تايمر الراحة الافتراضي في النظام إلى <b>' + newSec + ' ثانية (' + fmtTime(newSec) + ')</b> فوراً.')
+      : ('⏱️ Updated your default Rest Timer to <b>' + newSec + ' seconds (' + fmtTime(newSec) + ')</b>.');
   }
 
   // Set minimum weight increment (أقل تدريج للتمرين) via chat
@@ -14643,7 +14684,7 @@ function executeAgenticChatCommandIfRequested(userMsg){
     }
     save();
     return isAr
-      ? ('⚖️ أبشر يا وحش! ضبطت <b>أقل تدريج للوزن (±Step)</b> لجميع تمارين <b>Day ' + prog[dIdx].day + '</b> على <b>' + (stepVal > 0 ? (stepVal + ' ' + unitLabel()) : 'إيقاف الأزرار') + '</b> — بتظهر لك أزرار (<b>− / +</b>) بجانب الوزن أثناء التمرين فوراً!')
+      ? ('⚖️ تم بنجاح! ضبطت <b>أقل تدريج للوزن (±Step)</b> لجميع تمارين <b>Day ' + prog[dIdx].day + '</b> على <b>' + (stepVal > 0 ? (stepVal + ' ' + unitLabel()) : 'إيقاف الأزرار') + '</b> — بتظهر لك أزرار (<b>− / +</b>) بجانب الوزن أثناء التمرين فوراً!')
       : ('⚖️ Done! Set minimum weight increment (<b>±Step</b>) for <b>Day ' + prog[dIdx].day + '</b> exercises to <b>' + (stepVal > 0 ? (stepVal + ' ' + unitLabel()) : 'Off') + '</b>!');
   }
 
@@ -14685,7 +14726,7 @@ function executeAgenticChatCommandIfRequested(userMsg){
       save();
       if(currentScreen === 'screen-home') refreshHome();
       return isAr
-        ? ('✅ أبشر يا وحش! أضفت تمرين <b>' + escapeAttr(info.name) + '</b> (عضلة: <b>' + info.muscle + ' — ' + info.sub + '</b> · 3 جولات) مباشرة إلى <b>Day ' + prog[dIdx].day + '</b> في جدولك، وسجلته في قائمة العضلات!')
+        ? ('✅ تم بنجاح! أضفت تمرين <b>' + escapeAttr(info.name) + '</b> (عضلة: <b>' + info.muscle + ' — ' + info.sub + '</b> · 3 جولات) مباشرة إلى <b>Day ' + prog[dIdx].day + '</b> في جدولك، وسجلته في قائمة العضلات!')
         : ('✅ Done bro! Added <b>' + escapeAttr(info.name) + '</b> (<b>' + info.muscle + ' · ' + info.sub + '</b>, 3 sets) directly to <b>Day ' + prog[dIdx].day + '</b> in your active split!');
     }
   }
@@ -16107,9 +16148,9 @@ function verifyProductAndRealityTimeline(userMsg){
     const rtxNum = parseInt(rtxMatch[1]);
     if(rtxNum >= 6000){
       return isAr
-        ? ('لسا بدري يا وحش! 😄💻 كرت <b>RTX ' + rtxNum + '</b> <b>ما نزل ولا أعلنت عنه إنفيديا!</b><br>' +
+        ? ('لم يصدر بعد — كرت <b>RTX ' + rtxNum + '</b> <b>ما نزل ولا أعلنت عنه إنفيديا!</b><br>' +
            'أحدث جيل متوفر حالياً في السوق هو جيل <b>RTX 50-Series (مثل RTX 5090 و RTX 5080 بمعمارية Blackwell)</b>!')
-        : ('Not out yet bro! 😄💻 The <b>RTX ' + rtxNum + '</b> hasn\'t been released! NVIDIA\'s latest flagship GPU generation on the market is the <b>RTX 50-series (RTX 5090 / 5080 Blackwell)</b>.');
+        : ('The <b>RTX ' + rtxNum + '</b> has not been released yet. NVIDIA\'s latest flagship GPU generation on the market is the <b>RTX 50-series (RTX 5090 / 5080 Blackwell)</b>.');
     }
   }
 
@@ -16355,7 +16396,7 @@ function generateDynamicOfflineAIResponse(userMsg, liveWikiFact){
   if(isFollowUp && !entity && aiLastTopic){
     if(aiLastTopic === 'recovery'){
       return isAr
-        ? ('توضيح أكثر عن <b>الاستشفاء العضلي</b> يا وحش:<br>' +
+        ? ('توضيح أكثر عن <b>الاستشفاء العضلي</b> :<br>' +
            'لما تتمرن حديد بشدة عالية، تحدث شقوق مجهرية (Micro-tears) في الألياف العضلية، وتبدأ عملية تخليق البروتين العضلي (MPS) وتستمر من <b>36 إلى 48 ساعة</b> للعضلات الصغيرة و<b>72 ساعة</b> للعضلات الكبيرة.<br>' +
            '• لو مرنت نفس العضلة قبل استشفائها، تقطع عملية البناء وتدخل في إجهاد الجهاز العصبي المركزي (CNS Fatigue).<br>' +
            '• تقدر تشوف <b>الخريطة الحرارية (Muscle Heatmap)</b> في الشاشة الرئيسية الآن لتعرف نسبة استشفاء كل عضلة في جسمك باللحظة! 🧬💪')
@@ -16376,8 +16417,8 @@ function generateDynamicOfflineAIResponse(userMsg, liveWikiFact){
     aiLastTopic = 'chat';
     return isAr
       ? ('يا هلا والله ومليون غلا يا <b>' + escapeAttr(t.userName) + '</b>! 😄🔥<br>' +
-         'أنا بخير وعافيه دامك بخير يا وحش! جاهز معك على الخط لأي شيء يخطر في بالك — سواء سوالف عامة، أسئلة علمية أو تشريحية ودراسات، تقنية وأجهزة، طب، أو تبي نضبط تمرينك وجدولك! قولي شخبارك وكيف يومك اليوم؟ ☕💪')
-      : ('Yo <b>' + escapeAttr(t.userName) + '</b>! 😄🔥 Doing awesome bro! Ready to chat about anything — general questions, clinical anatomy &amp; peer-reviewed studies, tech, life, or your training! How\'s your day going? ☕💪');
+         'أنا بخير وعافيه أهلاً بك! جاهز معك على الخط لأي شيء يخطر في بالك — سواء سوالف عامة، أسئلة علمية أو تشريحية ودراسات، تقنية وأجهزة، طب، أو تبي نضبط تمرينك وجدولك! قولي شخبارك وكيف يومك اليوم؟ ☕💪')
+      : ('Hello <b>' + escapeAttr(t.userName) + '</b>! Ready to help with training, clinical anatomy &amp; peer-reviewed studies, tech, life, or your training! How\'s your day going? ☕💪');
   }
 
   // Tired / Lazy / No motivation / Stress / Boredom
@@ -16405,7 +16446,7 @@ function generateDynamicOfflineAIResponse(userMsg, liveWikiFact){
   // Jokes / Humor
   if(/نكتة|نكته|ضحكني|مزحة|فلة|joke|funny|make me laugh/i.test(low)){
     return isAr
-      ? ('خذ هذي يا وحش 😂🔥:<br>' +
+      ? ('إليك هذا:<br>' +
          'واحد دخل النادي أول يوم، سأل الكوتش: <i>"يا كوتش لو أبي أبني عضل بسرعة وش أحسن جهاز أستخدمه؟"</i><br>' +
          'قاله الكوتش: <i>"جهاز الصراف الآلي عشان تشتري صدور دجاج وكرياتين!"</i> 🤣🍗')
       : ('Here\'s a classic for you 😂🔥:<br>Why do bodybuilders hate walking up stairs?<br>Because it\'s unscheduled cardio and steals their leg gains! 🤣🦵');
@@ -16415,7 +16456,7 @@ function generateDynamicOfflineAIResponse(userMsg, liveWikiFact){
   if(/شكرا|شكراً|يعطيك العافية|كفو|بيض الله وجهك|تسلم|بطل|رهيب|اسطورة|أحبك|احبك|thanks|thank you|awesome|great job|love you/i.test(low)){
     return isAr
       ? ('وجهك أبيض يا <b>' + escapeAttr(t.userName) + '</b> وعاش من قال! 😄🔥 معك عالخط دايم في أي سؤال عام أو علمي أو رياضي! 💙💪')
-      : ('Anytime, <b>' + escapeAttr(t.userName) + '</b>! 😄🔥 Always got your back bro for any question, science deep-dive, or chat! 💙💪');
+      : ('You\'re welcome, <b>' + escapeAttr(t.userName) + '</b>. Always ready to assist with your training or research.');
   }
 
   if(/مين انت|من انت|عرفني بنفسك|وش تقدر تسوي|وش فايدتك|who are you|what can you do/i.test(low)){
@@ -16439,8 +16480,8 @@ function generateDynamicOfflineAIResponse(userMsg, liveWikiFact){
         : ('<b>Caffeine Science &amp; CYP1A2 Clearance</b> ☕🔥:<br>• Caffeine blocks adenosine receptors and boosts neural drive.<br>• Its half-life is <b>~4.9h in non-smokers</b> and <b>~3.0h in smokers</b> (due to hepatic CYP1A2 induction).<br>• Check out your new <b>☕ Blood Caffeine Calculator</b> inside the <b>🧮 Calculators</b> tab to see your hour-by-hour blood clearance curve! ⚡');
     }
     return isAr
-      ? ('بالعافية على قلبك مقدماً يا وحش! 😋🍔🔥 خل الوجبة المفتوحة بعد تمرين قوي أو قبل التمرين بساعتين لتعبئة الجلايكوجين! 💪')
-      : ('Enjoy every bite bro! 😋🍔🔥 Time your cheat meal post-workout or 2 hours before a heavy session to supercharge muscle glycogen! 💪');
+      ? ('بالعافية على قلبك مقدماً! خل الوجبة المفتوحة بعد تمرين قوي أو قبل التمرين بساعتين لتعبئة الجلايكوجين! 💪')
+      : ('Enjoy your meal! Timing a higher-carb meal post-workout or ~2 hours before a heavy session helps maximize muscle glycogen.');
   }
 
   // Live 1RM Calculator in Chat
@@ -16521,8 +16562,8 @@ function generateDynamicOfflineAIResponse(userMsg, liveWikiFact){
   if(/أوزان اليوم|اوزان اليوم|وش اشيل اليوم|وش أشيل اليوم|تمريني اليوم|وش تمريني|جدولي اليوم|what is my workout|lift today|today's workout|target weights/.test(low)){
     if(!t.currentDayExercises.length){
       return isAr
-        ? ('جدولك الحالي فاضي يا وحش! اضغط على <b>⚡ AI Split</b> فوق وخلني أبني لك جدول مخصص بالكامل! 🚀')
-        : ('Your split is empty bro! Tap <b>⚡ AI Split</b> at the top to generate your custom program! 🚀');
+        ? ('جدولك الحالي فارغ حالياً. اضغط على <b>⚡ AI Split</b> فوق وخلني أبني لك جدول مخصص بالكامل! 🚀')
+        : ('Your active split has no exercises yet. Tap <b>⚡ AI Split</b> at the top to build a custom program.');
     }
     const lines = t.currentDayExercises.map(function(ex, i){
       const lh = ex.history && ex.history.length ? ex.history[ex.history.length - 1] : null;
@@ -16670,7 +16711,7 @@ async function sendAIChatMessage(){
       return;
     }
     const reply = isAr
-      ? ('كفو يا وحش! 🧠 حللت تمرين <b>"' + escapeAttr(rawEx) + '"</b> وأضفته لقائمة العضلات عندك:<br>• العضلة الأساسية: <b>' + info.muscle + '</b><br>• الزاوية المستهدفة: <b>' + info.sub + '</b><br>• الأداة: <b>' + info.equip + '</b>')
+      ? ('تم التصنيف بنجاح! 🧠 حللت تمرين <b>"' + escapeAttr(rawEx) + '"</b> وأضفته لقائمة العضلات عندك:<br>• العضلة الأساسية: <b>' + info.muscle + '</b><br>• الزاوية المستهدفة: <b>' + info.sub + '</b><br>• الأداة: <b>' + info.equip + '</b>')
       : ('Got you bro! 🧠 Classified <b>"' + escapeAttr(rawEx) + '"</b> → <b>' + info.muscle + ' (' + info.sub + ' · ' + info.equip + ')</b> and added it to your library!');
     appendAIChatBubble('ai', reply);
     aiChatHistory.push({ role: 'assistant', content: reply.replace(/<[^>]+>/g, '') });
@@ -16874,7 +16915,7 @@ const TUTORIAL_BY_SCREEN = {
     },
     {
       selector: '.ai-input-bar',
-      title: '💬 Open Bilingual Bro-Coach Chat',
+      title: '💬 Open AI Performance Coach',
       desc: 'Chat in Arabic or English about your workouts, custom exercises, or any life topic — your coach knows all your weights and PRs!'
     }
   ],
@@ -17761,8 +17802,8 @@ function syncAllVisibleSegPills(){
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     if(!isScrubbing){
-      // Only start scrubbing after an intentional >= 8px horizontal drag
-      if(Math.abs(dx) >= 8 && Math.abs(dx) > Math.abs(dy) * 1.15){
+      // Start scrubbing smoothly after a responsive >= 5px horizontal drag
+      if(Math.abs(dx) >= 5 && Math.abs(dx) > Math.abs(dy) * 1.1){
         isScrubbing = true;
         downSeg.classList.add('scrubbing');
       } else {
@@ -18439,8 +18480,11 @@ function setAthleteGoalQuick(g){
   save();
   updateWorkoutTelemetry();
   renderWeightProgressChart();
-  const names = { cut: '🔥 Cutting (تنشيف)', bulk: '💪 Bulking (تضخيم)', recomp: '⚖️ Body Recomp (ثبات وبناء)' };
-  toast('🎯 Goal updated to ' + (names[g] || g));
+  const isAr = (appData.lang === 'ar');
+  const names = isAr
+    ? { cut: '🔥 تنشيف (Cut)', bulk: '💪 تضخيم (Bulk)', recomp: '⚖️ إعادة تشكيل (Recomp)' }
+    : { cut: '🔥 Cutting', bulk: '💪 Bulking', recomp: '⚖️ Body Recomp' };
+  toast((isAr ? '🎯 تم تحديث الهدف إلى ' : '🎯 Goal updated to ') + (names[g] || g));
 }
 
 /* ============ WEEKLY BODY WEIGHT CHECK-IN & GOAL GRAPH ============ */
@@ -18471,8 +18515,11 @@ function openWeeklyWeightModal(manualOpen){
   const prof = ensureAthleteProfile();
   refreshUnitUI();
   const wk = getCurrentISOWeekKey();
-  const gMap = { cut: '🔥 Cut (تنشيف)', bulk: '💪 Bulk (تضخيم)', recomp: '⚖️ Recomp (ثبات)' };
-  if($('wwModalWeekLabel')) $('wwModalWeekLabel').textContent = wk + ' · Goal: ' + (gMap[prof.goal] || 'Bulk');
+  const isAr = (appData.lang === 'ar');
+  const gMap = isAr
+    ? { cut: '🔥 تنشيف', bulk: '💪 تضخيم', recomp: '⚖️ ثبات وبناء' }
+    : { cut: '🔥 Cut', bulk: '💪 Bulk', recomp: '⚖️ Recomp' };
+  if($('wwModalWeekLabel')) $('wwModalWeekLabel').textContent = wk + (isAr ? ' · الهدف: ' : ' · Goal: ') + (gMap[prof.goal] || (isAr ? 'تضخيم' : 'Bulk'));
   if($('wwModalInput')) $('wwModalInput').value = prof.weight || 75;
   if($('wwModalNote')) $('wwModalNote').value = '';
   refreshSettingsUI();
@@ -18653,8 +18700,13 @@ function renderWeightProgressChart(){
   }
   const sub = $('weightGoalStatusSub');
   if(sub){
-    const gNames = { cut: 'Cut (تنشيف)', bulk: 'Bulk (تضخيم)', recomp: 'Body Recomp (ثبات وبناء)' };
-    sub.textContent = 'Active Goal: ' + (gNames[goal] || 'Bulk') + ' · ' + logs.length + ' weigh-in' + (logs.length === 1 ? '' : 's') + ' recorded';
+    const isAr = (appData.lang === 'ar');
+    const gNames = isAr
+      ? { cut: 'تنشيف', bulk: 'تضخيم', recomp: 'إعادة تشكيل' }
+      : { cut: 'Cut', bulk: 'Bulk', recomp: 'Body Recomp' };
+    sub.textContent = isAr
+      ? ('الهدف النشط: ' + (gNames[goal] || 'تضخيم') + ' · ' + logs.length + ' قياس مسجل')
+      : ('Active Goal: ' + (gNames[goal] || 'Bulk') + ' · ' + logs.length + ' weigh-in' + (logs.length === 1 ? '' : 's') + ' recorded');
   }
 
   const startW = pts[0].weight;
@@ -20868,22 +20920,89 @@ async function confirmAccountPasswordReset(){
   }
 
   function lerp(a, b, t){ return a + (b - a) * t; }
+  function easeOutCubic(t){ return 1 - Math.pow(1 - clamp(t, 0, 1), 3); }
+  function easeOutBack(t){
+    const x = clamp(t, 0, 1) - 1;
+    return 1 + 2.1 * x * x * x + 1.1 * x * x;
+  }
 
-  function setLensGeometry(lens, rect, radiusPx){
+  let lensAnimRaf = null;
+  let lensVisual = {
+    x: 0, y: 0, w: 40, h: 32, r: 9,
+    scaleX: 0.01, scaleY: 0.01, opacity: 0,
+    active: false
+  };
+
+  function cancelLensAnim(){
+    if(lensAnimRaf){
+      cancelAnimationFrame(lensAnimRaf);
+      lensAnimRaf = null;
+    }
+  }
+
+  function renderLensState(lens){
+    if(!lens) return;
+    lens.style.width = Math.max(18, lensVisual.w).toFixed(1) + 'px';
+    lens.style.height = Math.max(18, lensVisual.h).toFixed(1) + 'px';
+    lens.style.borderRadius = (lensVisual.r || 9).toFixed(1) + 'px';
+    lens.style.opacity = clamp(lensVisual.opacity, 0, 1).toFixed(3);
+    lens.style.transform =
+      'translate3d(' + lensVisual.x.toFixed(1) + 'px,' + lensVisual.y.toFixed(1) + 'px,0) ' +
+      'scale3d(' + Math.max(0.01, lensVisual.scaleX).toFixed(3) + ',' + Math.max(0.01, lensVisual.scaleY).toFixed(3) + ',1)';
+  }
+
+  function setLensTone(lens, side){
+    if(!lens) return;
+    lens.classList.toggle('tone-minus', side === 'minus');
+    lens.classList.toggle('tone-plus', side === 'plus');
+  }
+
+  function setLensGeometry(lens, rect, radiusPx, sx, sy, op){
     if(!lens || !rect) return;
-    const posStr = 'translate3d(' + rect.left.toFixed(1) + 'px,' + rect.top.toFixed(1) + 'px,0)';
-    lens.style.width = Math.max(18, rect.width).toFixed(1) + 'px';
-    lens.style.height = Math.max(18, rect.height).toFixed(1) + 'px';
-    lens.style.setProperty('--lens-pos', posStr);
-    lens.style.transform = posStr;
-    lens.style.borderRadius = (radiusPx || 9) + 'px';
+    lensVisual.x = rect.left;
+    lensVisual.y = rect.top;
+    lensVisual.w = Math.max(18, rect.width);
+    lensVisual.h = Math.max(18, rect.height);
+    lensVisual.r = radiusPx || 9;
+    if(sx !== undefined) lensVisual.scaleX = sx;
+    if(sy !== undefined) lensVisual.scaleY = sy;
+    if(op !== undefined) lensVisual.opacity = op;
+    renderLensState(lens);
   }
 
   function pulseLens(lens){
     if(!lens) return;
-    lens.classList.remove('pulse-step');
-    void lens.offsetWidth; // Reflow to re-trigger 0.5s glassy pulse animation
     lens.classList.add('pulse-step');
+    clearTimeout(lens._pulseT);
+    lens._pulseT = setTimeout(function(){ lens.classList.remove('pulse-step'); }, 170);
+  }
+
+  function animateLensTween(lens, fromState, toState, durationMs, easingFn, onDone){
+    cancelLensAnim();
+    if(!lens){ if(onDone) onDone(); return; }
+    const startTs = performance.now();
+    const dur = Math.max(16, durationMs || 130);
+    const ease = easingFn || easeOutCubic;
+    const step = function(now){
+      const rawT = clamp((now - startTs) / dur, 0, 1);
+      const e = ease(rawT);
+      lensVisual.x = lerp(fromState.x, toState.x, e);
+      lensVisual.y = lerp(fromState.y, toState.y, e);
+      lensVisual.w = lerp(fromState.w, toState.w, e);
+      lensVisual.h = lerp(fromState.h, toState.h, e);
+      lensVisual.r = lerp(fromState.r, toState.r, e);
+      lensVisual.scaleX = lerp(fromState.scaleX, toState.scaleX, e);
+      lensVisual.scaleY = lerp(fromState.scaleY, toState.scaleY, e);
+      lensVisual.opacity = lerp(fromState.opacity, toState.opacity, clamp(rawT * 1.15, 0, 1));
+      renderLensState(lens);
+      if(rawT < 1){
+        lensAnimRaf = requestAnimationFrame(step);
+      } else {
+        lensAnimRaf = null;
+        if(onDone) onDone();
+      }
+    };
+    lensAnimRaf = requestAnimationFrame(step);
   }
 
   let swipeState = null;
@@ -20902,19 +21021,19 @@ async function confirmAccountPasswordReset(){
     }
   }
 
-  // Progressive hold acceleration: starts at 500ms, speeds up smoothly, capped at 200ms so every step remains readable!
+  // Progressive hold acceleration: 500 -> 400 -> 320 -> 250 -> 200ms
   function getAcceleratedHoldDelay(stepCount){
     const schedule = [500, 400, 320, 250, 200];
     return schedule[Math.min(stepCount, schedule.length - 1)];
   }
 
-  function startAcceleratedHold(btnGetter, lens, onclickKey){
+  function startAcceleratedHold(btnGetter, lens, onclickKey, side){
     clearHoldTimer();
     let stepCount = 0;
     const scheduleNext = function(){
       const delay = getAcceleratedHoldDelay(stepCount);
       holdInterval = setTimeout(function(){
-        const nextBtn = triggerStepButton(btnGetter(), lens, onclickKey);
+        const nextBtn = triggerStepButton(btnGetter(), lens, onclickKey, side);
         if(!nextBtn) return;
         stepCount++;
         scheduleNext();
@@ -20923,7 +21042,7 @@ async function confirmAccountPasswordReset(){
     scheduleNext();
   }
 
-  function triggerStepButton(btn, lens, onclickKey){
+  function triggerStepButton(btn, lens, onclickKey, side){
     let targetBtn = btn;
     if((!targetBtn || !document.body.contains(targetBtn)) && onclickKey){
       targetBtn = Array.prototype.find.call(document.querySelectorAll('button[onclick]'), function(b){
@@ -20932,13 +21051,19 @@ async function confirmAccountPasswordReset(){
     }
     if(!targetBtn || !document.body.contains(targetBtn)){
       clearHoldTimer();
-      if(lens) lens.classList.remove('active', 'pulse-step');
+      if(lens) lens.classList.remove('active', 'pulse-step', 'tone-minus', 'tone-plus');
       return null;
     }
     const bRect = targetBtn.getBoundingClientRect();
     if(lens && bRect.width > 0){
-      setLensGeometry(lens, bRect, 8);
+      if(side) setLensTone(lens, side);
       lens.classList.add('active');
+      setLensGeometry(lens, bRect, 9, 1.07, 1.07, 1);
+      setTimeout(function(){
+        if(lens.classList.contains('active') && !swipeState){
+          setLensGeometry(lens, bRect, 9, 1, 1, 1);
+        }
+      }, 90);
     }
     pulseLens(lens);
     targetBtn.click();
@@ -20951,8 +21076,7 @@ async function confirmAccountPasswordReset(){
   document.addEventListener('pointerdown', function(e){
     if(e.button !== undefined && e.button !== 0) return;
 
-    // Case A: User presses directly on a − / + / −30s / +30s stepper button -> hold repeats with progressive acceleration!
-    // Note: #timerBtn (START/PAUSE) is intentionally NOT matched here so Case B handles horizontal swipe from #timerBtn -> −30s / +30s!
+    // Case A: Direct press on − / + / −30s / +30s stepper button -> smooth 0->100% scale bloom + accelerated hold!
     const directBtn = e.target && e.target.closest ? e.target.closest('button') : null;
     if(directBtn && directBtn.id !== 'timerBtn'){
       const txt = (directBtn.textContent || '').trim();
@@ -20962,16 +21086,23 @@ async function confirmAccountPasswordReset(){
         if(siblingInput){
           clearHoldTimer();
           const lens = getLens();
-          // Show glassy lens if held >= 160ms, and step every 500ms (0.5s)!
+          const side = (txt === '−' || txt === '-' || directBtn.id === 'timerStepMinusBtn') ? 'minus' : 'plus';
           holdShowTimer = setTimeout(function(){
             if(!document.body.contains(directBtn)) return;
             const bRect = directBtn.getBoundingClientRect();
             if(lens && bRect.width > 0){
-              setLensGeometry(lens, bRect, 8);
+              setLensTone(lens, side);
               lens.classList.add('active');
+              animateLensTween(
+                lens,
+                { x: bRect.left, y: bRect.top, w: bRect.width, h: bRect.height, r: 9, scaleX: 0.08, scaleY: 0.08, opacity: 0 },
+                { x: bRect.left, y: bRect.top, w: bRect.width, h: bRect.height, r: 9, scaleX: 1, scaleY: 1, opacity: 1 },
+                110,
+                easeOutBack
+              );
               pulseLens(lens);
             }
-          }, 160);
+          }, 130);
           const btnOnclickKey = directBtn.getAttribute('onclick') || '';
           let curDirectBtn = directBtn;
           startAcceleratedHold(function(){
@@ -20981,10 +21112,22 @@ async function confirmAccountPasswordReset(){
               }) || null;
             }
             return curDirectBtn;
-          }, lens, btnOnclickKey);
+          }, lens, btnOnclickKey, side);
           const stopDirectHold = function(){
             clearHoldTimer();
-            if(lens) lens.classList.remove('active', 'pulse-step');
+            if(lens && lens.classList.contains('active') && !swipeState){
+              const cur = Object.assign({}, lensVisual);
+              animateLensTween(
+                lens,
+                cur,
+                { x: cur.x, y: cur.y, w: cur.w, h: cur.h, r: cur.r, scaleX: 0.08, scaleY: 0.08, opacity: 0 },
+                115,
+                easeOutCubic,
+                function(){
+                  if(!swipeState) lens.classList.remove('active', 'pulse-step', 'tone-minus', 'tone-plus');
+                }
+              );
+            }
             document.removeEventListener('pointerup', stopDirectHold);
             document.removeEventListener('pointercancel', stopDirectHold);
           };
@@ -20995,7 +21138,7 @@ async function confirmAccountPasswordReset(){
       return;
     }
 
-    // Case B: User starts on a value box (Weight, Reps, or any box with − and + buttons)
+    // Case B: Swipe from Value Box (Weight / Reps) OR from Rest Timer START button (−30s ⇄ START ⇄ +30s)
     const ctx = findStepperContext(e.target);
     if(!ctx) return;
 
@@ -21003,136 +21146,260 @@ async function confirmAccountPasswordReset(){
     const iRect = ctx.input.getBoundingClientRect();
     const mRect = ctx.minusBtn.getBoundingClientRect();
     const pRect = ctx.plusBtn.getBoundingClientRect();
+    const nowTs = performance.now();
 
     swipeState = {
       ctx: ctx,
+      isTimerBar: !!ctx.isTimerBar,
       startX: e.clientX,
       startY: e.clientY,
+      lastX: e.clientX,
+      lastTs: nowTs,
+      startTs: nowTs,
+      vx: 0,
       swiping: false,
       activeSide: null,
+      triggeredCount: 0,
+      bloomStartTs: 0,
+      targetRect: iRect,
+      targetR: ctx.isTimerBar ? 12 : 10,
+      stretchX: 1,
       iRect: iRect,
       mRect: mRect,
       pRect: pRect
     };
   }, {passive: true});
 
+  function startLiveSpringLoop(stateRef){
+    cancelLensAnim();
+    let prevTs = performance.now();
+    const tick = function(now){
+      if(!swipeState || swipeState !== stateRef){
+        lensAnimRaf = null;
+        return;
+      }
+      const dt = Math.min(0.05, Math.max(0.004, (now - prevTs) / 1000));
+      prevTs = now;
+      const lens = getLens();
+      if(!lens) return;
+
+      // Smooth 0% -> 100% scale bloom on entry (95ms for timer bar, 85ms for weight/reps)
+      const bloomDur = stateRef.isTimerBar ? 95 : 85;
+      const bloomT = clamp((now - stateRef.bloomStartTs) / bloomDur, 0, 1);
+      const bloomScale = easeOutBack(bloomT);
+
+      // Frame-rate-independent exponential smoothing (snappier on timer bar for wide->pill morph)
+      const followRate = stateRef.isTimerBar ? 34 : 38;
+      const alpha = 1 - Math.exp(-followRate * dt);
+      const tr = stateRef.targetRect;
+      lensVisual.x = lerp(lensVisual.x, tr.left, alpha);
+      lensVisual.y = lerp(lensVisual.y, tr.top, alpha);
+      lensVisual.w = lerp(lensVisual.w, Math.max(18, tr.width), alpha);
+      lensVisual.h = lerp(lensVisual.h, Math.max(18, tr.height), alpha);
+      lensVisual.r = lerp(lensVisual.r, stateRef.targetR, alpha);
+
+      // Velocity-driven subtle liquid stretch on horizontal glide
+      const targetSX = bloomScale * (stateRef.stretchX || 1);
+      const targetSY = bloomScale * (1 / Math.sqrt(stateRef.stretchX || 1));
+      lensVisual.scaleX = lerp(lensVisual.scaleX, targetSX, Math.min(1, alpha * 1.15));
+      lensVisual.scaleY = lerp(lensVisual.scaleY, targetSY, Math.min(1, alpha * 1.15));
+      lensVisual.opacity = lerp(lensVisual.opacity, 1, Math.min(1, bloomT * 1.6 + 0.15));
+      renderLensState(lens);
+
+      lensAnimRaf = requestAnimationFrame(tick);
+    };
+    lensAnimRaf = requestAnimationFrame(tick);
+  }
+
   document.addEventListener('pointermove', function(e){
     if(!swipeState) return;
+    const nowTs = performance.now();
     const dx = e.clientX - swipeState.startX;
     const dy = e.clientY - swipeState.startY;
+    const dtMs = Math.max(4, nowTs - swipeState.lastTs);
+    const instVx = (e.clientX - swipeState.lastX) / dtMs;
+    swipeState.vx = swipeState.vx * 0.45 + instVx * 0.55;
+    swipeState.lastX = e.clientX;
+    swipeState.lastTs = nowTs;
+
+    // Custom activation threshold: ultra-fast 4px for Rest Timer bar, 5px for Weight/Reps
+    const minTriggerPx = swipeState.isTimerBar ? 4 : 5;
+    const ratioReq = swipeState.isTimerBar ? 1.0 : 1.1;
 
     if(!swipeState.swiping){
-      // Require intentional >= 10px horizontal swipe so normal taps always open the Numpad cleanly
-      if(Math.abs(dx) >= 10 && Math.abs(dx) >= Math.abs(dy) * 1.2){
+      if(Math.abs(dx) >= minTriggerPx && Math.abs(dx) >= Math.abs(dy) * ratioReq){
         swipeState.swiping = true;
-        _suppressInputClickUntil = Date.now() + 450;
+        swipeState.bloomStartTs = nowTs;
+        _suppressInputClickUntil = Date.now() + 420;
         closeNumpad();
         const lens = getLens();
         if(lens){
           swipeState.iRect = swipeState.ctx.input.getBoundingClientRect();
           swipeState.mRect = swipeState.ctx.minusBtn.getBoundingClientRect();
           swipeState.pRect = swipeState.ctx.plusBtn.getBoundingClientRect();
-          setLensGeometry(lens, swipeState.iRect, 10);
+          setLensTone(lens, dx < 0 ? 'minus' : 'plus');
           lens.classList.add('active');
+          // Spawn at 0.08 scale (0% -> 100% smooth bloom)
+          setLensGeometry(lens, swipeState.iRect, swipeState.isTimerBar ? 12 : 10, 0.08, 0.08, 0.05);
+          startLiveSpringLoop(swipeState);
         }
       } else {
         return;
       }
     }
 
-        _suppressInputClickUntil = Date.now() + 320;
-    const cx = e.clientX;
+    _suppressInputClickUntil = Date.now() + 300;
     const stateRef = swipeState;
-    if(stateRef.rafId) cancelAnimationFrame(stateRef.rafId);
-    stateRef.rafId = requestAnimationFrame(function(){
-      if(!swipeState || swipeState !== stateRef) return;
-      const lens = getLens();
-      const iRect = stateRef.iRect;
-      const mRect = stateRef.mRect;
-      const pRect = stateRef.pRect;
-      if(!iRect || iRect.width <= 0) return;
+    const lens = getLens();
+    const iRect = stateRef.iRect;
+    const mRect = stateRef.mRect;
+    const pRect = stateRef.pRect;
+    if(!iRect || iRect.width <= 0) return;
 
-      const originCx = iRect.left + iRect.width / 2;
-      const minusCx = mRect.left + mRect.width / 2;
-      const plusCx = pRect.left + pRect.width / 2;
+    const originCx = iRect.left + iRect.width / 2;
+    const minusCx = mRect.left + mRect.width / 2;
+    const plusCx = pRect.left + pRect.width / 2;
+    const cx = e.clientX;
 
-      let t = 0;
-      let targetRect = iRect;
-      let reachedSide = null;
+    let t = 0;
+    let destRect = iRect;
+    let reachedSide = null;
+    let dirSide = null;
+    // Custom magnetic lock thresholds: Timer bar locks earlier (0.52) for effortless wide->pill glide
+    const lockT = stateRef.isTimerBar ? 0.52 : 0.58;
 
-      if(cx < originCx){
-        const span = Math.max(16, originCx - minusCx);
-        t = clamp((originCx - cx) / span, 0, 1);
-        targetRect = mRect;
-        if(t >= 0.80 || (cx >= mRect.left - 10 && cx <= mRect.right + 4)){
-          reachedSide = 'minus';
-        }
-      } else {
-        const span = Math.max(16, plusCx - originCx);
-        t = clamp((cx - originCx) / span, 0, 1);
-        targetRect = pRect;
-        if(t >= 0.80 || (cx >= pRect.left - 4 && cx <= pRect.right + 10)){
-          reachedSide = 'plus';
-        }
+    if(cx < originCx){
+      dirSide = 'minus';
+      const span = Math.max(14, originCx - minusCx);
+      t = clamp((originCx - cx) / span, 0, 1);
+      destRect = mRect;
+      if(t >= lockT || (cx >= mRect.left - 12 && cx <= mRect.right + 6)){
+        reachedSide = 'minus';
       }
-
-      // 120Hz vsync-locked linear interpolation between origin box and − / + button
-      const curRect = {
-        left: lerp(iRect.left, targetRect.left, t),
-        top: lerp(iRect.top, targetRect.top, t),
-        width: lerp(iRect.width, targetRect.width, t),
-        height: lerp(iRect.height, targetRect.height, t)
-      };
-      setLensGeometry(lens, curRect, lerp(10, 7, t));
-
-      if(reachedSide !== stateRef.activeSide){
-        clearHoldTimer();
-        stateRef.activeSide = reachedSide;
-        if(reachedSide === 'minus'){
-          const btn = stateRef.ctx.minusBtn;
-          const k = btn.getAttribute('onclick') || '';
-          triggerStepButton(btn, lens, k);
-          startAcceleratedHold(function(){ return btn; }, lens, k);
-        } else if(reachedSide === 'plus'){
-          const btn = stateRef.ctx.plusBtn;
-          const k = btn.getAttribute('onclick') || '';
-          triggerStepButton(btn, lens, k);
-          startAcceleratedHold(function(){ return btn; }, lens, k);
-        }
+    } else if(cx > originCx){
+      dirSide = 'plus';
+      const span = Math.max(14, plusCx - originCx);
+      t = clamp((cx - originCx) / span, 0, 1);
+      destRect = pRect;
+      if(t >= lockT || (cx >= pRect.left - 6 && cx <= pRect.right + 12)){
+        reachedSide = 'plus';
       }
-    });
-    return;
+    }
+
+    setLensTone(lens, reachedSide || dirSide);
+    const morphT = stateRef.isTimerBar ? easeOutCubic(t) : t;
+    const snapT = reachedSide ? 1 : morphT;
+    stateRef.targetRect = {
+      left: lerp(iRect.left, destRect.left, snapT),
+      top: lerp(iRect.top, destRect.top, snapT),
+      width: lerp(iRect.width, destRect.width, snapT),
+      height: lerp(iRect.height, destRect.height, snapT)
+    };
+    stateRef.targetR = lerp(stateRef.isTimerBar ? 12 : 10, stateRef.isTimerBar ? 10 : 8, snapT);
+    // Subtle liquid stretch proportional to drag velocity during mid-transit
+    const speedMag = Math.min(1, Math.abs(stateRef.vx) / 1.4);
+    stateRef.stretchX = reachedSide ? 1.0 : (1 + speedMag * (stateRef.isTimerBar ? 0.09 : 0.06));
+
+    if(reachedSide !== stateRef.activeSide){
+      clearHoldTimer();
+      stateRef.activeSide = reachedSide;
+      if(reachedSide === 'minus'){
+        const btn = stateRef.ctx.minusBtn;
+        const k = btn.getAttribute('onclick') || '';
+        stateRef.triggeredCount++;
+        triggerStepButton(btn, lens, k, 'minus');
+        startAcceleratedHold(function(){ return btn; }, lens, k, 'minus');
+      } else if(reachedSide === 'plus'){
+        const btn = stateRef.ctx.plusBtn;
+        const k = btn.getAttribute('onclick') || '';
+        stateRef.triggeredCount++;
+        triggerStepButton(btn, lens, k, 'plus');
+        startAcceleratedHold(function(){ return btn; }, lens, k, 'plus');
+      }
+    }
   }, {passive: true});
 
-  function endStepperSwipe(){
+  function endStepperSwipe(e){
     clearHoldTimer();
     if(!swipeState) return;
-    if(swipeState.rafId) cancelAnimationFrame(swipeState.rafId);
-    const wasSwiping = swipeState.swiping;
-    const wasTimerBar = !!swipeState.ctx.isTimerBar;
-    const iRect = swipeState.ctx.input.getBoundingClientRect();
+    const st = swipeState;
     swipeState = null;
-    if(wasSwiping && wasTimerBar){
+    cancelLensAnim();
+
+    const endX = (e && typeof e.clientX === 'number') ? e.clientX : st.lastX;
+    const totalDx = endX - st.startX;
+    const totalDt = Math.max(10, performance.now() - st.startTs);
+    const avgVx = totalDx / totalDt;
+    const peakVx = Math.abs(st.vx) > Math.abs(avgVx) ? st.vx : avgVx;
+
+    // Fast-Flick Detection: even a super-fast 30ms flick registers & animates smoothly!
+    const flickMinDx = st.isTimerBar ? 16 : 13;
+    const flickMinVx = st.isTimerBar ? 0.22 : 0.25;
+    let flickSide = null;
+    if(st.triggeredCount === 0 && (Math.abs(totalDx) >= flickMinDx && (Math.abs(peakVx) >= flickMinVx || Math.abs(totalDx) >= (st.isTimerBar ? 26 : 22)))){
+      flickSide = totalDx < 0 ? 'minus' : 'plus';
+    }
+
+    const wasGesture = st.swiping || !!flickSide;
+    if(wasGesture && st.isTimerBar){
       const tb = $('timerBtn');
       if(tb){
         const blockClick = function(ev){ ev.stopPropagation(); ev.preventDefault(); };
         tb.addEventListener('click', blockClick, { capture: true, once: true });
-        setTimeout(function(){ tb.removeEventListener('click', blockClick, { capture: true }); }, 250);
+        setTimeout(function(){ tb.removeEventListener('click', blockClick, { capture: true }); }, 280);
       }
     }
+
     const lens = getLens();
-    if(lens && wasSwiping){
-      _suppressInputClickUntil = Date.now() + 280;
-      lens.style.transition = 'transform .18s cubic-bezier(.22,1,.36,1), width .18s cubic-bezier(.22,1,.36,1), height .18s cubic-bezier(.22,1,.36,1), opacity .18s ease';
-      if(iRect.width > 0) setLensGeometry(lens, iRect, 10);
-      setTimeout(function(){
-        if(!swipeState){
-          lens.classList.remove('active', 'pulse-step');
-          lens.style.transition = 'opacity .16s ease';
-        }
-      }, 175);
+    const iRect = st.ctx.input.getBoundingClientRect();
+
+    if(lens && flickSide){
+      _suppressInputClickUntil = Date.now() + 300;
+      const targetBtn = flickSide === 'minus' ? st.ctx.minusBtn : st.ctx.plusBtn;
+      const tRect = targetBtn.getBoundingClientRect();
+      const k = targetBtn.getAttribute('onclick') || '';
+      setLensTone(lens, flickSide);
+      lens.classList.add('active');
+      const startSnap = st.swiping
+        ? Object.assign({}, lensVisual)
+        : { x: iRect.left, y: iRect.top, w: iRect.width, h: iRect.height, r: st.isTimerBar ? 12 : 10, scaleX: 0.12, scaleY: 0.12, opacity: 0.1 };
+      const destSnap = {
+        x: tRect.left, y: tRect.top, w: tRect.width, h: tRect.height,
+        r: st.isTimerBar ? 10 : 8, scaleX: 1.06, scaleY: 1.06, opacity: 1
+      };
+      // Trigger immediately so the value/timer responds with 0ms perceived lag while the glass glides into it!
+      triggerStepButton(targetBtn, null, k, flickSide);
+      pulseLens(lens);
+      animateLensTween(lens, startSnap, destSnap, st.isTimerBar ? 105 : 90, easeOutBack, function(){
+        if(swipeState) return;
+        const exitDest = {
+          x: iRect.width > 0 ? iRect.left : destSnap.x,
+          y: iRect.width > 0 ? iRect.top : destSnap.y,
+          w: iRect.width > 0 ? iRect.width : destSnap.w,
+          h: iRect.width > 0 ? iRect.height : destSnap.h,
+          r: st.isTimerBar ? 12 : 10,
+          scaleX: 0.06, scaleY: 0.06, opacity: 0
+        };
+        animateLensTween(lens, Object.assign({}, lensVisual), exitDest, st.isTimerBar ? 135 : 115, easeOutCubic, function(){
+          if(!swipeState) lens.classList.remove('active', 'pulse-step', 'tone-minus', 'tone-plus');
+        });
+      });
+    } else if(lens && st.swiping){
+      _suppressInputClickUntil = Date.now() + 260;
+      const cur = Object.assign({}, lensVisual);
+      const exitDest = {
+        x: iRect.width > 0 ? iRect.left : cur.x,
+        y: iRect.width > 0 ? iRect.top : cur.y,
+        w: iRect.width > 0 ? iRect.width : cur.w,
+        h: iRect.width > 0 ? iRect.height : cur.h,
+        r: st.isTimerBar ? 12 : 10,
+        scaleX: 0.06, scaleY: 0.06, opacity: 0
+      };
+      animateLensTween(lens, cur, exitDest, st.isTimerBar ? 140 : 120, easeOutCubic, function(){
+        if(!swipeState) lens.classList.remove('active', 'pulse-step', 'tone-minus', 'tone-plus');
+      });
     } else if(lens){
-      lens.classList.remove('active', 'pulse-step');
+      lens.classList.remove('active', 'pulse-step', 'tone-minus', 'tone-plus');
     }
   }
 
@@ -21288,6 +21555,245 @@ async function confirmAccountPasswordReset(){
   }, {passive: true});
 })();
 
+
+/* ============ FOCUS MODE, SUBTLE TARGET BEAT HINT, CSV & PRINTABLE PDF EXPORT ============ */
+function toggleWorkoutFocusMode(){
+  playSound('tap');
+  appData.focusMode = !appData.focusMode;
+  const wScreen = $('screen-workout');
+  if(wScreen) wScreen.classList.toggle('focus-mode', !!appData.focusMode);
+  const fBtn = $('workoutFocusBtn');
+  if(fBtn) fBtn.textContent = appData.focusMode ? '🎯 Exit Focus' : '🎯 Focus';
+  save();
+  toast(appData.focusMode ? '🎯 Focus Mode ON — distractions hidden' : '🎯 Focus Mode OFF');
+}
+
+function updateWorkoutTargetBeatPill(ex, lh, isDeload){
+  const pill = $('wTargetBeatPill');
+  if(!pill) return;
+  const ce = ex && ex.currentEntry ? ex.currentEntry : {};
+  if(!ex || isDeload || ce.techniqueChanged || !lh || !Array.isArray(lh.reps)){
+    pill.classList.add('hidden');
+    pill.textContent = '';
+    return;
+  }
+  let bestW = 0, bestR = 0, bestRM = 0;
+  lh.reps.forEach(function(r, idx){
+    const rv = parseFloat(r) || 0;
+    const wv = parseFloat((lh.weights || [])[idx]) || 0;
+    if(rv > 0){
+      const rm = calc1RMVal(wv, rv);
+      if(rm >= bestRM){ bestRM = rm; bestW = wv; bestR = rv; }
+    }
+  });
+  if(bestR <= 0){
+    pill.classList.add('hidden');
+    pill.textContent = '';
+    return;
+  }
+  const u = unitLabel();
+  const step = parseFloat(ex.minWeightStep) || 0;
+  const beatTxt = step > 0
+    ? ('🎯 Beat: ' + bestW + u + '×' + (bestR + 1) + ' or +' + step + u)
+    : ('🎯 Beat: ' + bestW + u + '×' + bestR + ' → ' + (bestR + 1));
+  pill.textContent = beatTxt;
+  pill.classList.remove('hidden');
+}
+
+function csvEscapeCell(val){
+  const s = String(val === undefined || val === null ? '' : val);
+  if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function exportWorkoutCSV(){
+  playSound('tap');
+  const rows = [['Date','Split','Day','Exercise','Type','Set','Weight','Unit','Reps','Est_1RM','Volume','Technique_Changed','Rating']];
+  const u = unitLabel();
+  const rawRecords = [];
+  (appData.programs || []).forEach(function(p){
+    const spName = p.name || 'IRON PULSE';
+    (p.program || []).forEach(function(d){
+      const dLabel = getDayDisplayTitle(d);
+      (d.exercises || []).forEach(function(ex){
+        (ex.history || []).forEach(function(h){
+          const dt = h.date || 0;
+          const dateStr = dt ? new Date(dt).toISOString().slice(0, 10) : '';
+          (h.reps || []).forEach(function(r, si){
+            const rv = parseFloat(r) || 0;
+            const wv = parseFloat((h.weights || [])[si]) || 0;
+            if(rv > 0){
+              const rm = calc1RMVal(wv, rv);
+              rawRecords.push({
+                ts: dt,
+                row: [dateStr, spName, dLabel, ex.name || '', 'Main', si + 1, wv, u, rv, rm > 0 ? rm.toFixed(1) : '0', Math.round(wv * rv), h.techniqueChanged ? 'Yes' : 'No', h.rating || '']
+              });
+            }
+          });
+        });
+        if(ex.supersetName){
+          (ex.supersetHistory || []).forEach(function(sh){
+            const dt = sh.date || 0;
+            const dateStr = dt ? new Date(dt).toISOString().slice(0, 10) : '';
+            (sh.reps || []).forEach(function(r, si){
+              const rv = parseFloat(r) || 0;
+              const wv = parseFloat((sh.weights || [])[si]) || 0;
+              if(rv > 0){
+                const rm = calc1RMVal(wv, rv);
+                rawRecords.push({
+                  ts: dt,
+                  row: [dateStr, spName, dLabel, ex.supersetName, 'Superset', si + 1, wv, u, rv, rm > 0 ? rm.toFixed(1) : '0', Math.round(wv * rv), sh.techniqueChanged ? 'Yes' : 'No', sh.rating || '']
+                });
+              }
+            });
+          });
+        }
+      });
+    });
+  });
+  if(!rawRecords.length){
+    toast('No workout logs recorded yet to export');
+    return;
+  }
+  rawRecords.sort(function(a, b){ return b.ts - a.ts; });
+  rawRecords.forEach(function(item){ rows.push(item.row); });
+  const csvContent = '\uFEFF' + rows.map(function(r){ return r.map(csvEscapeCell).join(','); }).join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'IRON_PULSE_Training_Log_' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  playSound('success');
+  toast('📊 Exported ' + rawRecords.length + ' sets to CSV');
+}
+
+function exportPrintablePDFReport(monthKeyOpt){
+  playSound('tap');
+  const u = unitLabel();
+  const prof = ensureAthleteProfile();
+  const goalMap = { cut: 'Cutting', bulk: 'Bulking', recomp: 'Body Recomposition' };
+  const activeProg = getProgramObj();
+  const splitName = (activeProg && activeProg.name) || 'IRON PULSE';
+  const filterKey = (monthKeyOpt && /^\d{4}-\d{2}$/.test(monthKeyOpt)) ? monthKeyOpt : '';
+  const periodLabel = filterKey ? ('Month: ' + filterKey) : 'All-Time Training Report';
+
+  const sessionSet = {};
+  let totalSets = 0, totalVol = 0;
+  const exRows = [];
+
+  (appData.programs || []).forEach(function(p){
+    (p.program || []).forEach(function(d){
+      (d.exercises || []).forEach(function(ex){
+        function processList(title, list){
+          const filtered = (list || []).filter(function(h){
+            if(!h || !h.date) return false;
+            if(!filterKey) return true;
+            const dt = new Date(h.date);
+            const mk = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0');
+            return mk === filterKey;
+          }).sort(function(a, b){ return (a.date || 0) - (b.date || 0); });
+          if(!filtered.length) return;
+          let firstRM = 0, lastRM = 0, peakRM = 0, lastTop = '—', setsCnt = 0;
+          filtered.forEach(function(h, hi){
+            sessionSet[h.date] = true;
+            let bestInSess = 0, bestTxt = '';
+            (h.reps || []).forEach(function(r, i){
+              const rv = parseFloat(r) || 0;
+              const wv = parseFloat((h.weights || [])[i]) || 0;
+              if(rv > 0){
+                setsCnt++; totalSets++; totalVol += (wv * rv);
+                const rm = calc1RMVal(wv, rv);
+                if(rm >= bestInSess){ bestInSess = rm; bestTxt = wv + u + ' × ' + rv; }
+                if(rm > peakRM) peakRM = rm;
+              }
+            });
+            if(hi === 0) firstRM = bestInSess;
+            if(hi === filtered.length - 1){ lastRM = bestInSess; lastTop = bestTxt || '—'; }
+          });
+          const pct = (firstRM > 0 && lastRM > 0) ? (((lastRM - firstRM) / firstRM) * 100) : 0;
+          exRows.push({
+            name: title,
+            sessions: filtered.length,
+            sets: setsCnt,
+            latest: lastTop,
+            peakRM: peakRM > 0 ? (peakRM.toFixed(1) + ' ' + u) : '—',
+            delta: (pct > 0 ? '+' : '') + pct.toFixed(1) + '%',
+            deltaPos: pct >= 0
+          });
+        }
+        processList(ex.name || 'Exercise', ex.history);
+        if(ex.supersetName) processList('⚡ ' + ex.supersetName, ex.supersetHistory);
+      });
+    });
+  });
+
+  if(!exRows.length){
+    toast('No workout logs found for this period');
+    return;
+  }
+
+  const sessionsCount = Object.keys(sessionSet).length;
+  const tableHtml = exRows.map(function(r){
+    return '<tr>' +
+      '<td style="font-weight:700">' + escapeAttr(r.name) + '</td>' +
+      '<td>' + r.sessions + '</td>' +
+      '<td>' + r.sets + '</td>' +
+      '<td>' + escapeAttr(r.latest) + '</td>' +
+      '<td style="font-weight:700">' + escapeAttr(r.peakRM) + '</td>' +
+      '<td style="font-weight:800;color:' + (r.deltaPos ? '#059669' : '#dc2626') + '">' + escapeAttr(r.delta) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  const reportHtml = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>IRON PULSE Report</title><style>' +
+    'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#0f172a;background:#fff;margin:24px;line-height:1.45}' +
+    '.top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #0ea5e9;padding-bottom:12px;margin-bottom:18px}' +
+    'h1{margin:0;font-size:22px;letter-spacing:-.4px;color:#0f172a} .sub{font-size:12px;color:#475569;margin-top:3px}' +
+    '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}' +
+    '.kpi{border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;background:#f8fafc}' +
+    '.kpi .l{font-size:10px;text-transform:uppercase;color:#64748b;font-weight:700;letter-spacing:.5px}' +
+    '.kpi .v{font-size:18px;font-weight:900;color:#0f172a;margin-top:2px}' +
+    'table{width:100%;border-collapse:collapse;font-size:12px}' +
+    'th{text-align:left;background:#f1f5f9;color:#334155;padding:8px 10px;border-bottom:2px solid #cbd5e1;font-size:11px;text-transform:uppercase}' +
+    'td{padding:8px 10px;border-bottom:1px solid #e2e8f0}' +
+    '.print-btn{background:#0284c7;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;font-size:12px}' +
+    '@media print{.print-btn{display:none} body{margin:10px}}' +
+    '</style></head><body>' +
+    '<div class="top"><div><h1>IRON PULSE · Training Progress Report</h1>' +
+    '<div class="sub">Athlete: <b>' + escapeAttr(appData.userName || 'Athlete') + '</b> · Split: <b>' + escapeAttr(splitName) + '</b> · Goal: <b>' + (goalMap[prof.goal] || 'Bulking') + '</b> · ' + escapeAttr(periodLabel) + '</div></div>' +
+    '<button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button></div>' +
+    '<div class="kpis">' +
+      '<div class="kpi"><div class="l">Sessions</div><div class="v">' + sessionsCount + '</div></div>' +
+      '<div class="kpi"><div class="l">Total Sets</div><div class="v">' + totalSets + '</div></div>' +
+      '<div class="kpi"><div class="l">Total Volume</div><div class="v">' + fmtVol(Math.round(totalVol)) + ' ' + u + '</div></div>' +
+      '<div class="kpi"><div class="l">Exercises Tracked</div><div class="v">' + exRows.length + '</div></div>' +
+    '</div>' +
+    '<table><thead><tr><th>Exercise</th><th>Sessions</th><th>Sets</th><th>Latest Top Set</th><th>Peak Est. 1RM</th><th>Progress</th></tr></thead><tbody>' + tableHtml + '</tbody></table>' +
+    '</body></html>';
+
+  const w = window.open('', '_blank');
+  if(w){
+    w.document.open();
+    w.document.write(reportHtml);
+    w.document.close();
+    setTimeout(function(){ try{ w.focus(); }catch(_){} }, 120);
+  } else {
+    // Fallback if popup blocker prevents window.open: download as printable HTML file
+    const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'IRON_PULSE_Report_' + (filterKey || new Date().toISOString().slice(0, 10)) + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+    toast('📄 Report downloaded — open & tap Print → Save as PDF');
+  }
+}
 
 window.onload = function(){
   load();
